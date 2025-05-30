@@ -304,13 +304,6 @@ struct ReadDispatcher<Stmt*> {
   }
 };
 template <>
-struct ReadDispatcher<SubstTemplateTypeParmTypeFlag> {
-  template <class BasicReader, class... Args>
-  static SubstTemplateTypeParmTypeFlag read(BasicReader &R, Args &&... args) {
-    return R.readSubstTemplateTypeParmTypeFlag(std::forward<Args>(args)...);
-  }
-};
-template <>
 struct ReadDispatcher<TagDecl*> {
   template <class BasicReader, class... Args>
   static TagDecl* read(BasicReader &R, Args &&... args) {
@@ -399,6 +392,13 @@ struct ReadDispatcher<UnaryTransformType::UTTKind> {
   template <class BasicReader, class... Args>
   static UnaryTransformType::UTTKind read(BasicReader &R, Args &&... args) {
     return R.readUnaryTypeTransformKind(std::forward<Args>(args)...);
+  }
+};
+template <>
+struct ReadDispatcher<UnsignedOrNone> {
+  template <class BasicReader, class... Args>
+  static UnsignedOrNone read(BasicReader &R, Args &&... args) {
+    return R.readUnsignedOrNone(std::forward<Args>(args)...);
   }
 };
 template <>
@@ -938,9 +938,6 @@ public:
   RefQualifierKind readRefQualifierKind() {
     return asImpl().template readEnum<RefQualifierKind>();
   }
-  SubstTemplateTypeParmTypeFlag readSubstTemplateTypeParmTypeFlag() {
-    return asImpl().template readEnum<SubstTemplateTypeParmTypeFlag>();
-  }
   TagDecl* readTagDeclRef() {
     return cast_or_null<TagDecl>(asImpl().readDeclRef());
   }
@@ -1008,21 +1005,19 @@ public:
 
     case TemplateArgument::TemplateExpansion: {
     TemplateName name = subR.find("name").readTemplateName();
-    std::optional<uint32_t> numExpansions = subR.find("numExpansions").template readOptional<uint32_t>();
+    UnsignedOrNone numExpansions = subR.find("numExpansions").readUnsignedOrNone();
     bool isDefaulted = subR.find("isDefaulted").readBool();
     
-    auto numExpansionsUnsigned = llvm::transformOptional(
-        numExpansions, [](uint32_t i) { return unsigned(i); });
-
-    return TemplateArgument(name, numExpansionsUnsigned, isDefaulted);
+    return TemplateArgument(name, numExpansions, isDefaulted);
   
     }
 
     case TemplateArgument::Expression: {
     Expr* expression = subR.find("expression").readExprRef();
+    bool IsCanonical = subR.find("IsCanonical").readBool();
     bool isDefaulted = subR.find("isDefaulted").readBool();
     
-    return TemplateArgument(expression, isDefaulted);
+    return TemplateArgument(expression, IsCanonical, isDefaulted);
   
     }
 
@@ -1105,11 +1100,12 @@ public:
     if ( !identifier ) {
       operatorKind.emplace(subR.find("operatorKind").readOverloadedOperatorKind());
     }
+    bool HasTemplateKeyword = subR.find("HasTemplateKeyword").readBool();
     
     if (identifier) {
-      return ctx.getDependentTemplateName(qualifier, *identifier);
+      return ctx.getDependentTemplateName({qualifier, *identifier, HasTemplateKeyword});
     } else {
-      return ctx.getDependentTemplateName(qualifier, *operatorKind);
+      return ctx.getDependentTemplateName({qualifier, *operatorKind, HasTemplateKeyword});
     }
   
     }
@@ -1118,9 +1114,10 @@ public:
     TemplateName replacement = subR.find("replacement").readTemplateName();
     Decl* associatedDecl = subR.find("associatedDecl").readDeclRef();
     uint32_t index = subR.find("index").readUInt32();
-    std::optional<uint32_t> packIndex = subR.find("packIndex").template readOptional<uint32_t>();
+    UnsignedOrNone packIndex = subR.find("packIndex").readUnsignedOrNone();
+    bool final = subR.find("final").readBool();
     
-    return ctx.getSubstTemplateTemplateParm(replacement, associatedDecl, index, packIndex);
+    return ctx.getSubstTemplateTemplateParm(replacement, associatedDecl, index, packIndex, final);
   
     }
 

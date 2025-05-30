@@ -261,42 +261,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       }
       return new (C) AssertCapabilityAttr(C, *A, tempInstArgs, A->args_size());
     }
-    case attr::AssertExclusiveLock: {
-      const auto *A = cast<AssertExclusiveLockAttr>(At);
-      auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
-      {
-        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
-        Expr * *TI = tempInstArgs;
-        Expr * *I = A->args_begin();
-        Expr * *E = A->args_end();
-        for (; I != E; ++I, ++TI) {
-          ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          if (Result.isInvalid())
-            return nullptr;
-          *TI = Result.get();
-        }
-      }
-      return new (C) AssertExclusiveLockAttr(C, *A, tempInstArgs, A->args_size());
-    }
-    case attr::AssertSharedLock: {
-      const auto *A = cast<AssertSharedLockAttr>(At);
-      auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
-      {
-        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
-        Expr * *TI = tempInstArgs;
-        Expr * *I = A->args_begin();
-        Expr * *E = A->args_end();
-        for (; I != E; ++I, ++TI) {
-          ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          if (Result.isInvalid())
-            return nullptr;
-          *TI = Result.get();
-        }
-      }
-      return new (C) AssertSharedLockAttr(C, *A, tempInstArgs, A->args_size());
-    }
     case attr::AssumeAligned: {
       const auto *A = cast<AssumeAlignedAttr>(At);
+      return A->clone(C);
+    }
+    case attr::Atomic: {
+      const auto *A = cast<AtomicAttr>(At);
       return A->clone(C);
     }
     case attr::Availability: {
@@ -643,33 +613,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<ExcludeFromExplicitInstantiationAttr>(At);
       return A->clone(C);
     }
-    case attr::ExclusiveTrylockFunction: {
-      const auto *A = cast<ExclusiveTrylockFunctionAttr>(At);
-      Expr * tempInstSuccessValue;
-      {
-        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
-        ExprResult Result = S.SubstExpr(A->getSuccessValue(), TemplateArgs);
-        if (Result.isInvalid())
-          return nullptr;
-        tempInstSuccessValue = Result.get();
-      }
-      auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
-      {
-        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
-        Expr * *TI = tempInstArgs;
-        Expr * *I = A->args_begin();
-        Expr * *E = A->args_end();
-        for (; I != E; ++I, ++TI) {
-          ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          if (Result.isInvalid())
-            return nullptr;
-          *TI = Result.get();
-        }
-      }
-      return new (C) ExclusiveTrylockFunctionAttr(C, *A, tempInstSuccessValue, tempInstArgs, A->args_size());
-    }
     case attr::ExplicitInit: {
       const auto *A = cast<ExplicitInitAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ExtVectorType: {
+      const auto *A = cast<ExtVectorTypeAttr>(At);
       return A->clone(C);
     }
     case attr::ExternalSourceSymbol: {
@@ -702,6 +651,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::FormatArg: {
       const auto *A = cast<FormatArgAttr>(At);
+      return A->clone(C);
+    }
+    case attr::FormatMatches: {
+      const auto *A = cast<FormatMatchesAttr>(At);
       return A->clone(C);
     }
     case attr::FunctionReturnThunks: {
@@ -766,10 +719,6 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::HLSLRawBuffer: {
       const auto *A = cast<HLSLRawBufferAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HLSLResource: {
-      const auto *A = cast<HLSLResourceAttr>(At);
       return A->clone(C);
     }
     case attr::HLSLResourceBinding: {
@@ -1325,6 +1274,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<ObjCSubclassingRestrictedAttr>(At);
       return A->clone(C);
     }
+    case attr::OpenACCRoutineAnnot: {
+      const auto *A = cast<OpenACCRoutineAnnotAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OpenACCRoutineDecl: {
+      const auto *A = cast<OpenACCRoutineDeclAttr>(At);
+      return A->clone(C);
+    }
     case attr::OpenCLAccess: {
       const auto *A = cast<OpenCLAccessAttr>(At);
       return A->clone(C);
@@ -1417,6 +1374,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<PointerAttr>(At);
       return A->clone(C);
     }
+    case attr::PointerAuth: {
+      const auto *A = cast<PointerAuthAttr>(At);
+      return A->clone(C);
+    }
     case attr::PragmaClangBSSSection: {
       const auto *A = cast<PragmaClangBSSSectionAttr>(At);
       return A->clone(C);
@@ -1491,6 +1452,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::RISCVInterrupt: {
       const auto *A = cast<RISCVInterruptAttr>(At);
+      return A->clone(C);
+    }
+    case attr::RISCVVLSCC: {
+      const auto *A = cast<RISCVVLSCCAttr>(At);
       return A->clone(C);
     }
     case attr::RISCVVectorCC: {
@@ -1614,31 +1579,6 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     case attr::SetTypestate: {
       const auto *A = cast<SetTypestateAttr>(At);
       return A->clone(C);
-    }
-    case attr::SharedTrylockFunction: {
-      const auto *A = cast<SharedTrylockFunctionAttr>(At);
-      Expr * tempInstSuccessValue;
-      {
-        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
-        ExprResult Result = S.SubstExpr(A->getSuccessValue(), TemplateArgs);
-        if (Result.isInvalid())
-          return nullptr;
-        tempInstSuccessValue = Result.get();
-      }
-      auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
-      {
-        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
-        Expr * *TI = tempInstArgs;
-        Expr * *I = A->args_begin();
-        Expr * *E = A->args_end();
-        for (; I != E; ++I, ++TI) {
-          ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          if (Result.isInvalid())
-            return nullptr;
-          *TI = Result.get();
-        }
-      }
-      return new (C) SharedTrylockFunctionAttr(C, *A, tempInstSuccessValue, tempInstArgs, A->args_size());
     }
     case attr::SizedBy: {
       const auto *A = cast<SizedByAttr>(At);
@@ -2116,13 +2056,10 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::AssertCapability: {
       return nullptr;
     }
-    case attr::AssertExclusiveLock: {
-      return nullptr;
-    }
-    case attr::AssertSharedLock: {
-      return nullptr;
-    }
     case attr::AssumeAligned: {
+      return nullptr;
+    }
+    case attr::Atomic: {
       return nullptr;
     }
     case attr::Availability: {
@@ -2375,10 +2312,10 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       const auto *A = cast<ExcludeFromExplicitInstantiationAttr>(At);
       return A->clone(C);
     }
-    case attr::ExclusiveTrylockFunction: {
+    case attr::ExplicitInit: {
       return nullptr;
     }
-    case attr::ExplicitInit: {
+    case attr::ExtVectorType: {
       return nullptr;
     }
     case attr::ExternalSourceSymbol: {
@@ -2403,6 +2340,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::FormatArg: {
+      return nullptr;
+    }
+    case attr::FormatMatches: {
       return nullptr;
     }
     case attr::FunctionReturnThunks: {
@@ -2445,9 +2385,6 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::HLSLRawBuffer: {
-      return nullptr;
-    }
-    case attr::HLSLResource: {
       return nullptr;
     }
     case attr::HLSLResourceBinding: {
@@ -2850,6 +2787,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::ObjCSubclassingRestricted: {
       return nullptr;
     }
+    case attr::OpenACCRoutineAnnot: {
+      return nullptr;
+    }
+    case attr::OpenACCRoutineDecl: {
+      return nullptr;
+    }
     case attr::OpenCLAccess: {
       return nullptr;
     }
@@ -2919,6 +2862,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::Pointer: {
       return nullptr;
     }
+    case attr::PointerAuth: {
+      return nullptr;
+    }
     case attr::PragmaClangBSSSection: {
       return nullptr;
     }
@@ -2970,6 +2916,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::RISCVInterrupt: {
+      return nullptr;
+    }
+    case attr::RISCVVLSCC: {
       return nullptr;
     }
     case attr::RISCVVectorCC: {
@@ -3039,9 +2988,6 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::SetTypestate: {
-      return nullptr;
-    }
-    case attr::SharedTrylockFunction: {
       return nullptr;
     }
     case attr::SizedBy: {

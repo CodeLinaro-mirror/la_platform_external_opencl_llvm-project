@@ -142,7 +142,7 @@
 #define LLVM_USE_PERF 0
 
 /* Major version of the LLVM API */
-#define LLVM_VERSION_MAJOR 20
+#define LLVM_VERSION_MAJOR 21
 
 /* Minor version of the LLVM API */
 #define LLVM_VERSION_MINOR 0
@@ -151,7 +151,7 @@
 #define LLVM_VERSION_PATCH 0
 
 /* LLVM version string */
-#define LLVM_VERSION_STRING "20.0.0git"
+#define LLVM_VERSION_STRING "21.0.0git"
 
 /* Whether LLVM records statistics for use with GetStatistics(),
  * PrintStatistics() or PrintStatisticsJSON()
@@ -200,5 +200,8 @@
 
 /* Define if logf128 is available */
 /* #undef LLVM_HAS_LOGF128 */
+
+/* Define if building LLVM with LLVM_ENABLE_TELEMETRY */
+#define LLVM_ENABLE_TELEMETRY 1
 
 #endif

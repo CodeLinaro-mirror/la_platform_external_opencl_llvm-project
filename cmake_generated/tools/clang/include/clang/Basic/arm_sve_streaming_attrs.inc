@@ -311,6 +311,8 @@ case SVE::BI__builtin_sve_svsel_f32_x2:
 case SVE::BI__builtin_sve_svsel_f32_x4:
 case SVE::BI__builtin_sve_svsel_f64_x2:
 case SVE::BI__builtin_sve_svsel_f64_x4:
+case SVE::BI__builtin_sve_svsel_mf8_x2:
+case SVE::BI__builtin_sve_svsel_mf8_x4:
 case SVE::BI__builtin_sve_svsel_s16_x2:
 case SVE::BI__builtin_sve_svsel_s16_x4:
 case SVE::BI__builtin_sve_svsel_s32_x2:
@@ -347,6 +349,8 @@ case SVE::BI__builtin_sve_svuzp_f32_x2:
 case SVE::BI__builtin_sve_svuzp_f32_x4:
 case SVE::BI__builtin_sve_svuzp_f64_x2:
 case SVE::BI__builtin_sve_svuzp_f64_x4:
+case SVE::BI__builtin_sve_svuzp_mf8_x2:
+case SVE::BI__builtin_sve_svuzp_mf8_x4:
 case SVE::BI__builtin_sve_svuzp_s16_x2:
 case SVE::BI__builtin_sve_svuzp_s16_x4:
 case SVE::BI__builtin_sve_svuzp_s32_x2:
@@ -371,6 +375,8 @@ case SVE::BI__builtin_sve_svuzpq_f32_x2:
 case SVE::BI__builtin_sve_svuzpq_f32_x4:
 case SVE::BI__builtin_sve_svuzpq_f64_x2:
 case SVE::BI__builtin_sve_svuzpq_f64_x4:
+case SVE::BI__builtin_sve_svuzpq_mf8_x2:
+case SVE::BI__builtin_sve_svuzpq_mf8_x4:
 case SVE::BI__builtin_sve_svuzpq_s16_x2:
 case SVE::BI__builtin_sve_svuzpq_s16_x4:
 case SVE::BI__builtin_sve_svuzpq_s32_x2:
@@ -395,6 +401,8 @@ case SVE::BI__builtin_sve_svzip_f32_x2:
 case SVE::BI__builtin_sve_svzip_f32_x4:
 case SVE::BI__builtin_sve_svzip_f64_x2:
 case SVE::BI__builtin_sve_svzip_f64_x4:
+case SVE::BI__builtin_sve_svzip_mf8_x2:
+case SVE::BI__builtin_sve_svzip_mf8_x4:
 case SVE::BI__builtin_sve_svzip_s16_x2:
 case SVE::BI__builtin_sve_svzip_s16_x4:
 case SVE::BI__builtin_sve_svzip_s32_x2:
@@ -419,6 +427,8 @@ case SVE::BI__builtin_sve_svzipq_f32_x2:
 case SVE::BI__builtin_sve_svzipq_f32_x4:
 case SVE::BI__builtin_sve_svzipq_f64_x2:
 case SVE::BI__builtin_sve_svzipq_f64_x4:
+case SVE::BI__builtin_sve_svzipq_mf8_x2:
+case SVE::BI__builtin_sve_svzipq_mf8_x4:
 case SVE::BI__builtin_sve_svzipq_s16_x2:
 case SVE::BI__builtin_sve_svzipq_s16_x4:
 case SVE::BI__builtin_sve_svzipq_s32_x2:
@@ -1520,6 +1530,7 @@ case SVE::BI__builtin_sve_svcreate2_bf16:
 case SVE::BI__builtin_sve_svcreate2_f16:
 case SVE::BI__builtin_sve_svcreate2_f32:
 case SVE::BI__builtin_sve_svcreate2_f64:
+case SVE::BI__builtin_sve_svcreate2_mf8:
 case SVE::BI__builtin_sve_svcreate2_s16:
 case SVE::BI__builtin_sve_svcreate2_s32:
 case SVE::BI__builtin_sve_svcreate2_s64:
@@ -1532,6 +1543,7 @@ case SVE::BI__builtin_sve_svcreate3_bf16:
 case SVE::BI__builtin_sve_svcreate3_f16:
 case SVE::BI__builtin_sve_svcreate3_f32:
 case SVE::BI__builtin_sve_svcreate3_f64:
+case SVE::BI__builtin_sve_svcreate3_mf8:
 case SVE::BI__builtin_sve_svcreate3_s16:
 case SVE::BI__builtin_sve_svcreate3_s32:
 case SVE::BI__builtin_sve_svcreate3_s64:
@@ -1545,6 +1557,7 @@ case SVE::BI__builtin_sve_svcreate4_bf16:
 case SVE::BI__builtin_sve_svcreate4_f16:
 case SVE::BI__builtin_sve_svcreate4_f32:
 case SVE::BI__builtin_sve_svcreate4_f64:
+case SVE::BI__builtin_sve_svcreate4_mf8:
 case SVE::BI__builtin_sve_svcreate4_s16:
 case SVE::BI__builtin_sve_svcreate4_s32:
 case SVE::BI__builtin_sve_svcreate4_s64:
@@ -1999,6 +2012,9 @@ case SVE::BI__builtin_sve_sveorv_u16:
 case SVE::BI__builtin_sve_sveorv_u32:
 case SVE::BI__builtin_sve_sveorv_u64:
 case SVE::BI__builtin_sve_sveorv_u8:
+case SVE::BI__builtin_sve_svexpa_f16:
+case SVE::BI__builtin_sve_svexpa_f32:
+case SVE::BI__builtin_sve_svexpa_f64:
 case SVE::BI__builtin_sve_svext_bf16:
 case SVE::BI__builtin_sve_svext_f16:
 case SVE::BI__builtin_sve_svext_f32:
@@ -2052,6 +2068,7 @@ case SVE::BI__builtin_sve_svget2_bf16:
 case SVE::BI__builtin_sve_svget2_f16:
 case SVE::BI__builtin_sve_svget2_f32:
 case SVE::BI__builtin_sve_svget2_f64:
+case SVE::BI__builtin_sve_svget2_mf8:
 case SVE::BI__builtin_sve_svget2_s16:
 case SVE::BI__builtin_sve_svget2_s32:
 case SVE::BI__builtin_sve_svget2_s64:
@@ -2064,6 +2081,7 @@ case SVE::BI__builtin_sve_svget3_bf16:
 case SVE::BI__builtin_sve_svget3_f16:
 case SVE::BI__builtin_sve_svget3_f32:
 case SVE::BI__builtin_sve_svget3_f64:
+case SVE::BI__builtin_sve_svget3_mf8:
 case SVE::BI__builtin_sve_svget3_s16:
 case SVE::BI__builtin_sve_svget3_s32:
 case SVE::BI__builtin_sve_svget3_s64:
@@ -2077,6 +2095,7 @@ case SVE::BI__builtin_sve_svget4_bf16:
 case SVE::BI__builtin_sve_svget4_f16:
 case SVE::BI__builtin_sve_svget4_f32:
 case SVE::BI__builtin_sve_svget4_f64:
+case SVE::BI__builtin_sve_svget4_mf8:
 case SVE::BI__builtin_sve_svget4_s16:
 case SVE::BI__builtin_sve_svget4_s32:
 case SVE::BI__builtin_sve_svget4_s64:
@@ -2285,6 +2304,9 @@ case SVE::BI__builtin_sve_svld1_f32_x4:
 case SVE::BI__builtin_sve_svld1_f64:
 case SVE::BI__builtin_sve_svld1_f64_x2:
 case SVE::BI__builtin_sve_svld1_f64_x4:
+case SVE::BI__builtin_sve_svld1_mf8:
+case SVE::BI__builtin_sve_svld1_mf8_x2:
+case SVE::BI__builtin_sve_svld1_mf8_x4:
 case SVE::BI__builtin_sve_svld1_s16:
 case SVE::BI__builtin_sve_svld1_s16_x2:
 case SVE::BI__builtin_sve_svld1_s16_x4:
@@ -2321,6 +2343,9 @@ case SVE::BI__builtin_sve_svld1_vnum_f32_x4:
 case SVE::BI__builtin_sve_svld1_vnum_f64:
 case SVE::BI__builtin_sve_svld1_vnum_f64_x2:
 case SVE::BI__builtin_sve_svld1_vnum_f64_x4:
+case SVE::BI__builtin_sve_svld1_vnum_mf8:
+case SVE::BI__builtin_sve_svld1_vnum_mf8_x2:
+case SVE::BI__builtin_sve_svld1_vnum_mf8_x4:
 case SVE::BI__builtin_sve_svld1_vnum_s16:
 case SVE::BI__builtin_sve_svld1_vnum_s16_x2:
 case SVE::BI__builtin_sve_svld1_vnum_s16_x4:
@@ -2409,6 +2434,7 @@ case SVE::BI__builtin_sve_svld2_bf16:
 case SVE::BI__builtin_sve_svld2_f16:
 case SVE::BI__builtin_sve_svld2_f32:
 case SVE::BI__builtin_sve_svld2_f64:
+case SVE::BI__builtin_sve_svld2_mf8:
 case SVE::BI__builtin_sve_svld2_s16:
 case SVE::BI__builtin_sve_svld2_s32:
 case SVE::BI__builtin_sve_svld2_s64:
@@ -2421,6 +2447,7 @@ case SVE::BI__builtin_sve_svld2_vnum_bf16:
 case SVE::BI__builtin_sve_svld2_vnum_f16:
 case SVE::BI__builtin_sve_svld2_vnum_f32:
 case SVE::BI__builtin_sve_svld2_vnum_f64:
+case SVE::BI__builtin_sve_svld2_vnum_mf8:
 case SVE::BI__builtin_sve_svld2_vnum_s16:
 case SVE::BI__builtin_sve_svld2_vnum_s32:
 case SVE::BI__builtin_sve_svld2_vnum_s64:
@@ -2433,6 +2460,7 @@ case SVE::BI__builtin_sve_svld2q_bf16:
 case SVE::BI__builtin_sve_svld2q_f16:
 case SVE::BI__builtin_sve_svld2q_f32:
 case SVE::BI__builtin_sve_svld2q_f64:
+case SVE::BI__builtin_sve_svld2q_mf8:
 case SVE::BI__builtin_sve_svld2q_s16:
 case SVE::BI__builtin_sve_svld2q_s32:
 case SVE::BI__builtin_sve_svld2q_s64:
@@ -2445,6 +2473,7 @@ case SVE::BI__builtin_sve_svld2q_vnum_bf16:
 case SVE::BI__builtin_sve_svld2q_vnum_f16:
 case SVE::BI__builtin_sve_svld2q_vnum_f32:
 case SVE::BI__builtin_sve_svld2q_vnum_f64:
+case SVE::BI__builtin_sve_svld2q_vnum_mf8:
 case SVE::BI__builtin_sve_svld2q_vnum_s16:
 case SVE::BI__builtin_sve_svld2q_vnum_s32:
 case SVE::BI__builtin_sve_svld2q_vnum_s64:
@@ -2457,6 +2486,7 @@ case SVE::BI__builtin_sve_svld3_bf16:
 case SVE::BI__builtin_sve_svld3_f16:
 case SVE::BI__builtin_sve_svld3_f32:
 case SVE::BI__builtin_sve_svld3_f64:
+case SVE::BI__builtin_sve_svld3_mf8:
 case SVE::BI__builtin_sve_svld3_s16:
 case SVE::BI__builtin_sve_svld3_s32:
 case SVE::BI__builtin_sve_svld3_s64:
@@ -2469,6 +2499,7 @@ case SVE::BI__builtin_sve_svld3_vnum_bf16:
 case SVE::BI__builtin_sve_svld3_vnum_f16:
 case SVE::BI__builtin_sve_svld3_vnum_f32:
 case SVE::BI__builtin_sve_svld3_vnum_f64:
+case SVE::BI__builtin_sve_svld3_vnum_mf8:
 case SVE::BI__builtin_sve_svld3_vnum_s16:
 case SVE::BI__builtin_sve_svld3_vnum_s32:
 case SVE::BI__builtin_sve_svld3_vnum_s64:
@@ -2481,6 +2512,7 @@ case SVE::BI__builtin_sve_svld3q_bf16:
 case SVE::BI__builtin_sve_svld3q_f16:
 case SVE::BI__builtin_sve_svld3q_f32:
 case SVE::BI__builtin_sve_svld3q_f64:
+case SVE::BI__builtin_sve_svld3q_mf8:
 case SVE::BI__builtin_sve_svld3q_s16:
 case SVE::BI__builtin_sve_svld3q_s32:
 case SVE::BI__builtin_sve_svld3q_s64:
@@ -2493,6 +2525,7 @@ case SVE::BI__builtin_sve_svld3q_vnum_bf16:
 case SVE::BI__builtin_sve_svld3q_vnum_f16:
 case SVE::BI__builtin_sve_svld3q_vnum_f32:
 case SVE::BI__builtin_sve_svld3q_vnum_f64:
+case SVE::BI__builtin_sve_svld3q_vnum_mf8:
 case SVE::BI__builtin_sve_svld3q_vnum_s16:
 case SVE::BI__builtin_sve_svld3q_vnum_s32:
 case SVE::BI__builtin_sve_svld3q_vnum_s64:
@@ -2505,6 +2538,7 @@ case SVE::BI__builtin_sve_svld4_bf16:
 case SVE::BI__builtin_sve_svld4_f16:
 case SVE::BI__builtin_sve_svld4_f32:
 case SVE::BI__builtin_sve_svld4_f64:
+case SVE::BI__builtin_sve_svld4_mf8:
 case SVE::BI__builtin_sve_svld4_s16:
 case SVE::BI__builtin_sve_svld4_s32:
 case SVE::BI__builtin_sve_svld4_s64:
@@ -2517,6 +2551,7 @@ case SVE::BI__builtin_sve_svld4_vnum_bf16:
 case SVE::BI__builtin_sve_svld4_vnum_f16:
 case SVE::BI__builtin_sve_svld4_vnum_f32:
 case SVE::BI__builtin_sve_svld4_vnum_f64:
+case SVE::BI__builtin_sve_svld4_vnum_mf8:
 case SVE::BI__builtin_sve_svld4_vnum_s16:
 case SVE::BI__builtin_sve_svld4_vnum_s32:
 case SVE::BI__builtin_sve_svld4_vnum_s64:
@@ -2529,6 +2564,7 @@ case SVE::BI__builtin_sve_svld4q_bf16:
 case SVE::BI__builtin_sve_svld4q_f16:
 case SVE::BI__builtin_sve_svld4q_f32:
 case SVE::BI__builtin_sve_svld4q_f64:
+case SVE::BI__builtin_sve_svld4q_mf8:
 case SVE::BI__builtin_sve_svld4q_s16:
 case SVE::BI__builtin_sve_svld4q_s32:
 case SVE::BI__builtin_sve_svld4q_s64:
@@ -2541,6 +2577,7 @@ case SVE::BI__builtin_sve_svld4q_vnum_bf16:
 case SVE::BI__builtin_sve_svld4q_vnum_f16:
 case SVE::BI__builtin_sve_svld4q_vnum_f32:
 case SVE::BI__builtin_sve_svld4q_vnum_f64:
+case SVE::BI__builtin_sve_svld4q_vnum_mf8:
 case SVE::BI__builtin_sve_svld4q_vnum_s16:
 case SVE::BI__builtin_sve_svld4q_vnum_s32:
 case SVE::BI__builtin_sve_svld4q_vnum_s64:
@@ -2561,6 +2598,9 @@ case SVE::BI__builtin_sve_svldnt1_f32_x4:
 case SVE::BI__builtin_sve_svldnt1_f64:
 case SVE::BI__builtin_sve_svldnt1_f64_x2:
 case SVE::BI__builtin_sve_svldnt1_f64_x4:
+case SVE::BI__builtin_sve_svldnt1_mf8:
+case SVE::BI__builtin_sve_svldnt1_mf8_x2:
+case SVE::BI__builtin_sve_svldnt1_mf8_x4:
 case SVE::BI__builtin_sve_svldnt1_s16:
 case SVE::BI__builtin_sve_svldnt1_s16_x2:
 case SVE::BI__builtin_sve_svldnt1_s16_x4:
@@ -2597,6 +2637,9 @@ case SVE::BI__builtin_sve_svldnt1_vnum_f32_x4:
 case SVE::BI__builtin_sve_svldnt1_vnum_f64:
 case SVE::BI__builtin_sve_svldnt1_vnum_f64_x2:
 case SVE::BI__builtin_sve_svldnt1_vnum_f64_x4:
+case SVE::BI__builtin_sve_svldnt1_vnum_mf8:
+case SVE::BI__builtin_sve_svldnt1_vnum_mf8_x2:
+case SVE::BI__builtin_sve_svldnt1_vnum_mf8_x4:
 case SVE::BI__builtin_sve_svldnt1_vnum_s16:
 case SVE::BI__builtin_sve_svldnt1_vnum_s16_x2:
 case SVE::BI__builtin_sve_svldnt1_vnum_s16_x4:
@@ -4629,6 +4672,9 @@ case SVE::BI__builtin_sve_svrevd_f32_z:
 case SVE::BI__builtin_sve_svrevd_f64_m:
 case SVE::BI__builtin_sve_svrevd_f64_x:
 case SVE::BI__builtin_sve_svrevd_f64_z:
+case SVE::BI__builtin_sve_svrevd_mf8_m:
+case SVE::BI__builtin_sve_svrevd_mf8_x:
+case SVE::BI__builtin_sve_svrevd_mf8_z:
 case SVE::BI__builtin_sve_svrevd_s16_m:
 case SVE::BI__builtin_sve_svrevd_s16_x:
 case SVE::BI__builtin_sve_svrevd_s16_z:
@@ -4951,6 +4997,7 @@ case SVE::BI__builtin_sve_svset2_bf16:
 case SVE::BI__builtin_sve_svset2_f16:
 case SVE::BI__builtin_sve_svset2_f32:
 case SVE::BI__builtin_sve_svset2_f64:
+case SVE::BI__builtin_sve_svset2_mf8:
 case SVE::BI__builtin_sve_svset2_s16:
 case SVE::BI__builtin_sve_svset2_s32:
 case SVE::BI__builtin_sve_svset2_s64:
@@ -4963,6 +5010,7 @@ case SVE::BI__builtin_sve_svset3_bf16:
 case SVE::BI__builtin_sve_svset3_f16:
 case SVE::BI__builtin_sve_svset3_f32:
 case SVE::BI__builtin_sve_svset3_f64:
+case SVE::BI__builtin_sve_svset3_mf8:
 case SVE::BI__builtin_sve_svset3_s16:
 case SVE::BI__builtin_sve_svset3_s32:
 case SVE::BI__builtin_sve_svset3_s64:
@@ -4976,6 +5024,7 @@ case SVE::BI__builtin_sve_svset4_bf16:
 case SVE::BI__builtin_sve_svset4_f16:
 case SVE::BI__builtin_sve_svset4_f32:
 case SVE::BI__builtin_sve_svset4_f64:
+case SVE::BI__builtin_sve_svset4_mf8:
 case SVE::BI__builtin_sve_svset4_s16:
 case SVE::BI__builtin_sve_svset4_s32:
 case SVE::BI__builtin_sve_svset4_s64:
@@ -5089,6 +5138,9 @@ case SVE::BI__builtin_sve_svst1_f32_x4:
 case SVE::BI__builtin_sve_svst1_f64:
 case SVE::BI__builtin_sve_svst1_f64_x2:
 case SVE::BI__builtin_sve_svst1_f64_x4:
+case SVE::BI__builtin_sve_svst1_mf8:
+case SVE::BI__builtin_sve_svst1_mf8_x2:
+case SVE::BI__builtin_sve_svst1_mf8_x4:
 case SVE::BI__builtin_sve_svst1_s16:
 case SVE::BI__builtin_sve_svst1_s16_x2:
 case SVE::BI__builtin_sve_svst1_s16_x4:
@@ -5125,6 +5177,9 @@ case SVE::BI__builtin_sve_svst1_vnum_f32_x4:
 case SVE::BI__builtin_sve_svst1_vnum_f64:
 case SVE::BI__builtin_sve_svst1_vnum_f64_x2:
 case SVE::BI__builtin_sve_svst1_vnum_f64_x4:
+case SVE::BI__builtin_sve_svst1_vnum_mf8:
+case SVE::BI__builtin_sve_svst1_vnum_mf8_x2:
+case SVE::BI__builtin_sve_svst1_vnum_mf8_x4:
 case SVE::BI__builtin_sve_svst1_vnum_s16:
 case SVE::BI__builtin_sve_svst1_vnum_s16_x2:
 case SVE::BI__builtin_sve_svst1_vnum_s16_x4:
@@ -5177,6 +5232,7 @@ case SVE::BI__builtin_sve_svst2_bf16:
 case SVE::BI__builtin_sve_svst2_f16:
 case SVE::BI__builtin_sve_svst2_f32:
 case SVE::BI__builtin_sve_svst2_f64:
+case SVE::BI__builtin_sve_svst2_mf8:
 case SVE::BI__builtin_sve_svst2_s16:
 case SVE::BI__builtin_sve_svst2_s32:
 case SVE::BI__builtin_sve_svst2_s64:
@@ -5189,6 +5245,7 @@ case SVE::BI__builtin_sve_svst2_vnum_bf16:
 case SVE::BI__builtin_sve_svst2_vnum_f16:
 case SVE::BI__builtin_sve_svst2_vnum_f32:
 case SVE::BI__builtin_sve_svst2_vnum_f64:
+case SVE::BI__builtin_sve_svst2_vnum_mf8:
 case SVE::BI__builtin_sve_svst2_vnum_s16:
 case SVE::BI__builtin_sve_svst2_vnum_s32:
 case SVE::BI__builtin_sve_svst2_vnum_s64:
@@ -5201,6 +5258,7 @@ case SVE::BI__builtin_sve_svst2q_bf16:
 case SVE::BI__builtin_sve_svst2q_f16:
 case SVE::BI__builtin_sve_svst2q_f32:
 case SVE::BI__builtin_sve_svst2q_f64:
+case SVE::BI__builtin_sve_svst2q_mf8:
 case SVE::BI__builtin_sve_svst2q_s16:
 case SVE::BI__builtin_sve_svst2q_s32:
 case SVE::BI__builtin_sve_svst2q_s64:
@@ -5213,6 +5271,7 @@ case SVE::BI__builtin_sve_svst2q_vnum_bf16:
 case SVE::BI__builtin_sve_svst2q_vnum_f16:
 case SVE::BI__builtin_sve_svst2q_vnum_f32:
 case SVE::BI__builtin_sve_svst2q_vnum_f64:
+case SVE::BI__builtin_sve_svst2q_vnum_mf8:
 case SVE::BI__builtin_sve_svst2q_vnum_s16:
 case SVE::BI__builtin_sve_svst2q_vnum_s32:
 case SVE::BI__builtin_sve_svst2q_vnum_s64:
@@ -5225,6 +5284,7 @@ case SVE::BI__builtin_sve_svst3_bf16:
 case SVE::BI__builtin_sve_svst3_f16:
 case SVE::BI__builtin_sve_svst3_f32:
 case SVE::BI__builtin_sve_svst3_f64:
+case SVE::BI__builtin_sve_svst3_mf8:
 case SVE::BI__builtin_sve_svst3_s16:
 case SVE::BI__builtin_sve_svst3_s32:
 case SVE::BI__builtin_sve_svst3_s64:
@@ -5237,6 +5297,7 @@ case SVE::BI__builtin_sve_svst3_vnum_bf16:
 case SVE::BI__builtin_sve_svst3_vnum_f16:
 case SVE::BI__builtin_sve_svst3_vnum_f32:
 case SVE::BI__builtin_sve_svst3_vnum_f64:
+case SVE::BI__builtin_sve_svst3_vnum_mf8:
 case SVE::BI__builtin_sve_svst3_vnum_s16:
 case SVE::BI__builtin_sve_svst3_vnum_s32:
 case SVE::BI__builtin_sve_svst3_vnum_s64:
@@ -5249,6 +5310,7 @@ case SVE::BI__builtin_sve_svst3q_bf16:
 case SVE::BI__builtin_sve_svst3q_f16:
 case SVE::BI__builtin_sve_svst3q_f32:
 case SVE::BI__builtin_sve_svst3q_f64:
+case SVE::BI__builtin_sve_svst3q_mf8:
 case SVE::BI__builtin_sve_svst3q_s16:
 case SVE::BI__builtin_sve_svst3q_s32:
 case SVE::BI__builtin_sve_svst3q_s64:
@@ -5261,6 +5323,7 @@ case SVE::BI__builtin_sve_svst3q_vnum_bf16:
 case SVE::BI__builtin_sve_svst3q_vnum_f16:
 case SVE::BI__builtin_sve_svst3q_vnum_f32:
 case SVE::BI__builtin_sve_svst3q_vnum_f64:
+case SVE::BI__builtin_sve_svst3q_vnum_mf8:
 case SVE::BI__builtin_sve_svst3q_vnum_s16:
 case SVE::BI__builtin_sve_svst3q_vnum_s32:
 case SVE::BI__builtin_sve_svst3q_vnum_s64:
@@ -5273,6 +5336,7 @@ case SVE::BI__builtin_sve_svst4_bf16:
 case SVE::BI__builtin_sve_svst4_f16:
 case SVE::BI__builtin_sve_svst4_f32:
 case SVE::BI__builtin_sve_svst4_f64:
+case SVE::BI__builtin_sve_svst4_mf8:
 case SVE::BI__builtin_sve_svst4_s16:
 case SVE::BI__builtin_sve_svst4_s32:
 case SVE::BI__builtin_sve_svst4_s64:
@@ -5285,6 +5349,7 @@ case SVE::BI__builtin_sve_svst4_vnum_bf16:
 case SVE::BI__builtin_sve_svst4_vnum_f16:
 case SVE::BI__builtin_sve_svst4_vnum_f32:
 case SVE::BI__builtin_sve_svst4_vnum_f64:
+case SVE::BI__builtin_sve_svst4_vnum_mf8:
 case SVE::BI__builtin_sve_svst4_vnum_s16:
 case SVE::BI__builtin_sve_svst4_vnum_s32:
 case SVE::BI__builtin_sve_svst4_vnum_s64:
@@ -5297,6 +5362,7 @@ case SVE::BI__builtin_sve_svst4q_bf16:
 case SVE::BI__builtin_sve_svst4q_f16:
 case SVE::BI__builtin_sve_svst4q_f32:
 case SVE::BI__builtin_sve_svst4q_f64:
+case SVE::BI__builtin_sve_svst4q_mf8:
 case SVE::BI__builtin_sve_svst4q_s16:
 case SVE::BI__builtin_sve_svst4q_s32:
 case SVE::BI__builtin_sve_svst4q_s64:
@@ -5309,6 +5375,7 @@ case SVE::BI__builtin_sve_svst4q_vnum_bf16:
 case SVE::BI__builtin_sve_svst4q_vnum_f16:
 case SVE::BI__builtin_sve_svst4q_vnum_f32:
 case SVE::BI__builtin_sve_svst4q_vnum_f64:
+case SVE::BI__builtin_sve_svst4q_vnum_mf8:
 case SVE::BI__builtin_sve_svst4q_vnum_s16:
 case SVE::BI__builtin_sve_svst4q_vnum_s32:
 case SVE::BI__builtin_sve_svst4q_vnum_s64:
@@ -5329,6 +5396,9 @@ case SVE::BI__builtin_sve_svstnt1_f32_x4:
 case SVE::BI__builtin_sve_svstnt1_f64:
 case SVE::BI__builtin_sve_svstnt1_f64_x2:
 case SVE::BI__builtin_sve_svstnt1_f64_x4:
+case SVE::BI__builtin_sve_svstnt1_mf8:
+case SVE::BI__builtin_sve_svstnt1_mf8_x2:
+case SVE::BI__builtin_sve_svstnt1_mf8_x4:
 case SVE::BI__builtin_sve_svstnt1_s16:
 case SVE::BI__builtin_sve_svstnt1_s16_x2:
 case SVE::BI__builtin_sve_svstnt1_s16_x4:
@@ -5365,6 +5435,9 @@ case SVE::BI__builtin_sve_svstnt1_vnum_f32_x4:
 case SVE::BI__builtin_sve_svstnt1_vnum_f64:
 case SVE::BI__builtin_sve_svstnt1_vnum_f64_x2:
 case SVE::BI__builtin_sve_svstnt1_vnum_f64_x4:
+case SVE::BI__builtin_sve_svstnt1_vnum_mf8:
+case SVE::BI__builtin_sve_svstnt1_vnum_mf8_x2:
+case SVE::BI__builtin_sve_svstnt1_vnum_mf8_x4:
 case SVE::BI__builtin_sve_svstnt1_vnum_s16:
 case SVE::BI__builtin_sve_svstnt1_vnum_s16_x2:
 case SVE::BI__builtin_sve_svstnt1_vnum_s16_x4:
@@ -5687,6 +5760,7 @@ case SVE::BI__builtin_sve_svundef2_bf16:
 case SVE::BI__builtin_sve_svundef2_f16:
 case SVE::BI__builtin_sve_svundef2_f32:
 case SVE::BI__builtin_sve_svundef2_f64:
+case SVE::BI__builtin_sve_svundef2_mf8:
 case SVE::BI__builtin_sve_svundef2_s16:
 case SVE::BI__builtin_sve_svundef2_s32:
 case SVE::BI__builtin_sve_svundef2_s64:
@@ -5699,6 +5773,7 @@ case SVE::BI__builtin_sve_svundef3_bf16:
 case SVE::BI__builtin_sve_svundef3_f16:
 case SVE::BI__builtin_sve_svundef3_f32:
 case SVE::BI__builtin_sve_svundef3_f64:
+case SVE::BI__builtin_sve_svundef3_mf8:
 case SVE::BI__builtin_sve_svundef3_s16:
 case SVE::BI__builtin_sve_svundef3_s32:
 case SVE::BI__builtin_sve_svundef3_s64:
@@ -5712,6 +5787,7 @@ case SVE::BI__builtin_sve_svundef4_bf16:
 case SVE::BI__builtin_sve_svundef4_f16:
 case SVE::BI__builtin_sve_svundef4_f32:
 case SVE::BI__builtin_sve_svundef4_f64:
+case SVE::BI__builtin_sve_svundef4_mf8:
 case SVE::BI__builtin_sve_svundef4_s16:
 case SVE::BI__builtin_sve_svundef4_s32:
 case SVE::BI__builtin_sve_svundef4_s64:
@@ -5724,6 +5800,7 @@ case SVE::BI__builtin_sve_svundef_bf16:
 case SVE::BI__builtin_sve_svundef_f16:
 case SVE::BI__builtin_sve_svundef_f32:
 case SVE::BI__builtin_sve_svundef_f64:
+case SVE::BI__builtin_sve_svundef_mf8:
 case SVE::BI__builtin_sve_svundef_s16:
 case SVE::BI__builtin_sve_svundef_s32:
 case SVE::BI__builtin_sve_svundef_s64:
@@ -6080,9 +6157,6 @@ case SVE::BI__builtin_sve_sveorqv_u16:
 case SVE::BI__builtin_sve_sveorqv_u32:
 case SVE::BI__builtin_sve_sveorqv_u64:
 case SVE::BI__builtin_sve_sveorqv_u8:
-case SVE::BI__builtin_sve_svexpa_f16:
-case SVE::BI__builtin_sve_svexpa_f32:
-case SVE::BI__builtin_sve_svexpa_f64:
 case SVE::BI__builtin_sve_svextq_bf16:
 case SVE::BI__builtin_sve_svextq_f16:
 case SVE::BI__builtin_sve_svextq_f32:
@@ -6158,10 +6232,12 @@ case SVE::BI__builtin_sve_svld1q_gather_u64base_index_s64:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_index_u16:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_index_u32:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_index_u64:
+case SVE::BI__builtin_sve_svld1q_gather_u64base_mf8:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_bf16:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_f16:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_f32:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_f64:
+case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_mf8:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_s16:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_s32:
 case SVE::BI__builtin_sve_svld1q_gather_u64base_offset_s64:
@@ -6192,6 +6268,7 @@ case SVE::BI__builtin_sve_svld1q_gather_u64offset_bf16:
 case SVE::BI__builtin_sve_svld1q_gather_u64offset_f16:
 case SVE::BI__builtin_sve_svld1q_gather_u64offset_f32:
 case SVE::BI__builtin_sve_svld1q_gather_u64offset_f64:
+case SVE::BI__builtin_sve_svld1q_gather_u64offset_mf8:
 case SVE::BI__builtin_sve_svld1q_gather_u64offset_s16:
 case SVE::BI__builtin_sve_svld1q_gather_u64offset_s32:
 case SVE::BI__builtin_sve_svld1q_gather_u64offset_s64:
@@ -7002,6 +7079,7 @@ case SVE::BI__builtin_sve_svst1q_scatter_s64offset_bf16:
 case SVE::BI__builtin_sve_svst1q_scatter_s64offset_f16:
 case SVE::BI__builtin_sve_svst1q_scatter_s64offset_f32:
 case SVE::BI__builtin_sve_svst1q_scatter_s64offset_f64:
+case SVE::BI__builtin_sve_svst1q_scatter_s64offset_mf8:
 case SVE::BI__builtin_sve_svst1q_scatter_s64offset_s16:
 case SVE::BI__builtin_sve_svst1q_scatter_s64offset_s32:
 case SVE::BI__builtin_sve_svst1q_scatter_s64offset_s64:
@@ -7024,10 +7102,12 @@ case SVE::BI__builtin_sve_svst1q_scatter_u64base_index_s64:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_index_u16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_index_u32:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_index_u64:
+case SVE::BI__builtin_sve_svst1q_scatter_u64base_mf8:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_bf16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_f16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_f32:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_f64:
+case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_mf8:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_s16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_s32:
 case SVE::BI__builtin_sve_svst1q_scatter_u64base_offset_s64:
@@ -7058,6 +7138,7 @@ case SVE::BI__builtin_sve_svst1q_scatter_u64offset_bf16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64offset_f16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64offset_f32:
 case SVE::BI__builtin_sve_svst1q_scatter_u64offset_f64:
+case SVE::BI__builtin_sve_svst1q_scatter_u64offset_mf8:
 case SVE::BI__builtin_sve_svst1q_scatter_u64offset_s16:
 case SVE::BI__builtin_sve_svst1q_scatter_u64offset_s32:
 case SVE::BI__builtin_sve_svst1q_scatter_u64offset_s64:

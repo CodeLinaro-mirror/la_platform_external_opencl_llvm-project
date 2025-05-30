@@ -5712,6 +5712,10 @@ AssertCapabilityAttr *AssertCapabilityAttr::CreateImplicit(ASTContext &Ctx, Expr
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_assert_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_assert_shared_capability:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_assert_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_assert_exclusive_lock:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_assert_exclusive_lock, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_assert_shared_lock:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_assert_shared_lock, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     default:
       llvm_unreachable("Unknown attribute spelling!");
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
@@ -5731,6 +5735,10 @@ AssertCapabilityAttr *AssertCapabilityAttr::Create(ASTContext &Ctx, Expr * *Args
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_assert_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_assert_shared_capability:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_assert_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_assert_exclusive_lock:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_assert_exclusive_lock, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_assert_shared_lock:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_assert_shared_lock, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     default:
       llvm_unreachable("Unknown attribute spelling!");
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
@@ -5762,6 +5770,8 @@ AssertCapabilityAttr::Spelling AssertCapabilityAttr::getSemanticSpelling() const
     case 1: return CXX11_clang_assert_capability;
     case 2: return GNU_assert_shared_capability;
     case 3: return CXX11_clang_assert_shared_capability;
+    case 4: return GNU_assert_exclusive_lock;
+    case 5: return GNU_assert_shared_lock;
   }
 }
 
@@ -5833,6 +5843,32 @@ void AssertCapabilityAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Po
     OS << "]]";
     break;
   }
+  case 4 : {
+    OS << "__attribute__((assert_exclusive_lock";
+    OS << "";
+  for (const auto &Val : args()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << Val;
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 5 : {
+    OS << "__attribute__((assert_shared_lock";
+    OS << "";
+  for (const auto &Val : args()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << Val;
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
 }
 }
 
@@ -5849,179 +5885,9 @@ const char *AssertCapabilityAttr::getSpelling() const {
     return "assert_shared_capability";
   case 3:
     return "assert_shared_capability";
-  }
-}
-
-
-// AssertExclusiveLockAttr implementation
-
-AssertExclusiveLockAttr *AssertExclusiveLockAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) AssertExclusiveLockAttr(Ctx, CommonInfo, Args, ArgsSize);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-AssertExclusiveLockAttr *AssertExclusiveLockAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) AssertExclusiveLockAttr(Ctx, CommonInfo, Args, ArgsSize);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-AssertExclusiveLockAttr *AssertExclusiveLockAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, Args, ArgsSize, I);
-}
-
-AssertExclusiveLockAttr *AssertExclusiveLockAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, Args, ArgsSize, I);
-}
-
-AssertExclusiveLockAttr::AssertExclusiveLockAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * *Args, unsigned ArgsSize
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::AssertExclusiveLock, /*IsLateParsed=*/true, true)
-              , args_Size(ArgsSize), args_(new (Ctx, 16) Expr *[args_Size])
-  {
-  std::copy(Args, Args + args_Size, args_);
-}
-
-AssertExclusiveLockAttr::AssertExclusiveLockAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::AssertExclusiveLock, /*IsLateParsed=*/true, true)
-              , args_Size(0), args_(nullptr)
-  {
-}
-
-
-
-AssertExclusiveLockAttr *AssertExclusiveLockAttr::clone(ASTContext &C) const {
-  auto *A = new (C) AssertExclusiveLockAttr(C, *this, args_, args_Size);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void AssertExclusiveLockAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((assert_exclusive_lock";
-    OS << "";
-  for (const auto &Val : args()) {
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << Val;
-  }
-  OS << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "))";
-    break;
-  }
-}
-}
-
-const char *AssertExclusiveLockAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
+  case 4:
     return "assert_exclusive_lock";
-  }
-}
-
-
-// AssertSharedLockAttr implementation
-
-AssertSharedLockAttr *AssertSharedLockAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) AssertSharedLockAttr(Ctx, CommonInfo, Args, ArgsSize);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-AssertSharedLockAttr *AssertSharedLockAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) AssertSharedLockAttr(Ctx, CommonInfo, Args, ArgsSize);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-AssertSharedLockAttr *AssertSharedLockAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, Args, ArgsSize, I);
-}
-
-AssertSharedLockAttr *AssertSharedLockAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, Args, ArgsSize, I);
-}
-
-AssertSharedLockAttr::AssertSharedLockAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * *Args, unsigned ArgsSize
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::AssertSharedLock, /*IsLateParsed=*/true, true)
-              , args_Size(ArgsSize), args_(new (Ctx, 16) Expr *[args_Size])
-  {
-  std::copy(Args, Args + args_Size, args_);
-}
-
-AssertSharedLockAttr::AssertSharedLockAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::AssertSharedLock, /*IsLateParsed=*/true, true)
-              , args_Size(0), args_(nullptr)
-  {
-}
-
-
-
-AssertSharedLockAttr *AssertSharedLockAttr::clone(ASTContext &C) const {
-  auto *A = new (C) AssertSharedLockAttr(C, *this, args_, args_Size);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void AssertSharedLockAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((assert_shared_lock";
-    OS << "";
-  for (const auto &Val : args()) {
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << Val;
-  }
-  OS << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "))";
-    break;
-  }
-}
-}
-
-const char *AssertSharedLockAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
+  case 5:
     return "assert_shared_lock";
   }
 }
@@ -6187,6 +6053,174 @@ const char *AssumeAlignedAttr::getSpelling() const {
     return "assume_aligned";
   case 2:
     return "assume_aligned";
+  }
+}
+
+
+// AtomicAttr implementation
+
+AtomicAttr *AtomicAttr::CreateImplicit(ASTContext &Ctx, ConsumedOption *AtomicOptions, unsigned AtomicOptionsSize, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) AtomicAttr(Ctx, CommonInfo, AtomicOptions, AtomicOptionsSize);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+AtomicAttr *AtomicAttr::Create(ASTContext &Ctx, ConsumedOption *AtomicOptions, unsigned AtomicOptionsSize, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) AtomicAttr(Ctx, CommonInfo, AtomicOptions, AtomicOptionsSize);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+AtomicAttr *AtomicAttr::CreateImplicit(ASTContext &Ctx, ConsumedOption *AtomicOptions, unsigned AtomicOptionsSize, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_atomic:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_atomic, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_atomic:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_atomic, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_atomic:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_atomic, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, AtomicOptions, AtomicOptionsSize, I);
+}
+
+AtomicAttr *AtomicAttr::Create(ASTContext &Ctx, ConsumedOption *AtomicOptions, unsigned AtomicOptionsSize, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_atomic:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_atomic, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_atomic:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_atomic, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_atomic:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_atomic, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, AtomicOptions, AtomicOptionsSize, I);
+}
+
+AtomicAttr::AtomicAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , ConsumedOption *AtomicOptions, unsigned AtomicOptionsSize
+             )
+  : StmtAttr(Ctx, CommonInfo, attr::Atomic, /*IsLateParsed=*/false)
+              , atomicOptions_Size(AtomicOptionsSize), atomicOptions_(new (Ctx, 16) ConsumedOption[atomicOptions_Size])
+  {
+  std::copy(AtomicOptions, AtomicOptions + atomicOptions_Size, atomicOptions_);
+}
+
+AtomicAttr::AtomicAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : StmtAttr(Ctx, CommonInfo, attr::Atomic, /*IsLateParsed=*/false)
+              , atomicOptions_Size(0), atomicOptions_(nullptr)
+  {
+}
+
+
+
+bool AtomicAttr::ConvertStrToConsumedOption(StringRef Val, AtomicAttr::ConsumedOption &Out) {
+  std::optional<AtomicAttr::ConsumedOption> R = llvm::StringSwitch<std::optional<AtomicAttr::ConsumedOption>>(Val)
+    .Case("remote_memory", AtomicAttr::ConsumedOption::remote_memory)
+    .Case("no_remote_memory", AtomicAttr::ConsumedOption::no_remote_memory)
+    .Case("fine_grained_memory", AtomicAttr::ConsumedOption::fine_grained_memory)
+    .Case("no_fine_grained_memory", AtomicAttr::ConsumedOption::no_fine_grained_memory)
+    .Case("ignore_denormal_mode", AtomicAttr::ConsumedOption::ignore_denormal_mode)
+    .Case("no_ignore_denormal_mode", AtomicAttr::ConsumedOption::no_ignore_denormal_mode)
+    .Default(std::optional<AtomicAttr::ConsumedOption>());
+  if (R) {
+    Out = *R;
+      return true;
+    }
+  return false;
+}
+
+const char *AtomicAttr::ConvertConsumedOptionToStr(AtomicAttr::ConsumedOption Val) {
+  switch(Val) {
+  case AtomicAttr::ConsumedOption::remote_memory: return "remote_memory";
+  case AtomicAttr::ConsumedOption::no_remote_memory: return "no_remote_memory";
+  case AtomicAttr::ConsumedOption::fine_grained_memory: return "fine_grained_memory";
+  case AtomicAttr::ConsumedOption::no_fine_grained_memory: return "no_fine_grained_memory";
+  case AtomicAttr::ConsumedOption::ignore_denormal_mode: return "ignore_denormal_mode";
+  case AtomicAttr::ConsumedOption::no_ignore_denormal_mode: return "no_ignore_denormal_mode";
+  }
+  llvm_unreachable("No enumerator with that value");
+}
+AtomicAttr *AtomicAttr::clone(ASTContext &C) const {
+  auto *A = new (C) AtomicAttr(C, *this, atomicOptions_, atomicOptions_Size);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void AtomicAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((atomic";
+    OS << "";
+  for (const auto &Val : atomicOptions()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << AtomicAttr::ConvertConsumedOptionToStr(Val)<< "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[clang::atomic";
+    OS << "";
+  for (const auto &Val : atomicOptions()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << AtomicAttr::ConvertConsumedOptionToStr(Val)<< "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[clang::atomic";
+    OS << "";
+  for (const auto &Val : atomicOptions()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << AtomicAttr::ConvertConsumedOptionToStr(Val)<< "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *AtomicAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "atomic";
+  case 1:
+    return "atomic";
+  case 2:
+    return "atomic";
   }
 }
 
@@ -11216,8 +11250,10 @@ CodeModelAttr::CodeModelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 
 bool CodeModelAttr::ConvertStrToModel(StringRef Val, llvm::CodeModel::Model &Out) {
   std::optional<llvm::CodeModel::Model> R = llvm::StringSwitch<std::optional<llvm::CodeModel::Model>>(Val)
+    .Case("small", llvm::CodeModel::Model::Small)
     .Case("normal", llvm::CodeModel::Model::Small)
     .Case("medium", llvm::CodeModel::Model::Medium)
+    .Case("large", llvm::CodeModel::Model::Large)
     .Case("extreme", llvm::CodeModel::Model::Large)
     .Default(std::optional<llvm::CodeModel::Model>());
   if (R) {
@@ -11229,9 +11265,9 @@ bool CodeModelAttr::ConvertStrToModel(StringRef Val, llvm::CodeModel::Model &Out
 
 const char *CodeModelAttr::ConvertModelToStr(llvm::CodeModel::Model Val) {
   switch(Val) {
-  case llvm::CodeModel::Model::Small: return "normal";
+  case llvm::CodeModel::Model::Small: return "small";
   case llvm::CodeModel::Model::Medium: return "medium";
-  case llvm::CodeModel::Model::Large: return "extreme";
+  case llvm::CodeModel::Model::Large: return "large";
   default: llvm_unreachable("Invalid attribute value");
   }
   llvm_unreachable("No enumerator with that value");
@@ -15395,103 +15431,6 @@ const char *ExcludeFromExplicitInstantiationAttr::getSpelling() const {
 }
 
 
-// ExclusiveTrylockFunctionAttr implementation
-
-ExclusiveTrylockFunctionAttr *ExclusiveTrylockFunctionAttr::CreateImplicit(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) ExclusiveTrylockFunctionAttr(Ctx, CommonInfo, SuccessValue, Args, ArgsSize);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-ExclusiveTrylockFunctionAttr *ExclusiveTrylockFunctionAttr::Create(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) ExclusiveTrylockFunctionAttr(Ctx, CommonInfo, SuccessValue, Args, ArgsSize);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-ExclusiveTrylockFunctionAttr *ExclusiveTrylockFunctionAttr::CreateImplicit(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, SuccessValue, Args, ArgsSize, I);
-}
-
-ExclusiveTrylockFunctionAttr *ExclusiveTrylockFunctionAttr::Create(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, SuccessValue, Args, ArgsSize, I);
-}
-
-ExclusiveTrylockFunctionAttr::ExclusiveTrylockFunctionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * SuccessValue
-              , Expr * *Args, unsigned ArgsSize
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::ExclusiveTrylockFunction, /*IsLateParsed=*/true, true)
-              , successValue(SuccessValue)
-              , args_Size(ArgsSize), args_(new (Ctx, 16) Expr *[args_Size])
-  {
-  std::copy(Args, Args + args_Size, args_);
-}
-
-ExclusiveTrylockFunctionAttr::ExclusiveTrylockFunctionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * SuccessValue
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::ExclusiveTrylockFunction, /*IsLateParsed=*/true, true)
-              , successValue(SuccessValue)
-              , args_Size(0), args_(nullptr)
-  {
-}
-
-
-
-
-
-ExclusiveTrylockFunctionAttr *ExclusiveTrylockFunctionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) ExclusiveTrylockFunctionAttr(C, *this, successValue, args_, args_Size);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void ExclusiveTrylockFunctionAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((exclusive_trylock_function";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "";
-    getSuccessValue()->printPretty(OS, nullptr, Policy);
-    OS << "";
-    OS << "";
-  for (const auto &Val : args()) {
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << Val;
-  }
-  OS << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "))";
-    break;
-  }
-}
-}
-
-const char *ExclusiveTrylockFunctionAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "exclusive_trylock_function";
-  }
-}
-
-
 // ExplicitInitAttr implementation
 
 ExplicitInitAttr *ExplicitInitAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -15593,6 +15532,133 @@ const char *ExplicitInitAttr::getSpelling() const {
     return "require_explicit_initialization";
   case 2:
     return "require_explicit_initialization";
+  }
+}
+
+
+// ExtVectorTypeAttr implementation
+
+ExtVectorTypeAttr *ExtVectorTypeAttr::CreateImplicit(ASTContext &Ctx, Expr * NumElements, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) ExtVectorTypeAttr(Ctx, CommonInfo, NumElements);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+ExtVectorTypeAttr *ExtVectorTypeAttr::Create(ASTContext &Ctx, Expr * NumElements, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) ExtVectorTypeAttr(Ctx, CommonInfo, NumElements);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+ExtVectorTypeAttr *ExtVectorTypeAttr::CreateImplicit(ASTContext &Ctx, Expr * NumElements, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_ext_vector_type:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_ext_vector_type, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_ext_vector_type:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_ext_vector_type, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_ext_vector_type:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_ext_vector_type, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, NumElements, I);
+}
+
+ExtVectorTypeAttr *ExtVectorTypeAttr::Create(ASTContext &Ctx, Expr * NumElements, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_ext_vector_type:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_ext_vector_type, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_ext_vector_type:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_ext_vector_type, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_ext_vector_type:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_ext_vector_type, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, NumElements, I);
+}
+
+ExtVectorTypeAttr::ExtVectorTypeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , Expr * NumElements
+             )
+  : TypeAttr(Ctx, CommonInfo, attr::ExtVectorType, /*IsLateParsed=*/false)
+              , numElements(NumElements)
+  {
+}
+
+
+
+ExtVectorTypeAttr *ExtVectorTypeAttr::clone(ASTContext &C) const {
+  auto *A = new (C) ExtVectorTypeAttr(C, *this, numElements);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void ExtVectorTypeAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((ext_vector_type";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getNumElements()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[clang::ext_vector_type";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getNumElements()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[clang::ext_vector_type";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getNumElements()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *ExtVectorTypeAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "ext_vector_type";
+  case 1:
+    return "ext_vector_type";
+  case 2:
+    return "ext_vector_type";
   }
 }
 
@@ -16592,6 +16658,153 @@ const char *FormatArgAttr::getSpelling() const {
     return "format_arg";
   case 2:
     return "format_arg";
+  }
+}
+
+
+// FormatMatchesAttr implementation
+
+FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) FormatMatchesAttr(Ctx, CommonInfo, Type, FormatIdx, ExpectedFormat);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) FormatMatchesAttr(Ctx, CommonInfo, Type, FormatIdx, ExpectedFormat);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_format_matches:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_format_matches, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_gnu_format_matches:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_gnu_format_matches, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_gnu_format_matches:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_gnu_format_matches, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, Type, FormatIdx, ExpectedFormat, I);
+}
+
+FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_format_matches:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_format_matches, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_gnu_format_matches:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_gnu_format_matches, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_gnu_format_matches:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_gnu_format_matches, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, Type, FormatIdx, ExpectedFormat, I);
+}
+
+FormatMatchesAttr::FormatMatchesAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , IdentifierInfo * Type
+              , int FormatIdx
+              , Expr * ExpectedFormat
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::FormatMatches, /*IsLateParsed=*/false, false)
+              , type(Type)
+              , formatIdx(FormatIdx)
+              , expectedFormat(ExpectedFormat)
+  {
+}
+
+
+
+
+
+
+
+FormatMatchesAttr *FormatMatchesAttr::clone(ASTContext &C) const {
+  auto *A = new (C) FormatMatchesAttr(C, *this, type, formatIdx, expectedFormat);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void FormatMatchesAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((format_matches";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << (getType() ? getType()->getName() : "") << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getFormatIdx() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getExpectedFormat()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[gnu::format_matches";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << (getType() ? getType()->getName() : "") << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getFormatIdx() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getExpectedFormat()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[gnu::format_matches";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << (getType() ? getType()->getName() : "") << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getFormatIdx() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getExpectedFormat()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *FormatMatchesAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "format_matches";
+  case 1:
+    return "format_matches";
+  case 2:
+    return "format_matches";
   }
 }
 
@@ -17936,111 +18149,6 @@ const char *HLSLRawBufferAttr::getSpelling() const {
 }
 
 
-// HLSLResourceAttr implementation
-
-HLSLResourceAttr *HLSLResourceAttr::CreateImplicit(ASTContext &Ctx, llvm::hlsl::ResourceKind ResourceKind, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLResourceAttr(Ctx, CommonInfo, ResourceKind);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLResourceAttr *HLSLResourceAttr::Create(ASTContext &Ctx, llvm::hlsl::ResourceKind ResourceKind, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLResourceAttr(Ctx, CommonInfo, ResourceKind);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLResourceAttr *HLSLResourceAttr::CreateImplicit(ASTContext &Ctx, llvm::hlsl::ResourceKind ResourceKind, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, ResourceKind, I);
-}
-
-HLSLResourceAttr *HLSLResourceAttr::Create(ASTContext &Ctx, llvm::hlsl::ResourceKind ResourceKind, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, ResourceKind, I);
-}
-
-HLSLResourceAttr::HLSLResourceAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , llvm::hlsl::ResourceKind ResourceKind
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::HLSLResource, /*IsLateParsed=*/false, false)
-              , resourceKind(ResourceKind)
-  {
-}
-
-
-
-bool HLSLResourceAttr::ConvertStrToResourceKind(StringRef Val, llvm::hlsl::ResourceKind &Out) {
-  std::optional<llvm::hlsl::ResourceKind> R = llvm::StringSwitch<std::optional<llvm::hlsl::ResourceKind>>(Val)
-    .Case("Texture1D", llvm::hlsl::ResourceKind::Texture1D)
-    .Case("Texture2D", llvm::hlsl::ResourceKind::Texture2D)
-    .Case("Texture2DMS", llvm::hlsl::ResourceKind::Texture2DMS)
-    .Case("Texture3D", llvm::hlsl::ResourceKind::Texture3D)
-    .Case("TextureCube", llvm::hlsl::ResourceKind::TextureCube)
-    .Case("Texture1DArray", llvm::hlsl::ResourceKind::Texture1DArray)
-    .Case("Texture2DArray", llvm::hlsl::ResourceKind::Texture2DArray)
-    .Case("Texture2DMSArray", llvm::hlsl::ResourceKind::Texture2DMSArray)
-    .Case("TextureCubeArray", llvm::hlsl::ResourceKind::TextureCubeArray)
-    .Case("TypedBuffer", llvm::hlsl::ResourceKind::TypedBuffer)
-    .Case("RawBuffer", llvm::hlsl::ResourceKind::RawBuffer)
-    .Case("StructuredBuffer", llvm::hlsl::ResourceKind::StructuredBuffer)
-    .Case("CBuffer", llvm::hlsl::ResourceKind::CBuffer)
-    .Case("Sampler", llvm::hlsl::ResourceKind::Sampler)
-    .Case("TBuffer", llvm::hlsl::ResourceKind::TBuffer)
-    .Case("RTAccelerationStructure", llvm::hlsl::ResourceKind::RTAccelerationStructure)
-    .Case("FeedbackTexture2D", llvm::hlsl::ResourceKind::FeedbackTexture2D)
-    .Case("FeedbackTexture2DArray", llvm::hlsl::ResourceKind::FeedbackTexture2DArray)
-    .Default(std::optional<llvm::hlsl::ResourceKind>());
-  if (R) {
-    Out = *R;
-      return true;
-    }
-  return false;
-}
-
-const char *HLSLResourceAttr::ConvertResourceKindToStr(llvm::hlsl::ResourceKind Val) {
-  switch(Val) {
-  case llvm::hlsl::ResourceKind::Texture1D: return "Texture1D";
-  case llvm::hlsl::ResourceKind::Texture2D: return "Texture2D";
-  case llvm::hlsl::ResourceKind::Texture2DMS: return "Texture2DMS";
-  case llvm::hlsl::ResourceKind::Texture3D: return "Texture3D";
-  case llvm::hlsl::ResourceKind::TextureCube: return "TextureCube";
-  case llvm::hlsl::ResourceKind::Texture1DArray: return "Texture1DArray";
-  case llvm::hlsl::ResourceKind::Texture2DArray: return "Texture2DArray";
-  case llvm::hlsl::ResourceKind::Texture2DMSArray: return "Texture2DMSArray";
-  case llvm::hlsl::ResourceKind::TextureCubeArray: return "TextureCubeArray";
-  case llvm::hlsl::ResourceKind::TypedBuffer: return "TypedBuffer";
-  case llvm::hlsl::ResourceKind::RawBuffer: return "RawBuffer";
-  case llvm::hlsl::ResourceKind::StructuredBuffer: return "StructuredBuffer";
-  case llvm::hlsl::ResourceKind::CBuffer: return "CBuffer";
-  case llvm::hlsl::ResourceKind::Sampler: return "Sampler";
-  case llvm::hlsl::ResourceKind::TBuffer: return "TBuffer";
-  case llvm::hlsl::ResourceKind::RTAccelerationStructure: return "RTAccelerationStructure";
-  case llvm::hlsl::ResourceKind::FeedbackTexture2D: return "FeedbackTexture2D";
-  case llvm::hlsl::ResourceKind::FeedbackTexture2DArray: return "FeedbackTexture2DArray";
-  default: llvm_unreachable("Invalid attribute value");
-  }
-  llvm_unreachable("No enumerator with that value");
-}
-HLSLResourceAttr *HLSLResourceAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLResourceAttr(C, *this, resourceKind);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLResourceAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLResourceAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
 // HLSLResourceBindingAttr implementation
 
 HLSLResourceBindingAttr *HLSLResourceBindingAttr::CreateImplicit(ASTContext &Ctx, llvm::StringRef Slot, llvm::StringRef Space, const AttributeCommonInfo &CommonInfo) {
@@ -18284,7 +18392,7 @@ void HLSLSV_DispatchThreadIDAttr::printPretty(raw_ostream &OS, const PrintingPol
     llvm_unreachable("Unknown attribute spelling!");
     break;
   case 0 : {
-    OS << ":SV_DispatchThreadID";
+    OS << ":sv_dispatchthreadid";
     OS << "";
     break;
   }
@@ -18297,7 +18405,7 @@ const char *HLSLSV_DispatchThreadIDAttr::getSpelling() const {
     llvm_unreachable("Unknown attribute spelling!");
     return "(No spelling)";
   case 0:
-    return "SV_DispatchThreadID";
+    return "sv_dispatchthreadid";
   }
 }
 
@@ -18351,7 +18459,7 @@ void HLSLSV_GroupIDAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Poli
     llvm_unreachable("Unknown attribute spelling!");
     break;
   case 0 : {
-    OS << ":SV_GroupID";
+    OS << ":sv_groupid";
     OS << "";
     break;
   }
@@ -18364,7 +18472,7 @@ const char *HLSLSV_GroupIDAttr::getSpelling() const {
     llvm_unreachable("Unknown attribute spelling!");
     return "(No spelling)";
   case 0:
-    return "SV_GroupID";
+    return "sv_groupid";
   }
 }
 
@@ -18418,7 +18526,7 @@ void HLSLSV_GroupIndexAttr::printPretty(raw_ostream &OS, const PrintingPolicy &P
     llvm_unreachable("Unknown attribute spelling!");
     break;
   case 0 : {
-    OS << ":SV_GroupIndex";
+    OS << ":sv_groupindex";
     OS << "";
     break;
   }
@@ -18431,7 +18539,7 @@ const char *HLSLSV_GroupIndexAttr::getSpelling() const {
     llvm_unreachable("Unknown attribute spelling!");
     return "(No spelling)";
   case 0:
-    return "SV_GroupIndex";
+    return "sv_groupindex";
   }
 }
 
@@ -18485,7 +18593,7 @@ void HLSLSV_GroupThreadIDAttr::printPretty(raw_ostream &OS, const PrintingPolicy
     llvm_unreachable("Unknown attribute spelling!");
     break;
   case 0 : {
-    OS << ":SV_GroupThreadID";
+    OS << ":sv_groupthreadid";
     OS << "";
     break;
   }
@@ -18498,7 +18606,7 @@ const char *HLSLSV_GroupThreadIDAttr::getSpelling() const {
     llvm_unreachable("Unknown attribute spelling!");
     return "(No spelling)";
   case 0:
-    return "SV_GroupThreadID";
+    return "sv_groupthreadid";
   }
 }
 
@@ -26012,8 +26120,12 @@ NoSanitizeAttr *NoSanitizeAttr::CreateImplicit(ASTContext &Ctx, StringRef *Sanit
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_no_sanitize:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_gnu_no_sanitize:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_gnu_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case C23_clang_no_sanitize:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_gnu_no_sanitize:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_gnu_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     default:
       llvm_unreachable("Unknown attribute spelling!");
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
@@ -26029,8 +26141,12 @@ NoSanitizeAttr *NoSanitizeAttr::Create(ASTContext &Ctx, StringRef *Sanitizers, u
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_no_sanitize:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_gnu_no_sanitize:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_gnu_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case C23_clang_no_sanitize:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_gnu_no_sanitize:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_gnu_no_sanitize, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     default:
       llvm_unreachable("Unknown attribute spelling!");
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
@@ -26107,7 +26223,33 @@ void NoSanitizeAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) 
     break;
   }
   case 2 : {
+    OS << "[[gnu::no_sanitize";
+    OS << "";
+  for (const auto &Val : sanitizers()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << Val << "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 3 : {
     OS << "[[clang::no_sanitize";
+    OS << "";
+  for (const auto &Val : sanitizers()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << Val << "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 4 : {
+    OS << "[[gnu::no_sanitize";
     OS << "";
   for (const auto &Val : sanitizers()) {
     DelimitAttributeArgument(OS, IsFirstArgument);
@@ -26132,6 +26274,10 @@ const char *NoSanitizeAttr::getSpelling() const {
   case 1:
     return "no_sanitize";
   case 2:
+    return "no_sanitize";
+  case 3:
+    return "no_sanitize";
+  case 4:
     return "no_sanitize";
   }
 }
@@ -32042,6 +32188,122 @@ const char *ObjCSubclassingRestrictedAttr::getSpelling() const {
 }
 
 
+// OpenACCRoutineAnnotAttr implementation
+
+OpenACCRoutineAnnotAttr *OpenACCRoutineAnnotAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) OpenACCRoutineAnnotAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+OpenACCRoutineAnnotAttr *OpenACCRoutineAnnotAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) OpenACCRoutineAnnotAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+OpenACCRoutineAnnotAttr *OpenACCRoutineAnnotAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return CreateImplicit(Ctx, I);
+}
+
+OpenACCRoutineAnnotAttr *OpenACCRoutineAnnotAttr::Create(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return Create(Ctx, I);
+}
+
+OpenACCRoutineAnnotAttr::OpenACCRoutineAnnotAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::OpenACCRoutineAnnot, /*IsLateParsed=*/false, false)
+  {
+}
+
+OpenACCRoutineAnnotAttr *OpenACCRoutineAnnotAttr::clone(ASTContext &C) const {
+  auto *A = new (C) OpenACCRoutineAnnotAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void OpenACCRoutineAnnotAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+}
+
+const char *OpenACCRoutineAnnotAttr::getSpelling() const {
+  return "(No spelling)";
+}
+
+
+// OpenACCRoutineDeclAttr implementation
+
+OpenACCRoutineDeclAttr *OpenACCRoutineDeclAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) OpenACCRoutineDeclAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+OpenACCRoutineDeclAttr *OpenACCRoutineDeclAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) OpenACCRoutineDeclAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+OpenACCRoutineDeclAttr *OpenACCRoutineDeclAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Pragma, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return CreateImplicit(Ctx, I);
+}
+
+OpenACCRoutineDeclAttr *OpenACCRoutineDeclAttr::Create(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Pragma, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return Create(Ctx, I);
+}
+
+OpenACCRoutineDeclAttr::OpenACCRoutineDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::OpenACCRoutineDecl, /*IsLateParsed=*/false, false)
+  {
+}
+
+OpenACCRoutineDeclAttr *OpenACCRoutineDeclAttr::clone(ASTContext &C) const {
+  auto *A = new (C) OpenACCRoutineDeclAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void OpenACCRoutineDeclAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "#pragma acc routine";
+    printPrettyPragma(OS, Policy);
+    OS << "\n";    break;
+  }
+}
+}
+
+const char *OpenACCRoutineDeclAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "routine";
+  }
+}
+
+
 // OpenCLAccessAttr implementation
 
 OpenCLAccessAttr *OpenCLAccessAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -34475,22 +34737,22 @@ const char *PassObjectSizeAttr::getSpelling() const {
 
 // PatchableFunctionEntryAttr implementation
 
-PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::CreateImplicit(ASTContext &Ctx, unsigned Count, int Offset, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PatchableFunctionEntryAttr(Ctx, CommonInfo, Count, Offset);
+PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::CreateImplicit(ASTContext &Ctx, unsigned Count, int Offset, llvm::StringRef Section, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) PatchableFunctionEntryAttr(Ctx, CommonInfo, Count, Offset, Section);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::Create(ASTContext &Ctx, unsigned Count, int Offset, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PatchableFunctionEntryAttr(Ctx, CommonInfo, Count, Offset);
+PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::Create(ASTContext &Ctx, unsigned Count, int Offset, llvm::StringRef Section, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) PatchableFunctionEntryAttr(Ctx, CommonInfo, Count, Offset, Section);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::CreateImplicit(ASTContext &Ctx, unsigned Count, int Offset, SourceRange Range, Spelling S) {
+PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::CreateImplicit(ASTContext &Ctx, unsigned Count, int Offset, llvm::StringRef Section, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_patchable_function_entry:
@@ -34504,10 +34766,10 @@ PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::CreateImplicit(ASTContex
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     }
   }());
-  return CreateImplicit(Ctx, Count, Offset, I);
+  return CreateImplicit(Ctx, Count, Offset, Section, I);
 }
 
-PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::Create(ASTContext &Ctx, unsigned Count, int Offset, SourceRange Range, Spelling S) {
+PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::Create(ASTContext &Ctx, unsigned Count, int Offset, llvm::StringRef Section, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_patchable_function_entry:
@@ -34521,17 +34783,21 @@ PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::Create(ASTContext &Ctx, 
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     }
   }());
-  return Create(Ctx, Count, Offset, I);
+  return Create(Ctx, Count, Offset, Section, I);
 }
 
 PatchableFunctionEntryAttr::PatchableFunctionEntryAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
               , unsigned Count
               , int Offset
+              , llvm::StringRef Section
              )
   : InheritableAttr(Ctx, CommonInfo, attr::PatchableFunctionEntry, /*IsLateParsed=*/false, false)
               , count(Count)
               , offset(Offset)
+              , sectionLength(Section.size()),section(new (Ctx, 1) char[sectionLength])
   {
+    if (!Section.empty())
+      std::memcpy(section, Section.data(), sectionLength);
 }
 
 PatchableFunctionEntryAttr::PatchableFunctionEntryAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
@@ -34540,6 +34806,7 @@ PatchableFunctionEntryAttr::PatchableFunctionEntryAttr(ASTContext &Ctx, const At
   : InheritableAttr(Ctx, CommonInfo, attr::PatchableFunctionEntry, /*IsLateParsed=*/false, false)
               , count(Count)
               , offset()
+              , sectionLength(0),section(nullptr)
   {
 }
 
@@ -34547,8 +34814,10 @@ PatchableFunctionEntryAttr::PatchableFunctionEntryAttr(ASTContext &Ctx, const At
 
 
 
+
+
 PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::clone(ASTContext &C) const {
-  auto *A = new (C) PatchableFunctionEntryAttr(C, *this, count, offset);
+  auto *A = new (C) PatchableFunctionEntryAttr(C, *this, count, offset, getSection());
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -34568,6 +34837,8 @@ void PatchableFunctionEntryAttr::printPretty(raw_ostream &OS, const PrintingPoli
     OS << "" << getCount() << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
     OS << "" << getOffset() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getSection() << "\"";
     if (!IsFirstArgument)
       OS << ")";
     OS << "))";
@@ -34579,6 +34850,8 @@ void PatchableFunctionEntryAttr::printPretty(raw_ostream &OS, const PrintingPoli
     OS << "" << getCount() << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
     OS << "" << getOffset() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getSection() << "\"";
     if (!IsFirstArgument)
       OS << ")";
     OS << "]]";
@@ -34590,6 +34863,8 @@ void PatchableFunctionEntryAttr::printPretty(raw_ostream &OS, const PrintingPoli
     OS << "" << getCount() << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
     OS << "" << getOffset() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getSection() << "\"";
     if (!IsFirstArgument)
       OS << ")";
     OS << "]]";
@@ -34835,6 +35110,103 @@ const char *PointerAttr::getSpelling() const {
     return "(No spelling)";
   case 0:
     return "Pointer";
+  }
+}
+
+
+// PointerAuthAttr implementation
+
+PointerAuthAttr *PointerAuthAttr::CreateImplicit(ASTContext &Ctx, int Key, bool AddressDiscriminated, int ExtraDiscriminator, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) PointerAuthAttr(Ctx, CommonInfo, Key, AddressDiscriminated, ExtraDiscriminator);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+PointerAuthAttr *PointerAuthAttr::Create(ASTContext &Ctx, int Key, bool AddressDiscriminated, int ExtraDiscriminator, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) PointerAuthAttr(Ctx, CommonInfo, Key, AddressDiscriminated, ExtraDiscriminator);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+PointerAuthAttr *PointerAuthAttr::CreateImplicit(ASTContext &Ctx, int Key, bool AddressDiscriminated, int ExtraDiscriminator, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Keyword, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return CreateImplicit(Ctx, Key, AddressDiscriminated, ExtraDiscriminator, I);
+}
+
+PointerAuthAttr *PointerAuthAttr::Create(ASTContext &Ctx, int Key, bool AddressDiscriminated, int ExtraDiscriminator, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Keyword, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return Create(Ctx, Key, AddressDiscriminated, ExtraDiscriminator, I);
+}
+
+PointerAuthAttr::PointerAuthAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Key
+              , bool AddressDiscriminated
+              , int ExtraDiscriminator
+             )
+  : TypeAttr(Ctx, CommonInfo, attr::PointerAuth, /*IsLateParsed=*/false)
+              , key(Key)
+              , addressDiscriminated(AddressDiscriminated)
+              , extraDiscriminator(ExtraDiscriminator)
+  {
+}
+
+PointerAuthAttr::PointerAuthAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Key
+             )
+  : TypeAttr(Ctx, CommonInfo, attr::PointerAuth, /*IsLateParsed=*/false)
+              , key(Key)
+              , addressDiscriminated()
+              , extraDiscriminator()
+  {
+}
+
+
+
+
+
+
+
+PointerAuthAttr *PointerAuthAttr::clone(ASTContext &C) const {
+  auto *A = new (C) PointerAuthAttr(C, *this, key, addressDiscriminated, extraDiscriminator);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void PointerAuthAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__ptrauth";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getKey() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getAddressDiscriminated() << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getExtraDiscriminator() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "";
+    break;
+  }
+}
+}
+
+const char *PointerAuthAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "__ptrauth";
   }
 }
 
@@ -36157,6 +36529,8 @@ bool RISCVInterruptAttr::ConvertStrToInterruptType(StringRef Val, RISCVInterrupt
   std::optional<RISCVInterruptAttr::InterruptType> R = llvm::StringSwitch<std::optional<RISCVInterruptAttr::InterruptType>>(Val)
     .Case("supervisor", RISCVInterruptAttr::InterruptType::supervisor)
     .Case("machine", RISCVInterruptAttr::InterruptType::machine)
+    .Case("qci-nest", RISCVInterruptAttr::InterruptType::qcinest)
+    .Case("qci-nonest", RISCVInterruptAttr::InterruptType::qcinonest)
     .Default(std::optional<RISCVInterruptAttr::InterruptType>());
   if (R) {
     Out = *R;
@@ -36169,6 +36543,8 @@ const char *RISCVInterruptAttr::ConvertInterruptTypeToStr(RISCVInterruptAttr::In
   switch(Val) {
   case RISCVInterruptAttr::InterruptType::supervisor: return "supervisor";
   case RISCVInterruptAttr::InterruptType::machine: return "machine";
+  case RISCVInterruptAttr::InterruptType::qcinest: return "qci-nest";
+  case RISCVInterruptAttr::InterruptType::qcinonest: return "qci-nonest";
   }
   llvm_unreachable("No enumerator with that value");
 }
@@ -36228,6 +36604,172 @@ const char *RISCVInterruptAttr::getSpelling() const {
     return "interrupt";
   case 2:
     return "interrupt";
+  }
+}
+
+
+// RISCVVLSCCAttr implementation
+
+RISCVVLSCCAttr *RISCVVLSCCAttr::CreateImplicit(ASTContext &Ctx, unsigned VectorWidth, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) RISCVVLSCCAttr(Ctx, CommonInfo, VectorWidth);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+RISCVVLSCCAttr *RISCVVLSCCAttr::Create(ASTContext &Ctx, unsigned VectorWidth, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) RISCVVLSCCAttr(Ctx, CommonInfo, VectorWidth);
+  return A;
+}
+
+RISCVVLSCCAttr *RISCVVLSCCAttr::CreateImplicit(ASTContext &Ctx, unsigned VectorWidth, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case CXX11_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, VectorWidth, I);
+}
+
+RISCVVLSCCAttr *RISCVVLSCCAttr::Create(ASTContext &Ctx, unsigned VectorWidth, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case CXX11_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_riscv_vls_cc:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_riscv_vls_cc, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, VectorWidth, I);
+}
+
+RISCVVLSCCAttr::RISCVVLSCCAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , unsigned VectorWidth
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::RISCVVLSCC, /*IsLateParsed=*/false, false)
+              , vectorWidth(VectorWidth)
+  {
+}
+
+RISCVVLSCCAttr::RISCVVLSCCAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::RISCVVLSCC, /*IsLateParsed=*/false, false)
+              , vectorWidth()
+  {
+}
+
+RISCVVLSCCAttr::Spelling RISCVVLSCCAttr::getSemanticSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+    default: llvm_unreachable("Unknown spelling list index");
+    case 0: return CXX11_riscv_vls_cc;
+    case 1: return C23_riscv_vls_cc;
+    case 2: return GNU_riscv_vls_cc;
+    case 3: return CXX11_clang_riscv_vls_cc;
+    case 4: return C23_clang_riscv_vls_cc;
+  }
+}
+
+
+RISCVVLSCCAttr *RISCVVLSCCAttr::clone(ASTContext &C) const {
+  auto *A = new (C) RISCVVLSCCAttr(C, *this, vectorWidth);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void RISCVVLSCCAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "[[riscv::vls_cc";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getVectorWidth() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 1 : {
+    OS << "[[riscv::vls_cc";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getVectorWidth() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "__attribute__((riscv_vls_cc";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getVectorWidth() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 3 : {
+    OS << "[[clang::riscv_vls_cc";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getVectorWidth() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 4 : {
+    OS << "[[clang::riscv_vls_cc";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getVectorWidth() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *RISCVVLSCCAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "vls_cc";
+  case 1:
+    return "vls_cc";
+  case 2:
+    return "riscv_vls_cc";
+  case 3:
+    return "riscv_vls_cc";
+  case 4:
+    return "riscv_vls_cc";
   }
 }
 
@@ -37159,7 +37701,7 @@ const char *ReleaseHandleAttr::getSpelling() const {
 
 // ReqdWorkGroupSizeAttr implementation
 
-ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::CreateImplicit(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, const AttributeCommonInfo &CommonInfo) {
+ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::CreateImplicit(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ReqdWorkGroupSizeAttr(Ctx, CommonInfo, XDim, YDim, ZDim);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -37167,27 +37709,27 @@ ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::CreateImplicit(ASTContext &Ctx, un
   return A;
 }
 
-ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::Create(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, const AttributeCommonInfo &CommonInfo) {
+ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::Create(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ReqdWorkGroupSizeAttr(Ctx, CommonInfo, XDim, YDim, ZDim);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::CreateImplicit(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, SourceRange Range) {
+ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::CreateImplicit(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return CreateImplicit(Ctx, XDim, YDim, ZDim, I);
 }
 
-ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::Create(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, SourceRange Range) {
+ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::Create(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return Create(Ctx, XDim, YDim, ZDim, I);
 }
 
 ReqdWorkGroupSizeAttr::ReqdWorkGroupSizeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , unsigned XDim
-              , unsigned YDim
-              , unsigned ZDim
+              , Expr * XDim
+              , Expr * YDim
+              , Expr * ZDim
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ReqdWorkGroupSize, /*IsLateParsed=*/false, false)
               , xDim(XDim)
@@ -37220,11 +37762,17 @@ void ReqdWorkGroupSizeAttr::printPretty(raw_ostream &OS, const PrintingPolicy &P
   case 0 : {
     OS << "__attribute__((reqd_work_group_size";
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getXDim() << "";
+    OS << "";
+    getXDim()->printPretty(OS, nullptr, Policy);
+    OS << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getYDim() << "";
+    OS << "";
+    getYDim()->printPretty(OS, nullptr, Policy);
+    OS << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getZDim() << "";
+    OS << "";
+    getZDim()->printPretty(OS, nullptr, Policy);
+    OS << "";
     if (!IsFirstArgument)
       OS << ")";
     OS << "))";
@@ -37493,20 +38041,20 @@ const char *RequiresCapabilityAttr::getSpelling() const {
 
 // RestrictAttr implementation
 
-RestrictAttr *RestrictAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) RestrictAttr(Ctx, CommonInfo);
+RestrictAttr *RestrictAttr::CreateImplicit(ASTContext &Ctx, Expr * Deallocator, ParamIdx DeallocatorPtrArgIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) RestrictAttr(Ctx, CommonInfo, Deallocator, DeallocatorPtrArgIndex);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-RestrictAttr *RestrictAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) RestrictAttr(Ctx, CommonInfo);
+RestrictAttr *RestrictAttr::Create(ASTContext &Ctx, Expr * Deallocator, ParamIdx DeallocatorPtrArgIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) RestrictAttr(Ctx, CommonInfo, Deallocator, DeallocatorPtrArgIndex);
   return A;
 }
 
-RestrictAttr *RestrictAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
+RestrictAttr *RestrictAttr::CreateImplicit(ASTContext &Ctx, Expr * Deallocator, ParamIdx DeallocatorPtrArgIndex, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case Declspec_restrict:
@@ -37522,10 +38070,10 @@ RestrictAttr *RestrictAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, S
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_Declspec, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     }
   }());
-  return CreateImplicit(Ctx, I);
+  return CreateImplicit(Ctx, Deallocator, DeallocatorPtrArgIndex, I);
 }
 
-RestrictAttr *RestrictAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
+RestrictAttr *RestrictAttr::Create(ASTContext &Ctx, Expr * Deallocator, ParamIdx DeallocatorPtrArgIndex, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case Declspec_restrict:
@@ -37541,12 +38089,24 @@ RestrictAttr *RestrictAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling 
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_Declspec, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     }
   }());
-  return Create(Ctx, I);
+  return Create(Ctx, Deallocator, DeallocatorPtrArgIndex, I);
+}
+
+RestrictAttr::RestrictAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , Expr * Deallocator
+              , ParamIdx DeallocatorPtrArgIndex
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::Restrict, /*IsLateParsed=*/false, false)
+              , deallocator(Deallocator)
+              , deallocatorPtrArgIndex(DeallocatorPtrArgIndex)
+  {
 }
 
 RestrictAttr::RestrictAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Restrict, /*IsLateParsed=*/false, false)
+              , deallocator()
+              , deallocatorPtrArgIndex()
   {
 }
 
@@ -37559,8 +38119,12 @@ RestrictAttr::Spelling RestrictAttr::getSemanticSpelling() const {
     case 3: return C23_gnu_malloc;
   }
 }
+
+
+
+
 RestrictAttr *RestrictAttr::clone(ASTContext &C) const {
-  auto *A = new (C) RestrictAttr(C, *this);
+  auto *A = new (C) RestrictAttr(C, *this, deallocator, deallocatorPtrArgIndex);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -37576,21 +38140,85 @@ void RestrictAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) co
     break;
   case 0 : {
     OS << "__declspec(restrict";
+    if (!getDeallocatorPtrArgIndex().isValid())
+      ++TrailingOmittedArgs;
+    if (!getDeallocator())
+      ++TrailingOmittedArgs;
+    if (!(!getDeallocator())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getDeallocator()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    }
+    if (!(!getDeallocatorPtrArgIndex().isValid())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getDeallocatorPtrArgIndex().getSourceIndex() << "";
+    }
+    if (!IsFirstArgument)
+      OS << ")";
     OS << ")";
     break;
   }
   case 1 : {
     OS << "__attribute__((malloc";
+    if (!getDeallocatorPtrArgIndex().isValid())
+      ++TrailingOmittedArgs;
+    if (!getDeallocator())
+      ++TrailingOmittedArgs;
+    if (!(!getDeallocator())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getDeallocator()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    }
+    if (!(!getDeallocatorPtrArgIndex().isValid())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getDeallocatorPtrArgIndex().getSourceIndex() << "";
+    }
+    if (!IsFirstArgument)
+      OS << ")";
     OS << "))";
     break;
   }
   case 2 : {
     OS << "[[gnu::malloc";
+    if (!getDeallocatorPtrArgIndex().isValid())
+      ++TrailingOmittedArgs;
+    if (!getDeallocator())
+      ++TrailingOmittedArgs;
+    if (!(!getDeallocator())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getDeallocator()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    }
+    if (!(!getDeallocatorPtrArgIndex().isValid())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getDeallocatorPtrArgIndex().getSourceIndex() << "";
+    }
+    if (!IsFirstArgument)
+      OS << ")";
     OS << "]]";
     break;
   }
   case 3 : {
     OS << "[[gnu::malloc";
+    if (!getDeallocatorPtrArgIndex().isValid())
+      ++TrailingOmittedArgs;
+    if (!getDeallocator())
+      ++TrailingOmittedArgs;
+    if (!(!getDeallocator())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getDeallocator()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    }
+    if (!(!getDeallocatorPtrArgIndex().isValid())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getDeallocatorPtrArgIndex().getSourceIndex() << "";
+    }
+    if (!IsFirstArgument)
+      OS << ")";
     OS << "]]";
     break;
   }
@@ -39133,103 +39761,6 @@ const char *SetTypestateAttr::getSpelling() const {
     return "set_typestate";
   case 1:
     return "set_typestate";
-  }
-}
-
-
-// SharedTrylockFunctionAttr implementation
-
-SharedTrylockFunctionAttr *SharedTrylockFunctionAttr::CreateImplicit(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) SharedTrylockFunctionAttr(Ctx, CommonInfo, SuccessValue, Args, ArgsSize);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-SharedTrylockFunctionAttr *SharedTrylockFunctionAttr::Create(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) SharedTrylockFunctionAttr(Ctx, CommonInfo, SuccessValue, Args, ArgsSize);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-SharedTrylockFunctionAttr *SharedTrylockFunctionAttr::CreateImplicit(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, SuccessValue, Args, ArgsSize, I);
-}
-
-SharedTrylockFunctionAttr *SharedTrylockFunctionAttr::Create(ASTContext &Ctx, Expr * SuccessValue, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, SuccessValue, Args, ArgsSize, I);
-}
-
-SharedTrylockFunctionAttr::SharedTrylockFunctionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * SuccessValue
-              , Expr * *Args, unsigned ArgsSize
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::SharedTrylockFunction, /*IsLateParsed=*/true, true)
-              , successValue(SuccessValue)
-              , args_Size(ArgsSize), args_(new (Ctx, 16) Expr *[args_Size])
-  {
-  std::copy(Args, Args + args_Size, args_);
-}
-
-SharedTrylockFunctionAttr::SharedTrylockFunctionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * SuccessValue
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::SharedTrylockFunction, /*IsLateParsed=*/true, true)
-              , successValue(SuccessValue)
-              , args_Size(0), args_(nullptr)
-  {
-}
-
-
-
-
-
-SharedTrylockFunctionAttr *SharedTrylockFunctionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) SharedTrylockFunctionAttr(C, *this, successValue, args_, args_Size);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void SharedTrylockFunctionAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((shared_trylock_function";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "";
-    getSuccessValue()->printPretty(OS, nullptr, Policy);
-    OS << "";
-    OS << "";
-  for (const auto &Val : args()) {
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << Val;
-  }
-  OS << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "))";
-    break;
-  }
-}
-}
-
-const char *SharedTrylockFunctionAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "shared_trylock_function";
   }
 }
 
@@ -43220,6 +43751,10 @@ TryAcquireCapabilityAttr *TryAcquireCapabilityAttr::CreateImplicit(ASTContext &C
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_try_acquire_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_try_acquire_shared_capability:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_try_acquire_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_exclusive_trylock_function:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_exclusive_trylock_function, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_shared_trylock_function:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_shared_trylock_function, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     default:
       llvm_unreachable("Unknown attribute spelling!");
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
@@ -43239,6 +43774,10 @@ TryAcquireCapabilityAttr *TryAcquireCapabilityAttr::Create(ASTContext &Ctx, Expr
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_try_acquire_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_try_acquire_shared_capability:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_try_acquire_shared_capability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_exclusive_trylock_function:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_exclusive_trylock_function, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case GNU_shared_trylock_function:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_shared_trylock_function, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     default:
       llvm_unreachable("Unknown attribute spelling!");
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
@@ -43274,6 +43813,8 @@ TryAcquireCapabilityAttr::Spelling TryAcquireCapabilityAttr::getSemanticSpelling
     case 1: return CXX11_clang_try_acquire_capability;
     case 2: return GNU_try_acquire_shared_capability;
     case 3: return CXX11_clang_try_acquire_shared_capability;
+    case 4: return GNU_exclusive_trylock_function;
+    case 5: return GNU_shared_trylock_function;
   }
 }
 
@@ -43363,6 +43904,40 @@ void TryAcquireCapabilityAttr::printPretty(raw_ostream &OS, const PrintingPolicy
     OS << "]]";
     break;
   }
+  case 4 : {
+    OS << "__attribute__((exclusive_trylock_function";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getSuccessValue()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    OS << "";
+  for (const auto &Val : args()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << Val;
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 5 : {
+    OS << "__attribute__((shared_trylock_function";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getSuccessValue()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    OS << "";
+  for (const auto &Val : args()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << Val;
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
 }
 }
 
@@ -43379,6 +43954,10 @@ const char *TryAcquireCapabilityAttr::getSpelling() const {
     return "try_acquire_shared_capability";
   case 3:
     return "try_acquire_shared_capability";
+  case 4:
+    return "exclusive_trylock_function";
+  case 5:
+    return "shared_trylock_function";
   }
 }
 
@@ -46858,7 +47437,7 @@ const char *WebAssemblyImportNameAttr::getSpelling() const {
 
 // WorkGroupSizeHintAttr implementation
 
-WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::CreateImplicit(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, const AttributeCommonInfo &CommonInfo) {
+WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::CreateImplicit(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) WorkGroupSizeHintAttr(Ctx, CommonInfo, XDim, YDim, ZDim);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -46866,27 +47445,27 @@ WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::CreateImplicit(ASTContext &Ctx, un
   return A;
 }
 
-WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::Create(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, const AttributeCommonInfo &CommonInfo) {
+WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::Create(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) WorkGroupSizeHintAttr(Ctx, CommonInfo, XDim, YDim, ZDim);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::CreateImplicit(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, SourceRange Range) {
+WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::CreateImplicit(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return CreateImplicit(Ctx, XDim, YDim, ZDim, I);
 }
 
-WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::Create(ASTContext &Ctx, unsigned XDim, unsigned YDim, unsigned ZDim, SourceRange Range) {
+WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::Create(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return Create(Ctx, XDim, YDim, ZDim, I);
 }
 
 WorkGroupSizeHintAttr::WorkGroupSizeHintAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , unsigned XDim
-              , unsigned YDim
-              , unsigned ZDim
+              , Expr * XDim
+              , Expr * YDim
+              , Expr * ZDim
              )
   : InheritableAttr(Ctx, CommonInfo, attr::WorkGroupSizeHint, /*IsLateParsed=*/false, false)
               , xDim(XDim)
@@ -46919,11 +47498,17 @@ void WorkGroupSizeHintAttr::printPretty(raw_ostream &OS, const PrintingPolicy &P
   case 0 : {
     OS << "__attribute__((work_group_size_hint";
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getXDim() << "";
+    OS << "";
+    getXDim()->printPretty(OS, nullptr, Policy);
+    OS << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getYDim() << "";
+    OS << "";
+    getYDim()->printPretty(OS, nullptr, Policy);
+    OS << "";
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getZDim() << "";
+    OS << "";
+    getZDim()->printPretty(OS, nullptr, Policy);
+    OS << "";
     if (!IsFirstArgument)
       OS << ")";
     OS << "))";
@@ -47569,12 +48154,10 @@ const char *Attr::getSpelling() const {
     return cast<AsmLabelAttr>(this)->getSpelling();
   case attr::AssertCapability:
     return cast<AssertCapabilityAttr>(this)->getSpelling();
-  case attr::AssertExclusiveLock:
-    return cast<AssertExclusiveLockAttr>(this)->getSpelling();
-  case attr::AssertSharedLock:
-    return cast<AssertSharedLockAttr>(this)->getSpelling();
   case attr::AssumeAligned:
     return cast<AssumeAlignedAttr>(this)->getSpelling();
+  case attr::Atomic:
+    return cast<AtomicAttr>(this)->getSpelling();
   case attr::Availability:
     return cast<AvailabilityAttr>(this)->getSpelling();
   case attr::AvailableOnlyInDefaultEvalMethod:
@@ -47739,10 +48322,10 @@ const char *Attr::getSpelling() const {
     return cast<ErrorAttr>(this)->getSpelling();
   case attr::ExcludeFromExplicitInstantiation:
     return cast<ExcludeFromExplicitInstantiationAttr>(this)->getSpelling();
-  case attr::ExclusiveTrylockFunction:
-    return cast<ExclusiveTrylockFunctionAttr>(this)->getSpelling();
   case attr::ExplicitInit:
     return cast<ExplicitInitAttr>(this)->getSpelling();
+  case attr::ExtVectorType:
+    return cast<ExtVectorTypeAttr>(this)->getSpelling();
   case attr::ExternalSourceSymbol:
     return cast<ExternalSourceSymbolAttr>(this)->getSpelling();
   case attr::FallThrough:
@@ -47759,6 +48342,8 @@ const char *Attr::getSpelling() const {
     return cast<FormatAttr>(this)->getSpelling();
   case attr::FormatArg:
     return cast<FormatArgAttr>(this)->getSpelling();
+  case attr::FormatMatches:
+    return cast<FormatMatchesAttr>(this)->getSpelling();
   case attr::FunctionReturnThunks:
     return cast<FunctionReturnThunksAttr>(this)->getSpelling();
   case attr::GNUInline:
@@ -47787,8 +48372,6 @@ const char *Attr::getSpelling() const {
     return cast<HLSLROVAttr>(this)->getSpelling();
   case attr::HLSLRawBuffer:
     return cast<HLSLRawBufferAttr>(this)->getSpelling();
-  case attr::HLSLResource:
-    return cast<HLSLResourceAttr>(this)->getSpelling();
   case attr::HLSLResourceBinding:
     return cast<HLSLResourceBindingAttr>(this)->getSpelling();
   case attr::HLSLResourceClass:
@@ -48055,6 +48638,10 @@ const char *Attr::getSpelling() const {
     return cast<ObjCRuntimeVisibleAttr>(this)->getSpelling();
   case attr::ObjCSubclassingRestricted:
     return cast<ObjCSubclassingRestrictedAttr>(this)->getSpelling();
+  case attr::OpenACCRoutineAnnot:
+    return cast<OpenACCRoutineAnnotAttr>(this)->getSpelling();
+  case attr::OpenACCRoutineDecl:
+    return cast<OpenACCRoutineDeclAttr>(this)->getSpelling();
   case attr::OpenCLAccess:
     return cast<OpenCLAccessAttr>(this)->getSpelling();
   case attr::OpenCLConstantAddressSpace:
@@ -48101,6 +48688,8 @@ const char *Attr::getSpelling() const {
     return cast<PcsAttr>(this)->getSpelling();
   case attr::Pointer:
     return cast<PointerAttr>(this)->getSpelling();
+  case attr::PointerAuth:
+    return cast<PointerAuthAttr>(this)->getSpelling();
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->getSpelling();
   case attr::PragmaClangDataSection:
@@ -48133,6 +48722,8 @@ const char *Attr::getSpelling() const {
     return cast<PureAttr>(this)->getSpelling();
   case attr::RISCVInterrupt:
     return cast<RISCVInterruptAttr>(this)->getSpelling();
+  case attr::RISCVVLSCC:
+    return cast<RISCVVLSCCAttr>(this)->getSpelling();
   case attr::RISCVVectorCC:
     return cast<RISCVVectorCCAttr>(this)->getSpelling();
   case attr::RandomizeLayout:
@@ -48179,8 +48770,6 @@ const char *Attr::getSpelling() const {
     return cast<SentinelAttr>(this)->getSpelling();
   case attr::SetTypestate:
     return cast<SetTypestateAttr>(this)->getSpelling();
-  case attr::SharedTrylockFunction:
-    return cast<SharedTrylockFunctionAttr>(this)->getSpelling();
   case attr::SizedBy:
     return cast<SizedByAttr>(this)->getSpelling();
   case attr::SizedByOrNull:
@@ -48435,12 +49024,10 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<AsmLabelAttr>(this)->clone(C);
   case attr::AssertCapability:
     return cast<AssertCapabilityAttr>(this)->clone(C);
-  case attr::AssertExclusiveLock:
-    return cast<AssertExclusiveLockAttr>(this)->clone(C);
-  case attr::AssertSharedLock:
-    return cast<AssertSharedLockAttr>(this)->clone(C);
   case attr::AssumeAligned:
     return cast<AssumeAlignedAttr>(this)->clone(C);
+  case attr::Atomic:
+    return cast<AtomicAttr>(this)->clone(C);
   case attr::Availability:
     return cast<AvailabilityAttr>(this)->clone(C);
   case attr::AvailableOnlyInDefaultEvalMethod:
@@ -48605,10 +49192,10 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<ErrorAttr>(this)->clone(C);
   case attr::ExcludeFromExplicitInstantiation:
     return cast<ExcludeFromExplicitInstantiationAttr>(this)->clone(C);
-  case attr::ExclusiveTrylockFunction:
-    return cast<ExclusiveTrylockFunctionAttr>(this)->clone(C);
   case attr::ExplicitInit:
     return cast<ExplicitInitAttr>(this)->clone(C);
+  case attr::ExtVectorType:
+    return cast<ExtVectorTypeAttr>(this)->clone(C);
   case attr::ExternalSourceSymbol:
     return cast<ExternalSourceSymbolAttr>(this)->clone(C);
   case attr::FallThrough:
@@ -48625,6 +49212,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<FormatAttr>(this)->clone(C);
   case attr::FormatArg:
     return cast<FormatArgAttr>(this)->clone(C);
+  case attr::FormatMatches:
+    return cast<FormatMatchesAttr>(this)->clone(C);
   case attr::FunctionReturnThunks:
     return cast<FunctionReturnThunksAttr>(this)->clone(C);
   case attr::GNUInline:
@@ -48653,8 +49242,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HLSLROVAttr>(this)->clone(C);
   case attr::HLSLRawBuffer:
     return cast<HLSLRawBufferAttr>(this)->clone(C);
-  case attr::HLSLResource:
-    return cast<HLSLResourceAttr>(this)->clone(C);
   case attr::HLSLResourceBinding:
     return cast<HLSLResourceBindingAttr>(this)->clone(C);
   case attr::HLSLResourceClass:
@@ -48921,6 +49508,10 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<ObjCRuntimeVisibleAttr>(this)->clone(C);
   case attr::ObjCSubclassingRestricted:
     return cast<ObjCSubclassingRestrictedAttr>(this)->clone(C);
+  case attr::OpenACCRoutineAnnot:
+    return cast<OpenACCRoutineAnnotAttr>(this)->clone(C);
+  case attr::OpenACCRoutineDecl:
+    return cast<OpenACCRoutineDeclAttr>(this)->clone(C);
   case attr::OpenCLAccess:
     return cast<OpenCLAccessAttr>(this)->clone(C);
   case attr::OpenCLConstantAddressSpace:
@@ -48967,6 +49558,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<PcsAttr>(this)->clone(C);
   case attr::Pointer:
     return cast<PointerAttr>(this)->clone(C);
+  case attr::PointerAuth:
+    return cast<PointerAuthAttr>(this)->clone(C);
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->clone(C);
   case attr::PragmaClangDataSection:
@@ -48999,6 +49592,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<PureAttr>(this)->clone(C);
   case attr::RISCVInterrupt:
     return cast<RISCVInterruptAttr>(this)->clone(C);
+  case attr::RISCVVLSCC:
+    return cast<RISCVVLSCCAttr>(this)->clone(C);
   case attr::RISCVVectorCC:
     return cast<RISCVVectorCCAttr>(this)->clone(C);
   case attr::RandomizeLayout:
@@ -49045,8 +49640,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<SentinelAttr>(this)->clone(C);
   case attr::SetTypestate:
     return cast<SetTypestateAttr>(this)->clone(C);
-  case attr::SharedTrylockFunction:
-    return cast<SharedTrylockFunctionAttr>(this)->clone(C);
   case attr::SizedBy:
     return cast<SizedByAttr>(this)->clone(C);
   case attr::SizedByOrNull:
@@ -49301,12 +49894,10 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<AsmLabelAttr>(this)->printPretty(OS, Policy);
   case attr::AssertCapability:
     return cast<AssertCapabilityAttr>(this)->printPretty(OS, Policy);
-  case attr::AssertExclusiveLock:
-    return cast<AssertExclusiveLockAttr>(this)->printPretty(OS, Policy);
-  case attr::AssertSharedLock:
-    return cast<AssertSharedLockAttr>(this)->printPretty(OS, Policy);
   case attr::AssumeAligned:
     return cast<AssumeAlignedAttr>(this)->printPretty(OS, Policy);
+  case attr::Atomic:
+    return cast<AtomicAttr>(this)->printPretty(OS, Policy);
   case attr::Availability:
     return cast<AvailabilityAttr>(this)->printPretty(OS, Policy);
   case attr::AvailableOnlyInDefaultEvalMethod:
@@ -49471,10 +50062,10 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<ErrorAttr>(this)->printPretty(OS, Policy);
   case attr::ExcludeFromExplicitInstantiation:
     return cast<ExcludeFromExplicitInstantiationAttr>(this)->printPretty(OS, Policy);
-  case attr::ExclusiveTrylockFunction:
-    return cast<ExclusiveTrylockFunctionAttr>(this)->printPretty(OS, Policy);
   case attr::ExplicitInit:
     return cast<ExplicitInitAttr>(this)->printPretty(OS, Policy);
+  case attr::ExtVectorType:
+    return cast<ExtVectorTypeAttr>(this)->printPretty(OS, Policy);
   case attr::ExternalSourceSymbol:
     return cast<ExternalSourceSymbolAttr>(this)->printPretty(OS, Policy);
   case attr::FallThrough:
@@ -49491,6 +50082,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<FormatAttr>(this)->printPretty(OS, Policy);
   case attr::FormatArg:
     return cast<FormatArgAttr>(this)->printPretty(OS, Policy);
+  case attr::FormatMatches:
+    return cast<FormatMatchesAttr>(this)->printPretty(OS, Policy);
   case attr::FunctionReturnThunks:
     return cast<FunctionReturnThunksAttr>(this)->printPretty(OS, Policy);
   case attr::GNUInline:
@@ -49519,8 +50112,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HLSLROVAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLRawBuffer:
     return cast<HLSLRawBufferAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLResource:
-    return cast<HLSLResourceAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLResourceBinding:
     return cast<HLSLResourceBindingAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLResourceClass:
@@ -49787,6 +50378,10 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<ObjCRuntimeVisibleAttr>(this)->printPretty(OS, Policy);
   case attr::ObjCSubclassingRestricted:
     return cast<ObjCSubclassingRestrictedAttr>(this)->printPretty(OS, Policy);
+  case attr::OpenACCRoutineAnnot:
+    return cast<OpenACCRoutineAnnotAttr>(this)->printPretty(OS, Policy);
+  case attr::OpenACCRoutineDecl:
+    return cast<OpenACCRoutineDeclAttr>(this)->printPretty(OS, Policy);
   case attr::OpenCLAccess:
     return cast<OpenCLAccessAttr>(this)->printPretty(OS, Policy);
   case attr::OpenCLConstantAddressSpace:
@@ -49833,6 +50428,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<PcsAttr>(this)->printPretty(OS, Policy);
   case attr::Pointer:
     return cast<PointerAttr>(this)->printPretty(OS, Policy);
+  case attr::PointerAuth:
+    return cast<PointerAuthAttr>(this)->printPretty(OS, Policy);
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->printPretty(OS, Policy);
   case attr::PragmaClangDataSection:
@@ -49865,6 +50462,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<PureAttr>(this)->printPretty(OS, Policy);
   case attr::RISCVInterrupt:
     return cast<RISCVInterruptAttr>(this)->printPretty(OS, Policy);
+  case attr::RISCVVLSCC:
+    return cast<RISCVVLSCCAttr>(this)->printPretty(OS, Policy);
   case attr::RISCVVectorCC:
     return cast<RISCVVectorCCAttr>(this)->printPretty(OS, Policy);
   case attr::RandomizeLayout:
@@ -49911,8 +50510,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<SentinelAttr>(this)->printPretty(OS, Policy);
   case attr::SetTypestate:
     return cast<SetTypestateAttr>(this)->printPretty(OS, Policy);
-  case attr::SharedTrylockFunction:
-    return cast<SharedTrylockFunctionAttr>(this)->printPretty(OS, Policy);
   case attr::SizedBy:
     return cast<SizedByAttr>(this)->printPretty(OS, Policy);
   case attr::SizedByOrNull:
