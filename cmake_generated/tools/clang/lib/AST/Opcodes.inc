@@ -76,53 +76,41 @@ case OP_AddFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_AddSint8:
-  PrintName("AddSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddSint8");
+  break;
 case OP_AddUint8:
-  PrintName("AddUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddUint8");
+  break;
 case OP_AddSint16:
-  PrintName("AddSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddSint16");
+  break;
 case OP_AddUint16:
-  PrintName("AddUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddUint16");
+  break;
 case OP_AddSint32:
-  PrintName("AddSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddSint32");
+  break;
 case OP_AddUint32:
-  PrintName("AddUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddUint32");
+  break;
 case OP_AddSint64:
-  PrintName("AddSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddSint64");
+  break;
 case OP_AddUint64:
-  PrintName("AddUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddUint64");
+  break;
 case OP_AddIntAP:
-  PrintName("AddIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddIntAP");
+  break;
 case OP_AddIntAPS:
-  PrintName("AddIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddIntAPS");
+  break;
 case OP_AddBool:
-  PrintName("AddBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddBool");
+  break;
 case OP_AddFixedPoint:
-  PrintName("AddFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAddSint8(const SourceInfo &);
@@ -357,53 +345,41 @@ case OP_AddOffsetFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_AddOffsetSint8:
-  PrintName("AddOffsetSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetSint8");
+  break;
 case OP_AddOffsetUint8:
-  PrintName("AddOffsetUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetUint8");
+  break;
 case OP_AddOffsetSint16:
-  PrintName("AddOffsetSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetSint16");
+  break;
 case OP_AddOffsetUint16:
-  PrintName("AddOffsetUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetUint16");
+  break;
 case OP_AddOffsetSint32:
-  PrintName("AddOffsetSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetSint32");
+  break;
 case OP_AddOffsetUint32:
-  PrintName("AddOffsetUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetUint32");
+  break;
 case OP_AddOffsetSint64:
-  PrintName("AddOffsetSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetSint64");
+  break;
 case OP_AddOffsetUint64:
-  PrintName("AddOffsetUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetUint64");
+  break;
 case OP_AddOffsetIntAP:
-  PrintName("AddOffsetIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetIntAP");
+  break;
 case OP_AddOffsetIntAPS:
-  PrintName("AddOffsetIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetIntAPS");
+  break;
 case OP_AddOffsetBool:
-  PrintName("AddOffsetBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetBool");
+  break;
 case OP_AddOffsetFixedPoint:
-  PrintName("AddOffsetFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("AddOffsetFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAddOffsetSint8(const SourceInfo &);
@@ -573,9 +549,9 @@ case OP_Addf: {
 #endif
 #ifdef GET_DISASM
 case OP_Addf:
-  PrintName("Addf");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Addf");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAddf( uint32_t , const SourceInfo &);
@@ -605,9 +581,9 @@ case OP_Alloc: {
 #endif
 #ifdef GET_DISASM
 case OP_Alloc:
-  PrintName("Alloc");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Alloc");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAlloc( const Descriptor * , const SourceInfo &);
@@ -710,45 +686,55 @@ case OP_AllocCNIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_AllocCNSint8:
-  PrintName("AllocCNSint8");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNSint8");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNUint8:
-  PrintName("AllocCNUint8");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNUint8");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNSint16:
-  PrintName("AllocCNSint16");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNSint16");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNUint16:
-  PrintName("AllocCNUint16");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNUint16");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNSint32:
-  PrintName("AllocCNSint32");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNSint32");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNUint32:
-  PrintName("AllocCNUint32");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNUint32");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNSint64:
-  PrintName("AllocCNSint64");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNSint64");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNUint64:
-  PrintName("AllocCNUint64");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNUint64");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNIntAP:
-  PrintName("AllocCNIntAP");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNIntAP");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocCNIntAPS:
-  PrintName("AllocCNIntAPS");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocCNIntAPS");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAllocCNSint8( const Descriptor * ,  bool , const SourceInfo &);
@@ -979,45 +965,65 @@ case OP_AllocNIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_AllocNSint8:
-  PrintName("AllocNSint8");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNSint8");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNUint8:
-  PrintName("AllocNUint8");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNUint8");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNSint16:
-  PrintName("AllocNSint16");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNSint16");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNUint16:
-  PrintName("AllocNUint16");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNUint16");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNSint32:
-  PrintName("AllocNSint32");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNSint32");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNUint32:
-  PrintName("AllocNUint32");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNUint32");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNSint64:
-  PrintName("AllocNSint64");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNSint64");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNUint64:
-  PrintName("AllocNUint64");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNUint64");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNIntAP:
-  PrintName("AllocNIntAP");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNIntAP");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_AllocNIntAPS:
-  PrintName("AllocNIntAPS");
-  OS << "\t" << ReadArg<PrimType>(P, PC) << " " << ReadArg<const Expr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("AllocNIntAPS");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAllocNSint8( PrimType ,  const Expr * ,  bool , const SourceInfo &);
@@ -1164,9 +1170,8 @@ case OP_ArrayDecay: {
 #endif
 #ifdef GET_DISASM
 case OP_ArrayDecay:
-  PrintName("ArrayDecay");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayDecay");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayDecay(const SourceInfo &);
@@ -1197,7 +1202,6 @@ OP_ArrayElemIntAPS,
 OP_ArrayElemBool,
 OP_ArrayElemFixedPoint,
 OP_ArrayElemPtr,
-OP_ArrayElemFnPtr,
 OP_ArrayElemMemberPtr,
 OP_ArrayElemFloat,
 #endif
@@ -1280,12 +1284,6 @@ case OP_ArrayElemPtr: {
     return false;
   continue;
 }
-case OP_ArrayElemFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_ArrayElemMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!ArrayElem<PT_MemberPtr>(S, OpPC, V0))
@@ -1301,69 +1299,65 @@ case OP_ArrayElemFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_ArrayElemSint8:
-  PrintName("ArrayElemSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemUint8:
-  PrintName("ArrayElemUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemSint16:
-  PrintName("ArrayElemSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemUint16:
-  PrintName("ArrayElemUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemSint32:
-  PrintName("ArrayElemSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemUint32:
-  PrintName("ArrayElemUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemSint64:
-  PrintName("ArrayElemSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemUint64:
-  PrintName("ArrayElemUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemIntAP:
-  PrintName("ArrayElemIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemIntAPS:
-  PrintName("ArrayElemIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemBool:
-  PrintName("ArrayElemBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemFixedPoint:
-  PrintName("ArrayElemFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPtr:
-  PrintName("ArrayElemPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_ArrayElemFnPtr:
-  PrintName("ArrayElemFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemMemberPtr:
-  PrintName("ArrayElemMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemFloat:
-  PrintName("ArrayElemFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayElemSint8( uint32_t , const SourceInfo &);
@@ -1379,7 +1373,6 @@ bool emitArrayElemIntAPS( uint32_t , const SourceInfo &);
 bool emitArrayElemBool( uint32_t , const SourceInfo &);
 bool emitArrayElemFixedPoint( uint32_t , const SourceInfo &);
 bool emitArrayElemPtr( uint32_t , const SourceInfo &);
-bool emitArrayElemFnPtr( uint32_t , const SourceInfo &);
 bool emitArrayElemMemberPtr( uint32_t , const SourceInfo &);
 bool emitArrayElemFloat( uint32_t , const SourceInfo &);
 #endif
@@ -1421,8 +1414,6 @@ ByteCodeEmitter
     return emitArrayElemFixedPoint(A0, I);
   case PT_Ptr:
     return emitArrayElemPtr(A0, I);
-  case PT_FnPtr:
-    return emitArrayElemFnPtr(A0, I);
   case PT_MemberPtr:
     return emitArrayElemMemberPtr(A0, I);
   case PT_Float:
@@ -1470,9 +1461,6 @@ bool ByteCodeEmitter::emitArrayElemFixedPoint( uint32_t A0, const SourceInfo &L)
 }
 bool ByteCodeEmitter::emitArrayElemPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_ArrayElemPtr, A0, L);
-}
-bool ByteCodeEmitter::emitArrayElemFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_ArrayElemFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitArrayElemMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_ArrayElemMemberPtr, A0, L);
@@ -1547,11 +1535,6 @@ bool EvalEmitter::emitArrayElemPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return ArrayElem<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitArrayElemFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return ArrayElem<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitArrayElemMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -1577,7 +1560,6 @@ OP_ArrayElemPopIntAPS,
 OP_ArrayElemPopBool,
 OP_ArrayElemPopFixedPoint,
 OP_ArrayElemPopPtr,
-OP_ArrayElemPopFnPtr,
 OP_ArrayElemPopMemberPtr,
 OP_ArrayElemPopFloat,
 #endif
@@ -1660,12 +1642,6 @@ case OP_ArrayElemPopPtr: {
     return false;
   continue;
 }
-case OP_ArrayElemPopFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_ArrayElemPopMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!ArrayElemPop<PT_MemberPtr>(S, OpPC, V0))
@@ -1681,69 +1657,65 @@ case OP_ArrayElemPopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_ArrayElemPopSint8:
-  PrintName("ArrayElemPopSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopUint8:
-  PrintName("ArrayElemPopUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopSint16:
-  PrintName("ArrayElemPopSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopUint16:
-  PrintName("ArrayElemPopUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopSint32:
-  PrintName("ArrayElemPopSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopUint32:
-  PrintName("ArrayElemPopUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopSint64:
-  PrintName("ArrayElemPopSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopUint64:
-  PrintName("ArrayElemPopUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopIntAP:
-  PrintName("ArrayElemPopIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopIntAPS:
-  PrintName("ArrayElemPopIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopBool:
-  PrintName("ArrayElemPopBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopFixedPoint:
-  PrintName("ArrayElemPopFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopPtr:
-  PrintName("ArrayElemPopPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_ArrayElemPopFnPtr:
-  PrintName("ArrayElemPopFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopMemberPtr:
-  PrintName("ArrayElemPopMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_ArrayElemPopFloat:
-  PrintName("ArrayElemPopFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPopFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayElemPopSint8( uint32_t , const SourceInfo &);
@@ -1759,7 +1731,6 @@ bool emitArrayElemPopIntAPS( uint32_t , const SourceInfo &);
 bool emitArrayElemPopBool( uint32_t , const SourceInfo &);
 bool emitArrayElemPopFixedPoint( uint32_t , const SourceInfo &);
 bool emitArrayElemPopPtr( uint32_t , const SourceInfo &);
-bool emitArrayElemPopFnPtr( uint32_t , const SourceInfo &);
 bool emitArrayElemPopMemberPtr( uint32_t , const SourceInfo &);
 bool emitArrayElemPopFloat( uint32_t , const SourceInfo &);
 #endif
@@ -1801,8 +1772,6 @@ ByteCodeEmitter
     return emitArrayElemPopFixedPoint(A0, I);
   case PT_Ptr:
     return emitArrayElemPopPtr(A0, I);
-  case PT_FnPtr:
-    return emitArrayElemPopFnPtr(A0, I);
   case PT_MemberPtr:
     return emitArrayElemPopMemberPtr(A0, I);
   case PT_Float:
@@ -1850,9 +1819,6 @@ bool ByteCodeEmitter::emitArrayElemPopFixedPoint( uint32_t A0, const SourceInfo 
 }
 bool ByteCodeEmitter::emitArrayElemPopPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_ArrayElemPopPtr, A0, L);
-}
-bool ByteCodeEmitter::emitArrayElemPopFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_ArrayElemPopFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitArrayElemPopMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_ArrayElemPopMemberPtr, A0, L);
@@ -1926,11 +1892,6 @@ bool EvalEmitter::emitArrayElemPopPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return ArrayElemPop<PT_Ptr>(S, OpPC, A0);
-}
-bool EvalEmitter::emitArrayElemPopFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return ArrayElemPop<PT_FnPtr>(S, OpPC, A0);
 }
 bool EvalEmitter::emitArrayElemPopMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
@@ -2021,53 +1982,41 @@ case OP_ArrayElemPtrFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_ArrayElemPtrSint8:
-  PrintName("ArrayElemPtrSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrSint8");
+  break;
 case OP_ArrayElemPtrUint8:
-  PrintName("ArrayElemPtrUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrUint8");
+  break;
 case OP_ArrayElemPtrSint16:
-  PrintName("ArrayElemPtrSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrSint16");
+  break;
 case OP_ArrayElemPtrUint16:
-  PrintName("ArrayElemPtrUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrUint16");
+  break;
 case OP_ArrayElemPtrSint32:
-  PrintName("ArrayElemPtrSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrSint32");
+  break;
 case OP_ArrayElemPtrUint32:
-  PrintName("ArrayElemPtrUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrUint32");
+  break;
 case OP_ArrayElemPtrSint64:
-  PrintName("ArrayElemPtrSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrSint64");
+  break;
 case OP_ArrayElemPtrUint64:
-  PrintName("ArrayElemPtrUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrUint64");
+  break;
 case OP_ArrayElemPtrIntAP:
-  PrintName("ArrayElemPtrIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrIntAP");
+  break;
 case OP_ArrayElemPtrIntAPS:
-  PrintName("ArrayElemPtrIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrIntAPS");
+  break;
 case OP_ArrayElemPtrBool:
-  PrintName("ArrayElemPtrBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrBool");
+  break;
 case OP_ArrayElemPtrFixedPoint:
-  PrintName("ArrayElemPtrFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayElemPtrSint8(const SourceInfo &);
@@ -2302,53 +2251,41 @@ case OP_ArrayElemPtrPopFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_ArrayElemPtrPopSint8:
-  PrintName("ArrayElemPtrPopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopSint8");
+  break;
 case OP_ArrayElemPtrPopUint8:
-  PrintName("ArrayElemPtrPopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopUint8");
+  break;
 case OP_ArrayElemPtrPopSint16:
-  PrintName("ArrayElemPtrPopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopSint16");
+  break;
 case OP_ArrayElemPtrPopUint16:
-  PrintName("ArrayElemPtrPopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopUint16");
+  break;
 case OP_ArrayElemPtrPopSint32:
-  PrintName("ArrayElemPtrPopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopSint32");
+  break;
 case OP_ArrayElemPtrPopUint32:
-  PrintName("ArrayElemPtrPopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopUint32");
+  break;
 case OP_ArrayElemPtrPopSint64:
-  PrintName("ArrayElemPtrPopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopSint64");
+  break;
 case OP_ArrayElemPtrPopUint64:
-  PrintName("ArrayElemPtrPopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopUint64");
+  break;
 case OP_ArrayElemPtrPopIntAP:
-  PrintName("ArrayElemPtrPopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopIntAP");
+  break;
 case OP_ArrayElemPtrPopIntAPS:
-  PrintName("ArrayElemPtrPopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopIntAPS");
+  break;
 case OP_ArrayElemPtrPopBool:
-  PrintName("ArrayElemPtrPopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopBool");
+  break;
 case OP_ArrayElemPtrPopFixedPoint:
-  PrintName("ArrayElemPtrPopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ArrayElemPtrPopFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayElemPtrPopSint8(const SourceInfo &);
@@ -2517,9 +2454,8 @@ case OP_Assume: {
 #endif
 #ifdef GET_DISASM
 case OP_Assume:
-  PrintName("Assume");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Assume");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAssume(const SourceInfo &);
@@ -2534,6 +2470,33 @@ bool EvalEmitter::emitAssume(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Assume(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_BCP,
+#endif
+#ifdef GET_INTERP
+case OP_BCP: {
+  const auto V0 = ReadArg<int32_t>(S, PC);
+  const auto V1 = ReadArg<PrimType>(S, PC);
+  if (!BCP(S, PC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_BCP:
+  Text.Op = PrintName("BCP");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitBCP( int32_t ,  PrimType , const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitBCP( int32_t A0,  PrimType A1, const SourceInfo &L) {
+  return emitOp<int32_t, PrimType>(OP_BCP, A0, A1, L);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -2608,49 +2571,38 @@ case OP_BitAndFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_BitAndSint8:
-  PrintName("BitAndSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndSint8");
+  break;
 case OP_BitAndUint8:
-  PrintName("BitAndUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndUint8");
+  break;
 case OP_BitAndSint16:
-  PrintName("BitAndSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndSint16");
+  break;
 case OP_BitAndUint16:
-  PrintName("BitAndUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndUint16");
+  break;
 case OP_BitAndSint32:
-  PrintName("BitAndSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndSint32");
+  break;
 case OP_BitAndUint32:
-  PrintName("BitAndUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndUint32");
+  break;
 case OP_BitAndSint64:
-  PrintName("BitAndSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndSint64");
+  break;
 case OP_BitAndUint64:
-  PrintName("BitAndUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndUint64");
+  break;
 case OP_BitAndIntAP:
-  PrintName("BitAndIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndIntAP");
+  break;
 case OP_BitAndIntAPS:
-  PrintName("BitAndIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndIntAPS");
+  break;
 case OP_BitAndFixedPoint:
-  PrintName("BitAndFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitAndFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitBitAndSint8(const SourceInfo &);
@@ -2808,9 +2760,8 @@ case OP_BitCast: {
 #endif
 #ifdef GET_DISASM
 case OP_BitCast:
-  PrintName("BitCast");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitCast");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitBitCast(const SourceInfo &);
@@ -2950,57 +2901,83 @@ case OP_BitCastPrimPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_BitCastPrimUint8:
-  PrintName("BitCastPrimUint8");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimSint8:
-  PrintName("BitCastPrimSint8");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimUint16:
-  PrintName("BitCastPrimUint16");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimSint16:
-  PrintName("BitCastPrimSint16");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimUint32:
-  PrintName("BitCastPrimUint32");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimSint32:
-  PrintName("BitCastPrimSint32");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimUint64:
-  PrintName("BitCastPrimUint64");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimSint64:
-  PrintName("BitCastPrimSint64");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimIntAP:
-  PrintName("BitCastPrimIntAP");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimIntAPS:
-  PrintName("BitCastPrimIntAPS");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimBool:
-  PrintName("BitCastPrimBool");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimFloat:
-  PrintName("BitCastPrimFloat");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimFloat");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 case OP_BitCastPrimPtr:
-  PrintName("BitCastPrimPtr");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("BitCastPrimPtr");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitBitCastPrimUint8( bool ,  uint32_t ,  const llvm::fltSemantics * , const SourceInfo &);
@@ -3240,49 +3217,38 @@ case OP_BitOrFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_BitOrSint8:
-  PrintName("BitOrSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrSint8");
+  break;
 case OP_BitOrUint8:
-  PrintName("BitOrUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrUint8");
+  break;
 case OP_BitOrSint16:
-  PrintName("BitOrSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrSint16");
+  break;
 case OP_BitOrUint16:
-  PrintName("BitOrUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrUint16");
+  break;
 case OP_BitOrSint32:
-  PrintName("BitOrSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrSint32");
+  break;
 case OP_BitOrUint32:
-  PrintName("BitOrUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrUint32");
+  break;
 case OP_BitOrSint64:
-  PrintName("BitOrSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrSint64");
+  break;
 case OP_BitOrUint64:
-  PrintName("BitOrUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrUint64");
+  break;
 case OP_BitOrIntAP:
-  PrintName("BitOrIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrIntAP");
+  break;
 case OP_BitOrIntAPS:
-  PrintName("BitOrIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrIntAPS");
+  break;
 case OP_BitOrFixedPoint:
-  PrintName("BitOrFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitOrFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitBitOrSint8(const SourceInfo &);
@@ -3500,49 +3466,38 @@ case OP_BitXorFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_BitXorSint8:
-  PrintName("BitXorSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorSint8");
+  break;
 case OP_BitXorUint8:
-  PrintName("BitXorUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorUint8");
+  break;
 case OP_BitXorSint16:
-  PrintName("BitXorSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorSint16");
+  break;
 case OP_BitXorUint16:
-  PrintName("BitXorUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorUint16");
+  break;
 case OP_BitXorSint32:
-  PrintName("BitXorSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorSint32");
+  break;
 case OP_BitXorUint32:
-  PrintName("BitXorUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorUint32");
+  break;
 case OP_BitXorSint64:
-  PrintName("BitXorSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorSint64");
+  break;
 case OP_BitXorUint64:
-  PrintName("BitXorUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorUint64");
+  break;
 case OP_BitXorIntAP:
-  PrintName("BitXorIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorIntAP");
+  break;
 case OP_BitXorIntAPS:
-  PrintName("BitXorIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorIntAPS");
+  break;
 case OP_BitXorFixedPoint:
-  PrintName("BitXorFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("BitXorFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitBitXorSint8(const SourceInfo &);
@@ -3703,7 +3658,6 @@ OP_CMP3Bool,
 OP_CMP3FixedPoint,
 OP_CMP3Ptr,
 OP_CMP3Float,
-OP_CMP3FnPtr,
 #endif
 #ifdef GET_INTERP
 case OP_CMP3Sint8: {
@@ -3790,74 +3744,64 @@ case OP_CMP3Float: {
     return false;
   continue;
 }
-case OP_CMP3FnPtr: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_CMP3Sint8:
-  PrintName("CMP3Sint8");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Sint8");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Uint8:
-  PrintName("CMP3Uint8");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Uint8");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Sint16:
-  PrintName("CMP3Sint16");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Sint16");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Uint16:
-  PrintName("CMP3Uint16");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Uint16");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Sint32:
-  PrintName("CMP3Sint32");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Sint32");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Uint32:
-  PrintName("CMP3Uint32");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Uint32");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Sint64:
-  PrintName("CMP3Sint64");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Sint64");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Uint64:
-  PrintName("CMP3Uint64");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Uint64");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3IntAP:
-  PrintName("CMP3IntAP");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3IntAP");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3IntAPS:
-  PrintName("CMP3IntAPS");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3IntAPS");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Bool:
-  PrintName("CMP3Bool");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Bool");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3FixedPoint:
-  PrintName("CMP3FixedPoint");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3FixedPoint");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Ptr:
-  PrintName("CMP3Ptr");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Ptr");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 case OP_CMP3Float:
-  PrintName("CMP3Float");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
-case OP_CMP3FnPtr:
-  PrintName("CMP3FnPtr");
-  OS << "\t" << ReadArg<const ComparisonCategoryInfo *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CMP3Float");
+  Text.Args.push_back(printArg<const ComparisonCategoryInfo *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCMP3Sint8( const ComparisonCategoryInfo * , const SourceInfo &);
@@ -3874,7 +3818,6 @@ bool emitCMP3Bool( const ComparisonCategoryInfo * , const SourceInfo &);
 bool emitCMP3FixedPoint( const ComparisonCategoryInfo * , const SourceInfo &);
 bool emitCMP3Ptr( const ComparisonCategoryInfo * , const SourceInfo &);
 bool emitCMP3Float( const ComparisonCategoryInfo * , const SourceInfo &);
-bool emitCMP3FnPtr( const ComparisonCategoryInfo * , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitCMP3(PrimType, const ComparisonCategoryInfo *, const SourceInfo &I);
@@ -3916,8 +3859,6 @@ ByteCodeEmitter
     return emitCMP3Ptr(A0, I);
   case PT_Float:
     return emitCMP3Float(A0, I);
-  case PT_FnPtr:
-    return emitCMP3FnPtr(A0, I);
   default: llvm_unreachable("invalid type: emitCMP3");
   }
   llvm_unreachable("invalid enum value");
@@ -3965,9 +3906,6 @@ bool ByteCodeEmitter::emitCMP3Ptr( const ComparisonCategoryInfo * A0, const Sour
 }
 bool ByteCodeEmitter::emitCMP3Float( const ComparisonCategoryInfo * A0, const SourceInfo &L) {
   return emitOp<const ComparisonCategoryInfo *>(OP_CMP3Float, A0, L);
-}
-bool ByteCodeEmitter::emitCMP3FnPtr( const ComparisonCategoryInfo * A0, const SourceInfo &L) {
-  return emitOp<const ComparisonCategoryInfo *>(OP_CMP3FnPtr, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -4041,11 +3979,6 @@ bool EvalEmitter::emitCMP3Float( const ComparisonCategoryInfo * A0, const Source
   CurrentSource = L;
   return CMP3<PT_Float>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCMP3FnPtr( const ComparisonCategoryInfo * A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return CMP3<PT_FnPtr>(S, OpPC, A0);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_Call,
@@ -4061,9 +3994,10 @@ case OP_Call: {
 #endif
 #ifdef GET_DISASM
 case OP_Call:
-  PrintName("Call");
-  OS << "\t" << ReadArg<const Function *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Call");
+  Text.Args.push_back(printArg<const Function *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCall( const Function * ,  uint32_t , const SourceInfo &);
@@ -4095,9 +4029,11 @@ case OP_CallBI: {
 #endif
 #ifdef GET_DISASM
 case OP_CallBI:
-  PrintName("CallBI");
-  OS << "\t" << ReadArg<const Function *>(P, PC) << " " << ReadArg<const CallExpr *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CallBI");
+  Text.Args.push_back(printArg<const Function *>(P, PC));
+  Text.Args.push_back(printArg<const CallExpr *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCallBI( const Function * ,  const CallExpr * ,  uint32_t , const SourceInfo &);
@@ -4128,9 +4064,10 @@ case OP_CallPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_CallPtr:
-  PrintName("CallPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const CallExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CallPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const CallExpr *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCallPtr( uint32_t ,  const CallExpr * , const SourceInfo &);
@@ -4161,9 +4098,10 @@ case OP_CallVar: {
 #endif
 #ifdef GET_DISASM
 case OP_CallVar:
-  PrintName("CallVar");
-  OS << "\t" << ReadArg<const Function *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CallVar");
+  Text.Args.push_back(printArg<const Function *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCallVar( const Function * ,  uint32_t , const SourceInfo &);
@@ -4194,9 +4132,10 @@ case OP_CallVirt: {
 #endif
 #ifdef GET_DISASM
 case OP_CallVirt:
-  PrintName("CallVirt");
-  OS << "\t" << ReadArg<const Function *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CallVirt");
+  Text.Args.push_back(printArg<const Function *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCallVirt( const Function * ,  uint32_t , const SourceInfo &);
@@ -4867,437 +4806,329 @@ case OP_CastFixedPointBool: {
 #endif
 #ifdef GET_DISASM
 case OP_CastUint8Uint8:
-  PrintName("CastUint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Uint8");
+  break;
 case OP_CastUint8Sint8:
-  PrintName("CastUint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Sint8");
+  break;
 case OP_CastUint8Uint16:
-  PrintName("CastUint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Uint16");
+  break;
 case OP_CastUint8Sint16:
-  PrintName("CastUint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Sint16");
+  break;
 case OP_CastUint8Uint32:
-  PrintName("CastUint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Uint32");
+  break;
 case OP_CastUint8Sint32:
-  PrintName("CastUint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Sint32");
+  break;
 case OP_CastUint8Uint64:
-  PrintName("CastUint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Uint64");
+  break;
 case OP_CastUint8Sint64:
-  PrintName("CastUint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Sint64");
+  break;
 case OP_CastUint8Bool:
-  PrintName("CastUint8Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint8Bool");
+  break;
 case OP_CastSint8Uint8:
-  PrintName("CastSint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Uint8");
+  break;
 case OP_CastSint8Sint8:
-  PrintName("CastSint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Sint8");
+  break;
 case OP_CastSint8Uint16:
-  PrintName("CastSint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Uint16");
+  break;
 case OP_CastSint8Sint16:
-  PrintName("CastSint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Sint16");
+  break;
 case OP_CastSint8Uint32:
-  PrintName("CastSint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Uint32");
+  break;
 case OP_CastSint8Sint32:
-  PrintName("CastSint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Sint32");
+  break;
 case OP_CastSint8Uint64:
-  PrintName("CastSint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Uint64");
+  break;
 case OP_CastSint8Sint64:
-  PrintName("CastSint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Sint64");
+  break;
 case OP_CastSint8Bool:
-  PrintName("CastSint8Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint8Bool");
+  break;
 case OP_CastUint16Uint8:
-  PrintName("CastUint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Uint8");
+  break;
 case OP_CastUint16Sint8:
-  PrintName("CastUint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Sint8");
+  break;
 case OP_CastUint16Uint16:
-  PrintName("CastUint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Uint16");
+  break;
 case OP_CastUint16Sint16:
-  PrintName("CastUint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Sint16");
+  break;
 case OP_CastUint16Uint32:
-  PrintName("CastUint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Uint32");
+  break;
 case OP_CastUint16Sint32:
-  PrintName("CastUint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Sint32");
+  break;
 case OP_CastUint16Uint64:
-  PrintName("CastUint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Uint64");
+  break;
 case OP_CastUint16Sint64:
-  PrintName("CastUint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Sint64");
+  break;
 case OP_CastUint16Bool:
-  PrintName("CastUint16Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint16Bool");
+  break;
 case OP_CastSint16Uint8:
-  PrintName("CastSint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Uint8");
+  break;
 case OP_CastSint16Sint8:
-  PrintName("CastSint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Sint8");
+  break;
 case OP_CastSint16Uint16:
-  PrintName("CastSint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Uint16");
+  break;
 case OP_CastSint16Sint16:
-  PrintName("CastSint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Sint16");
+  break;
 case OP_CastSint16Uint32:
-  PrintName("CastSint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Uint32");
+  break;
 case OP_CastSint16Sint32:
-  PrintName("CastSint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Sint32");
+  break;
 case OP_CastSint16Uint64:
-  PrintName("CastSint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Uint64");
+  break;
 case OP_CastSint16Sint64:
-  PrintName("CastSint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Sint64");
+  break;
 case OP_CastSint16Bool:
-  PrintName("CastSint16Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint16Bool");
+  break;
 case OP_CastUint32Uint8:
-  PrintName("CastUint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Uint8");
+  break;
 case OP_CastUint32Sint8:
-  PrintName("CastUint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Sint8");
+  break;
 case OP_CastUint32Uint16:
-  PrintName("CastUint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Uint16");
+  break;
 case OP_CastUint32Sint16:
-  PrintName("CastUint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Sint16");
+  break;
 case OP_CastUint32Uint32:
-  PrintName("CastUint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Uint32");
+  break;
 case OP_CastUint32Sint32:
-  PrintName("CastUint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Sint32");
+  break;
 case OP_CastUint32Uint64:
-  PrintName("CastUint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Uint64");
+  break;
 case OP_CastUint32Sint64:
-  PrintName("CastUint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Sint64");
+  break;
 case OP_CastUint32Bool:
-  PrintName("CastUint32Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint32Bool");
+  break;
 case OP_CastSint32Uint8:
-  PrintName("CastSint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Uint8");
+  break;
 case OP_CastSint32Sint8:
-  PrintName("CastSint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Sint8");
+  break;
 case OP_CastSint32Uint16:
-  PrintName("CastSint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Uint16");
+  break;
 case OP_CastSint32Sint16:
-  PrintName("CastSint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Sint16");
+  break;
 case OP_CastSint32Uint32:
-  PrintName("CastSint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Uint32");
+  break;
 case OP_CastSint32Sint32:
-  PrintName("CastSint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Sint32");
+  break;
 case OP_CastSint32Uint64:
-  PrintName("CastSint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Uint64");
+  break;
 case OP_CastSint32Sint64:
-  PrintName("CastSint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Sint64");
+  break;
 case OP_CastSint32Bool:
-  PrintName("CastSint32Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint32Bool");
+  break;
 case OP_CastUint64Uint8:
-  PrintName("CastUint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Uint8");
+  break;
 case OP_CastUint64Sint8:
-  PrintName("CastUint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Sint8");
+  break;
 case OP_CastUint64Uint16:
-  PrintName("CastUint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Uint16");
+  break;
 case OP_CastUint64Sint16:
-  PrintName("CastUint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Sint16");
+  break;
 case OP_CastUint64Uint32:
-  PrintName("CastUint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Uint32");
+  break;
 case OP_CastUint64Sint32:
-  PrintName("CastUint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Sint32");
+  break;
 case OP_CastUint64Uint64:
-  PrintName("CastUint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Uint64");
+  break;
 case OP_CastUint64Sint64:
-  PrintName("CastUint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Sint64");
+  break;
 case OP_CastUint64Bool:
-  PrintName("CastUint64Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastUint64Bool");
+  break;
 case OP_CastSint64Uint8:
-  PrintName("CastSint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Uint8");
+  break;
 case OP_CastSint64Sint8:
-  PrintName("CastSint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Sint8");
+  break;
 case OP_CastSint64Uint16:
-  PrintName("CastSint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Uint16");
+  break;
 case OP_CastSint64Sint16:
-  PrintName("CastSint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Sint16");
+  break;
 case OP_CastSint64Uint32:
-  PrintName("CastSint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Uint32");
+  break;
 case OP_CastSint64Sint32:
-  PrintName("CastSint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Sint32");
+  break;
 case OP_CastSint64Uint64:
-  PrintName("CastSint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Uint64");
+  break;
 case OP_CastSint64Sint64:
-  PrintName("CastSint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Sint64");
+  break;
 case OP_CastSint64Bool:
-  PrintName("CastSint64Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastSint64Bool");
+  break;
 case OP_CastBoolUint8:
-  PrintName("CastBoolUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolUint8");
+  break;
 case OP_CastBoolSint8:
-  PrintName("CastBoolSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolSint8");
+  break;
 case OP_CastBoolUint16:
-  PrintName("CastBoolUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolUint16");
+  break;
 case OP_CastBoolSint16:
-  PrintName("CastBoolSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolSint16");
+  break;
 case OP_CastBoolUint32:
-  PrintName("CastBoolUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolUint32");
+  break;
 case OP_CastBoolSint32:
-  PrintName("CastBoolSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolSint32");
+  break;
 case OP_CastBoolUint64:
-  PrintName("CastBoolUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolUint64");
+  break;
 case OP_CastBoolSint64:
-  PrintName("CastBoolSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolSint64");
+  break;
 case OP_CastBoolBool:
-  PrintName("CastBoolBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastBoolBool");
+  break;
 case OP_CastIntAPUint8:
-  PrintName("CastIntAPUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPUint8");
+  break;
 case OP_CastIntAPSint8:
-  PrintName("CastIntAPSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSint8");
+  break;
 case OP_CastIntAPUint16:
-  PrintName("CastIntAPUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPUint16");
+  break;
 case OP_CastIntAPSint16:
-  PrintName("CastIntAPSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSint16");
+  break;
 case OP_CastIntAPUint32:
-  PrintName("CastIntAPUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPUint32");
+  break;
 case OP_CastIntAPSint32:
-  PrintName("CastIntAPSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSint32");
+  break;
 case OP_CastIntAPUint64:
-  PrintName("CastIntAPUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPUint64");
+  break;
 case OP_CastIntAPSint64:
-  PrintName("CastIntAPSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSint64");
+  break;
 case OP_CastIntAPBool:
-  PrintName("CastIntAPBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPBool");
+  break;
 case OP_CastIntAPSUint8:
-  PrintName("CastIntAPSUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSUint8");
+  break;
 case OP_CastIntAPSSint8:
-  PrintName("CastIntAPSSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSSint8");
+  break;
 case OP_CastIntAPSUint16:
-  PrintName("CastIntAPSUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSUint16");
+  break;
 case OP_CastIntAPSSint16:
-  PrintName("CastIntAPSSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSSint16");
+  break;
 case OP_CastIntAPSUint32:
-  PrintName("CastIntAPSUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSUint32");
+  break;
 case OP_CastIntAPSSint32:
-  PrintName("CastIntAPSSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSSint32");
+  break;
 case OP_CastIntAPSUint64:
-  PrintName("CastIntAPSUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSUint64");
+  break;
 case OP_CastIntAPSSint64:
-  PrintName("CastIntAPSSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSSint64");
+  break;
 case OP_CastIntAPSBool:
-  PrintName("CastIntAPSBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastIntAPSBool");
+  break;
 case OP_CastFixedPointUint8:
-  PrintName("CastFixedPointUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointUint8");
+  break;
 case OP_CastFixedPointSint8:
-  PrintName("CastFixedPointSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointSint8");
+  break;
 case OP_CastFixedPointUint16:
-  PrintName("CastFixedPointUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointUint16");
+  break;
 case OP_CastFixedPointSint16:
-  PrintName("CastFixedPointSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointSint16");
+  break;
 case OP_CastFixedPointUint32:
-  PrintName("CastFixedPointUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointUint32");
+  break;
 case OP_CastFixedPointSint32:
-  PrintName("CastFixedPointSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointSint32");
+  break;
 case OP_CastFixedPointUint64:
-  PrintName("CastFixedPointUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointUint64");
+  break;
 case OP_CastFixedPointSint64:
-  PrintName("CastFixedPointSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointSint64");
+  break;
 case OP_CastFixedPointBool:
-  PrintName("CastFixedPointBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointBool");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastUint8Uint8(const SourceInfo &);
@@ -6660,53 +6491,53 @@ case OP_CastAPFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_CastAPSint8:
-  PrintName("CastAPSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPUint8:
-  PrintName("CastAPUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSint16:
-  PrintName("CastAPSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPUint16:
-  PrintName("CastAPUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSint32:
-  PrintName("CastAPSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPUint32:
-  PrintName("CastAPUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSint64:
-  PrintName("CastAPSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPUint64:
-  PrintName("CastAPUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPIntAP:
-  PrintName("CastAPIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPIntAPS:
-  PrintName("CastAPIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPBool:
-  PrintName("CastAPBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPFixedPoint:
-  PrintName("CastAPFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastAPSint8( uint32_t , const SourceInfo &);
@@ -6953,53 +6784,53 @@ case OP_CastAPSFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_CastAPSSint8:
-  PrintName("CastAPSSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSUint8:
-  PrintName("CastAPSUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSSint16:
-  PrintName("CastAPSSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSUint16:
-  PrintName("CastAPSUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSSint32:
-  PrintName("CastAPSSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSUint32:
-  PrintName("CastAPSUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSSint64:
-  PrintName("CastAPSSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSUint64:
-  PrintName("CastAPSUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSIntAP:
-  PrintName("CastAPSIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSIntAPS:
-  PrintName("CastAPSIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSBool:
-  PrintName("CastAPSBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastAPSFixedPoint:
-  PrintName("CastAPSFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastAPSFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastAPSSint8( uint32_t , const SourceInfo &);
@@ -7170,9 +7001,10 @@ case OP_CastFP: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFP:
-  PrintName("CastFP");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<llvm::RoundingMode>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFP");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<llvm::RoundingMode>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFP( const llvm::fltSemantics * ,  llvm::RoundingMode , const SourceInfo &);
@@ -7202,9 +7034,9 @@ case OP_CastFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFixedPoint:
-  PrintName("CastFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFixedPoint( uint32_t , const SourceInfo &);
@@ -7234,9 +7066,9 @@ case OP_CastFixedPointFloating: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFixedPointFloating:
-  PrintName("CastFixedPointFloating");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointFloating");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFixedPointFloating( const llvm::fltSemantics * , const SourceInfo &);
@@ -7313,41 +7145,32 @@ case OP_CastFixedPointIntegralBool: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFixedPointIntegralUint8:
-  PrintName("CastFixedPointIntegralUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralUint8");
+  break;
 case OP_CastFixedPointIntegralSint8:
-  PrintName("CastFixedPointIntegralSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralSint8");
+  break;
 case OP_CastFixedPointIntegralUint16:
-  PrintName("CastFixedPointIntegralUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralUint16");
+  break;
 case OP_CastFixedPointIntegralSint16:
-  PrintName("CastFixedPointIntegralSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralSint16");
+  break;
 case OP_CastFixedPointIntegralUint32:
-  PrintName("CastFixedPointIntegralUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralUint32");
+  break;
 case OP_CastFixedPointIntegralSint32:
-  PrintName("CastFixedPointIntegralSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralSint32");
+  break;
 case OP_CastFixedPointIntegralUint64:
-  PrintName("CastFixedPointIntegralUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralUint64");
+  break;
 case OP_CastFixedPointIntegralSint64:
-  PrintName("CastFixedPointIntegralSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralSint64");
+  break;
 case OP_CastFixedPointIntegralBool:
-  PrintName("CastFixedPointIntegralBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastFixedPointIntegralBool");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFixedPointIntegralUint8(const SourceInfo &);
@@ -7484,9 +7307,9 @@ case OP_CastFloatingFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFloatingFixedPoint:
-  PrintName("CastFloatingFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFloatingFixedPoint( uint32_t , const SourceInfo &);
@@ -7572,41 +7395,41 @@ case OP_CastFloatingIntegralBool: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFloatingIntegralUint8:
-  PrintName("CastFloatingIntegralUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralSint8:
-  PrintName("CastFloatingIntegralSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralUint16:
-  PrintName("CastFloatingIntegralUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralSint16:
-  PrintName("CastFloatingIntegralSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralUint32:
-  PrintName("CastFloatingIntegralUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralSint32:
-  PrintName("CastFloatingIntegralSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralUint64:
-  PrintName("CastFloatingIntegralUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralSint64:
-  PrintName("CastFloatingIntegralSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastFloatingIntegralBool:
-  PrintName("CastFloatingIntegralBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFloatingIntegralUint8( uint32_t , const SourceInfo &);
@@ -7744,9 +7567,10 @@ case OP_CastFloatingIntegralAP: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFloatingIntegralAP:
-  PrintName("CastFloatingIntegralAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFloatingIntegralAP( uint32_t ,  uint32_t , const SourceInfo &);
@@ -7777,9 +7601,10 @@ case OP_CastFloatingIntegralAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_CastFloatingIntegralAPS:
-  PrintName("CastFloatingIntegralAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastFloatingIntegralAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastFloatingIntegralAPS( uint32_t ,  uint32_t , const SourceInfo &);
@@ -7865,41 +7690,41 @@ case OP_CastIntegralFixedPointBool: {
 #endif
 #ifdef GET_DISASM
 case OP_CastIntegralFixedPointUint8:
-  PrintName("CastIntegralFixedPointUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointSint8:
-  PrintName("CastIntegralFixedPointSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointUint16:
-  PrintName("CastIntegralFixedPointUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointSint16:
-  PrintName("CastIntegralFixedPointSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointUint32:
-  PrintName("CastIntegralFixedPointUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointSint32:
-  PrintName("CastIntegralFixedPointSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointUint64:
-  PrintName("CastIntegralFixedPointUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointSint64:
-  PrintName("CastIntegralFixedPointSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFixedPointBool:
-  PrintName("CastIntegralFixedPointBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFixedPointBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastIntegralFixedPointUint8( uint32_t , const SourceInfo &);
@@ -8125,53 +7950,65 @@ case OP_CastIntegralFloatingFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_CastIntegralFloatingSint8:
-  PrintName("CastIntegralFloatingSint8");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingSint8");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingUint8:
-  PrintName("CastIntegralFloatingUint8");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingUint8");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingSint16:
-  PrintName("CastIntegralFloatingSint16");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingSint16");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingUint16:
-  PrintName("CastIntegralFloatingUint16");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingUint16");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingSint32:
-  PrintName("CastIntegralFloatingSint32");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingSint32");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingUint32:
-  PrintName("CastIntegralFloatingUint32");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingUint32");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingSint64:
-  PrintName("CastIntegralFloatingSint64");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingSint64");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingUint64:
-  PrintName("CastIntegralFloatingUint64");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingUint64");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingIntAP:
-  PrintName("CastIntegralFloatingIntAP");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingIntAP");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingIntAPS:
-  PrintName("CastIntegralFloatingIntAPS");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingIntAPS");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingBool:
-  PrintName("CastIntegralFloatingBool");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingBool");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CastIntegralFloatingFixedPoint:
-  PrintName("CastIntegralFloatingFixedPoint");
-  OS << "\t" << ReadArg<const llvm::fltSemantics *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastIntegralFloatingFixedPoint");
+  Text.Args.push_back(printArg<const llvm::fltSemantics *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastIntegralFloatingSint8( const llvm::fltSemantics * ,  uint32_t , const SourceInfo &);
@@ -8340,9 +8177,8 @@ case OP_CastMemberPtrPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_CastMemberPtrPtr:
-  PrintName("CastMemberPtrPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastMemberPtrPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastMemberPtrPtr(const SourceInfo &);
@@ -8419,41 +8255,32 @@ case OP_CastPointerIntegralBool: {
 #endif
 #ifdef GET_DISASM
 case OP_CastPointerIntegralSint8:
-  PrintName("CastPointerIntegralSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralSint8");
+  break;
 case OP_CastPointerIntegralUint8:
-  PrintName("CastPointerIntegralUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralUint8");
+  break;
 case OP_CastPointerIntegralSint16:
-  PrintName("CastPointerIntegralSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralSint16");
+  break;
 case OP_CastPointerIntegralUint16:
-  PrintName("CastPointerIntegralUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralUint16");
+  break;
 case OP_CastPointerIntegralSint32:
-  PrintName("CastPointerIntegralSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralSint32");
+  break;
 case OP_CastPointerIntegralUint32:
-  PrintName("CastPointerIntegralUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralUint32");
+  break;
 case OP_CastPointerIntegralSint64:
-  PrintName("CastPointerIntegralSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralSint64");
+  break;
 case OP_CastPointerIntegralUint64:
-  PrintName("CastPointerIntegralUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralUint64");
+  break;
 case OP_CastPointerIntegralBool:
-  PrintName("CastPointerIntegralBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralBool");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastPointerIntegralSint8(const SourceInfo &);
@@ -8590,9 +8417,9 @@ case OP_CastPointerIntegralAP: {
 #endif
 #ifdef GET_DISASM
 case OP_CastPointerIntegralAP:
-  PrintName("CastPointerIntegralAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastPointerIntegralAP( uint32_t , const SourceInfo &);
@@ -8622,9 +8449,9 @@ case OP_CastPointerIntegralAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_CastPointerIntegralAPS:
-  PrintName("CastPointerIntegralAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CastPointerIntegralAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCastPointerIntegralAPS( uint32_t , const SourceInfo &);
@@ -8653,9 +8480,8 @@ case OP_CheckAllocations: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckAllocations:
-  PrintName("CheckAllocations");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CheckAllocations");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckAllocations(const SourceInfo &);
@@ -8685,9 +8511,9 @@ case OP_CheckDecl: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckDecl:
-  PrintName("CheckDecl");
-  OS << "\t" << ReadArg<const VarDecl*>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckDecl");
+  Text.Args.push_back(printArg<const VarDecl*>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckDecl( const VarDecl* , const SourceInfo &);
@@ -8702,6 +8528,36 @@ bool EvalEmitter::emitCheckDecl( const VarDecl* A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CheckDecl(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_CheckDestruction,
+#endif
+#ifdef GET_INTERP
+case OP_CheckDestruction: {
+  if (!CheckDestruction(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CheckDestruction:
+  Text.Op = PrintName("CheckDestruction");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCheckDestruction(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCheckDestruction(const SourceInfo &L) {
+  return emitOp<>(OP_CheckDestruction, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCheckDestruction(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CheckDestruction(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -8773,41 +8629,41 @@ case OP_CheckEnumValueBool: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckEnumValueSint8:
-  PrintName("CheckEnumValueSint8");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueSint8");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueUint8:
-  PrintName("CheckEnumValueUint8");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueUint8");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueSint16:
-  PrintName("CheckEnumValueSint16");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueSint16");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueUint16:
-  PrintName("CheckEnumValueUint16");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueUint16");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueSint32:
-  PrintName("CheckEnumValueSint32");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueSint32");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueUint32:
-  PrintName("CheckEnumValueUint32");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueUint32");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueSint64:
-  PrintName("CheckEnumValueSint64");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueSint64");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueUint64:
-  PrintName("CheckEnumValueUint64");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueUint64");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 case OP_CheckEnumValueBool:
-  PrintName("CheckEnumValueBool");
-  OS << "\t" << ReadArg<const EnumDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckEnumValueBool");
+  Text.Args.push_back(printArg<const EnumDecl *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckEnumValueSint8( const EnumDecl * , const SourceInfo &);
@@ -8944,9 +8800,9 @@ case OP_CheckLiteralType: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckLiteralType:
-  PrintName("CheckLiteralType");
-  OS << "\t" << ReadArg<const Type *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckLiteralType");
+  Text.Args.push_back(printArg<const Type *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckLiteralType( const Type * , const SourceInfo &);
@@ -8976,9 +8832,9 @@ case OP_CheckNewTypeMismatch: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckNewTypeMismatch:
-  PrintName("CheckNewTypeMismatch");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatch");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckNewTypeMismatch( const Expr * , const SourceInfo &);
@@ -9071,45 +8927,45 @@ case OP_CheckNewTypeMismatchArrayIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckNewTypeMismatchArraySint8:
-  PrintName("CheckNewTypeMismatchArraySint8");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArraySint8");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArrayUint8:
-  PrintName("CheckNewTypeMismatchArrayUint8");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArrayUint8");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArraySint16:
-  PrintName("CheckNewTypeMismatchArraySint16");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArraySint16");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArrayUint16:
-  PrintName("CheckNewTypeMismatchArrayUint16");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArrayUint16");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArraySint32:
-  PrintName("CheckNewTypeMismatchArraySint32");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArraySint32");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArrayUint32:
-  PrintName("CheckNewTypeMismatchArrayUint32");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArrayUint32");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArraySint64:
-  PrintName("CheckNewTypeMismatchArraySint64");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArraySint64");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArrayUint64:
-  PrintName("CheckNewTypeMismatchArrayUint64");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArrayUint64");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArrayIntAP:
-  PrintName("CheckNewTypeMismatchArrayIntAP");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArrayIntAP");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 case OP_CheckNewTypeMismatchArrayIntAPS:
-  PrintName("CheckNewTypeMismatchArrayIntAPS");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CheckNewTypeMismatchArrayIntAPS");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckNewTypeMismatchArraySint8( const Expr * , const SourceInfo &);
@@ -9246,17 +9102,11 @@ bool EvalEmitter::emitCheckNewTypeMismatchArrayIntAPS( const Expr * A0, const So
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_CheckNonNullArgPtr,
-OP_CheckNonNullArgFnPtr,
 OP_CheckNonNullArgMemberPtr,
 #endif
 #ifdef GET_INTERP
 case OP_CheckNonNullArgPtr: {
   if (!CheckNonNullArg<PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CheckNonNullArgFnPtr: {
-  if (!CheckNonNullArg<PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -9268,21 +9118,14 @@ case OP_CheckNonNullArgMemberPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_CheckNonNullArgPtr:
-  PrintName("CheckNonNullArgPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_CheckNonNullArgFnPtr:
-  PrintName("CheckNonNullArgFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CheckNonNullArgPtr");
+  break;
 case OP_CheckNonNullArgMemberPtr:
-  PrintName("CheckNonNullArgMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CheckNonNullArgMemberPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCheckNonNullArgPtr(const SourceInfo &);
-bool emitCheckNonNullArgFnPtr(const SourceInfo &);
 bool emitCheckNonNullArgMemberPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
@@ -9299,8 +9142,6 @@ ByteCodeEmitter
   switch (T0) {
   case PT_Ptr:
     return emitCheckNonNullArgPtr(I);
-  case PT_FnPtr:
-    return emitCheckNonNullArgFnPtr(I);
   case PT_MemberPtr:
     return emitCheckNonNullArgMemberPtr(I);
   default: llvm_unreachable("invalid type: emitCheckNonNullArg");
@@ -9312,9 +9153,6 @@ ByteCodeEmitter
 bool ByteCodeEmitter::emitCheckNonNullArgPtr(const SourceInfo &L) {
   return emitOp<>(OP_CheckNonNullArgPtr, L);
 }
-bool ByteCodeEmitter::emitCheckNonNullArgFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_CheckNonNullArgFnPtr, L);
-}
 bool ByteCodeEmitter::emitCheckNonNullArgMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_CheckNonNullArgMemberPtr, L);
 }
@@ -9324,11 +9162,6 @@ bool EvalEmitter::emitCheckNonNullArgPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CheckNonNullArg<PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitCheckNonNullArgFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return CheckNonNullArg<PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitCheckNonNullArgMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -9402,45 +9235,35 @@ case OP_CompIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_CompSint8:
-  PrintName("CompSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompSint8");
+  break;
 case OP_CompUint8:
-  PrintName("CompUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompUint8");
+  break;
 case OP_CompSint16:
-  PrintName("CompSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompSint16");
+  break;
 case OP_CompUint16:
-  PrintName("CompUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompUint16");
+  break;
 case OP_CompSint32:
-  PrintName("CompSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompSint32");
+  break;
 case OP_CompUint32:
-  PrintName("CompUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompUint32");
+  break;
 case OP_CompSint64:
-  PrintName("CompSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompSint64");
+  break;
 case OP_CompUint64:
-  PrintName("CompUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompUint64");
+  break;
 case OP_CompIntAP:
-  PrintName("CompIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompIntAP");
+  break;
 case OP_CompIntAPS:
-  PrintName("CompIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("CompIntAPS");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCompSint8(const SourceInfo &);
@@ -9588,9 +9411,9 @@ case OP_ConstBool: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstBool:
-  PrintName("ConstBool");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstBool( bool , const SourceInfo &);
@@ -9620,9 +9443,9 @@ case OP_ConstFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstFixedPoint:
-  PrintName("ConstFixedPoint");
-  OS << "\t" << ReadArg<FixedPoint>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstFixedPoint");
+  Text.Args.push_back(printArg<FixedPoint>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstFixedPoint(const FixedPoint &, const SourceInfo &);
@@ -9652,9 +9475,9 @@ case OP_ConstFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstFloat:
-  PrintName("ConstFloat");
-  OS << "\t" << ReadArg<Floating>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstFloat");
+  Text.Args.push_back(printArg<Floating>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstFloat(const Floating &, const SourceInfo &);
@@ -9684,9 +9507,9 @@ case OP_ConstSint8: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstSint8:
-  PrintName("ConstSint8");
-  OS << "\t" << ReadArg<int8_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstSint8");
+  Text.Args.push_back(printArg<int8_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstSint8( int8_t , const SourceInfo &);
@@ -9716,9 +9539,9 @@ case OP_ConstSint16: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstSint16:
-  PrintName("ConstSint16");
-  OS << "\t" << ReadArg<int16_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstSint16");
+  Text.Args.push_back(printArg<int16_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstSint16( int16_t , const SourceInfo &);
@@ -9748,9 +9571,9 @@ case OP_ConstSint32: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstSint32:
-  PrintName("ConstSint32");
-  OS << "\t" << ReadArg<int32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstSint32");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstSint32( int32_t , const SourceInfo &);
@@ -9780,9 +9603,9 @@ case OP_ConstSint64: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstSint64:
-  PrintName("ConstSint64");
-  OS << "\t" << ReadArg<int64_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstSint64");
+  Text.Args.push_back(printArg<int64_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstSint64( int64_t , const SourceInfo &);
@@ -9812,9 +9635,9 @@ case OP_ConstUint8: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstUint8:
-  PrintName("ConstUint8");
-  OS << "\t" << ReadArg<uint8_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstUint8");
+  Text.Args.push_back(printArg<uint8_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstUint8( uint8_t , const SourceInfo &);
@@ -9844,9 +9667,9 @@ case OP_ConstUint16: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstUint16:
-  PrintName("ConstUint16");
-  OS << "\t" << ReadArg<uint16_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstUint16");
+  Text.Args.push_back(printArg<uint16_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstUint16( uint16_t , const SourceInfo &);
@@ -9876,9 +9699,9 @@ case OP_ConstUint32: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstUint32:
-  PrintName("ConstUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstUint32( uint32_t , const SourceInfo &);
@@ -9908,9 +9731,9 @@ case OP_ConstUint64: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstUint64:
-  PrintName("ConstUint64");
-  OS << "\t" << ReadArg<uint64_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstUint64");
+  Text.Args.push_back(printArg<uint64_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstUint64( uint64_t , const SourceInfo &);
@@ -9941,7 +9764,6 @@ OP_CopyArrayIntAPS,
 OP_CopyArrayBool,
 OP_CopyArrayFixedPoint,
 OP_CopyArrayPtr,
-OP_CopyArrayFnPtr,
 OP_CopyArrayMemberPtr,
 OP_CopyArrayFloat,
 #endif
@@ -10050,14 +9872,6 @@ case OP_CopyArrayPtr: {
     return false;
   continue;
 }
-case OP_CopyArrayFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_FnPtr>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
-}
 case OP_CopyArrayMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   const auto V1 = ReadArg<uint32_t>(S, PC);
@@ -10077,69 +9891,95 @@ case OP_CopyArrayFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_CopyArraySint8:
-  PrintName("CopyArraySint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArraySint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayUint8:
-  PrintName("CopyArrayUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArraySint16:
-  PrintName("CopyArraySint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArraySint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayUint16:
-  PrintName("CopyArrayUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArraySint32:
-  PrintName("CopyArraySint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArraySint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayUint32:
-  PrintName("CopyArrayUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArraySint64:
-  PrintName("CopyArraySint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArraySint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayUint64:
-  PrintName("CopyArrayUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayIntAP:
-  PrintName("CopyArrayIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayIntAPS:
-  PrintName("CopyArrayIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayBool:
-  PrintName("CopyArrayBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayFixedPoint:
-  PrintName("CopyArrayFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayPtr:
-  PrintName("CopyArrayPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_CopyArrayFnPtr:
-  PrintName("CopyArrayFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayMemberPtr:
-  PrintName("CopyArrayMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_CopyArrayFloat:
-  PrintName("CopyArrayFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("CopyArrayFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitCopyArraySint8( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
@@ -10155,7 +9995,6 @@ bool emitCopyArrayIntAPS( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &)
 bool emitCopyArrayBool( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
 bool emitCopyArrayFixedPoint( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
 bool emitCopyArrayPtr( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
-bool emitCopyArrayFnPtr( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
 bool emitCopyArrayMemberPtr( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
 bool emitCopyArrayFloat( uint32_t ,  uint32_t ,  uint32_t , const SourceInfo &);
 #endif
@@ -10197,8 +10036,6 @@ ByteCodeEmitter
     return emitCopyArrayFixedPoint(A0, A1, A2, I);
   case PT_Ptr:
     return emitCopyArrayPtr(A0, A1, A2, I);
-  case PT_FnPtr:
-    return emitCopyArrayFnPtr(A0, A1, A2, I);
   case PT_MemberPtr:
     return emitCopyArrayMemberPtr(A0, A1, A2, I);
   case PT_Float:
@@ -10246,9 +10083,6 @@ bool ByteCodeEmitter::emitCopyArrayFixedPoint( uint32_t A0,  uint32_t A1,  uint3
 }
 bool ByteCodeEmitter::emitCopyArrayPtr( uint32_t A0,  uint32_t A1,  uint32_t A2, const SourceInfo &L) {
   return emitOp<uint32_t, uint32_t, uint32_t>(OP_CopyArrayPtr, A0, A1, A2, L);
-}
-bool ByteCodeEmitter::emitCopyArrayFnPtr( uint32_t A0,  uint32_t A1,  uint32_t A2, const SourceInfo &L) {
-  return emitOp<uint32_t, uint32_t, uint32_t>(OP_CopyArrayFnPtr, A0, A1, A2, L);
 }
 bool ByteCodeEmitter::emitCopyArrayMemberPtr( uint32_t A0,  uint32_t A1,  uint32_t A2, const SourceInfo &L) {
   return emitOp<uint32_t, uint32_t, uint32_t>(OP_CopyArrayMemberPtr, A0, A1, A2, L);
@@ -10323,11 +10157,6 @@ bool EvalEmitter::emitCopyArrayPtr( uint32_t A0,  uint32_t A1,  uint32_t A2, con
   CurrentSource = L;
   return CopyArray<PT_Ptr>(S, OpPC, A0, A1, A2);
 }
-bool EvalEmitter::emitCopyArrayFnPtr( uint32_t A0,  uint32_t A1,  uint32_t A2, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return CopyArray<PT_FnPtr>(S, OpPC, A0, A1, A2);
-}
 bool EvalEmitter::emitCopyArrayMemberPtr( uint32_t A0,  uint32_t A1,  uint32_t A2, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -10355,132 +10184,144 @@ OP_DecFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_DecSint8: {
-  if (!Dec<PT_Sint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecUint8: {
-  if (!Dec<PT_Uint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecSint16: {
-  if (!Dec<PT_Sint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Sint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecUint16: {
-  if (!Dec<PT_Uint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecSint32: {
-  if (!Dec<PT_Sint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Sint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecUint32: {
-  if (!Dec<PT_Uint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecSint64: {
-  if (!Dec<PT_Sint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Sint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecUint64: {
-  if (!Dec<PT_Uint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecIntAP: {
-  if (!Dec<PT_IntAP>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_IntAP>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecIntAPS: {
-  if (!Dec<PT_IntAPS>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_IntAPS>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecBool: {
-  if (!Dec<PT_Bool>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_Bool>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecFixedPoint: {
-  if (!Dec<PT_FixedPoint>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Dec<PT_FixedPoint>(S, OpPC, V0))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
 case OP_DecSint8:
-  PrintName("DecSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecUint8:
-  PrintName("DecUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecSint16:
-  PrintName("DecSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecUint16:
-  PrintName("DecUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecSint32:
-  PrintName("DecSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecUint32:
-  PrintName("DecUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecSint64:
-  PrintName("DecSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecUint64:
-  PrintName("DecUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecIntAP:
-  PrintName("DecIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecIntAPS:
-  PrintName("DecIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecBool:
-  PrintName("DecBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecFixedPoint:
-  PrintName("DecFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitDecSint8(const SourceInfo &);
-bool emitDecUint8(const SourceInfo &);
-bool emitDecSint16(const SourceInfo &);
-bool emitDecUint16(const SourceInfo &);
-bool emitDecSint32(const SourceInfo &);
-bool emitDecUint32(const SourceInfo &);
-bool emitDecSint64(const SourceInfo &);
-bool emitDecUint64(const SourceInfo &);
-bool emitDecIntAP(const SourceInfo &);
-bool emitDecIntAPS(const SourceInfo &);
-bool emitDecBool(const SourceInfo &);
-bool emitDecFixedPoint(const SourceInfo &);
+bool emitDecSint8( bool , const SourceInfo &);
+bool emitDecUint8( bool , const SourceInfo &);
+bool emitDecSint16( bool , const SourceInfo &);
+bool emitDecUint16( bool , const SourceInfo &);
+bool emitDecSint32( bool , const SourceInfo &);
+bool emitDecUint32( bool , const SourceInfo &);
+bool emitDecSint64( bool , const SourceInfo &);
+bool emitDecUint64( bool , const SourceInfo &);
+bool emitDecIntAP( bool , const SourceInfo &);
+bool emitDecIntAPS( bool , const SourceInfo &);
+bool emitDecBool( bool , const SourceInfo &);
+bool emitDecFixedPoint( bool , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-[[nodiscard]] bool emitDec(PrimType, const SourceInfo &I);
+[[nodiscard]] bool emitDec(PrimType, bool, const SourceInfo &I);
 #endif
 #if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
 bool
@@ -10489,135 +10330,135 @@ EvalEmitter
 #else
 ByteCodeEmitter
 #endif
-::emitDec(PrimType T0, const SourceInfo &I) {
+::emitDec(PrimType T0,  bool A0, const SourceInfo &I) {
   switch (T0) {
   case PT_Sint8:
-    return emitDecSint8(I);
+    return emitDecSint8(A0, I);
   case PT_Uint8:
-    return emitDecUint8(I);
+    return emitDecUint8(A0, I);
   case PT_Sint16:
-    return emitDecSint16(I);
+    return emitDecSint16(A0, I);
   case PT_Uint16:
-    return emitDecUint16(I);
+    return emitDecUint16(A0, I);
   case PT_Sint32:
-    return emitDecSint32(I);
+    return emitDecSint32(A0, I);
   case PT_Uint32:
-    return emitDecUint32(I);
+    return emitDecUint32(A0, I);
   case PT_Sint64:
-    return emitDecSint64(I);
+    return emitDecSint64(A0, I);
   case PT_Uint64:
-    return emitDecUint64(I);
+    return emitDecUint64(A0, I);
   case PT_IntAP:
-    return emitDecIntAP(I);
+    return emitDecIntAP(A0, I);
   case PT_IntAPS:
-    return emitDecIntAPS(I);
+    return emitDecIntAPS(A0, I);
   case PT_Bool:
-    return emitDecBool(I);
+    return emitDecBool(A0, I);
   case PT_FixedPoint:
-    return emitDecFixedPoint(I);
+    return emitDecFixedPoint(A0, I);
   default: llvm_unreachable("invalid type: emitDec");
   }
   llvm_unreachable("invalid enum value");
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitDecSint8(const SourceInfo &L) {
-  return emitOp<>(OP_DecSint8, L);
+bool ByteCodeEmitter::emitDecSint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecSint8, A0, L);
 }
-bool ByteCodeEmitter::emitDecUint8(const SourceInfo &L) {
-  return emitOp<>(OP_DecUint8, L);
+bool ByteCodeEmitter::emitDecUint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecUint8, A0, L);
 }
-bool ByteCodeEmitter::emitDecSint16(const SourceInfo &L) {
-  return emitOp<>(OP_DecSint16, L);
+bool ByteCodeEmitter::emitDecSint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecSint16, A0, L);
 }
-bool ByteCodeEmitter::emitDecUint16(const SourceInfo &L) {
-  return emitOp<>(OP_DecUint16, L);
+bool ByteCodeEmitter::emitDecUint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecUint16, A0, L);
 }
-bool ByteCodeEmitter::emitDecSint32(const SourceInfo &L) {
-  return emitOp<>(OP_DecSint32, L);
+bool ByteCodeEmitter::emitDecSint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecSint32, A0, L);
 }
-bool ByteCodeEmitter::emitDecUint32(const SourceInfo &L) {
-  return emitOp<>(OP_DecUint32, L);
+bool ByteCodeEmitter::emitDecUint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecUint32, A0, L);
 }
-bool ByteCodeEmitter::emitDecSint64(const SourceInfo &L) {
-  return emitOp<>(OP_DecSint64, L);
+bool ByteCodeEmitter::emitDecSint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecSint64, A0, L);
 }
-bool ByteCodeEmitter::emitDecUint64(const SourceInfo &L) {
-  return emitOp<>(OP_DecUint64, L);
+bool ByteCodeEmitter::emitDecUint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecUint64, A0, L);
 }
-bool ByteCodeEmitter::emitDecIntAP(const SourceInfo &L) {
-  return emitOp<>(OP_DecIntAP, L);
+bool ByteCodeEmitter::emitDecIntAP( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecIntAP, A0, L);
 }
-bool ByteCodeEmitter::emitDecIntAPS(const SourceInfo &L) {
-  return emitOp<>(OP_DecIntAPS, L);
+bool ByteCodeEmitter::emitDecIntAPS( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecIntAPS, A0, L);
 }
-bool ByteCodeEmitter::emitDecBool(const SourceInfo &L) {
-  return emitOp<>(OP_DecBool, L);
+bool ByteCodeEmitter::emitDecBool( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecBool, A0, L);
 }
-bool ByteCodeEmitter::emitDecFixedPoint(const SourceInfo &L) {
-  return emitOp<>(OP_DecFixedPoint, L);
+bool ByteCodeEmitter::emitDecFixedPoint( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecFixedPoint, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitDecSint8(const SourceInfo &L) {
+bool EvalEmitter::emitDecSint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Sint8>(S, OpPC);
+  return Dec<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecUint8(const SourceInfo &L) {
+bool EvalEmitter::emitDecUint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Uint8>(S, OpPC);
+  return Dec<PT_Uint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecSint16(const SourceInfo &L) {
+bool EvalEmitter::emitDecSint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Sint16>(S, OpPC);
+  return Dec<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecUint16(const SourceInfo &L) {
+bool EvalEmitter::emitDecUint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Uint16>(S, OpPC);
+  return Dec<PT_Uint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecSint32(const SourceInfo &L) {
+bool EvalEmitter::emitDecSint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Sint32>(S, OpPC);
+  return Dec<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecUint32(const SourceInfo &L) {
+bool EvalEmitter::emitDecUint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Uint32>(S, OpPC);
+  return Dec<PT_Uint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecSint64(const SourceInfo &L) {
+bool EvalEmitter::emitDecSint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Sint64>(S, OpPC);
+  return Dec<PT_Sint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecUint64(const SourceInfo &L) {
+bool EvalEmitter::emitDecUint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Uint64>(S, OpPC);
+  return Dec<PT_Uint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecIntAP(const SourceInfo &L) {
+bool EvalEmitter::emitDecIntAP( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_IntAP>(S, OpPC);
+  return Dec<PT_IntAP>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecIntAPS(const SourceInfo &L) {
+bool EvalEmitter::emitDecIntAPS( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_IntAPS>(S, OpPC);
+  return Dec<PT_IntAPS>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecBool(const SourceInfo &L) {
+bool EvalEmitter::emitDecBool( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_Bool>(S, OpPC);
+  return Dec<PT_Bool>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecFixedPoint(const SourceInfo &L) {
+bool EvalEmitter::emitDecFixedPoint( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Dec<PT_FixedPoint>(S, OpPC);
+  return Dec<PT_FixedPoint>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -10636,132 +10477,144 @@ OP_DecPopFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_DecPopSint8: {
-  if (!DecPop<PT_Sint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopUint8: {
-  if (!DecPop<PT_Uint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopSint16: {
-  if (!DecPop<PT_Sint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Sint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopUint16: {
-  if (!DecPop<PT_Uint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopSint32: {
-  if (!DecPop<PT_Sint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Sint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopUint32: {
-  if (!DecPop<PT_Uint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopSint64: {
-  if (!DecPop<PT_Sint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Sint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopUint64: {
-  if (!DecPop<PT_Uint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopIntAP: {
-  if (!DecPop<PT_IntAP>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_IntAP>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopIntAPS: {
-  if (!DecPop<PT_IntAPS>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_IntAPS>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopBool: {
-  if (!DecPop<PT_Bool>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_Bool>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_DecPopFixedPoint: {
-  if (!DecPop<PT_FixedPoint>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!DecPop<PT_FixedPoint>(S, OpPC, V0))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
 case OP_DecPopSint8:
-  PrintName("DecPopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopUint8:
-  PrintName("DecPopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopSint16:
-  PrintName("DecPopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopUint16:
-  PrintName("DecPopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopSint32:
-  PrintName("DecPopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopUint32:
-  PrintName("DecPopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopSint64:
-  PrintName("DecPopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopUint64:
-  PrintName("DecPopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopIntAP:
-  PrintName("DecPopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopIntAPS:
-  PrintName("DecPopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopBool:
-  PrintName("DecPopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_DecPopFixedPoint:
-  PrintName("DecPopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPopFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitDecPopSint8(const SourceInfo &);
-bool emitDecPopUint8(const SourceInfo &);
-bool emitDecPopSint16(const SourceInfo &);
-bool emitDecPopUint16(const SourceInfo &);
-bool emitDecPopSint32(const SourceInfo &);
-bool emitDecPopUint32(const SourceInfo &);
-bool emitDecPopSint64(const SourceInfo &);
-bool emitDecPopUint64(const SourceInfo &);
-bool emitDecPopIntAP(const SourceInfo &);
-bool emitDecPopIntAPS(const SourceInfo &);
-bool emitDecPopBool(const SourceInfo &);
-bool emitDecPopFixedPoint(const SourceInfo &);
+bool emitDecPopSint8( bool , const SourceInfo &);
+bool emitDecPopUint8( bool , const SourceInfo &);
+bool emitDecPopSint16( bool , const SourceInfo &);
+bool emitDecPopUint16( bool , const SourceInfo &);
+bool emitDecPopSint32( bool , const SourceInfo &);
+bool emitDecPopUint32( bool , const SourceInfo &);
+bool emitDecPopSint64( bool , const SourceInfo &);
+bool emitDecPopUint64( bool , const SourceInfo &);
+bool emitDecPopIntAP( bool , const SourceInfo &);
+bool emitDecPopIntAPS( bool , const SourceInfo &);
+bool emitDecPopBool( bool , const SourceInfo &);
+bool emitDecPopFixedPoint( bool , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-[[nodiscard]] bool emitDecPop(PrimType, const SourceInfo &I);
+[[nodiscard]] bool emitDecPop(PrimType, bool, const SourceInfo &I);
 #endif
 #if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
 bool
@@ -10770,135 +10623,135 @@ EvalEmitter
 #else
 ByteCodeEmitter
 #endif
-::emitDecPop(PrimType T0, const SourceInfo &I) {
+::emitDecPop(PrimType T0,  bool A0, const SourceInfo &I) {
   switch (T0) {
   case PT_Sint8:
-    return emitDecPopSint8(I);
+    return emitDecPopSint8(A0, I);
   case PT_Uint8:
-    return emitDecPopUint8(I);
+    return emitDecPopUint8(A0, I);
   case PT_Sint16:
-    return emitDecPopSint16(I);
+    return emitDecPopSint16(A0, I);
   case PT_Uint16:
-    return emitDecPopUint16(I);
+    return emitDecPopUint16(A0, I);
   case PT_Sint32:
-    return emitDecPopSint32(I);
+    return emitDecPopSint32(A0, I);
   case PT_Uint32:
-    return emitDecPopUint32(I);
+    return emitDecPopUint32(A0, I);
   case PT_Sint64:
-    return emitDecPopSint64(I);
+    return emitDecPopSint64(A0, I);
   case PT_Uint64:
-    return emitDecPopUint64(I);
+    return emitDecPopUint64(A0, I);
   case PT_IntAP:
-    return emitDecPopIntAP(I);
+    return emitDecPopIntAP(A0, I);
   case PT_IntAPS:
-    return emitDecPopIntAPS(I);
+    return emitDecPopIntAPS(A0, I);
   case PT_Bool:
-    return emitDecPopBool(I);
+    return emitDecPopBool(A0, I);
   case PT_FixedPoint:
-    return emitDecPopFixedPoint(I);
+    return emitDecPopFixedPoint(A0, I);
   default: llvm_unreachable("invalid type: emitDecPop");
   }
   llvm_unreachable("invalid enum value");
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitDecPopSint8(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopSint8, L);
+bool ByteCodeEmitter::emitDecPopSint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopSint8, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopUint8(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopUint8, L);
+bool ByteCodeEmitter::emitDecPopUint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopUint8, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopSint16(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopSint16, L);
+bool ByteCodeEmitter::emitDecPopSint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopSint16, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopUint16(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopUint16, L);
+bool ByteCodeEmitter::emitDecPopUint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopUint16, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopSint32(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopSint32, L);
+bool ByteCodeEmitter::emitDecPopSint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopSint32, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopUint32(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopUint32, L);
+bool ByteCodeEmitter::emitDecPopUint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopUint32, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopSint64(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopSint64, L);
+bool ByteCodeEmitter::emitDecPopSint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopSint64, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopUint64(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopUint64, L);
+bool ByteCodeEmitter::emitDecPopUint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopUint64, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopIntAP(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopIntAP, L);
+bool ByteCodeEmitter::emitDecPopIntAP( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopIntAP, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopIntAPS(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopIntAPS, L);
+bool ByteCodeEmitter::emitDecPopIntAPS( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopIntAPS, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopBool(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopBool, L);
+bool ByteCodeEmitter::emitDecPopBool( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopBool, A0, L);
 }
-bool ByteCodeEmitter::emitDecPopFixedPoint(const SourceInfo &L) {
-  return emitOp<>(OP_DecPopFixedPoint, L);
+bool ByteCodeEmitter::emitDecPopFixedPoint( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_DecPopFixedPoint, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitDecPopSint8(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopSint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Sint8>(S, OpPC);
+  return DecPop<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopUint8(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopUint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Uint8>(S, OpPC);
+  return DecPop<PT_Uint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopSint16(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopSint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Sint16>(S, OpPC);
+  return DecPop<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopUint16(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopUint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Uint16>(S, OpPC);
+  return DecPop<PT_Uint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopSint32(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopSint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Sint32>(S, OpPC);
+  return DecPop<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopUint32(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopUint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Uint32>(S, OpPC);
+  return DecPop<PT_Uint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopSint64(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopSint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Sint64>(S, OpPC);
+  return DecPop<PT_Sint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopUint64(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopUint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Uint64>(S, OpPC);
+  return DecPop<PT_Uint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopIntAP(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopIntAP( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_IntAP>(S, OpPC);
+  return DecPop<PT_IntAP>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopIntAPS(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopIntAPS( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_IntAPS>(S, OpPC);
+  return DecPop<PT_IntAPS>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopBool(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopBool( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_Bool>(S, OpPC);
+  return DecPop<PT_Bool>(S, OpPC, A0);
 }
-bool EvalEmitter::emitDecPopFixedPoint(const SourceInfo &L) {
+bool EvalEmitter::emitDecPopFixedPoint( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return DecPop<PT_FixedPoint>(S, OpPC);
+  return DecPop<PT_FixedPoint>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -10913,9 +10766,8 @@ case OP_DecPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_DecPtr:
-  PrintName("DecPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDecPtr(const SourceInfo &);
@@ -10934,13 +10786,8 @@ bool EvalEmitter::emitDecPtr(const SourceInfo &L) {
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_DecayPtrPtrPtr,
-OP_DecayPtrPtrFnPtr,
 OP_DecayPtrPtrMemberPtr,
-OP_DecayPtrFnPtrPtr,
-OP_DecayPtrFnPtrFnPtr,
-OP_DecayPtrFnPtrMemberPtr,
 OP_DecayPtrMemberPtrPtr,
-OP_DecayPtrMemberPtrFnPtr,
 OP_DecayPtrMemberPtrMemberPtr,
 #endif
 #ifdef GET_INTERP
@@ -10949,38 +10796,13 @@ case OP_DecayPtrPtrPtr: {
     return false;
   continue;
 }
-case OP_DecayPtrPtrFnPtr: {
-  if (!DecayPtr<PT_Ptr, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_DecayPtrPtrMemberPtr: {
   if (!DecayPtr<PT_Ptr, PT_MemberPtr>(S, OpPC))
     return false;
   continue;
 }
-case OP_DecayPtrFnPtrPtr: {
-  if (!DecayPtr<PT_FnPtr, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_DecayPtrFnPtrFnPtr: {
-  if (!DecayPtr<PT_FnPtr, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_DecayPtrFnPtrMemberPtr: {
-  if (!DecayPtr<PT_FnPtr, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_DecayPtrMemberPtrPtr: {
   if (!DecayPtr<PT_MemberPtr, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_DecayPtrMemberPtrFnPtr: {
-  if (!DecayPtr<PT_MemberPtr, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -10992,51 +10814,22 @@ case OP_DecayPtrMemberPtrMemberPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_DecayPtrPtrPtr:
-  PrintName("DecayPtrPtrPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_DecayPtrPtrFnPtr:
-  PrintName("DecayPtrPtrFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecayPtrPtrPtr");
+  break;
 case OP_DecayPtrPtrMemberPtr:
-  PrintName("DecayPtrPtrMemberPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_DecayPtrFnPtrPtr:
-  PrintName("DecayPtrFnPtrPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_DecayPtrFnPtrFnPtr:
-  PrintName("DecayPtrFnPtrFnPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_DecayPtrFnPtrMemberPtr:
-  PrintName("DecayPtrFnPtrMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecayPtrPtrMemberPtr");
+  break;
 case OP_DecayPtrMemberPtrPtr:
-  PrintName("DecayPtrMemberPtrPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_DecayPtrMemberPtrFnPtr:
-  PrintName("DecayPtrMemberPtrFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecayPtrMemberPtrPtr");
+  break;
 case OP_DecayPtrMemberPtrMemberPtr:
-  PrintName("DecayPtrMemberPtrMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DecayPtrMemberPtrMemberPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDecayPtrPtrPtr(const SourceInfo &);
-bool emitDecayPtrPtrFnPtr(const SourceInfo &);
 bool emitDecayPtrPtrMemberPtr(const SourceInfo &);
-bool emitDecayPtrFnPtrPtr(const SourceInfo &);
-bool emitDecayPtrFnPtrFnPtr(const SourceInfo &);
-bool emitDecayPtrFnPtrMemberPtr(const SourceInfo &);
 bool emitDecayPtrMemberPtrPtr(const SourceInfo &);
-bool emitDecayPtrMemberPtrFnPtr(const SourceInfo &);
 bool emitDecayPtrMemberPtrMemberPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
@@ -11055,21 +10848,8 @@ ByteCodeEmitter
   switch (T1) {
   case PT_Ptr:
     return emitDecayPtrPtrPtr(I);
-  case PT_FnPtr:
-    return emitDecayPtrPtrFnPtr(I);
   case PT_MemberPtr:
     return emitDecayPtrPtrMemberPtr(I);
-  default: llvm_unreachable("invalid type: emitDecayPtr");
-  }
-  llvm_unreachable("invalid enum value");
-  case PT_FnPtr:
-  switch (T1) {
-  case PT_Ptr:
-    return emitDecayPtrFnPtrPtr(I);
-  case PT_FnPtr:
-    return emitDecayPtrFnPtrFnPtr(I);
-  case PT_MemberPtr:
-    return emitDecayPtrFnPtrMemberPtr(I);
   default: llvm_unreachable("invalid type: emitDecayPtr");
   }
   llvm_unreachable("invalid enum value");
@@ -11077,8 +10857,6 @@ ByteCodeEmitter
   switch (T1) {
   case PT_Ptr:
     return emitDecayPtrMemberPtrPtr(I);
-  case PT_FnPtr:
-    return emitDecayPtrMemberPtrFnPtr(I);
   case PT_MemberPtr:
     return emitDecayPtrMemberPtrMemberPtr(I);
   default: llvm_unreachable("invalid type: emitDecayPtr");
@@ -11093,26 +10871,11 @@ ByteCodeEmitter
 bool ByteCodeEmitter::emitDecayPtrPtrPtr(const SourceInfo &L) {
   return emitOp<>(OP_DecayPtrPtrPtr, L);
 }
-bool ByteCodeEmitter::emitDecayPtrPtrFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_DecayPtrPtrFnPtr, L);
-}
 bool ByteCodeEmitter::emitDecayPtrPtrMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_DecayPtrPtrMemberPtr, L);
 }
-bool ByteCodeEmitter::emitDecayPtrFnPtrPtr(const SourceInfo &L) {
-  return emitOp<>(OP_DecayPtrFnPtrPtr, L);
-}
-bool ByteCodeEmitter::emitDecayPtrFnPtrFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_DecayPtrFnPtrFnPtr, L);
-}
-bool ByteCodeEmitter::emitDecayPtrFnPtrMemberPtr(const SourceInfo &L) {
-  return emitOp<>(OP_DecayPtrFnPtrMemberPtr, L);
-}
 bool ByteCodeEmitter::emitDecayPtrMemberPtrPtr(const SourceInfo &L) {
   return emitOp<>(OP_DecayPtrMemberPtrPtr, L);
-}
-bool ByteCodeEmitter::emitDecayPtrMemberPtrFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_DecayPtrMemberPtrFnPtr, L);
 }
 bool ByteCodeEmitter::emitDecayPtrMemberPtrMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_DecayPtrMemberPtrMemberPtr, L);
@@ -11124,40 +10887,15 @@ bool EvalEmitter::emitDecayPtrPtrPtr(const SourceInfo &L) {
   CurrentSource = L;
   return DecayPtr<PT_Ptr, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitDecayPtrPtrFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return DecayPtr<PT_Ptr, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitDecayPtrPtrMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return DecayPtr<PT_Ptr, PT_MemberPtr>(S, OpPC);
 }
-bool EvalEmitter::emitDecayPtrFnPtrPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return DecayPtr<PT_FnPtr, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitDecayPtrFnPtrFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return DecayPtr<PT_FnPtr, PT_FnPtr>(S, OpPC);
-}
-bool EvalEmitter::emitDecayPtrFnPtrMemberPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return DecayPtr<PT_FnPtr, PT_MemberPtr>(S, OpPC);
-}
 bool EvalEmitter::emitDecayPtrMemberPtrPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return DecayPtr<PT_MemberPtr, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitDecayPtrMemberPtrFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return DecayPtr<PT_MemberPtr, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitDecayPtrMemberPtrMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -11178,9 +10916,9 @@ case OP_Decf: {
 #endif
 #ifdef GET_DISASM
 case OP_Decf:
-  PrintName("Decf");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Decf");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDecf( uint32_t , const SourceInfo &);
@@ -11210,9 +10948,9 @@ case OP_DecfPop: {
 #endif
 #ifdef GET_DISASM
 case OP_DecfPop:
-  PrintName("DecfPop");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("DecfPop");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDecfPop( uint32_t , const SourceInfo &);
@@ -11242,9 +10980,9 @@ case OP_Destroy: {
 #endif
 #ifdef GET_DISASM
 case OP_Destroy:
-  PrintName("Destroy");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Destroy");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDestroy( uint32_t , const SourceInfo &);
@@ -11266,9 +11004,8 @@ case OP_DiagTypeid: {
 #endif
 #ifdef GET_DISASM
 case OP_DiagTypeid:
-  PrintName("DiagTypeid");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DiagTypeid");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDiagTypeid(const SourceInfo &);
@@ -11357,49 +11094,38 @@ case OP_DivFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_DivSint8:
-  PrintName("DivSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivSint8");
+  break;
 case OP_DivUint8:
-  PrintName("DivUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivUint8");
+  break;
 case OP_DivSint16:
-  PrintName("DivSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivSint16");
+  break;
 case OP_DivUint16:
-  PrintName("DivUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivUint16");
+  break;
 case OP_DivSint32:
-  PrintName("DivSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivSint32");
+  break;
 case OP_DivUint32:
-  PrintName("DivUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivUint32");
+  break;
 case OP_DivSint64:
-  PrintName("DivSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivSint64");
+  break;
 case OP_DivUint64:
-  PrintName("DivUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivUint64");
+  break;
 case OP_DivIntAP:
-  PrintName("DivIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivIntAP");
+  break;
 case OP_DivIntAPS:
-  PrintName("DivIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivIntAPS");
+  break;
 case OP_DivFixedPoint:
-  PrintName("DivFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDivSint8(const SourceInfo &);
@@ -11617,49 +11343,38 @@ case OP_DivcFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_DivcSint8:
-  PrintName("DivcSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcSint8");
+  break;
 case OP_DivcUint8:
-  PrintName("DivcUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcUint8");
+  break;
 case OP_DivcSint16:
-  PrintName("DivcSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcSint16");
+  break;
 case OP_DivcUint16:
-  PrintName("DivcUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcUint16");
+  break;
 case OP_DivcSint32:
-  PrintName("DivcSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcSint32");
+  break;
 case OP_DivcUint32:
-  PrintName("DivcUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcUint32");
+  break;
 case OP_DivcSint64:
-  PrintName("DivcSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcSint64");
+  break;
 case OP_DivcUint64:
-  PrintName("DivcUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcUint64");
+  break;
 case OP_DivcIntAP:
-  PrintName("DivcIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcIntAP");
+  break;
 case OP_DivcIntAPS:
-  PrintName("DivcIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcIntAPS");
+  break;
 case OP_DivcFloat:
-  PrintName("DivcFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DivcFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDivcSint8(const SourceInfo &);
@@ -11818,9 +11533,9 @@ case OP_Divf: {
 #endif
 #ifdef GET_DISASM
 case OP_Divf:
-  PrintName("Divf");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Divf");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDivf( uint32_t , const SourceInfo &);
@@ -11849,9 +11564,8 @@ case OP_Dump: {
 #endif
 #ifdef GET_DISASM
 case OP_Dump:
-  PrintName("Dump");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Dump");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDump(const SourceInfo &);
@@ -11882,7 +11596,6 @@ OP_DupIntAPS,
 OP_DupBool,
 OP_DupFixedPoint,
 OP_DupPtr,
-OP_DupFnPtr,
 OP_DupMemberPtr,
 OP_DupFloat,
 #endif
@@ -11952,11 +11665,6 @@ case OP_DupPtr: {
     return false;
   continue;
 }
-case OP_DupFnPtr: {
-  if (!Dup<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_DupMemberPtr: {
   if (!Dup<PT_MemberPtr>(S, OpPC))
     return false;
@@ -11970,69 +11678,50 @@ case OP_DupFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_DupSint8:
-  PrintName("DupSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupSint8");
+  break;
 case OP_DupUint8:
-  PrintName("DupUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupUint8");
+  break;
 case OP_DupSint16:
-  PrintName("DupSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupSint16");
+  break;
 case OP_DupUint16:
-  PrintName("DupUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupUint16");
+  break;
 case OP_DupSint32:
-  PrintName("DupSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupSint32");
+  break;
 case OP_DupUint32:
-  PrintName("DupUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupUint32");
+  break;
 case OP_DupSint64:
-  PrintName("DupSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupSint64");
+  break;
 case OP_DupUint64:
-  PrintName("DupUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupUint64");
+  break;
 case OP_DupIntAP:
-  PrintName("DupIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupIntAP");
+  break;
 case OP_DupIntAPS:
-  PrintName("DupIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupIntAPS");
+  break;
 case OP_DupBool:
-  PrintName("DupBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupBool");
+  break;
 case OP_DupFixedPoint:
-  PrintName("DupFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupFixedPoint");
+  break;
 case OP_DupPtr:
-  PrintName("DupPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_DupFnPtr:
-  PrintName("DupFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupPtr");
+  break;
 case OP_DupMemberPtr:
-  PrintName("DupMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupMemberPtr");
+  break;
 case OP_DupFloat:
-  PrintName("DupFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("DupFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitDupSint8(const SourceInfo &);
@@ -12048,7 +11737,6 @@ bool emitDupIntAPS(const SourceInfo &);
 bool emitDupBool(const SourceInfo &);
 bool emitDupFixedPoint(const SourceInfo &);
 bool emitDupPtr(const SourceInfo &);
-bool emitDupFnPtr(const SourceInfo &);
 bool emitDupMemberPtr(const SourceInfo &);
 bool emitDupFloat(const SourceInfo &);
 #endif
@@ -12090,8 +11778,6 @@ ByteCodeEmitter
     return emitDupFixedPoint(I);
   case PT_Ptr:
     return emitDupPtr(I);
-  case PT_FnPtr:
-    return emitDupFnPtr(I);
   case PT_MemberPtr:
     return emitDupMemberPtr(I);
   case PT_Float:
@@ -12139,9 +11825,6 @@ bool ByteCodeEmitter::emitDupFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitDupPtr(const SourceInfo &L) {
   return emitOp<>(OP_DupPtr, L);
-}
-bool ByteCodeEmitter::emitDupFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_DupFnPtr, L);
 }
 bool ByteCodeEmitter::emitDupMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_DupMemberPtr, L);
@@ -12216,11 +11899,6 @@ bool EvalEmitter::emitDupPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Dup<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitDupFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Dup<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitDupMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -12246,7 +11924,6 @@ OP_EQIntAPS,
 OP_EQBool,
 OP_EQFixedPoint,
 OP_EQPtr,
-OP_EQFnPtr,
 OP_EQMemberPtr,
 OP_EQFloat,
 #endif
@@ -12316,11 +11993,6 @@ case OP_EQPtr: {
     return false;
   continue;
 }
-case OP_EQFnPtr: {
-  if (!EQ<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_EQMemberPtr: {
   if (!EQ<PT_MemberPtr>(S, OpPC))
     return false;
@@ -12334,69 +12006,50 @@ case OP_EQFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_EQSint8:
-  PrintName("EQSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQSint8");
+  break;
 case OP_EQUint8:
-  PrintName("EQUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQUint8");
+  break;
 case OP_EQSint16:
-  PrintName("EQSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQSint16");
+  break;
 case OP_EQUint16:
-  PrintName("EQUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQUint16");
+  break;
 case OP_EQSint32:
-  PrintName("EQSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQSint32");
+  break;
 case OP_EQUint32:
-  PrintName("EQUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQUint32");
+  break;
 case OP_EQSint64:
-  PrintName("EQSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQSint64");
+  break;
 case OP_EQUint64:
-  PrintName("EQUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQUint64");
+  break;
 case OP_EQIntAP:
-  PrintName("EQIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQIntAP");
+  break;
 case OP_EQIntAPS:
-  PrintName("EQIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQIntAPS");
+  break;
 case OP_EQBool:
-  PrintName("EQBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQBool");
+  break;
 case OP_EQFixedPoint:
-  PrintName("EQFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQFixedPoint");
+  break;
 case OP_EQPtr:
-  PrintName("EQPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_EQFnPtr:
-  PrintName("EQFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQPtr");
+  break;
 case OP_EQMemberPtr:
-  PrintName("EQMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQMemberPtr");
+  break;
 case OP_EQFloat:
-  PrintName("EQFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("EQFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitEQSint8(const SourceInfo &);
@@ -12412,7 +12065,6 @@ bool emitEQIntAPS(const SourceInfo &);
 bool emitEQBool(const SourceInfo &);
 bool emitEQFixedPoint(const SourceInfo &);
 bool emitEQPtr(const SourceInfo &);
-bool emitEQFnPtr(const SourceInfo &);
 bool emitEQMemberPtr(const SourceInfo &);
 bool emitEQFloat(const SourceInfo &);
 #endif
@@ -12454,8 +12106,6 @@ ByteCodeEmitter
     return emitEQFixedPoint(I);
   case PT_Ptr:
     return emitEQPtr(I);
-  case PT_FnPtr:
-    return emitEQFnPtr(I);
   case PT_MemberPtr:
     return emitEQMemberPtr(I);
   case PT_Float:
@@ -12503,9 +12153,6 @@ bool ByteCodeEmitter::emitEQFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitEQPtr(const SourceInfo &L) {
   return emitOp<>(OP_EQPtr, L);
-}
-bool ByteCodeEmitter::emitEQFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_EQFnPtr, L);
 }
 bool ByteCodeEmitter::emitEQMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_EQMemberPtr, L);
@@ -12580,11 +12227,6 @@ bool EvalEmitter::emitEQPtr(const SourceInfo &L) {
   CurrentSource = L;
   return EQ<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitEQFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return EQ<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitEQMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -12594,6 +12236,36 @@ bool EvalEmitter::emitEQFloat(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return EQ<PT_Float>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_EndSpeculation,
+#endif
+#ifdef GET_INTERP
+case OP_EndSpeculation: {
+  if (!EndSpeculation(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_EndSpeculation:
+  Text.Op = PrintName("EndSpeculation");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitEndSpeculation(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitEndSpeculation(const SourceInfo &L) {
+  return emitOp<>(OP_EndSpeculation, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitEndSpeculation(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return EndSpeculation(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -12608,9 +12280,8 @@ case OP_Error: {
 #endif
 #ifdef GET_DISASM
 case OP_Error:
-  PrintName("Error");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Error");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitError(const SourceInfo &);
@@ -12639,9 +12310,8 @@ case OP_ExpandPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_ExpandPtr:
-  PrintName("ExpandPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ExpandPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitExpandPtr(const SourceInfo &);
@@ -12670,9 +12340,8 @@ case OP_FinishInit: {
 #endif
 #ifdef GET_DISASM
 case OP_FinishInit:
-  PrintName("FinishInit");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FinishInit");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitFinishInit(const SourceInfo &);
@@ -12701,9 +12370,8 @@ case OP_FinishInitPop: {
 #endif
 #ifdef GET_DISASM
 case OP_FinishInitPop:
-  PrintName("FinishInitPop");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FinishInitPop");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitFinishInitPop(const SourceInfo &);
@@ -12734,7 +12402,6 @@ OP_FlipSint8IntAPS,
 OP_FlipSint8Bool,
 OP_FlipSint8FixedPoint,
 OP_FlipSint8Ptr,
-OP_FlipSint8FnPtr,
 OP_FlipSint8MemberPtr,
 OP_FlipSint8Float,
 OP_FlipUint8Sint8,
@@ -12750,7 +12417,6 @@ OP_FlipUint8IntAPS,
 OP_FlipUint8Bool,
 OP_FlipUint8FixedPoint,
 OP_FlipUint8Ptr,
-OP_FlipUint8FnPtr,
 OP_FlipUint8MemberPtr,
 OP_FlipUint8Float,
 OP_FlipSint16Sint8,
@@ -12766,7 +12432,6 @@ OP_FlipSint16IntAPS,
 OP_FlipSint16Bool,
 OP_FlipSint16FixedPoint,
 OP_FlipSint16Ptr,
-OP_FlipSint16FnPtr,
 OP_FlipSint16MemberPtr,
 OP_FlipSint16Float,
 OP_FlipUint16Sint8,
@@ -12782,7 +12447,6 @@ OP_FlipUint16IntAPS,
 OP_FlipUint16Bool,
 OP_FlipUint16FixedPoint,
 OP_FlipUint16Ptr,
-OP_FlipUint16FnPtr,
 OP_FlipUint16MemberPtr,
 OP_FlipUint16Float,
 OP_FlipSint32Sint8,
@@ -12798,7 +12462,6 @@ OP_FlipSint32IntAPS,
 OP_FlipSint32Bool,
 OP_FlipSint32FixedPoint,
 OP_FlipSint32Ptr,
-OP_FlipSint32FnPtr,
 OP_FlipSint32MemberPtr,
 OP_FlipSint32Float,
 OP_FlipUint32Sint8,
@@ -12814,7 +12477,6 @@ OP_FlipUint32IntAPS,
 OP_FlipUint32Bool,
 OP_FlipUint32FixedPoint,
 OP_FlipUint32Ptr,
-OP_FlipUint32FnPtr,
 OP_FlipUint32MemberPtr,
 OP_FlipUint32Float,
 OP_FlipSint64Sint8,
@@ -12830,7 +12492,6 @@ OP_FlipSint64IntAPS,
 OP_FlipSint64Bool,
 OP_FlipSint64FixedPoint,
 OP_FlipSint64Ptr,
-OP_FlipSint64FnPtr,
 OP_FlipSint64MemberPtr,
 OP_FlipSint64Float,
 OP_FlipUint64Sint8,
@@ -12846,7 +12507,6 @@ OP_FlipUint64IntAPS,
 OP_FlipUint64Bool,
 OP_FlipUint64FixedPoint,
 OP_FlipUint64Ptr,
-OP_FlipUint64FnPtr,
 OP_FlipUint64MemberPtr,
 OP_FlipUint64Float,
 OP_FlipIntAPSint8,
@@ -12862,7 +12522,6 @@ OP_FlipIntAPIntAPS,
 OP_FlipIntAPBool,
 OP_FlipIntAPFixedPoint,
 OP_FlipIntAPPtr,
-OP_FlipIntAPFnPtr,
 OP_FlipIntAPMemberPtr,
 OP_FlipIntAPFloat,
 OP_FlipIntAPSSint8,
@@ -12878,7 +12537,6 @@ OP_FlipIntAPSIntAPS,
 OP_FlipIntAPSBool,
 OP_FlipIntAPSFixedPoint,
 OP_FlipIntAPSPtr,
-OP_FlipIntAPSFnPtr,
 OP_FlipIntAPSMemberPtr,
 OP_FlipIntAPSFloat,
 OP_FlipBoolSint8,
@@ -12894,7 +12552,6 @@ OP_FlipBoolIntAPS,
 OP_FlipBoolBool,
 OP_FlipBoolFixedPoint,
 OP_FlipBoolPtr,
-OP_FlipBoolFnPtr,
 OP_FlipBoolMemberPtr,
 OP_FlipBoolFloat,
 OP_FlipFixedPointSint8,
@@ -12910,7 +12567,6 @@ OP_FlipFixedPointIntAPS,
 OP_FlipFixedPointBool,
 OP_FlipFixedPointFixedPoint,
 OP_FlipFixedPointPtr,
-OP_FlipFixedPointFnPtr,
 OP_FlipFixedPointMemberPtr,
 OP_FlipFixedPointFloat,
 OP_FlipPtrSint8,
@@ -12926,25 +12582,8 @@ OP_FlipPtrIntAPS,
 OP_FlipPtrBool,
 OP_FlipPtrFixedPoint,
 OP_FlipPtrPtr,
-OP_FlipPtrFnPtr,
 OP_FlipPtrMemberPtr,
 OP_FlipPtrFloat,
-OP_FlipFnPtrSint8,
-OP_FlipFnPtrUint8,
-OP_FlipFnPtrSint16,
-OP_FlipFnPtrUint16,
-OP_FlipFnPtrSint32,
-OP_FlipFnPtrUint32,
-OP_FlipFnPtrSint64,
-OP_FlipFnPtrUint64,
-OP_FlipFnPtrIntAP,
-OP_FlipFnPtrIntAPS,
-OP_FlipFnPtrBool,
-OP_FlipFnPtrFixedPoint,
-OP_FlipFnPtrPtr,
-OP_FlipFnPtrFnPtr,
-OP_FlipFnPtrMemberPtr,
-OP_FlipFnPtrFloat,
 OP_FlipMemberPtrSint8,
 OP_FlipMemberPtrUint8,
 OP_FlipMemberPtrSint16,
@@ -12958,7 +12597,6 @@ OP_FlipMemberPtrIntAPS,
 OP_FlipMemberPtrBool,
 OP_FlipMemberPtrFixedPoint,
 OP_FlipMemberPtrPtr,
-OP_FlipMemberPtrFnPtr,
 OP_FlipMemberPtrMemberPtr,
 OP_FlipMemberPtrFloat,
 OP_FlipFloatSint8,
@@ -12974,7 +12612,6 @@ OP_FlipFloatIntAPS,
 OP_FlipFloatBool,
 OP_FlipFloatFixedPoint,
 OP_FlipFloatPtr,
-OP_FlipFloatFnPtr,
 OP_FlipFloatMemberPtr,
 OP_FlipFloatFloat,
 #endif
@@ -13041,11 +12678,6 @@ case OP_FlipSint8FixedPoint: {
 }
 case OP_FlipSint8Ptr: {
   if (!Flip<PT_Sint8, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8FnPtr: {
-  if (!Flip<PT_Sint8, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -13124,11 +12756,6 @@ case OP_FlipUint8Ptr: {
     return false;
   continue;
 }
-case OP_FlipUint8FnPtr: {
-  if (!Flip<PT_Uint8, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipUint8MemberPtr: {
   if (!Flip<PT_Uint8, PT_MemberPtr>(S, OpPC))
     return false;
@@ -13201,11 +12828,6 @@ case OP_FlipSint16FixedPoint: {
 }
 case OP_FlipSint16Ptr: {
   if (!Flip<PT_Sint16, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16FnPtr: {
-  if (!Flip<PT_Sint16, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -13284,11 +12906,6 @@ case OP_FlipUint16Ptr: {
     return false;
   continue;
 }
-case OP_FlipUint16FnPtr: {
-  if (!Flip<PT_Uint16, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipUint16MemberPtr: {
   if (!Flip<PT_Uint16, PT_MemberPtr>(S, OpPC))
     return false;
@@ -13361,11 +12978,6 @@ case OP_FlipSint32FixedPoint: {
 }
 case OP_FlipSint32Ptr: {
   if (!Flip<PT_Sint32, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32FnPtr: {
-  if (!Flip<PT_Sint32, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -13444,11 +13056,6 @@ case OP_FlipUint32Ptr: {
     return false;
   continue;
 }
-case OP_FlipUint32FnPtr: {
-  if (!Flip<PT_Uint32, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipUint32MemberPtr: {
   if (!Flip<PT_Uint32, PT_MemberPtr>(S, OpPC))
     return false;
@@ -13521,11 +13128,6 @@ case OP_FlipSint64FixedPoint: {
 }
 case OP_FlipSint64Ptr: {
   if (!Flip<PT_Sint64, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64FnPtr: {
-  if (!Flip<PT_Sint64, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -13604,11 +13206,6 @@ case OP_FlipUint64Ptr: {
     return false;
   continue;
 }
-case OP_FlipUint64FnPtr: {
-  if (!Flip<PT_Uint64, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipUint64MemberPtr: {
   if (!Flip<PT_Uint64, PT_MemberPtr>(S, OpPC))
     return false;
@@ -13681,11 +13278,6 @@ case OP_FlipIntAPFixedPoint: {
 }
 case OP_FlipIntAPPtr: {
   if (!Flip<PT_IntAP, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPFnPtr: {
-  if (!Flip<PT_IntAP, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -13764,11 +13356,6 @@ case OP_FlipIntAPSPtr: {
     return false;
   continue;
 }
-case OP_FlipIntAPSFnPtr: {
-  if (!Flip<PT_IntAPS, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipIntAPSMemberPtr: {
   if (!Flip<PT_IntAPS, PT_MemberPtr>(S, OpPC))
     return false;
@@ -13841,11 +13428,6 @@ case OP_FlipBoolFixedPoint: {
 }
 case OP_FlipBoolPtr: {
   if (!Flip<PT_Bool, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolFnPtr: {
-  if (!Flip<PT_Bool, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -13924,11 +13506,6 @@ case OP_FlipFixedPointPtr: {
     return false;
   continue;
 }
-case OP_FlipFixedPointFnPtr: {
-  if (!Flip<PT_FixedPoint, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipFixedPointMemberPtr: {
   if (!Flip<PT_FixedPoint, PT_MemberPtr>(S, OpPC))
     return false;
@@ -14004,11 +13581,6 @@ case OP_FlipPtrPtr: {
     return false;
   continue;
 }
-case OP_FlipPtrFnPtr: {
-  if (!Flip<PT_Ptr, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipPtrMemberPtr: {
   if (!Flip<PT_Ptr, PT_MemberPtr>(S, OpPC))
     return false;
@@ -14016,86 +13588,6 @@ case OP_FlipPtrMemberPtr: {
 }
 case OP_FlipPtrFloat: {
   if (!Flip<PT_Ptr, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrSint8: {
-  if (!Flip<PT_FnPtr, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrUint8: {
-  if (!Flip<PT_FnPtr, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrSint16: {
-  if (!Flip<PT_FnPtr, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrUint16: {
-  if (!Flip<PT_FnPtr, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrSint32: {
-  if (!Flip<PT_FnPtr, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrUint32: {
-  if (!Flip<PT_FnPtr, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrSint64: {
-  if (!Flip<PT_FnPtr, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrUint64: {
-  if (!Flip<PT_FnPtr, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrIntAP: {
-  if (!Flip<PT_FnPtr, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrIntAPS: {
-  if (!Flip<PT_FnPtr, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrBool: {
-  if (!Flip<PT_FnPtr, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrFixedPoint: {
-  if (!Flip<PT_FnPtr, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrPtr: {
-  if (!Flip<PT_FnPtr, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrFnPtr: {
-  if (!Flip<PT_FnPtr, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrMemberPtr: {
-  if (!Flip<PT_FnPtr, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFnPtrFloat: {
-  if (!Flip<PT_FnPtr, PT_Float>(S, OpPC))
     return false;
   continue;
 }
@@ -14161,11 +13653,6 @@ case OP_FlipMemberPtrFixedPoint: {
 }
 case OP_FlipMemberPtrPtr: {
   if (!Flip<PT_MemberPtr, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrFnPtr: {
-  if (!Flip<PT_MemberPtr, PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -14244,11 +13731,6 @@ case OP_FlipFloatPtr: {
     return false;
   continue;
 }
-case OP_FlipFloatFnPtr: {
-  if (!Flip<PT_Float, PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_FlipFloatMemberPtr: {
   if (!Flip<PT_Float, PT_MemberPtr>(S, OpPC))
     return false;
@@ -14262,1029 +13744,680 @@ case OP_FlipFloatFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_FlipSint8Sint8:
-  PrintName("FlipSint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Sint8");
+  break;
 case OP_FlipSint8Uint8:
-  PrintName("FlipSint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Uint8");
+  break;
 case OP_FlipSint8Sint16:
-  PrintName("FlipSint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Sint16");
+  break;
 case OP_FlipSint8Uint16:
-  PrintName("FlipSint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Uint16");
+  break;
 case OP_FlipSint8Sint32:
-  PrintName("FlipSint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Sint32");
+  break;
 case OP_FlipSint8Uint32:
-  PrintName("FlipSint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Uint32");
+  break;
 case OP_FlipSint8Sint64:
-  PrintName("FlipSint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Sint64");
+  break;
 case OP_FlipSint8Uint64:
-  PrintName("FlipSint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Uint64");
+  break;
 case OP_FlipSint8IntAP:
-  PrintName("FlipSint8IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8IntAP");
+  break;
 case OP_FlipSint8IntAPS:
-  PrintName("FlipSint8IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8IntAPS");
+  break;
 case OP_FlipSint8Bool:
-  PrintName("FlipSint8Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Bool");
+  break;
 case OP_FlipSint8FixedPoint:
-  PrintName("FlipSint8FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8FixedPoint");
+  break;
 case OP_FlipSint8Ptr:
-  PrintName("FlipSint8Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipSint8FnPtr:
-  PrintName("FlipSint8FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Ptr");
+  break;
 case OP_FlipSint8MemberPtr:
-  PrintName("FlipSint8MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8MemberPtr");
+  break;
 case OP_FlipSint8Float:
-  PrintName("FlipSint8Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint8Float");
+  break;
 case OP_FlipUint8Sint8:
-  PrintName("FlipUint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Sint8");
+  break;
 case OP_FlipUint8Uint8:
-  PrintName("FlipUint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Uint8");
+  break;
 case OP_FlipUint8Sint16:
-  PrintName("FlipUint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Sint16");
+  break;
 case OP_FlipUint8Uint16:
-  PrintName("FlipUint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Uint16");
+  break;
 case OP_FlipUint8Sint32:
-  PrintName("FlipUint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Sint32");
+  break;
 case OP_FlipUint8Uint32:
-  PrintName("FlipUint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Uint32");
+  break;
 case OP_FlipUint8Sint64:
-  PrintName("FlipUint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Sint64");
+  break;
 case OP_FlipUint8Uint64:
-  PrintName("FlipUint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Uint64");
+  break;
 case OP_FlipUint8IntAP:
-  PrintName("FlipUint8IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8IntAP");
+  break;
 case OP_FlipUint8IntAPS:
-  PrintName("FlipUint8IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8IntAPS");
+  break;
 case OP_FlipUint8Bool:
-  PrintName("FlipUint8Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Bool");
+  break;
 case OP_FlipUint8FixedPoint:
-  PrintName("FlipUint8FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8FixedPoint");
+  break;
 case OP_FlipUint8Ptr:
-  PrintName("FlipUint8Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipUint8FnPtr:
-  PrintName("FlipUint8FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Ptr");
+  break;
 case OP_FlipUint8MemberPtr:
-  PrintName("FlipUint8MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8MemberPtr");
+  break;
 case OP_FlipUint8Float:
-  PrintName("FlipUint8Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint8Float");
+  break;
 case OP_FlipSint16Sint8:
-  PrintName("FlipSint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Sint8");
+  break;
 case OP_FlipSint16Uint8:
-  PrintName("FlipSint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Uint8");
+  break;
 case OP_FlipSint16Sint16:
-  PrintName("FlipSint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Sint16");
+  break;
 case OP_FlipSint16Uint16:
-  PrintName("FlipSint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Uint16");
+  break;
 case OP_FlipSint16Sint32:
-  PrintName("FlipSint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Sint32");
+  break;
 case OP_FlipSint16Uint32:
-  PrintName("FlipSint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Uint32");
+  break;
 case OP_FlipSint16Sint64:
-  PrintName("FlipSint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Sint64");
+  break;
 case OP_FlipSint16Uint64:
-  PrintName("FlipSint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Uint64");
+  break;
 case OP_FlipSint16IntAP:
-  PrintName("FlipSint16IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16IntAP");
+  break;
 case OP_FlipSint16IntAPS:
-  PrintName("FlipSint16IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16IntAPS");
+  break;
 case OP_FlipSint16Bool:
-  PrintName("FlipSint16Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Bool");
+  break;
 case OP_FlipSint16FixedPoint:
-  PrintName("FlipSint16FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16FixedPoint");
+  break;
 case OP_FlipSint16Ptr:
-  PrintName("FlipSint16Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipSint16FnPtr:
-  PrintName("FlipSint16FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Ptr");
+  break;
 case OP_FlipSint16MemberPtr:
-  PrintName("FlipSint16MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16MemberPtr");
+  break;
 case OP_FlipSint16Float:
-  PrintName("FlipSint16Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint16Float");
+  break;
 case OP_FlipUint16Sint8:
-  PrintName("FlipUint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Sint8");
+  break;
 case OP_FlipUint16Uint8:
-  PrintName("FlipUint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Uint8");
+  break;
 case OP_FlipUint16Sint16:
-  PrintName("FlipUint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Sint16");
+  break;
 case OP_FlipUint16Uint16:
-  PrintName("FlipUint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Uint16");
+  break;
 case OP_FlipUint16Sint32:
-  PrintName("FlipUint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Sint32");
+  break;
 case OP_FlipUint16Uint32:
-  PrintName("FlipUint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Uint32");
+  break;
 case OP_FlipUint16Sint64:
-  PrintName("FlipUint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Sint64");
+  break;
 case OP_FlipUint16Uint64:
-  PrintName("FlipUint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Uint64");
+  break;
 case OP_FlipUint16IntAP:
-  PrintName("FlipUint16IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16IntAP");
+  break;
 case OP_FlipUint16IntAPS:
-  PrintName("FlipUint16IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16IntAPS");
+  break;
 case OP_FlipUint16Bool:
-  PrintName("FlipUint16Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Bool");
+  break;
 case OP_FlipUint16FixedPoint:
-  PrintName("FlipUint16FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16FixedPoint");
+  break;
 case OP_FlipUint16Ptr:
-  PrintName("FlipUint16Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipUint16FnPtr:
-  PrintName("FlipUint16FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Ptr");
+  break;
 case OP_FlipUint16MemberPtr:
-  PrintName("FlipUint16MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16MemberPtr");
+  break;
 case OP_FlipUint16Float:
-  PrintName("FlipUint16Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint16Float");
+  break;
 case OP_FlipSint32Sint8:
-  PrintName("FlipSint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Sint8");
+  break;
 case OP_FlipSint32Uint8:
-  PrintName("FlipSint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Uint8");
+  break;
 case OP_FlipSint32Sint16:
-  PrintName("FlipSint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Sint16");
+  break;
 case OP_FlipSint32Uint16:
-  PrintName("FlipSint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Uint16");
+  break;
 case OP_FlipSint32Sint32:
-  PrintName("FlipSint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Sint32");
+  break;
 case OP_FlipSint32Uint32:
-  PrintName("FlipSint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Uint32");
+  break;
 case OP_FlipSint32Sint64:
-  PrintName("FlipSint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Sint64");
+  break;
 case OP_FlipSint32Uint64:
-  PrintName("FlipSint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Uint64");
+  break;
 case OP_FlipSint32IntAP:
-  PrintName("FlipSint32IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32IntAP");
+  break;
 case OP_FlipSint32IntAPS:
-  PrintName("FlipSint32IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32IntAPS");
+  break;
 case OP_FlipSint32Bool:
-  PrintName("FlipSint32Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Bool");
+  break;
 case OP_FlipSint32FixedPoint:
-  PrintName("FlipSint32FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32FixedPoint");
+  break;
 case OP_FlipSint32Ptr:
-  PrintName("FlipSint32Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipSint32FnPtr:
-  PrintName("FlipSint32FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Ptr");
+  break;
 case OP_FlipSint32MemberPtr:
-  PrintName("FlipSint32MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32MemberPtr");
+  break;
 case OP_FlipSint32Float:
-  PrintName("FlipSint32Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint32Float");
+  break;
 case OP_FlipUint32Sint8:
-  PrintName("FlipUint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Sint8");
+  break;
 case OP_FlipUint32Uint8:
-  PrintName("FlipUint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Uint8");
+  break;
 case OP_FlipUint32Sint16:
-  PrintName("FlipUint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Sint16");
+  break;
 case OP_FlipUint32Uint16:
-  PrintName("FlipUint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Uint16");
+  break;
 case OP_FlipUint32Sint32:
-  PrintName("FlipUint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Sint32");
+  break;
 case OP_FlipUint32Uint32:
-  PrintName("FlipUint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Uint32");
+  break;
 case OP_FlipUint32Sint64:
-  PrintName("FlipUint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Sint64");
+  break;
 case OP_FlipUint32Uint64:
-  PrintName("FlipUint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Uint64");
+  break;
 case OP_FlipUint32IntAP:
-  PrintName("FlipUint32IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32IntAP");
+  break;
 case OP_FlipUint32IntAPS:
-  PrintName("FlipUint32IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32IntAPS");
+  break;
 case OP_FlipUint32Bool:
-  PrintName("FlipUint32Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Bool");
+  break;
 case OP_FlipUint32FixedPoint:
-  PrintName("FlipUint32FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32FixedPoint");
+  break;
 case OP_FlipUint32Ptr:
-  PrintName("FlipUint32Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipUint32FnPtr:
-  PrintName("FlipUint32FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Ptr");
+  break;
 case OP_FlipUint32MemberPtr:
-  PrintName("FlipUint32MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32MemberPtr");
+  break;
 case OP_FlipUint32Float:
-  PrintName("FlipUint32Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint32Float");
+  break;
 case OP_FlipSint64Sint8:
-  PrintName("FlipSint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Sint8");
+  break;
 case OP_FlipSint64Uint8:
-  PrintName("FlipSint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Uint8");
+  break;
 case OP_FlipSint64Sint16:
-  PrintName("FlipSint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Sint16");
+  break;
 case OP_FlipSint64Uint16:
-  PrintName("FlipSint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Uint16");
+  break;
 case OP_FlipSint64Sint32:
-  PrintName("FlipSint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Sint32");
+  break;
 case OP_FlipSint64Uint32:
-  PrintName("FlipSint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Uint32");
+  break;
 case OP_FlipSint64Sint64:
-  PrintName("FlipSint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Sint64");
+  break;
 case OP_FlipSint64Uint64:
-  PrintName("FlipSint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Uint64");
+  break;
 case OP_FlipSint64IntAP:
-  PrintName("FlipSint64IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64IntAP");
+  break;
 case OP_FlipSint64IntAPS:
-  PrintName("FlipSint64IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64IntAPS");
+  break;
 case OP_FlipSint64Bool:
-  PrintName("FlipSint64Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Bool");
+  break;
 case OP_FlipSint64FixedPoint:
-  PrintName("FlipSint64FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64FixedPoint");
+  break;
 case OP_FlipSint64Ptr:
-  PrintName("FlipSint64Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipSint64FnPtr:
-  PrintName("FlipSint64FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Ptr");
+  break;
 case OP_FlipSint64MemberPtr:
-  PrintName("FlipSint64MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64MemberPtr");
+  break;
 case OP_FlipSint64Float:
-  PrintName("FlipSint64Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipSint64Float");
+  break;
 case OP_FlipUint64Sint8:
-  PrintName("FlipUint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Sint8");
+  break;
 case OP_FlipUint64Uint8:
-  PrintName("FlipUint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Uint8");
+  break;
 case OP_FlipUint64Sint16:
-  PrintName("FlipUint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Sint16");
+  break;
 case OP_FlipUint64Uint16:
-  PrintName("FlipUint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Uint16");
+  break;
 case OP_FlipUint64Sint32:
-  PrintName("FlipUint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Sint32");
+  break;
 case OP_FlipUint64Uint32:
-  PrintName("FlipUint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Uint32");
+  break;
 case OP_FlipUint64Sint64:
-  PrintName("FlipUint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Sint64");
+  break;
 case OP_FlipUint64Uint64:
-  PrintName("FlipUint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Uint64");
+  break;
 case OP_FlipUint64IntAP:
-  PrintName("FlipUint64IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64IntAP");
+  break;
 case OP_FlipUint64IntAPS:
-  PrintName("FlipUint64IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64IntAPS");
+  break;
 case OP_FlipUint64Bool:
-  PrintName("FlipUint64Bool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Bool");
+  break;
 case OP_FlipUint64FixedPoint:
-  PrintName("FlipUint64FixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64FixedPoint");
+  break;
 case OP_FlipUint64Ptr:
-  PrintName("FlipUint64Ptr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipUint64FnPtr:
-  PrintName("FlipUint64FnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Ptr");
+  break;
 case OP_FlipUint64MemberPtr:
-  PrintName("FlipUint64MemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64MemberPtr");
+  break;
 case OP_FlipUint64Float:
-  PrintName("FlipUint64Float");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipUint64Float");
+  break;
 case OP_FlipIntAPSint8:
-  PrintName("FlipIntAPSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSint8");
+  break;
 case OP_FlipIntAPUint8:
-  PrintName("FlipIntAPUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPUint8");
+  break;
 case OP_FlipIntAPSint16:
-  PrintName("FlipIntAPSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSint16");
+  break;
 case OP_FlipIntAPUint16:
-  PrintName("FlipIntAPUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPUint16");
+  break;
 case OP_FlipIntAPSint32:
-  PrintName("FlipIntAPSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSint32");
+  break;
 case OP_FlipIntAPUint32:
-  PrintName("FlipIntAPUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPUint32");
+  break;
 case OP_FlipIntAPSint64:
-  PrintName("FlipIntAPSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSint64");
+  break;
 case OP_FlipIntAPUint64:
-  PrintName("FlipIntAPUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPUint64");
+  break;
 case OP_FlipIntAPIntAP:
-  PrintName("FlipIntAPIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPIntAP");
+  break;
 case OP_FlipIntAPIntAPS:
-  PrintName("FlipIntAPIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPIntAPS");
+  break;
 case OP_FlipIntAPBool:
-  PrintName("FlipIntAPBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPBool");
+  break;
 case OP_FlipIntAPFixedPoint:
-  PrintName("FlipIntAPFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPFixedPoint");
+  break;
 case OP_FlipIntAPPtr:
-  PrintName("FlipIntAPPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipIntAPFnPtr:
-  PrintName("FlipIntAPFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPPtr");
+  break;
 case OP_FlipIntAPMemberPtr:
-  PrintName("FlipIntAPMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPMemberPtr");
+  break;
 case OP_FlipIntAPFloat:
-  PrintName("FlipIntAPFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPFloat");
+  break;
 case OP_FlipIntAPSSint8:
-  PrintName("FlipIntAPSSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSSint8");
+  break;
 case OP_FlipIntAPSUint8:
-  PrintName("FlipIntAPSUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSUint8");
+  break;
 case OP_FlipIntAPSSint16:
-  PrintName("FlipIntAPSSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSSint16");
+  break;
 case OP_FlipIntAPSUint16:
-  PrintName("FlipIntAPSUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSUint16");
+  break;
 case OP_FlipIntAPSSint32:
-  PrintName("FlipIntAPSSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSSint32");
+  break;
 case OP_FlipIntAPSUint32:
-  PrintName("FlipIntAPSUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSUint32");
+  break;
 case OP_FlipIntAPSSint64:
-  PrintName("FlipIntAPSSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSSint64");
+  break;
 case OP_FlipIntAPSUint64:
-  PrintName("FlipIntAPSUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSUint64");
+  break;
 case OP_FlipIntAPSIntAP:
-  PrintName("FlipIntAPSIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSIntAP");
+  break;
 case OP_FlipIntAPSIntAPS:
-  PrintName("FlipIntAPSIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSIntAPS");
+  break;
 case OP_FlipIntAPSBool:
-  PrintName("FlipIntAPSBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSBool");
+  break;
 case OP_FlipIntAPSFixedPoint:
-  PrintName("FlipIntAPSFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSFixedPoint");
+  break;
 case OP_FlipIntAPSPtr:
-  PrintName("FlipIntAPSPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipIntAPSFnPtr:
-  PrintName("FlipIntAPSFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSPtr");
+  break;
 case OP_FlipIntAPSMemberPtr:
-  PrintName("FlipIntAPSMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSMemberPtr");
+  break;
 case OP_FlipIntAPSFloat:
-  PrintName("FlipIntAPSFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipIntAPSFloat");
+  break;
 case OP_FlipBoolSint8:
-  PrintName("FlipBoolSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolSint8");
+  break;
 case OP_FlipBoolUint8:
-  PrintName("FlipBoolUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolUint8");
+  break;
 case OP_FlipBoolSint16:
-  PrintName("FlipBoolSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolSint16");
+  break;
 case OP_FlipBoolUint16:
-  PrintName("FlipBoolUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolUint16");
+  break;
 case OP_FlipBoolSint32:
-  PrintName("FlipBoolSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolSint32");
+  break;
 case OP_FlipBoolUint32:
-  PrintName("FlipBoolUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolUint32");
+  break;
 case OP_FlipBoolSint64:
-  PrintName("FlipBoolSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolSint64");
+  break;
 case OP_FlipBoolUint64:
-  PrintName("FlipBoolUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolUint64");
+  break;
 case OP_FlipBoolIntAP:
-  PrintName("FlipBoolIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolIntAP");
+  break;
 case OP_FlipBoolIntAPS:
-  PrintName("FlipBoolIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolIntAPS");
+  break;
 case OP_FlipBoolBool:
-  PrintName("FlipBoolBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolBool");
+  break;
 case OP_FlipBoolFixedPoint:
-  PrintName("FlipBoolFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolFixedPoint");
+  break;
 case OP_FlipBoolPtr:
-  PrintName("FlipBoolPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipBoolFnPtr:
-  PrintName("FlipBoolFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolPtr");
+  break;
 case OP_FlipBoolMemberPtr:
-  PrintName("FlipBoolMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolMemberPtr");
+  break;
 case OP_FlipBoolFloat:
-  PrintName("FlipBoolFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipBoolFloat");
+  break;
 case OP_FlipFixedPointSint8:
-  PrintName("FlipFixedPointSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointSint8");
+  break;
 case OP_FlipFixedPointUint8:
-  PrintName("FlipFixedPointUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointUint8");
+  break;
 case OP_FlipFixedPointSint16:
-  PrintName("FlipFixedPointSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointSint16");
+  break;
 case OP_FlipFixedPointUint16:
-  PrintName("FlipFixedPointUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointUint16");
+  break;
 case OP_FlipFixedPointSint32:
-  PrintName("FlipFixedPointSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointSint32");
+  break;
 case OP_FlipFixedPointUint32:
-  PrintName("FlipFixedPointUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointUint32");
+  break;
 case OP_FlipFixedPointSint64:
-  PrintName("FlipFixedPointSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointSint64");
+  break;
 case OP_FlipFixedPointUint64:
-  PrintName("FlipFixedPointUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointUint64");
+  break;
 case OP_FlipFixedPointIntAP:
-  PrintName("FlipFixedPointIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointIntAP");
+  break;
 case OP_FlipFixedPointIntAPS:
-  PrintName("FlipFixedPointIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointIntAPS");
+  break;
 case OP_FlipFixedPointBool:
-  PrintName("FlipFixedPointBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointBool");
+  break;
 case OP_FlipFixedPointFixedPoint:
-  PrintName("FlipFixedPointFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointFixedPoint");
+  break;
 case OP_FlipFixedPointPtr:
-  PrintName("FlipFixedPointPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFixedPointFnPtr:
-  PrintName("FlipFixedPointFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointPtr");
+  break;
 case OP_FlipFixedPointMemberPtr:
-  PrintName("FlipFixedPointMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointMemberPtr");
+  break;
 case OP_FlipFixedPointFloat:
-  PrintName("FlipFixedPointFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFixedPointFloat");
+  break;
 case OP_FlipPtrSint8:
-  PrintName("FlipPtrSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrSint8");
+  break;
 case OP_FlipPtrUint8:
-  PrintName("FlipPtrUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrUint8");
+  break;
 case OP_FlipPtrSint16:
-  PrintName("FlipPtrSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrSint16");
+  break;
 case OP_FlipPtrUint16:
-  PrintName("FlipPtrUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrUint16");
+  break;
 case OP_FlipPtrSint32:
-  PrintName("FlipPtrSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrSint32");
+  break;
 case OP_FlipPtrUint32:
-  PrintName("FlipPtrUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrUint32");
+  break;
 case OP_FlipPtrSint64:
-  PrintName("FlipPtrSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrSint64");
+  break;
 case OP_FlipPtrUint64:
-  PrintName("FlipPtrUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrUint64");
+  break;
 case OP_FlipPtrIntAP:
-  PrintName("FlipPtrIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrIntAP");
+  break;
 case OP_FlipPtrIntAPS:
-  PrintName("FlipPtrIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrIntAPS");
+  break;
 case OP_FlipPtrBool:
-  PrintName("FlipPtrBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrBool");
+  break;
 case OP_FlipPtrFixedPoint:
-  PrintName("FlipPtrFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrFixedPoint");
+  break;
 case OP_FlipPtrPtr:
-  PrintName("FlipPtrPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipPtrFnPtr:
-  PrintName("FlipPtrFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrPtr");
+  break;
 case OP_FlipPtrMemberPtr:
-  PrintName("FlipPtrMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrMemberPtr");
+  break;
 case OP_FlipPtrFloat:
-  PrintName("FlipPtrFloat");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrSint8:
-  PrintName("FlipFnPtrSint8");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrUint8:
-  PrintName("FlipFnPtrUint8");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrSint16:
-  PrintName("FlipFnPtrSint16");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrUint16:
-  PrintName("FlipFnPtrUint16");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrSint32:
-  PrintName("FlipFnPtrSint32");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrUint32:
-  PrintName("FlipFnPtrUint32");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrSint64:
-  PrintName("FlipFnPtrSint64");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrUint64:
-  PrintName("FlipFnPtrUint64");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrIntAP:
-  PrintName("FlipFnPtrIntAP");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrIntAPS:
-  PrintName("FlipFnPtrIntAPS");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrBool:
-  PrintName("FlipFnPtrBool");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrFixedPoint:
-  PrintName("FlipFnPtrFixedPoint");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrPtr:
-  PrintName("FlipFnPtrPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrFnPtr:
-  PrintName("FlipFnPtrFnPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrMemberPtr:
-  PrintName("FlipFnPtrMemberPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFnPtrFloat:
-  PrintName("FlipFnPtrFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipPtrFloat");
+  break;
 case OP_FlipMemberPtrSint8:
-  PrintName("FlipMemberPtrSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrSint8");
+  break;
 case OP_FlipMemberPtrUint8:
-  PrintName("FlipMemberPtrUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrUint8");
+  break;
 case OP_FlipMemberPtrSint16:
-  PrintName("FlipMemberPtrSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrSint16");
+  break;
 case OP_FlipMemberPtrUint16:
-  PrintName("FlipMemberPtrUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrUint16");
+  break;
 case OP_FlipMemberPtrSint32:
-  PrintName("FlipMemberPtrSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrSint32");
+  break;
 case OP_FlipMemberPtrUint32:
-  PrintName("FlipMemberPtrUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrUint32");
+  break;
 case OP_FlipMemberPtrSint64:
-  PrintName("FlipMemberPtrSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrSint64");
+  break;
 case OP_FlipMemberPtrUint64:
-  PrintName("FlipMemberPtrUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrUint64");
+  break;
 case OP_FlipMemberPtrIntAP:
-  PrintName("FlipMemberPtrIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrIntAP");
+  break;
 case OP_FlipMemberPtrIntAPS:
-  PrintName("FlipMemberPtrIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrIntAPS");
+  break;
 case OP_FlipMemberPtrBool:
-  PrintName("FlipMemberPtrBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrBool");
+  break;
 case OP_FlipMemberPtrFixedPoint:
-  PrintName("FlipMemberPtrFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrFixedPoint");
+  break;
 case OP_FlipMemberPtrPtr:
-  PrintName("FlipMemberPtrPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipMemberPtrFnPtr:
-  PrintName("FlipMemberPtrFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrPtr");
+  break;
 case OP_FlipMemberPtrMemberPtr:
-  PrintName("FlipMemberPtrMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrMemberPtr");
+  break;
 case OP_FlipMemberPtrFloat:
-  PrintName("FlipMemberPtrFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipMemberPtrFloat");
+  break;
 case OP_FlipFloatSint8:
-  PrintName("FlipFloatSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatSint8");
+  break;
 case OP_FlipFloatUint8:
-  PrintName("FlipFloatUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatUint8");
+  break;
 case OP_FlipFloatSint16:
-  PrintName("FlipFloatSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatSint16");
+  break;
 case OP_FlipFloatUint16:
-  PrintName("FlipFloatUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatUint16");
+  break;
 case OP_FlipFloatSint32:
-  PrintName("FlipFloatSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatSint32");
+  break;
 case OP_FlipFloatUint32:
-  PrintName("FlipFloatUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatUint32");
+  break;
 case OP_FlipFloatSint64:
-  PrintName("FlipFloatSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatSint64");
+  break;
 case OP_FlipFloatUint64:
-  PrintName("FlipFloatUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatUint64");
+  break;
 case OP_FlipFloatIntAP:
-  PrintName("FlipFloatIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatIntAP");
+  break;
 case OP_FlipFloatIntAPS:
-  PrintName("FlipFloatIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatIntAPS");
+  break;
 case OP_FlipFloatBool:
-  PrintName("FlipFloatBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatBool");
+  break;
 case OP_FlipFloatFixedPoint:
-  PrintName("FlipFloatFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatFixedPoint");
+  break;
 case OP_FlipFloatPtr:
-  PrintName("FlipFloatPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_FlipFloatFnPtr:
-  PrintName("FlipFloatFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatPtr");
+  break;
 case OP_FlipFloatMemberPtr:
-  PrintName("FlipFloatMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatMemberPtr");
+  break;
 case OP_FlipFloatFloat:
-  PrintName("FlipFloatFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("FlipFloatFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitFlipSint8Sint8(const SourceInfo &);
@@ -15300,7 +14433,6 @@ bool emitFlipSint8IntAPS(const SourceInfo &);
 bool emitFlipSint8Bool(const SourceInfo &);
 bool emitFlipSint8FixedPoint(const SourceInfo &);
 bool emitFlipSint8Ptr(const SourceInfo &);
-bool emitFlipSint8FnPtr(const SourceInfo &);
 bool emitFlipSint8MemberPtr(const SourceInfo &);
 bool emitFlipSint8Float(const SourceInfo &);
 bool emitFlipUint8Sint8(const SourceInfo &);
@@ -15316,7 +14448,6 @@ bool emitFlipUint8IntAPS(const SourceInfo &);
 bool emitFlipUint8Bool(const SourceInfo &);
 bool emitFlipUint8FixedPoint(const SourceInfo &);
 bool emitFlipUint8Ptr(const SourceInfo &);
-bool emitFlipUint8FnPtr(const SourceInfo &);
 bool emitFlipUint8MemberPtr(const SourceInfo &);
 bool emitFlipUint8Float(const SourceInfo &);
 bool emitFlipSint16Sint8(const SourceInfo &);
@@ -15332,7 +14463,6 @@ bool emitFlipSint16IntAPS(const SourceInfo &);
 bool emitFlipSint16Bool(const SourceInfo &);
 bool emitFlipSint16FixedPoint(const SourceInfo &);
 bool emitFlipSint16Ptr(const SourceInfo &);
-bool emitFlipSint16FnPtr(const SourceInfo &);
 bool emitFlipSint16MemberPtr(const SourceInfo &);
 bool emitFlipSint16Float(const SourceInfo &);
 bool emitFlipUint16Sint8(const SourceInfo &);
@@ -15348,7 +14478,6 @@ bool emitFlipUint16IntAPS(const SourceInfo &);
 bool emitFlipUint16Bool(const SourceInfo &);
 bool emitFlipUint16FixedPoint(const SourceInfo &);
 bool emitFlipUint16Ptr(const SourceInfo &);
-bool emitFlipUint16FnPtr(const SourceInfo &);
 bool emitFlipUint16MemberPtr(const SourceInfo &);
 bool emitFlipUint16Float(const SourceInfo &);
 bool emitFlipSint32Sint8(const SourceInfo &);
@@ -15364,7 +14493,6 @@ bool emitFlipSint32IntAPS(const SourceInfo &);
 bool emitFlipSint32Bool(const SourceInfo &);
 bool emitFlipSint32FixedPoint(const SourceInfo &);
 bool emitFlipSint32Ptr(const SourceInfo &);
-bool emitFlipSint32FnPtr(const SourceInfo &);
 bool emitFlipSint32MemberPtr(const SourceInfo &);
 bool emitFlipSint32Float(const SourceInfo &);
 bool emitFlipUint32Sint8(const SourceInfo &);
@@ -15380,7 +14508,6 @@ bool emitFlipUint32IntAPS(const SourceInfo &);
 bool emitFlipUint32Bool(const SourceInfo &);
 bool emitFlipUint32FixedPoint(const SourceInfo &);
 bool emitFlipUint32Ptr(const SourceInfo &);
-bool emitFlipUint32FnPtr(const SourceInfo &);
 bool emitFlipUint32MemberPtr(const SourceInfo &);
 bool emitFlipUint32Float(const SourceInfo &);
 bool emitFlipSint64Sint8(const SourceInfo &);
@@ -15396,7 +14523,6 @@ bool emitFlipSint64IntAPS(const SourceInfo &);
 bool emitFlipSint64Bool(const SourceInfo &);
 bool emitFlipSint64FixedPoint(const SourceInfo &);
 bool emitFlipSint64Ptr(const SourceInfo &);
-bool emitFlipSint64FnPtr(const SourceInfo &);
 bool emitFlipSint64MemberPtr(const SourceInfo &);
 bool emitFlipSint64Float(const SourceInfo &);
 bool emitFlipUint64Sint8(const SourceInfo &);
@@ -15412,7 +14538,6 @@ bool emitFlipUint64IntAPS(const SourceInfo &);
 bool emitFlipUint64Bool(const SourceInfo &);
 bool emitFlipUint64FixedPoint(const SourceInfo &);
 bool emitFlipUint64Ptr(const SourceInfo &);
-bool emitFlipUint64FnPtr(const SourceInfo &);
 bool emitFlipUint64MemberPtr(const SourceInfo &);
 bool emitFlipUint64Float(const SourceInfo &);
 bool emitFlipIntAPSint8(const SourceInfo &);
@@ -15428,7 +14553,6 @@ bool emitFlipIntAPIntAPS(const SourceInfo &);
 bool emitFlipIntAPBool(const SourceInfo &);
 bool emitFlipIntAPFixedPoint(const SourceInfo &);
 bool emitFlipIntAPPtr(const SourceInfo &);
-bool emitFlipIntAPFnPtr(const SourceInfo &);
 bool emitFlipIntAPMemberPtr(const SourceInfo &);
 bool emitFlipIntAPFloat(const SourceInfo &);
 bool emitFlipIntAPSSint8(const SourceInfo &);
@@ -15444,7 +14568,6 @@ bool emitFlipIntAPSIntAPS(const SourceInfo &);
 bool emitFlipIntAPSBool(const SourceInfo &);
 bool emitFlipIntAPSFixedPoint(const SourceInfo &);
 bool emitFlipIntAPSPtr(const SourceInfo &);
-bool emitFlipIntAPSFnPtr(const SourceInfo &);
 bool emitFlipIntAPSMemberPtr(const SourceInfo &);
 bool emitFlipIntAPSFloat(const SourceInfo &);
 bool emitFlipBoolSint8(const SourceInfo &);
@@ -15460,7 +14583,6 @@ bool emitFlipBoolIntAPS(const SourceInfo &);
 bool emitFlipBoolBool(const SourceInfo &);
 bool emitFlipBoolFixedPoint(const SourceInfo &);
 bool emitFlipBoolPtr(const SourceInfo &);
-bool emitFlipBoolFnPtr(const SourceInfo &);
 bool emitFlipBoolMemberPtr(const SourceInfo &);
 bool emitFlipBoolFloat(const SourceInfo &);
 bool emitFlipFixedPointSint8(const SourceInfo &);
@@ -15476,7 +14598,6 @@ bool emitFlipFixedPointIntAPS(const SourceInfo &);
 bool emitFlipFixedPointBool(const SourceInfo &);
 bool emitFlipFixedPointFixedPoint(const SourceInfo &);
 bool emitFlipFixedPointPtr(const SourceInfo &);
-bool emitFlipFixedPointFnPtr(const SourceInfo &);
 bool emitFlipFixedPointMemberPtr(const SourceInfo &);
 bool emitFlipFixedPointFloat(const SourceInfo &);
 bool emitFlipPtrSint8(const SourceInfo &);
@@ -15492,25 +14613,8 @@ bool emitFlipPtrIntAPS(const SourceInfo &);
 bool emitFlipPtrBool(const SourceInfo &);
 bool emitFlipPtrFixedPoint(const SourceInfo &);
 bool emitFlipPtrPtr(const SourceInfo &);
-bool emitFlipPtrFnPtr(const SourceInfo &);
 bool emitFlipPtrMemberPtr(const SourceInfo &);
 bool emitFlipPtrFloat(const SourceInfo &);
-bool emitFlipFnPtrSint8(const SourceInfo &);
-bool emitFlipFnPtrUint8(const SourceInfo &);
-bool emitFlipFnPtrSint16(const SourceInfo &);
-bool emitFlipFnPtrUint16(const SourceInfo &);
-bool emitFlipFnPtrSint32(const SourceInfo &);
-bool emitFlipFnPtrUint32(const SourceInfo &);
-bool emitFlipFnPtrSint64(const SourceInfo &);
-bool emitFlipFnPtrUint64(const SourceInfo &);
-bool emitFlipFnPtrIntAP(const SourceInfo &);
-bool emitFlipFnPtrIntAPS(const SourceInfo &);
-bool emitFlipFnPtrBool(const SourceInfo &);
-bool emitFlipFnPtrFixedPoint(const SourceInfo &);
-bool emitFlipFnPtrPtr(const SourceInfo &);
-bool emitFlipFnPtrFnPtr(const SourceInfo &);
-bool emitFlipFnPtrMemberPtr(const SourceInfo &);
-bool emitFlipFnPtrFloat(const SourceInfo &);
 bool emitFlipMemberPtrSint8(const SourceInfo &);
 bool emitFlipMemberPtrUint8(const SourceInfo &);
 bool emitFlipMemberPtrSint16(const SourceInfo &);
@@ -15524,7 +14628,6 @@ bool emitFlipMemberPtrIntAPS(const SourceInfo &);
 bool emitFlipMemberPtrBool(const SourceInfo &);
 bool emitFlipMemberPtrFixedPoint(const SourceInfo &);
 bool emitFlipMemberPtrPtr(const SourceInfo &);
-bool emitFlipMemberPtrFnPtr(const SourceInfo &);
 bool emitFlipMemberPtrMemberPtr(const SourceInfo &);
 bool emitFlipMemberPtrFloat(const SourceInfo &);
 bool emitFlipFloatSint8(const SourceInfo &);
@@ -15540,7 +14643,6 @@ bool emitFlipFloatIntAPS(const SourceInfo &);
 bool emitFlipFloatBool(const SourceInfo &);
 bool emitFlipFloatFixedPoint(const SourceInfo &);
 bool emitFlipFloatPtr(const SourceInfo &);
-bool emitFlipFloatFnPtr(const SourceInfo &);
 bool emitFlipFloatMemberPtr(const SourceInfo &);
 bool emitFlipFloatFloat(const SourceInfo &);
 #endif
@@ -15584,8 +14686,6 @@ ByteCodeEmitter
     return emitFlipSint8FixedPoint(I);
   case PT_Ptr:
     return emitFlipSint8Ptr(I);
-  case PT_FnPtr:
-    return emitFlipSint8FnPtr(I);
   case PT_MemberPtr:
     return emitFlipSint8MemberPtr(I);
   case PT_Float:
@@ -15620,8 +14720,6 @@ ByteCodeEmitter
     return emitFlipUint8FixedPoint(I);
   case PT_Ptr:
     return emitFlipUint8Ptr(I);
-  case PT_FnPtr:
-    return emitFlipUint8FnPtr(I);
   case PT_MemberPtr:
     return emitFlipUint8MemberPtr(I);
   case PT_Float:
@@ -15656,8 +14754,6 @@ ByteCodeEmitter
     return emitFlipSint16FixedPoint(I);
   case PT_Ptr:
     return emitFlipSint16Ptr(I);
-  case PT_FnPtr:
-    return emitFlipSint16FnPtr(I);
   case PT_MemberPtr:
     return emitFlipSint16MemberPtr(I);
   case PT_Float:
@@ -15692,8 +14788,6 @@ ByteCodeEmitter
     return emitFlipUint16FixedPoint(I);
   case PT_Ptr:
     return emitFlipUint16Ptr(I);
-  case PT_FnPtr:
-    return emitFlipUint16FnPtr(I);
   case PT_MemberPtr:
     return emitFlipUint16MemberPtr(I);
   case PT_Float:
@@ -15728,8 +14822,6 @@ ByteCodeEmitter
     return emitFlipSint32FixedPoint(I);
   case PT_Ptr:
     return emitFlipSint32Ptr(I);
-  case PT_FnPtr:
-    return emitFlipSint32FnPtr(I);
   case PT_MemberPtr:
     return emitFlipSint32MemberPtr(I);
   case PT_Float:
@@ -15764,8 +14856,6 @@ ByteCodeEmitter
     return emitFlipUint32FixedPoint(I);
   case PT_Ptr:
     return emitFlipUint32Ptr(I);
-  case PT_FnPtr:
-    return emitFlipUint32FnPtr(I);
   case PT_MemberPtr:
     return emitFlipUint32MemberPtr(I);
   case PT_Float:
@@ -15800,8 +14890,6 @@ ByteCodeEmitter
     return emitFlipSint64FixedPoint(I);
   case PT_Ptr:
     return emitFlipSint64Ptr(I);
-  case PT_FnPtr:
-    return emitFlipSint64FnPtr(I);
   case PT_MemberPtr:
     return emitFlipSint64MemberPtr(I);
   case PT_Float:
@@ -15836,8 +14924,6 @@ ByteCodeEmitter
     return emitFlipUint64FixedPoint(I);
   case PT_Ptr:
     return emitFlipUint64Ptr(I);
-  case PT_FnPtr:
-    return emitFlipUint64FnPtr(I);
   case PT_MemberPtr:
     return emitFlipUint64MemberPtr(I);
   case PT_Float:
@@ -15872,8 +14958,6 @@ ByteCodeEmitter
     return emitFlipIntAPFixedPoint(I);
   case PT_Ptr:
     return emitFlipIntAPPtr(I);
-  case PT_FnPtr:
-    return emitFlipIntAPFnPtr(I);
   case PT_MemberPtr:
     return emitFlipIntAPMemberPtr(I);
   case PT_Float:
@@ -15908,8 +14992,6 @@ ByteCodeEmitter
     return emitFlipIntAPSFixedPoint(I);
   case PT_Ptr:
     return emitFlipIntAPSPtr(I);
-  case PT_FnPtr:
-    return emitFlipIntAPSFnPtr(I);
   case PT_MemberPtr:
     return emitFlipIntAPSMemberPtr(I);
   case PT_Float:
@@ -15944,8 +15026,6 @@ ByteCodeEmitter
     return emitFlipBoolFixedPoint(I);
   case PT_Ptr:
     return emitFlipBoolPtr(I);
-  case PT_FnPtr:
-    return emitFlipBoolFnPtr(I);
   case PT_MemberPtr:
     return emitFlipBoolMemberPtr(I);
   case PT_Float:
@@ -15980,8 +15060,6 @@ ByteCodeEmitter
     return emitFlipFixedPointFixedPoint(I);
   case PT_Ptr:
     return emitFlipFixedPointPtr(I);
-  case PT_FnPtr:
-    return emitFlipFixedPointFnPtr(I);
   case PT_MemberPtr:
     return emitFlipFixedPointMemberPtr(I);
   case PT_Float:
@@ -16016,48 +15094,10 @@ ByteCodeEmitter
     return emitFlipPtrFixedPoint(I);
   case PT_Ptr:
     return emitFlipPtrPtr(I);
-  case PT_FnPtr:
-    return emitFlipPtrFnPtr(I);
   case PT_MemberPtr:
     return emitFlipPtrMemberPtr(I);
   case PT_Float:
     return emitFlipPtrFloat(I);
-  }
-  llvm_unreachable("invalid enum value");
-  case PT_FnPtr:
-  switch (T1) {
-  case PT_Sint8:
-    return emitFlipFnPtrSint8(I);
-  case PT_Uint8:
-    return emitFlipFnPtrUint8(I);
-  case PT_Sint16:
-    return emitFlipFnPtrSint16(I);
-  case PT_Uint16:
-    return emitFlipFnPtrUint16(I);
-  case PT_Sint32:
-    return emitFlipFnPtrSint32(I);
-  case PT_Uint32:
-    return emitFlipFnPtrUint32(I);
-  case PT_Sint64:
-    return emitFlipFnPtrSint64(I);
-  case PT_Uint64:
-    return emitFlipFnPtrUint64(I);
-  case PT_IntAP:
-    return emitFlipFnPtrIntAP(I);
-  case PT_IntAPS:
-    return emitFlipFnPtrIntAPS(I);
-  case PT_Bool:
-    return emitFlipFnPtrBool(I);
-  case PT_FixedPoint:
-    return emitFlipFnPtrFixedPoint(I);
-  case PT_Ptr:
-    return emitFlipFnPtrPtr(I);
-  case PT_FnPtr:
-    return emitFlipFnPtrFnPtr(I);
-  case PT_MemberPtr:
-    return emitFlipFnPtrMemberPtr(I);
-  case PT_Float:
-    return emitFlipFnPtrFloat(I);
   }
   llvm_unreachable("invalid enum value");
   case PT_MemberPtr:
@@ -16088,8 +15128,6 @@ ByteCodeEmitter
     return emitFlipMemberPtrFixedPoint(I);
   case PT_Ptr:
     return emitFlipMemberPtrPtr(I);
-  case PT_FnPtr:
-    return emitFlipMemberPtrFnPtr(I);
   case PT_MemberPtr:
     return emitFlipMemberPtrMemberPtr(I);
   case PT_Float:
@@ -16124,8 +15162,6 @@ ByteCodeEmitter
     return emitFlipFloatFixedPoint(I);
   case PT_Ptr:
     return emitFlipFloatPtr(I);
-  case PT_FnPtr:
-    return emitFlipFloatFnPtr(I);
   case PT_MemberPtr:
     return emitFlipFloatMemberPtr(I);
   case PT_Float:
@@ -16176,9 +15212,6 @@ bool ByteCodeEmitter::emitFlipSint8FixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipSint8Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint8Ptr, L);
 }
-bool ByteCodeEmitter::emitFlipSint8FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipSint8FnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipSint8MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint8MemberPtr, L);
 }
@@ -16223,9 +15256,6 @@ bool ByteCodeEmitter::emitFlipUint8FixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipUint8Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint8Ptr, L);
-}
-bool ByteCodeEmitter::emitFlipUint8FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipUint8FnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipUint8MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint8MemberPtr, L);
@@ -16272,9 +15302,6 @@ bool ByteCodeEmitter::emitFlipSint16FixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipSint16Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint16Ptr, L);
 }
-bool ByteCodeEmitter::emitFlipSint16FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipSint16FnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipSint16MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint16MemberPtr, L);
 }
@@ -16319,9 +15346,6 @@ bool ByteCodeEmitter::emitFlipUint16FixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipUint16Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint16Ptr, L);
-}
-bool ByteCodeEmitter::emitFlipUint16FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipUint16FnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipUint16MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint16MemberPtr, L);
@@ -16368,9 +15392,6 @@ bool ByteCodeEmitter::emitFlipSint32FixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipSint32Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint32Ptr, L);
 }
-bool ByteCodeEmitter::emitFlipSint32FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipSint32FnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipSint32MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint32MemberPtr, L);
 }
@@ -16415,9 +15436,6 @@ bool ByteCodeEmitter::emitFlipUint32FixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipUint32Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint32Ptr, L);
-}
-bool ByteCodeEmitter::emitFlipUint32FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipUint32FnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipUint32MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint32MemberPtr, L);
@@ -16464,9 +15482,6 @@ bool ByteCodeEmitter::emitFlipSint64FixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipSint64Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint64Ptr, L);
 }
-bool ByteCodeEmitter::emitFlipSint64FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipSint64FnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipSint64MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipSint64MemberPtr, L);
 }
@@ -16511,9 +15526,6 @@ bool ByteCodeEmitter::emitFlipUint64FixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipUint64Ptr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint64Ptr, L);
-}
-bool ByteCodeEmitter::emitFlipUint64FnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipUint64FnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipUint64MemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipUint64MemberPtr, L);
@@ -16560,9 +15572,6 @@ bool ByteCodeEmitter::emitFlipIntAPFixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipIntAPPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipIntAPPtr, L);
 }
-bool ByteCodeEmitter::emitFlipIntAPFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipIntAPFnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipIntAPMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipIntAPMemberPtr, L);
 }
@@ -16607,9 +15616,6 @@ bool ByteCodeEmitter::emitFlipIntAPSFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipIntAPSPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipIntAPSPtr, L);
-}
-bool ByteCodeEmitter::emitFlipIntAPSFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipIntAPSFnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipIntAPSMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipIntAPSMemberPtr, L);
@@ -16656,9 +15662,6 @@ bool ByteCodeEmitter::emitFlipBoolFixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipBoolPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipBoolPtr, L);
 }
-bool ByteCodeEmitter::emitFlipBoolFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipBoolFnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipBoolMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipBoolMemberPtr, L);
 }
@@ -16703,9 +15706,6 @@ bool ByteCodeEmitter::emitFlipFixedPointFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipFixedPointPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipFixedPointPtr, L);
-}
-bool ByteCodeEmitter::emitFlipFixedPointFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFixedPointFnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipFixedPointMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipFixedPointMemberPtr, L);
@@ -16752,62 +15752,11 @@ bool ByteCodeEmitter::emitFlipPtrFixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitFlipPtrPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipPtrPtr, L);
 }
-bool ByteCodeEmitter::emitFlipPtrFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipPtrFnPtr, L);
-}
 bool ByteCodeEmitter::emitFlipPtrMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipPtrMemberPtr, L);
 }
 bool ByteCodeEmitter::emitFlipPtrFloat(const SourceInfo &L) {
   return emitOp<>(OP_FlipPtrFloat, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrSint8(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrSint8, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrUint8(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrUint8, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrSint16(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrSint16, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrUint16(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrUint16, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrSint32(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrSint32, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrUint32(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrUint32, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrSint64(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrSint64, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrUint64(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrUint64, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrIntAP(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrIntAP, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrIntAPS(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrIntAPS, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrBool(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrBool, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrFixedPoint(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrFixedPoint, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrPtr, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrFnPtr, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrMemberPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrMemberPtr, L);
-}
-bool ByteCodeEmitter::emitFlipFnPtrFloat(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFnPtrFloat, L);
 }
 bool ByteCodeEmitter::emitFlipMemberPtrSint8(const SourceInfo &L) {
   return emitOp<>(OP_FlipMemberPtrSint8, L);
@@ -16847,9 +15796,6 @@ bool ByteCodeEmitter::emitFlipMemberPtrFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipMemberPtrPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipMemberPtrPtr, L);
-}
-bool ByteCodeEmitter::emitFlipMemberPtrFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipMemberPtrFnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipMemberPtrMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipMemberPtrMemberPtr, L);
@@ -16895,9 +15841,6 @@ bool ByteCodeEmitter::emitFlipFloatFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitFlipFloatPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipFloatPtr, L);
-}
-bool ByteCodeEmitter::emitFlipFloatFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_FlipFloatFnPtr, L);
 }
 bool ByteCodeEmitter::emitFlipFloatMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_FlipFloatMemberPtr, L);
@@ -16971,11 +15914,6 @@ bool EvalEmitter::emitFlipSint8Ptr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_Sint8, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipSint8FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Sint8, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipSint8MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -17052,11 +15990,6 @@ bool EvalEmitter::emitFlipUint8Ptr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_Uint8, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipUint8FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Uint8, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipUint8MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17131,11 +16064,6 @@ bool EvalEmitter::emitFlipSint16Ptr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_Sint16, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipSint16FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Sint16, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipSint16MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -17212,11 +16140,6 @@ bool EvalEmitter::emitFlipUint16Ptr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_Uint16, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipUint16FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Uint16, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipUint16MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17291,11 +16214,6 @@ bool EvalEmitter::emitFlipSint32Ptr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_Sint32, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipSint32FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Sint32, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipSint32MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -17372,11 +16290,6 @@ bool EvalEmitter::emitFlipUint32Ptr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_Uint32, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipUint32FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Uint32, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipUint32MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17451,11 +16364,6 @@ bool EvalEmitter::emitFlipSint64Ptr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_Sint64, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipSint64FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Sint64, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipSint64MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -17532,11 +16440,6 @@ bool EvalEmitter::emitFlipUint64Ptr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_Uint64, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipUint64FnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Uint64, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipUint64MemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17611,11 +16514,6 @@ bool EvalEmitter::emitFlipIntAPPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_IntAP, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipIntAPFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_IntAP, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipIntAPMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -17692,11 +16590,6 @@ bool EvalEmitter::emitFlipIntAPSPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_IntAPS, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipIntAPSFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_IntAPS, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipIntAPSMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17771,11 +16664,6 @@ bool EvalEmitter::emitFlipBoolPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_Bool, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipBoolFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Bool, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipBoolMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -17852,11 +16740,6 @@ bool EvalEmitter::emitFlipFixedPointPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_FixedPoint, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipFixedPointFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FixedPoint, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipFixedPointMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17932,11 +16815,6 @@ bool EvalEmitter::emitFlipPtrPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_Ptr, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipPtrFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Ptr, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipPtrMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -17946,86 +16824,6 @@ bool EvalEmitter::emitFlipPtrFloat(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_Ptr, PT_Float>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrSint8(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Sint8>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrUint8(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Uint8>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrSint16(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Sint16>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrUint16(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Uint16>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrSint32(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Sint32>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrUint32(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Uint32>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrSint64(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Sint64>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrUint64(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Uint64>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrIntAP(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_IntAP>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrIntAPS(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_IntAPS>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrBool(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Bool>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrFixedPoint(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_FixedPoint>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_FnPtr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrMemberPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_MemberPtr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipFnPtrFloat(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_FnPtr, PT_Float>(S, OpPC);
 }
 bool EvalEmitter::emitFlipMemberPtrSint8(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -18091,11 +16889,6 @@ bool EvalEmitter::emitFlipMemberPtrPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Flip<PT_MemberPtr, PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitFlipMemberPtrFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_MemberPtr, PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitFlipMemberPtrMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -18172,11 +16965,6 @@ bool EvalEmitter::emitFlipFloatPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Flip<PT_Float, PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitFlipFloatFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Flip<PT_Float, PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitFlipFloatMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -18202,9 +16990,10 @@ case OP_Free: {
 #endif
 #ifdef GET_DISASM
 case OP_Free:
-  PrintName("Free");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Free");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitFree( bool ,  bool , const SourceInfo &);
@@ -18236,7 +17025,6 @@ OP_GEBool,
 OP_GEFixedPoint,
 OP_GEPtr,
 OP_GEFloat,
-OP_GEFnPtr,
 #endif
 #ifdef GET_INTERP
 case OP_GESint8: {
@@ -18309,73 +17097,50 @@ case OP_GEFloat: {
     return false;
   continue;
 }
-case OP_GEFnPtr: {
-  if (!GE<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_GESint8:
-  PrintName("GESint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GESint8");
+  break;
 case OP_GEUint8:
-  PrintName("GEUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEUint8");
+  break;
 case OP_GESint16:
-  PrintName("GESint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GESint16");
+  break;
 case OP_GEUint16:
-  PrintName("GEUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEUint16");
+  break;
 case OP_GESint32:
-  PrintName("GESint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GESint32");
+  break;
 case OP_GEUint32:
-  PrintName("GEUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEUint32");
+  break;
 case OP_GESint64:
-  PrintName("GESint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GESint64");
+  break;
 case OP_GEUint64:
-  PrintName("GEUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEUint64");
+  break;
 case OP_GEIntAP:
-  PrintName("GEIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEIntAP");
+  break;
 case OP_GEIntAPS:
-  PrintName("GEIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEIntAPS");
+  break;
 case OP_GEBool:
-  PrintName("GEBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEBool");
+  break;
 case OP_GEFixedPoint:
-  PrintName("GEFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEFixedPoint");
+  break;
 case OP_GEPtr:
-  PrintName("GEPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEPtr");
+  break;
 case OP_GEFloat:
-  PrintName("GEFloat");
-  OS << "\t" << "\n";
-  continue;
-case OP_GEFnPtr:
-  PrintName("GEFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GEFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGESint8(const SourceInfo &);
@@ -18392,7 +17157,6 @@ bool emitGEBool(const SourceInfo &);
 bool emitGEFixedPoint(const SourceInfo &);
 bool emitGEPtr(const SourceInfo &);
 bool emitGEFloat(const SourceInfo &);
-bool emitGEFnPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitGE(PrimType, const SourceInfo &I);
@@ -18434,8 +17198,6 @@ ByteCodeEmitter
     return emitGEPtr(I);
   case PT_Float:
     return emitGEFloat(I);
-  case PT_FnPtr:
-    return emitGEFnPtr(I);
   default: llvm_unreachable("invalid type: emitGE");
   }
   llvm_unreachable("invalid enum value");
@@ -18483,9 +17245,6 @@ bool ByteCodeEmitter::emitGEPtr(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitGEFloat(const SourceInfo &L) {
   return emitOp<>(OP_GEFloat, L);
-}
-bool ByteCodeEmitter::emitGEFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_GEFnPtr, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -18559,11 +17318,6 @@ bool EvalEmitter::emitGEFloat(const SourceInfo &L) {
   CurrentSource = L;
   return GE<PT_Float>(S, OpPC);
 }
-bool EvalEmitter::emitGEFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GE<PT_FnPtr>(S, OpPC);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_GTSint8,
@@ -18580,7 +17334,6 @@ OP_GTBool,
 OP_GTFixedPoint,
 OP_GTPtr,
 OP_GTFloat,
-OP_GTFnPtr,
 #endif
 #ifdef GET_INTERP
 case OP_GTSint8: {
@@ -18653,73 +17406,50 @@ case OP_GTFloat: {
     return false;
   continue;
 }
-case OP_GTFnPtr: {
-  if (!GT<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_GTSint8:
-  PrintName("GTSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTSint8");
+  break;
 case OP_GTUint8:
-  PrintName("GTUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTUint8");
+  break;
 case OP_GTSint16:
-  PrintName("GTSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTSint16");
+  break;
 case OP_GTUint16:
-  PrintName("GTUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTUint16");
+  break;
 case OP_GTSint32:
-  PrintName("GTSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTSint32");
+  break;
 case OP_GTUint32:
-  PrintName("GTUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTUint32");
+  break;
 case OP_GTSint64:
-  PrintName("GTSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTSint64");
+  break;
 case OP_GTUint64:
-  PrintName("GTUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTUint64");
+  break;
 case OP_GTIntAP:
-  PrintName("GTIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTIntAP");
+  break;
 case OP_GTIntAPS:
-  PrintName("GTIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTIntAPS");
+  break;
 case OP_GTBool:
-  PrintName("GTBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTBool");
+  break;
 case OP_GTFixedPoint:
-  PrintName("GTFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTFixedPoint");
+  break;
 case OP_GTPtr:
-  PrintName("GTPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTPtr");
+  break;
 case OP_GTFloat:
-  PrintName("GTFloat");
-  OS << "\t" << "\n";
-  continue;
-case OP_GTFnPtr:
-  PrintName("GTFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GTFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGTSint8(const SourceInfo &);
@@ -18736,7 +17466,6 @@ bool emitGTBool(const SourceInfo &);
 bool emitGTFixedPoint(const SourceInfo &);
 bool emitGTPtr(const SourceInfo &);
 bool emitGTFloat(const SourceInfo &);
-bool emitGTFnPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitGT(PrimType, const SourceInfo &I);
@@ -18778,8 +17507,6 @@ ByteCodeEmitter
     return emitGTPtr(I);
   case PT_Float:
     return emitGTFloat(I);
-  case PT_FnPtr:
-    return emitGTFnPtr(I);
   default: llvm_unreachable("invalid type: emitGT");
   }
   llvm_unreachable("invalid enum value");
@@ -18827,9 +17554,6 @@ bool ByteCodeEmitter::emitGTPtr(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitGTFloat(const SourceInfo &L) {
   return emitOp<>(OP_GTFloat, L);
-}
-bool ByteCodeEmitter::emitGTFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_GTFnPtr, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -18903,11 +17627,6 @@ bool EvalEmitter::emitGTFloat(const SourceInfo &L) {
   CurrentSource = L;
   return GT<PT_Float>(S, OpPC);
 }
-bool EvalEmitter::emitGTFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GT<PT_FnPtr>(S, OpPC);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_GetFieldSint8,
@@ -18923,7 +17642,6 @@ OP_GetFieldIntAPS,
 OP_GetFieldBool,
 OP_GetFieldFixedPoint,
 OP_GetFieldPtr,
-OP_GetFieldFnPtr,
 OP_GetFieldMemberPtr,
 OP_GetFieldFloat,
 #endif
@@ -19006,12 +17724,6 @@ case OP_GetFieldPtr: {
     return false;
   continue;
 }
-case OP_GetFieldFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetFieldMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetField<PT_MemberPtr>(S, OpPC, V0))
@@ -19027,69 +17739,65 @@ case OP_GetFieldFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetFieldSint8:
-  PrintName("GetFieldSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldUint8:
-  PrintName("GetFieldUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldSint16:
-  PrintName("GetFieldSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldUint16:
-  PrintName("GetFieldUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldSint32:
-  PrintName("GetFieldSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldUint32:
-  PrintName("GetFieldUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldSint64:
-  PrintName("GetFieldSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldUint64:
-  PrintName("GetFieldUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldIntAP:
-  PrintName("GetFieldIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldIntAPS:
-  PrintName("GetFieldIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldBool:
-  PrintName("GetFieldBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldFixedPoint:
-  PrintName("GetFieldFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPtr:
-  PrintName("GetFieldPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetFieldFnPtr:
-  PrintName("GetFieldFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldMemberPtr:
-  PrintName("GetFieldMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldFloat:
-  PrintName("GetFieldFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetFieldSint8( uint32_t , const SourceInfo &);
@@ -19105,7 +17813,6 @@ bool emitGetFieldIntAPS( uint32_t , const SourceInfo &);
 bool emitGetFieldBool( uint32_t , const SourceInfo &);
 bool emitGetFieldFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetFieldPtr( uint32_t , const SourceInfo &);
-bool emitGetFieldFnPtr( uint32_t , const SourceInfo &);
 bool emitGetFieldMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetFieldFloat( uint32_t , const SourceInfo &);
 #endif
@@ -19147,8 +17854,6 @@ ByteCodeEmitter
     return emitGetFieldFixedPoint(A0, I);
   case PT_Ptr:
     return emitGetFieldPtr(A0, I);
-  case PT_FnPtr:
-    return emitGetFieldFnPtr(A0, I);
   case PT_MemberPtr:
     return emitGetFieldMemberPtr(A0, I);
   case PT_Float:
@@ -19196,9 +17901,6 @@ bool ByteCodeEmitter::emitGetFieldFixedPoint( uint32_t A0, const SourceInfo &L) 
 }
 bool ByteCodeEmitter::emitGetFieldPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetFieldPtr, A0, L);
-}
-bool ByteCodeEmitter::emitGetFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetFieldFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitGetFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetFieldMemberPtr, A0, L);
@@ -19273,11 +17975,6 @@ bool EvalEmitter::emitGetFieldPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return GetField<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitGetFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetField<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitGetFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -19303,7 +18000,6 @@ OP_GetFieldPopIntAPS,
 OP_GetFieldPopBool,
 OP_GetFieldPopFixedPoint,
 OP_GetFieldPopPtr,
-OP_GetFieldPopFnPtr,
 OP_GetFieldPopMemberPtr,
 OP_GetFieldPopFloat,
 #endif
@@ -19386,12 +18082,6 @@ case OP_GetFieldPopPtr: {
     return false;
   continue;
 }
-case OP_GetFieldPopFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetFieldPopMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetFieldPop<PT_MemberPtr>(S, OpPC, V0))
@@ -19407,69 +18097,65 @@ case OP_GetFieldPopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetFieldPopSint8:
-  PrintName("GetFieldPopSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopUint8:
-  PrintName("GetFieldPopUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopSint16:
-  PrintName("GetFieldPopSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopUint16:
-  PrintName("GetFieldPopUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopSint32:
-  PrintName("GetFieldPopSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopUint32:
-  PrintName("GetFieldPopUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopSint64:
-  PrintName("GetFieldPopSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopUint64:
-  PrintName("GetFieldPopUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopIntAP:
-  PrintName("GetFieldPopIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopIntAPS:
-  PrintName("GetFieldPopIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopBool:
-  PrintName("GetFieldPopBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopFixedPoint:
-  PrintName("GetFieldPopFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopPtr:
-  PrintName("GetFieldPopPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetFieldPopFnPtr:
-  PrintName("GetFieldPopFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopMemberPtr:
-  PrintName("GetFieldPopMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetFieldPopFloat:
-  PrintName("GetFieldPopFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFieldPopFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetFieldPopSint8( uint32_t , const SourceInfo &);
@@ -19485,7 +18171,6 @@ bool emitGetFieldPopIntAPS( uint32_t , const SourceInfo &);
 bool emitGetFieldPopBool( uint32_t , const SourceInfo &);
 bool emitGetFieldPopFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetFieldPopPtr( uint32_t , const SourceInfo &);
-bool emitGetFieldPopFnPtr( uint32_t , const SourceInfo &);
 bool emitGetFieldPopMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetFieldPopFloat( uint32_t , const SourceInfo &);
 #endif
@@ -19527,8 +18212,6 @@ ByteCodeEmitter
     return emitGetFieldPopFixedPoint(A0, I);
   case PT_Ptr:
     return emitGetFieldPopPtr(A0, I);
-  case PT_FnPtr:
-    return emitGetFieldPopFnPtr(A0, I);
   case PT_MemberPtr:
     return emitGetFieldPopMemberPtr(A0, I);
   case PT_Float:
@@ -19576,9 +18259,6 @@ bool ByteCodeEmitter::emitGetFieldPopFixedPoint( uint32_t A0, const SourceInfo &
 }
 bool ByteCodeEmitter::emitGetFieldPopPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetFieldPopPtr, A0, L);
-}
-bool ByteCodeEmitter::emitGetFieldPopFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetFieldPopFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitGetFieldPopMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetFieldPopMemberPtr, A0, L);
@@ -19653,11 +18333,6 @@ bool EvalEmitter::emitGetFieldPopPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return GetFieldPop<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitGetFieldPopFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetFieldPop<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitGetFieldPopMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -19682,9 +18357,9 @@ case OP_GetFnPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_GetFnPtr:
-  PrintName("GetFnPtr");
-  OS << "\t" << ReadArg<const Function *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetFnPtr");
+  Text.Args.push_back(printArg<const Function *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetFnPtr( const Function * , const SourceInfo &);
@@ -19715,7 +18390,6 @@ OP_GetGlobalIntAPS,
 OP_GetGlobalBool,
 OP_GetGlobalFixedPoint,
 OP_GetGlobalPtr,
-OP_GetGlobalFnPtr,
 OP_GetGlobalMemberPtr,
 OP_GetGlobalFloat,
 #endif
@@ -19798,12 +18472,6 @@ case OP_GetGlobalPtr: {
     return false;
   continue;
 }
-case OP_GetGlobalFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetGlobalMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetGlobal<PT_MemberPtr>(S, OpPC, V0))
@@ -19819,69 +18487,65 @@ case OP_GetGlobalFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetGlobalSint8:
-  PrintName("GetGlobalSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUint8:
-  PrintName("GetGlobalUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalSint16:
-  PrintName("GetGlobalSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUint16:
-  PrintName("GetGlobalUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalSint32:
-  PrintName("GetGlobalSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUint32:
-  PrintName("GetGlobalUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalSint64:
-  PrintName("GetGlobalSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUint64:
-  PrintName("GetGlobalUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalIntAP:
-  PrintName("GetGlobalIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalIntAPS:
-  PrintName("GetGlobalIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalBool:
-  PrintName("GetGlobalBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalFixedPoint:
-  PrintName("GetGlobalFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalPtr:
-  PrintName("GetGlobalPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetGlobalFnPtr:
-  PrintName("GetGlobalFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalMemberPtr:
-  PrintName("GetGlobalMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalFloat:
-  PrintName("GetGlobalFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetGlobalSint8( uint32_t , const SourceInfo &);
@@ -19897,7 +18561,6 @@ bool emitGetGlobalIntAPS( uint32_t , const SourceInfo &);
 bool emitGetGlobalBool( uint32_t , const SourceInfo &);
 bool emitGetGlobalFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetGlobalPtr( uint32_t , const SourceInfo &);
-bool emitGetGlobalFnPtr( uint32_t , const SourceInfo &);
 bool emitGetGlobalMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetGlobalFloat( uint32_t , const SourceInfo &);
 #endif
@@ -19939,8 +18602,6 @@ ByteCodeEmitter
     return emitGetGlobalFixedPoint(A0, I);
   case PT_Ptr:
     return emitGetGlobalPtr(A0, I);
-  case PT_FnPtr:
-    return emitGetGlobalFnPtr(A0, I);
   case PT_MemberPtr:
     return emitGetGlobalMemberPtr(A0, I);
   case PT_Float:
@@ -19988,9 +18649,6 @@ bool ByteCodeEmitter::emitGetGlobalFixedPoint( uint32_t A0, const SourceInfo &L)
 }
 bool ByteCodeEmitter::emitGetGlobalPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetGlobalPtr, A0, L);
-}
-bool ByteCodeEmitter::emitGetGlobalFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetGlobalFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitGetGlobalMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetGlobalMemberPtr, A0, L);
@@ -20065,11 +18723,6 @@ bool EvalEmitter::emitGetGlobalPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return GetGlobal<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitGetGlobalFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetGlobal<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitGetGlobalMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -20095,7 +18748,6 @@ OP_GetGlobalUncheckedIntAPS,
 OP_GetGlobalUncheckedBool,
 OP_GetGlobalUncheckedFixedPoint,
 OP_GetGlobalUncheckedPtr,
-OP_GetGlobalUncheckedFnPtr,
 OP_GetGlobalUncheckedMemberPtr,
 OP_GetGlobalUncheckedFloat,
 #endif
@@ -20178,12 +18830,6 @@ case OP_GetGlobalUncheckedPtr: {
     return false;
   continue;
 }
-case OP_GetGlobalUncheckedFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetGlobalUncheckedMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetGlobalUnchecked<PT_MemberPtr>(S, OpPC, V0))
@@ -20199,69 +18845,65 @@ case OP_GetGlobalUncheckedFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetGlobalUncheckedSint8:
-  PrintName("GetGlobalUncheckedSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedUint8:
-  PrintName("GetGlobalUncheckedUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedSint16:
-  PrintName("GetGlobalUncheckedSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedUint16:
-  PrintName("GetGlobalUncheckedUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedSint32:
-  PrintName("GetGlobalUncheckedSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedUint32:
-  PrintName("GetGlobalUncheckedUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedSint64:
-  PrintName("GetGlobalUncheckedSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedUint64:
-  PrintName("GetGlobalUncheckedUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedIntAP:
-  PrintName("GetGlobalUncheckedIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedIntAPS:
-  PrintName("GetGlobalUncheckedIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedBool:
-  PrintName("GetGlobalUncheckedBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedFixedPoint:
-  PrintName("GetGlobalUncheckedFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedPtr:
-  PrintName("GetGlobalUncheckedPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetGlobalUncheckedFnPtr:
-  PrintName("GetGlobalUncheckedFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedMemberPtr:
-  PrintName("GetGlobalUncheckedMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetGlobalUncheckedFloat:
-  PrintName("GetGlobalUncheckedFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetGlobalUncheckedFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetGlobalUncheckedSint8( uint32_t , const SourceInfo &);
@@ -20277,7 +18919,6 @@ bool emitGetGlobalUncheckedIntAPS( uint32_t , const SourceInfo &);
 bool emitGetGlobalUncheckedBool( uint32_t , const SourceInfo &);
 bool emitGetGlobalUncheckedFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetGlobalUncheckedPtr( uint32_t , const SourceInfo &);
-bool emitGetGlobalUncheckedFnPtr( uint32_t , const SourceInfo &);
 bool emitGetGlobalUncheckedMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetGlobalUncheckedFloat( uint32_t , const SourceInfo &);
 #endif
@@ -20319,8 +18960,6 @@ ByteCodeEmitter
     return emitGetGlobalUncheckedFixedPoint(A0, I);
   case PT_Ptr:
     return emitGetGlobalUncheckedPtr(A0, I);
-  case PT_FnPtr:
-    return emitGetGlobalUncheckedFnPtr(A0, I);
   case PT_MemberPtr:
     return emitGetGlobalUncheckedMemberPtr(A0, I);
   case PT_Float:
@@ -20368,9 +19007,6 @@ bool ByteCodeEmitter::emitGetGlobalUncheckedFixedPoint( uint32_t A0, const Sourc
 }
 bool ByteCodeEmitter::emitGetGlobalUncheckedPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetGlobalUncheckedPtr, A0, L);
-}
-bool ByteCodeEmitter::emitGetGlobalUncheckedFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetGlobalUncheckedFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitGetGlobalUncheckedMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetGlobalUncheckedMemberPtr, A0, L);
@@ -20444,11 +19080,6 @@ bool EvalEmitter::emitGetGlobalUncheckedPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return GetGlobalUnchecked<PT_Ptr>(S, OpPC, A0);
-}
-bool EvalEmitter::emitGetGlobalUncheckedFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetGlobalUnchecked<PT_FnPtr>(S, OpPC, A0);
 }
 bool EvalEmitter::emitGetGlobalUncheckedMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
@@ -20551,53 +19182,53 @@ case OP_GetIntPtrFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_GetIntPtrSint8:
-  PrintName("GetIntPtrSint8");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrSint8");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrUint8:
-  PrintName("GetIntPtrUint8");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrUint8");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrSint16:
-  PrintName("GetIntPtrSint16");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrSint16");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrUint16:
-  PrintName("GetIntPtrUint16");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrUint16");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrSint32:
-  PrintName("GetIntPtrSint32");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrSint32");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrUint32:
-  PrintName("GetIntPtrUint32");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrUint32");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrSint64:
-  PrintName("GetIntPtrSint64");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrSint64");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrUint64:
-  PrintName("GetIntPtrUint64");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrUint64");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrIntAP:
-  PrintName("GetIntPtrIntAP");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrIntAP");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrIntAPS:
-  PrintName("GetIntPtrIntAPS");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrIntAPS");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrBool:
-  PrintName("GetIntPtrBool");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrBool");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_GetIntPtrFixedPoint:
-  PrintName("GetIntPtrFixedPoint");
-  OS << "\t" << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetIntPtrFixedPoint");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetIntPtrSint8( const Descriptor * , const SourceInfo &);
@@ -20768,7 +19399,6 @@ OP_GetLocalIntAPS,
 OP_GetLocalBool,
 OP_GetLocalFixedPoint,
 OP_GetLocalPtr,
-OP_GetLocalFnPtr,
 OP_GetLocalMemberPtr,
 OP_GetLocalFloat,
 #endif
@@ -20851,12 +19481,6 @@ case OP_GetLocalPtr: {
     return false;
   continue;
 }
-case OP_GetLocalFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetLocalMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetLocal<PT_MemberPtr>(S, OpPC, V0))
@@ -20872,69 +19496,65 @@ case OP_GetLocalFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetLocalSint8:
-  PrintName("GetLocalSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalUint8:
-  PrintName("GetLocalUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalSint16:
-  PrintName("GetLocalSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalUint16:
-  PrintName("GetLocalUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalSint32:
-  PrintName("GetLocalSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalUint32:
-  PrintName("GetLocalUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalSint64:
-  PrintName("GetLocalSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalUint64:
-  PrintName("GetLocalUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalIntAP:
-  PrintName("GetLocalIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalIntAPS:
-  PrintName("GetLocalIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalBool:
-  PrintName("GetLocalBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalFixedPoint:
-  PrintName("GetLocalFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalPtr:
-  PrintName("GetLocalPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetLocalFnPtr:
-  PrintName("GetLocalFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalMemberPtr:
-  PrintName("GetLocalMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetLocalFloat:
-  PrintName("GetLocalFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetLocalFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetLocalSint8( uint32_t , const SourceInfo &);
@@ -20950,7 +19570,6 @@ bool emitGetLocalIntAPS( uint32_t , const SourceInfo &);
 bool emitGetLocalBool( uint32_t , const SourceInfo &);
 bool emitGetLocalFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetLocalPtr( uint32_t , const SourceInfo &);
-bool emitGetLocalFnPtr( uint32_t , const SourceInfo &);
 bool emitGetLocalMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetLocalFloat( uint32_t , const SourceInfo &);
 #if defined(GET_EVAL_PROTO)
@@ -21061,13 +19680,6 @@ ByteCodeEmitter
     return emitGetLocal<PT_Ptr>
 #endif
       (A0, I);
-  case PT_FnPtr:
-#ifdef GET_LINK_IMPL
-    return emitGetLocalFnPtr
-#else
-    return emitGetLocal<PT_FnPtr>
-#endif
-      (A0, I);
   case PT_MemberPtr:
 #ifdef GET_LINK_IMPL
     return emitGetLocalMemberPtr
@@ -21126,9 +19738,6 @@ bool ByteCodeEmitter::emitGetLocalFixedPoint( uint32_t A0, const SourceInfo &L) 
 bool ByteCodeEmitter::emitGetLocalPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetLocalPtr, A0, L);
 }
-bool ByteCodeEmitter::emitGetLocalFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetLocalFnPtr, A0, L);
-}
 bool ByteCodeEmitter::emitGetLocalMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetLocalMemberPtr, A0, L);
 }
@@ -21149,9 +19758,9 @@ case OP_GetMemberPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_GetMemberPtr:
-  PrintName("GetMemberPtr");
-  OS << "\t" << ReadArg<const ValueDecl*>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetMemberPtr");
+  Text.Args.push_back(printArg<const ValueDecl*>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetMemberPtr( const ValueDecl* , const SourceInfo &);
@@ -21180,9 +19789,8 @@ case OP_GetMemberPtrBase: {
 #endif
 #ifdef GET_DISASM
 case OP_GetMemberPtrBase:
-  PrintName("GetMemberPtrBase");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GetMemberPtrBase");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetMemberPtrBase(const SourceInfo &);
@@ -21212,9 +19820,9 @@ case OP_GetMemberPtrBasePop: {
 #endif
 #ifdef GET_DISASM
 case OP_GetMemberPtrBasePop:
-  PrintName("GetMemberPtrBasePop");
-  OS << "\t" << ReadArg<int32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetMemberPtrBasePop");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetMemberPtrBasePop( int32_t , const SourceInfo &);
@@ -21243,9 +19851,8 @@ case OP_GetMemberPtrDecl: {
 #endif
 #ifdef GET_DISASM
 case OP_GetMemberPtrDecl:
-  PrintName("GetMemberPtrDecl");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("GetMemberPtrDecl");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetMemberPtrDecl(const SourceInfo &);
@@ -21276,7 +19883,6 @@ OP_GetParamIntAPS,
 OP_GetParamBool,
 OP_GetParamFixedPoint,
 OP_GetParamPtr,
-OP_GetParamFnPtr,
 OP_GetParamMemberPtr,
 OP_GetParamFloat,
 #endif
@@ -21359,12 +19965,6 @@ case OP_GetParamPtr: {
     return false;
   continue;
 }
-case OP_GetParamFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetParamMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetParam<PT_MemberPtr>(S, OpPC, V0))
@@ -21380,69 +19980,65 @@ case OP_GetParamFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetParamSint8:
-  PrintName("GetParamSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamUint8:
-  PrintName("GetParamUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamSint16:
-  PrintName("GetParamSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamUint16:
-  PrintName("GetParamUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamSint32:
-  PrintName("GetParamSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamUint32:
-  PrintName("GetParamUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamSint64:
-  PrintName("GetParamSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamUint64:
-  PrintName("GetParamUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamIntAP:
-  PrintName("GetParamIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamIntAPS:
-  PrintName("GetParamIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamBool:
-  PrintName("GetParamBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamFixedPoint:
-  PrintName("GetParamFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamPtr:
-  PrintName("GetParamPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetParamFnPtr:
-  PrintName("GetParamFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamMemberPtr:
-  PrintName("GetParamMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetParamFloat:
-  PrintName("GetParamFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetParamFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetParamSint8( uint32_t , const SourceInfo &);
@@ -21458,7 +20054,6 @@ bool emitGetParamIntAPS( uint32_t , const SourceInfo &);
 bool emitGetParamBool( uint32_t , const SourceInfo &);
 bool emitGetParamFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetParamPtr( uint32_t , const SourceInfo &);
-bool emitGetParamFnPtr( uint32_t , const SourceInfo &);
 bool emitGetParamMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetParamFloat( uint32_t , const SourceInfo &);
 #endif
@@ -21500,8 +20095,6 @@ ByteCodeEmitter
     return emitGetParamFixedPoint(A0, I);
   case PT_Ptr:
     return emitGetParamPtr(A0, I);
-  case PT_FnPtr:
-    return emitGetParamFnPtr(A0, I);
   case PT_MemberPtr:
     return emitGetParamMemberPtr(A0, I);
   case PT_Float:
@@ -21549,9 +20142,6 @@ bool ByteCodeEmitter::emitGetParamFixedPoint( uint32_t A0, const SourceInfo &L) 
 }
 bool ByteCodeEmitter::emitGetParamPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetParamPtr, A0, L);
-}
-bool ByteCodeEmitter::emitGetParamFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetParamFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitGetParamMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetParamMemberPtr, A0, L);
@@ -21626,11 +20216,6 @@ bool EvalEmitter::emitGetParamPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return GetParam<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitGetParamFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetParam<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitGetParamMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -21655,9 +20240,9 @@ case OP_GetPtrActiveField: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrActiveField:
-  PrintName("GetPtrActiveField");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrActiveField");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrActiveField( uint32_t , const SourceInfo &);
@@ -21687,9 +20272,9 @@ case OP_GetPtrActiveThisField: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrActiveThisField:
-  PrintName("GetPtrActiveThisField");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrActiveThisField");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrActiveThisField( uint32_t , const SourceInfo &);
@@ -21719,9 +20304,9 @@ case OP_GetPtrBase: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrBase:
-  PrintName("GetPtrBase");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrBase");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrBase( uint32_t , const SourceInfo &);
@@ -21744,30 +20329,32 @@ OP_GetPtrBasePop,
 #ifdef GET_INTERP
 case OP_GetPtrBasePop: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrBasePop(S, OpPC, V0))
+  const auto V1 = ReadArg<bool>(S, PC);
+  if (!GetPtrBasePop(S, OpPC, V0, V1))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrBasePop:
-  PrintName("GetPtrBasePop");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrBasePop");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitGetPtrBasePop( uint32_t , const SourceInfo &);
+bool emitGetPtrBasePop( uint32_t ,  bool , const SourceInfo &);
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitGetPtrBasePop( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetPtrBasePop, A0, L);
+bool ByteCodeEmitter::emitGetPtrBasePop( uint32_t A0,  bool A1, const SourceInfo &L) {
+  return emitOp<uint32_t, bool>(OP_GetPtrBasePop, A0, A1, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitGetPtrBasePop( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitGetPtrBasePop( uint32_t A0,  bool A1, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return GetPtrBasePop(S, OpPC, A0);
+  return GetPtrBasePop(S, OpPC, A0, A1);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -21776,30 +20363,32 @@ OP_GetPtrDerivedPop,
 #ifdef GET_INTERP
 case OP_GetPtrDerivedPop: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrDerivedPop(S, OpPC, V0))
+  const auto V1 = ReadArg<bool>(S, PC);
+  if (!GetPtrDerivedPop(S, OpPC, V0, V1))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrDerivedPop:
-  PrintName("GetPtrDerivedPop");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrDerivedPop");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitGetPtrDerivedPop( uint32_t , const SourceInfo &);
+bool emitGetPtrDerivedPop( uint32_t ,  bool , const SourceInfo &);
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitGetPtrDerivedPop( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetPtrDerivedPop, A0, L);
+bool ByteCodeEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1, const SourceInfo &L) {
+  return emitOp<uint32_t, bool>(OP_GetPtrDerivedPop, A0, A1, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitGetPtrDerivedPop( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return GetPtrDerivedPop(S, OpPC, A0);
+  return GetPtrDerivedPop(S, OpPC, A0, A1);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -21815,9 +20404,9 @@ case OP_GetPtrField: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrField:
-  PrintName("GetPtrField");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrField");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrField( uint32_t , const SourceInfo &);
@@ -21847,9 +20436,9 @@ case OP_GetPtrFieldPop: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrFieldPop:
-  PrintName("GetPtrFieldPop");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrFieldPop");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrFieldPop( uint32_t , const SourceInfo &);
@@ -21879,9 +20468,9 @@ case OP_GetPtrGlobal: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrGlobal:
-  PrintName("GetPtrGlobal");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrGlobal");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrGlobal( uint32_t , const SourceInfo &);
@@ -21911,9 +20500,9 @@ case OP_GetPtrLocal: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrLocal:
-  PrintName("GetPtrLocal");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrLocal");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrLocal( uint32_t , const SourceInfo &);
@@ -21936,9 +20525,9 @@ case OP_GetPtrParam: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrParam:
-  PrintName("GetPtrParam");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrParam");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrParam( uint32_t , const SourceInfo &);
@@ -21968,9 +20557,9 @@ case OP_GetPtrThisBase: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrThisBase:
-  PrintName("GetPtrThisBase");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrThisBase");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrThisBase( uint32_t , const SourceInfo &);
@@ -22000,9 +20589,9 @@ case OP_GetPtrThisField: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrThisField:
-  PrintName("GetPtrThisField");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrThisField");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrThisField( uint32_t , const SourceInfo &);
@@ -22032,9 +20621,9 @@ case OP_GetPtrThisVirtBase: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrThisVirtBase:
-  PrintName("GetPtrThisVirtBase");
-  OS << "\t" << ReadArg<const RecordDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrThisVirtBase");
+  Text.Args.push_back(printArg<const RecordDecl *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrThisVirtBase( const RecordDecl * , const SourceInfo &);
@@ -22064,9 +20653,9 @@ case OP_GetPtrVirtBasePop: {
 #endif
 #ifdef GET_DISASM
 case OP_GetPtrVirtBasePop:
-  PrintName("GetPtrVirtBasePop");
-  OS << "\t" << ReadArg<const RecordDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetPtrVirtBasePop");
+  Text.Args.push_back(printArg<const RecordDecl *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetPtrVirtBasePop( const RecordDecl * , const SourceInfo &);
@@ -22097,7 +20686,6 @@ OP_GetThisFieldIntAPS,
 OP_GetThisFieldBool,
 OP_GetThisFieldFixedPoint,
 OP_GetThisFieldPtr,
-OP_GetThisFieldFnPtr,
 OP_GetThisFieldMemberPtr,
 OP_GetThisFieldFloat,
 #endif
@@ -22180,12 +20768,6 @@ case OP_GetThisFieldPtr: {
     return false;
   continue;
 }
-case OP_GetThisFieldFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_GetThisFieldMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!GetThisField<PT_MemberPtr>(S, OpPC, V0))
@@ -22201,69 +20783,65 @@ case OP_GetThisFieldFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_GetThisFieldSint8:
-  PrintName("GetThisFieldSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldUint8:
-  PrintName("GetThisFieldUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldSint16:
-  PrintName("GetThisFieldSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldUint16:
-  PrintName("GetThisFieldUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldSint32:
-  PrintName("GetThisFieldSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldUint32:
-  PrintName("GetThisFieldUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldSint64:
-  PrintName("GetThisFieldSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldUint64:
-  PrintName("GetThisFieldUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldIntAP:
-  PrintName("GetThisFieldIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldIntAPS:
-  PrintName("GetThisFieldIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldBool:
-  PrintName("GetThisFieldBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldFixedPoint:
-  PrintName("GetThisFieldFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldPtr:
-  PrintName("GetThisFieldPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_GetThisFieldFnPtr:
-  PrintName("GetThisFieldFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldMemberPtr:
-  PrintName("GetThisFieldMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_GetThisFieldFloat:
-  PrintName("GetThisFieldFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetThisFieldFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetThisFieldSint8( uint32_t , const SourceInfo &);
@@ -22279,7 +20857,6 @@ bool emitGetThisFieldIntAPS( uint32_t , const SourceInfo &);
 bool emitGetThisFieldBool( uint32_t , const SourceInfo &);
 bool emitGetThisFieldFixedPoint( uint32_t , const SourceInfo &);
 bool emitGetThisFieldPtr( uint32_t , const SourceInfo &);
-bool emitGetThisFieldFnPtr( uint32_t , const SourceInfo &);
 bool emitGetThisFieldMemberPtr( uint32_t , const SourceInfo &);
 bool emitGetThisFieldFloat( uint32_t , const SourceInfo &);
 #endif
@@ -22321,8 +20898,6 @@ ByteCodeEmitter
     return emitGetThisFieldFixedPoint(A0, I);
   case PT_Ptr:
     return emitGetThisFieldPtr(A0, I);
-  case PT_FnPtr:
-    return emitGetThisFieldFnPtr(A0, I);
   case PT_MemberPtr:
     return emitGetThisFieldMemberPtr(A0, I);
   case PT_Float:
@@ -22370,9 +20945,6 @@ bool ByteCodeEmitter::emitGetThisFieldFixedPoint( uint32_t A0, const SourceInfo 
 }
 bool ByteCodeEmitter::emitGetThisFieldPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetThisFieldPtr, A0, L);
-}
-bool ByteCodeEmitter::emitGetThisFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetThisFieldFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitGetThisFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_GetThisFieldMemberPtr, A0, L);
@@ -22447,11 +21019,6 @@ bool EvalEmitter::emitGetThisFieldPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return GetThisField<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitGetThisFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetThisField<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitGetThisFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -22477,9 +21044,10 @@ case OP_GetTypeid: {
 #endif
 #ifdef GET_DISASM
 case OP_GetTypeid:
-  PrintName("GetTypeid");
-  OS << "\t" << ReadArg<const Type *>(P, PC) << " " << ReadArg<const Type *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetTypeid");
+  Text.Args.push_back(printArg<const Type *>(P, PC));
+  Text.Args.push_back(printArg<const Type *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetTypeid( const Type * ,  const Type * , const SourceInfo &);
@@ -22509,9 +21077,9 @@ case OP_GetTypeidPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_GetTypeidPtr:
-  PrintName("GetTypeidPtr");
-  OS << "\t" << ReadArg<const Type *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("GetTypeidPtr");
+  Text.Args.push_back(printArg<const Type *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitGetTypeidPtr( const Type * , const SourceInfo &);
@@ -22544,132 +21112,144 @@ OP_IncFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_IncSint8: {
-  if (!Inc<PT_Sint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncUint8: {
-  if (!Inc<PT_Uint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncSint16: {
-  if (!Inc<PT_Sint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Sint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncUint16: {
-  if (!Inc<PT_Uint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncSint32: {
-  if (!Inc<PT_Sint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Sint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncUint32: {
-  if (!Inc<PT_Uint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncSint64: {
-  if (!Inc<PT_Sint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Sint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncUint64: {
-  if (!Inc<PT_Uint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncIntAP: {
-  if (!Inc<PT_IntAP>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_IntAP>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncIntAPS: {
-  if (!Inc<PT_IntAPS>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_IntAPS>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncBool: {
-  if (!Inc<PT_Bool>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_Bool>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncFixedPoint: {
-  if (!Inc<PT_FixedPoint>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!Inc<PT_FixedPoint>(S, OpPC, V0))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
 case OP_IncSint8:
-  PrintName("IncSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncUint8:
-  PrintName("IncUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncSint16:
-  PrintName("IncSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncUint16:
-  PrintName("IncUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncSint32:
-  PrintName("IncSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncUint32:
-  PrintName("IncUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncSint64:
-  PrintName("IncSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncUint64:
-  PrintName("IncUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncIntAP:
-  PrintName("IncIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncIntAPS:
-  PrintName("IncIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncBool:
-  PrintName("IncBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncFixedPoint:
-  PrintName("IncFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitIncSint8(const SourceInfo &);
-bool emitIncUint8(const SourceInfo &);
-bool emitIncSint16(const SourceInfo &);
-bool emitIncUint16(const SourceInfo &);
-bool emitIncSint32(const SourceInfo &);
-bool emitIncUint32(const SourceInfo &);
-bool emitIncSint64(const SourceInfo &);
-bool emitIncUint64(const SourceInfo &);
-bool emitIncIntAP(const SourceInfo &);
-bool emitIncIntAPS(const SourceInfo &);
-bool emitIncBool(const SourceInfo &);
-bool emitIncFixedPoint(const SourceInfo &);
+bool emitIncSint8( bool , const SourceInfo &);
+bool emitIncUint8( bool , const SourceInfo &);
+bool emitIncSint16( bool , const SourceInfo &);
+bool emitIncUint16( bool , const SourceInfo &);
+bool emitIncSint32( bool , const SourceInfo &);
+bool emitIncUint32( bool , const SourceInfo &);
+bool emitIncSint64( bool , const SourceInfo &);
+bool emitIncUint64( bool , const SourceInfo &);
+bool emitIncIntAP( bool , const SourceInfo &);
+bool emitIncIntAPS( bool , const SourceInfo &);
+bool emitIncBool( bool , const SourceInfo &);
+bool emitIncFixedPoint( bool , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-[[nodiscard]] bool emitInc(PrimType, const SourceInfo &I);
+[[nodiscard]] bool emitInc(PrimType, bool, const SourceInfo &I);
 #endif
 #if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
 bool
@@ -22678,135 +21258,135 @@ EvalEmitter
 #else
 ByteCodeEmitter
 #endif
-::emitInc(PrimType T0, const SourceInfo &I) {
+::emitInc(PrimType T0,  bool A0, const SourceInfo &I) {
   switch (T0) {
   case PT_Sint8:
-    return emitIncSint8(I);
+    return emitIncSint8(A0, I);
   case PT_Uint8:
-    return emitIncUint8(I);
+    return emitIncUint8(A0, I);
   case PT_Sint16:
-    return emitIncSint16(I);
+    return emitIncSint16(A0, I);
   case PT_Uint16:
-    return emitIncUint16(I);
+    return emitIncUint16(A0, I);
   case PT_Sint32:
-    return emitIncSint32(I);
+    return emitIncSint32(A0, I);
   case PT_Uint32:
-    return emitIncUint32(I);
+    return emitIncUint32(A0, I);
   case PT_Sint64:
-    return emitIncSint64(I);
+    return emitIncSint64(A0, I);
   case PT_Uint64:
-    return emitIncUint64(I);
+    return emitIncUint64(A0, I);
   case PT_IntAP:
-    return emitIncIntAP(I);
+    return emitIncIntAP(A0, I);
   case PT_IntAPS:
-    return emitIncIntAPS(I);
+    return emitIncIntAPS(A0, I);
   case PT_Bool:
-    return emitIncBool(I);
+    return emitIncBool(A0, I);
   case PT_FixedPoint:
-    return emitIncFixedPoint(I);
+    return emitIncFixedPoint(A0, I);
   default: llvm_unreachable("invalid type: emitInc");
   }
   llvm_unreachable("invalid enum value");
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitIncSint8(const SourceInfo &L) {
-  return emitOp<>(OP_IncSint8, L);
+bool ByteCodeEmitter::emitIncSint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncSint8, A0, L);
 }
-bool ByteCodeEmitter::emitIncUint8(const SourceInfo &L) {
-  return emitOp<>(OP_IncUint8, L);
+bool ByteCodeEmitter::emitIncUint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncUint8, A0, L);
 }
-bool ByteCodeEmitter::emitIncSint16(const SourceInfo &L) {
-  return emitOp<>(OP_IncSint16, L);
+bool ByteCodeEmitter::emitIncSint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncSint16, A0, L);
 }
-bool ByteCodeEmitter::emitIncUint16(const SourceInfo &L) {
-  return emitOp<>(OP_IncUint16, L);
+bool ByteCodeEmitter::emitIncUint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncUint16, A0, L);
 }
-bool ByteCodeEmitter::emitIncSint32(const SourceInfo &L) {
-  return emitOp<>(OP_IncSint32, L);
+bool ByteCodeEmitter::emitIncSint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncSint32, A0, L);
 }
-bool ByteCodeEmitter::emitIncUint32(const SourceInfo &L) {
-  return emitOp<>(OP_IncUint32, L);
+bool ByteCodeEmitter::emitIncUint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncUint32, A0, L);
 }
-bool ByteCodeEmitter::emitIncSint64(const SourceInfo &L) {
-  return emitOp<>(OP_IncSint64, L);
+bool ByteCodeEmitter::emitIncSint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncSint64, A0, L);
 }
-bool ByteCodeEmitter::emitIncUint64(const SourceInfo &L) {
-  return emitOp<>(OP_IncUint64, L);
+bool ByteCodeEmitter::emitIncUint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncUint64, A0, L);
 }
-bool ByteCodeEmitter::emitIncIntAP(const SourceInfo &L) {
-  return emitOp<>(OP_IncIntAP, L);
+bool ByteCodeEmitter::emitIncIntAP( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncIntAP, A0, L);
 }
-bool ByteCodeEmitter::emitIncIntAPS(const SourceInfo &L) {
-  return emitOp<>(OP_IncIntAPS, L);
+bool ByteCodeEmitter::emitIncIntAPS( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncIntAPS, A0, L);
 }
-bool ByteCodeEmitter::emitIncBool(const SourceInfo &L) {
-  return emitOp<>(OP_IncBool, L);
+bool ByteCodeEmitter::emitIncBool( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncBool, A0, L);
 }
-bool ByteCodeEmitter::emitIncFixedPoint(const SourceInfo &L) {
-  return emitOp<>(OP_IncFixedPoint, L);
+bool ByteCodeEmitter::emitIncFixedPoint( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncFixedPoint, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitIncSint8(const SourceInfo &L) {
+bool EvalEmitter::emitIncSint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Sint8>(S, OpPC);
+  return Inc<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncUint8(const SourceInfo &L) {
+bool EvalEmitter::emitIncUint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Uint8>(S, OpPC);
+  return Inc<PT_Uint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncSint16(const SourceInfo &L) {
+bool EvalEmitter::emitIncSint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Sint16>(S, OpPC);
+  return Inc<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncUint16(const SourceInfo &L) {
+bool EvalEmitter::emitIncUint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Uint16>(S, OpPC);
+  return Inc<PT_Uint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncSint32(const SourceInfo &L) {
+bool EvalEmitter::emitIncSint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Sint32>(S, OpPC);
+  return Inc<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncUint32(const SourceInfo &L) {
+bool EvalEmitter::emitIncUint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Uint32>(S, OpPC);
+  return Inc<PT_Uint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncSint64(const SourceInfo &L) {
+bool EvalEmitter::emitIncSint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Sint64>(S, OpPC);
+  return Inc<PT_Sint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncUint64(const SourceInfo &L) {
+bool EvalEmitter::emitIncUint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Uint64>(S, OpPC);
+  return Inc<PT_Uint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncIntAP(const SourceInfo &L) {
+bool EvalEmitter::emitIncIntAP( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_IntAP>(S, OpPC);
+  return Inc<PT_IntAP>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncIntAPS(const SourceInfo &L) {
+bool EvalEmitter::emitIncIntAPS( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_IntAPS>(S, OpPC);
+  return Inc<PT_IntAPS>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncBool(const SourceInfo &L) {
+bool EvalEmitter::emitIncBool( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_Bool>(S, OpPC);
+  return Inc<PT_Bool>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncFixedPoint(const SourceInfo &L) {
+bool EvalEmitter::emitIncFixedPoint( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Inc<PT_FixedPoint>(S, OpPC);
+  return Inc<PT_FixedPoint>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -22825,132 +21405,144 @@ OP_IncPopFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_IncPopSint8: {
-  if (!IncPop<PT_Sint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopUint8: {
-  if (!IncPop<PT_Uint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopSint16: {
-  if (!IncPop<PT_Sint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Sint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopUint16: {
-  if (!IncPop<PT_Uint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopSint32: {
-  if (!IncPop<PT_Sint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Sint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopUint32: {
-  if (!IncPop<PT_Uint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopSint64: {
-  if (!IncPop<PT_Sint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Sint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopUint64: {
-  if (!IncPop<PT_Uint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopIntAP: {
-  if (!IncPop<PT_IntAP>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_IntAP>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopIntAPS: {
-  if (!IncPop<PT_IntAPS>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_IntAPS>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopBool: {
-  if (!IncPop<PT_Bool>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_Bool>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_IncPopFixedPoint: {
-  if (!IncPop<PT_FixedPoint>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!IncPop<PT_FixedPoint>(S, OpPC, V0))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
 case OP_IncPopSint8:
-  PrintName("IncPopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopUint8:
-  PrintName("IncPopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopSint16:
-  PrintName("IncPopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopUint16:
-  PrintName("IncPopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopSint32:
-  PrintName("IncPopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopUint32:
-  PrintName("IncPopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopSint64:
-  PrintName("IncPopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopUint64:
-  PrintName("IncPopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopIntAP:
-  PrintName("IncPopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopIntAPS:
-  PrintName("IncPopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopBool:
-  PrintName("IncPopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 case OP_IncPopFixedPoint:
-  PrintName("IncPopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPopFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitIncPopSint8(const SourceInfo &);
-bool emitIncPopUint8(const SourceInfo &);
-bool emitIncPopSint16(const SourceInfo &);
-bool emitIncPopUint16(const SourceInfo &);
-bool emitIncPopSint32(const SourceInfo &);
-bool emitIncPopUint32(const SourceInfo &);
-bool emitIncPopSint64(const SourceInfo &);
-bool emitIncPopUint64(const SourceInfo &);
-bool emitIncPopIntAP(const SourceInfo &);
-bool emitIncPopIntAPS(const SourceInfo &);
-bool emitIncPopBool(const SourceInfo &);
-bool emitIncPopFixedPoint(const SourceInfo &);
+bool emitIncPopSint8( bool , const SourceInfo &);
+bool emitIncPopUint8( bool , const SourceInfo &);
+bool emitIncPopSint16( bool , const SourceInfo &);
+bool emitIncPopUint16( bool , const SourceInfo &);
+bool emitIncPopSint32( bool , const SourceInfo &);
+bool emitIncPopUint32( bool , const SourceInfo &);
+bool emitIncPopSint64( bool , const SourceInfo &);
+bool emitIncPopUint64( bool , const SourceInfo &);
+bool emitIncPopIntAP( bool , const SourceInfo &);
+bool emitIncPopIntAPS( bool , const SourceInfo &);
+bool emitIncPopBool( bool , const SourceInfo &);
+bool emitIncPopFixedPoint( bool , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-[[nodiscard]] bool emitIncPop(PrimType, const SourceInfo &I);
+[[nodiscard]] bool emitIncPop(PrimType, bool, const SourceInfo &I);
 #endif
 #if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
 bool
@@ -22959,135 +21551,135 @@ EvalEmitter
 #else
 ByteCodeEmitter
 #endif
-::emitIncPop(PrimType T0, const SourceInfo &I) {
+::emitIncPop(PrimType T0,  bool A0, const SourceInfo &I) {
   switch (T0) {
   case PT_Sint8:
-    return emitIncPopSint8(I);
+    return emitIncPopSint8(A0, I);
   case PT_Uint8:
-    return emitIncPopUint8(I);
+    return emitIncPopUint8(A0, I);
   case PT_Sint16:
-    return emitIncPopSint16(I);
+    return emitIncPopSint16(A0, I);
   case PT_Uint16:
-    return emitIncPopUint16(I);
+    return emitIncPopUint16(A0, I);
   case PT_Sint32:
-    return emitIncPopSint32(I);
+    return emitIncPopSint32(A0, I);
   case PT_Uint32:
-    return emitIncPopUint32(I);
+    return emitIncPopUint32(A0, I);
   case PT_Sint64:
-    return emitIncPopSint64(I);
+    return emitIncPopSint64(A0, I);
   case PT_Uint64:
-    return emitIncPopUint64(I);
+    return emitIncPopUint64(A0, I);
   case PT_IntAP:
-    return emitIncPopIntAP(I);
+    return emitIncPopIntAP(A0, I);
   case PT_IntAPS:
-    return emitIncPopIntAPS(I);
+    return emitIncPopIntAPS(A0, I);
   case PT_Bool:
-    return emitIncPopBool(I);
+    return emitIncPopBool(A0, I);
   case PT_FixedPoint:
-    return emitIncPopFixedPoint(I);
+    return emitIncPopFixedPoint(A0, I);
   default: llvm_unreachable("invalid type: emitIncPop");
   }
   llvm_unreachable("invalid enum value");
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitIncPopSint8(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopSint8, L);
+bool ByteCodeEmitter::emitIncPopSint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopSint8, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopUint8(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopUint8, L);
+bool ByteCodeEmitter::emitIncPopUint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopUint8, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopSint16(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopSint16, L);
+bool ByteCodeEmitter::emitIncPopSint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopSint16, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopUint16(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopUint16, L);
+bool ByteCodeEmitter::emitIncPopUint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopUint16, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopSint32(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopSint32, L);
+bool ByteCodeEmitter::emitIncPopSint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopSint32, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopUint32(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopUint32, L);
+bool ByteCodeEmitter::emitIncPopUint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopUint32, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopSint64(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopSint64, L);
+bool ByteCodeEmitter::emitIncPopSint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopSint64, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopUint64(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopUint64, L);
+bool ByteCodeEmitter::emitIncPopUint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopUint64, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopIntAP(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopIntAP, L);
+bool ByteCodeEmitter::emitIncPopIntAP( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopIntAP, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopIntAPS(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopIntAPS, L);
+bool ByteCodeEmitter::emitIncPopIntAPS( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopIntAPS, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopBool(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopBool, L);
+bool ByteCodeEmitter::emitIncPopBool( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopBool, A0, L);
 }
-bool ByteCodeEmitter::emitIncPopFixedPoint(const SourceInfo &L) {
-  return emitOp<>(OP_IncPopFixedPoint, L);
+bool ByteCodeEmitter::emitIncPopFixedPoint( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_IncPopFixedPoint, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitIncPopSint8(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopSint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Sint8>(S, OpPC);
+  return IncPop<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopUint8(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopUint8( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Uint8>(S, OpPC);
+  return IncPop<PT_Uint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopSint16(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopSint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Sint16>(S, OpPC);
+  return IncPop<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopUint16(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopUint16( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Uint16>(S, OpPC);
+  return IncPop<PT_Uint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopSint32(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopSint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Sint32>(S, OpPC);
+  return IncPop<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopUint32(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopUint32( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Uint32>(S, OpPC);
+  return IncPop<PT_Uint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopSint64(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopSint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Sint64>(S, OpPC);
+  return IncPop<PT_Sint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopUint64(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopUint64( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Uint64>(S, OpPC);
+  return IncPop<PT_Uint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopIntAP(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopIntAP( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_IntAP>(S, OpPC);
+  return IncPop<PT_IntAP>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopIntAPS(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopIntAPS( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_IntAPS>(S, OpPC);
+  return IncPop<PT_IntAPS>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopBool(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopBool( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_Bool>(S, OpPC);
+  return IncPop<PT_Bool>(S, OpPC, A0);
 }
-bool EvalEmitter::emitIncPopFixedPoint(const SourceInfo &L) {
+bool EvalEmitter::emitIncPopFixedPoint( bool A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return IncPop<PT_FixedPoint>(S, OpPC);
+  return IncPop<PT_FixedPoint>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -23102,9 +21694,8 @@ case OP_IncPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_IncPtr:
-  PrintName("IncPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IncPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitIncPtr(const SourceInfo &);
@@ -23134,9 +21725,9 @@ case OP_Incf: {
 #endif
 #ifdef GET_DISASM
 case OP_Incf:
-  PrintName("Incf");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Incf");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitIncf( uint32_t , const SourceInfo &);
@@ -23166,9 +21757,9 @@ case OP_IncfPop: {
 #endif
 #ifdef GET_DISASM
 case OP_IncfPop:
-  PrintName("IncfPop");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("IncfPop");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitIncfPop( uint32_t , const SourceInfo &);
@@ -23199,7 +21790,6 @@ OP_InitIntAPS,
 OP_InitBool,
 OP_InitFixedPoint,
 OP_InitPtr,
-OP_InitFnPtr,
 OP_InitMemberPtr,
 OP_InitFloat,
 #endif
@@ -23269,11 +21859,6 @@ case OP_InitPtr: {
     return false;
   continue;
 }
-case OP_InitFnPtr: {
-  if (!Init<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_InitMemberPtr: {
   if (!Init<PT_MemberPtr>(S, OpPC))
     return false;
@@ -23287,69 +21872,50 @@ case OP_InitFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitSint8:
-  PrintName("InitSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitSint8");
+  break;
 case OP_InitUint8:
-  PrintName("InitUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitUint8");
+  break;
 case OP_InitSint16:
-  PrintName("InitSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitSint16");
+  break;
 case OP_InitUint16:
-  PrintName("InitUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitUint16");
+  break;
 case OP_InitSint32:
-  PrintName("InitSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitSint32");
+  break;
 case OP_InitUint32:
-  PrintName("InitUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitUint32");
+  break;
 case OP_InitSint64:
-  PrintName("InitSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitSint64");
+  break;
 case OP_InitUint64:
-  PrintName("InitUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitUint64");
+  break;
 case OP_InitIntAP:
-  PrintName("InitIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitIntAP");
+  break;
 case OP_InitIntAPS:
-  PrintName("InitIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitIntAPS");
+  break;
 case OP_InitBool:
-  PrintName("InitBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitBool");
+  break;
 case OP_InitFixedPoint:
-  PrintName("InitFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitFixedPoint");
+  break;
 case OP_InitPtr:
-  PrintName("InitPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_InitFnPtr:
-  PrintName("InitFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPtr");
+  break;
 case OP_InitMemberPtr:
-  PrintName("InitMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitMemberPtr");
+  break;
 case OP_InitFloat:
-  PrintName("InitFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitSint8(const SourceInfo &);
@@ -23365,7 +21931,6 @@ bool emitInitIntAPS(const SourceInfo &);
 bool emitInitBool(const SourceInfo &);
 bool emitInitFixedPoint(const SourceInfo &);
 bool emitInitPtr(const SourceInfo &);
-bool emitInitFnPtr(const SourceInfo &);
 bool emitInitMemberPtr(const SourceInfo &);
 bool emitInitFloat(const SourceInfo &);
 #endif
@@ -23407,8 +21972,6 @@ ByteCodeEmitter
     return emitInitFixedPoint(I);
   case PT_Ptr:
     return emitInitPtr(I);
-  case PT_FnPtr:
-    return emitInitFnPtr(I);
   case PT_MemberPtr:
     return emitInitMemberPtr(I);
   case PT_Float:
@@ -23456,9 +22019,6 @@ bool ByteCodeEmitter::emitInitFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitInitPtr(const SourceInfo &L) {
   return emitOp<>(OP_InitPtr, L);
-}
-bool ByteCodeEmitter::emitInitFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_InitFnPtr, L);
 }
 bool ByteCodeEmitter::emitInitMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_InitMemberPtr, L);
@@ -23532,11 +22092,6 @@ bool EvalEmitter::emitInitPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Init<PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitInitFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Init<PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitInitMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -23639,53 +22194,53 @@ case OP_InitBitFieldFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_InitBitFieldSint8:
-  PrintName("InitBitFieldSint8");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldSint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldUint8:
-  PrintName("InitBitFieldUint8");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldUint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldSint16:
-  PrintName("InitBitFieldSint16");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldSint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldUint16:
-  PrintName("InitBitFieldUint16");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldUint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldSint32:
-  PrintName("InitBitFieldSint32");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldSint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldUint32:
-  PrintName("InitBitFieldUint32");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldUint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldSint64:
-  PrintName("InitBitFieldSint64");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldSint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldUint64:
-  PrintName("InitBitFieldUint64");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldUint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldIntAP:
-  PrintName("InitBitFieldIntAP");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldIntAP");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldIntAPS:
-  PrintName("InitBitFieldIntAPS");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldIntAPS");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldBool:
-  PrintName("InitBitFieldBool");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldBool");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 case OP_InitBitFieldFixedPoint:
-  PrintName("InitBitFieldFixedPoint");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitBitFieldFixedPoint");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitBitFieldSint8( const Record::Field * , const SourceInfo &);
@@ -23856,7 +22411,6 @@ OP_InitElemIntAPS,
 OP_InitElemBool,
 OP_InitElemFixedPoint,
 OP_InitElemPtr,
-OP_InitElemFnPtr,
 OP_InitElemMemberPtr,
 OP_InitElemFloat,
 #endif
@@ -23939,12 +22493,6 @@ case OP_InitElemPtr: {
     return false;
   continue;
 }
-case OP_InitElemFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_InitElemMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!InitElem<PT_MemberPtr>(S, OpPC, V0))
@@ -23960,69 +22508,65 @@ case OP_InitElemFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitElemSint8:
-  PrintName("InitElemSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemUint8:
-  PrintName("InitElemUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemSint16:
-  PrintName("InitElemSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemUint16:
-  PrintName("InitElemUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemSint32:
-  PrintName("InitElemSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemUint32:
-  PrintName("InitElemUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemSint64:
-  PrintName("InitElemSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemUint64:
-  PrintName("InitElemUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemIntAP:
-  PrintName("InitElemIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemIntAPS:
-  PrintName("InitElemIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemBool:
-  PrintName("InitElemBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemFixedPoint:
-  PrintName("InitElemFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPtr:
-  PrintName("InitElemPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_InitElemFnPtr:
-  PrintName("InitElemFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemMemberPtr:
-  PrintName("InitElemMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemFloat:
-  PrintName("InitElemFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitElemSint8( uint32_t , const SourceInfo &);
@@ -24038,7 +22582,6 @@ bool emitInitElemIntAPS( uint32_t , const SourceInfo &);
 bool emitInitElemBool( uint32_t , const SourceInfo &);
 bool emitInitElemFixedPoint( uint32_t , const SourceInfo &);
 bool emitInitElemPtr( uint32_t , const SourceInfo &);
-bool emitInitElemFnPtr( uint32_t , const SourceInfo &);
 bool emitInitElemMemberPtr( uint32_t , const SourceInfo &);
 bool emitInitElemFloat( uint32_t , const SourceInfo &);
 #endif
@@ -24080,8 +22623,6 @@ ByteCodeEmitter
     return emitInitElemFixedPoint(A0, I);
   case PT_Ptr:
     return emitInitElemPtr(A0, I);
-  case PT_FnPtr:
-    return emitInitElemFnPtr(A0, I);
   case PT_MemberPtr:
     return emitInitElemMemberPtr(A0, I);
   case PT_Float:
@@ -24129,9 +22670,6 @@ bool ByteCodeEmitter::emitInitElemFixedPoint( uint32_t A0, const SourceInfo &L) 
 }
 bool ByteCodeEmitter::emitInitElemPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitElemPtr, A0, L);
-}
-bool ByteCodeEmitter::emitInitElemFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_InitElemFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitInitElemMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitElemMemberPtr, A0, L);
@@ -24206,11 +22744,6 @@ bool EvalEmitter::emitInitElemPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return InitElem<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitInitElemFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitElem<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitInitElemMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -24236,7 +22769,6 @@ OP_InitElemPopIntAPS,
 OP_InitElemPopBool,
 OP_InitElemPopFixedPoint,
 OP_InitElemPopPtr,
-OP_InitElemPopFnPtr,
 OP_InitElemPopMemberPtr,
 OP_InitElemPopFloat,
 #endif
@@ -24319,12 +22851,6 @@ case OP_InitElemPopPtr: {
     return false;
   continue;
 }
-case OP_InitElemPopFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_InitElemPopMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!InitElemPop<PT_MemberPtr>(S, OpPC, V0))
@@ -24340,69 +22866,65 @@ case OP_InitElemPopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitElemPopSint8:
-  PrintName("InitElemPopSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopUint8:
-  PrintName("InitElemPopUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopSint16:
-  PrintName("InitElemPopSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopUint16:
-  PrintName("InitElemPopUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopSint32:
-  PrintName("InitElemPopSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopUint32:
-  PrintName("InitElemPopUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopSint64:
-  PrintName("InitElemPopSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopUint64:
-  PrintName("InitElemPopUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopIntAP:
-  PrintName("InitElemPopIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopIntAPS:
-  PrintName("InitElemPopIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopBool:
-  PrintName("InitElemPopBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopFixedPoint:
-  PrintName("InitElemPopFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopPtr:
-  PrintName("InitElemPopPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_InitElemPopFnPtr:
-  PrintName("InitElemPopFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopMemberPtr:
-  PrintName("InitElemPopMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitElemPopFloat:
-  PrintName("InitElemPopFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitElemPopFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitElemPopSint8( uint32_t , const SourceInfo &);
@@ -24418,7 +22940,6 @@ bool emitInitElemPopIntAPS( uint32_t , const SourceInfo &);
 bool emitInitElemPopBool( uint32_t , const SourceInfo &);
 bool emitInitElemPopFixedPoint( uint32_t , const SourceInfo &);
 bool emitInitElemPopPtr( uint32_t , const SourceInfo &);
-bool emitInitElemPopFnPtr( uint32_t , const SourceInfo &);
 bool emitInitElemPopMemberPtr( uint32_t , const SourceInfo &);
 bool emitInitElemPopFloat( uint32_t , const SourceInfo &);
 #endif
@@ -24460,8 +22981,6 @@ ByteCodeEmitter
     return emitInitElemPopFixedPoint(A0, I);
   case PT_Ptr:
     return emitInitElemPopPtr(A0, I);
-  case PT_FnPtr:
-    return emitInitElemPopFnPtr(A0, I);
   case PT_MemberPtr:
     return emitInitElemPopMemberPtr(A0, I);
   case PT_Float:
@@ -24509,9 +23028,6 @@ bool ByteCodeEmitter::emitInitElemPopFixedPoint( uint32_t A0, const SourceInfo &
 }
 bool ByteCodeEmitter::emitInitElemPopPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitElemPopPtr, A0, L);
-}
-bool ByteCodeEmitter::emitInitElemPopFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_InitElemPopFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitInitElemPopMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitElemPopMemberPtr, A0, L);
@@ -24586,11 +23102,6 @@ bool EvalEmitter::emitInitElemPopPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return InitElemPop<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitInitElemPopFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitElemPop<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitInitElemPopMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -24616,7 +23127,6 @@ OP_InitFieldIntAPS,
 OP_InitFieldBool,
 OP_InitFieldFixedPoint,
 OP_InitFieldPtr,
-OP_InitFieldFnPtr,
 OP_InitFieldMemberPtr,
 OP_InitFieldFloat,
 #endif
@@ -24699,12 +23209,6 @@ case OP_InitFieldPtr: {
     return false;
   continue;
 }
-case OP_InitFieldFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_InitFieldMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!InitField<PT_MemberPtr>(S, OpPC, V0))
@@ -24720,69 +23224,65 @@ case OP_InitFieldFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitFieldSint8:
-  PrintName("InitFieldSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldUint8:
-  PrintName("InitFieldUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldSint16:
-  PrintName("InitFieldSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldUint16:
-  PrintName("InitFieldUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldSint32:
-  PrintName("InitFieldSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldUint32:
-  PrintName("InitFieldUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldSint64:
-  PrintName("InitFieldSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldUint64:
-  PrintName("InitFieldUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldIntAP:
-  PrintName("InitFieldIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldIntAPS:
-  PrintName("InitFieldIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldBool:
-  PrintName("InitFieldBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldFixedPoint:
-  PrintName("InitFieldFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldPtr:
-  PrintName("InitFieldPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_InitFieldFnPtr:
-  PrintName("InitFieldFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldMemberPtr:
-  PrintName("InitFieldMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitFieldFloat:
-  PrintName("InitFieldFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitFieldFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitFieldSint8( uint32_t , const SourceInfo &);
@@ -24798,7 +23298,6 @@ bool emitInitFieldIntAPS( uint32_t , const SourceInfo &);
 bool emitInitFieldBool( uint32_t , const SourceInfo &);
 bool emitInitFieldFixedPoint( uint32_t , const SourceInfo &);
 bool emitInitFieldPtr( uint32_t , const SourceInfo &);
-bool emitInitFieldFnPtr( uint32_t , const SourceInfo &);
 bool emitInitFieldMemberPtr( uint32_t , const SourceInfo &);
 bool emitInitFieldFloat( uint32_t , const SourceInfo &);
 #endif
@@ -24840,8 +23339,6 @@ ByteCodeEmitter
     return emitInitFieldFixedPoint(A0, I);
   case PT_Ptr:
     return emitInitFieldPtr(A0, I);
-  case PT_FnPtr:
-    return emitInitFieldFnPtr(A0, I);
   case PT_MemberPtr:
     return emitInitFieldMemberPtr(A0, I);
   case PT_Float:
@@ -24889,9 +23386,6 @@ bool ByteCodeEmitter::emitInitFieldFixedPoint( uint32_t A0, const SourceInfo &L)
 }
 bool ByteCodeEmitter::emitInitFieldPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitFieldPtr, A0, L);
-}
-bool ByteCodeEmitter::emitInitFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_InitFieldFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitInitFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitFieldMemberPtr, A0, L);
@@ -24966,11 +23460,6 @@ bool EvalEmitter::emitInitFieldPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return InitField<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitInitFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitField<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitInitFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -24996,7 +23485,6 @@ OP_InitGlobalIntAPS,
 OP_InitGlobalBool,
 OP_InitGlobalFixedPoint,
 OP_InitGlobalPtr,
-OP_InitGlobalFnPtr,
 OP_InitGlobalMemberPtr,
 OP_InitGlobalFloat,
 #endif
@@ -25079,12 +23567,6 @@ case OP_InitGlobalPtr: {
     return false;
   continue;
 }
-case OP_InitGlobalFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_InitGlobalMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!InitGlobal<PT_MemberPtr>(S, OpPC, V0))
@@ -25100,69 +23582,65 @@ case OP_InitGlobalFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitGlobalSint8:
-  PrintName("InitGlobalSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalUint8:
-  PrintName("InitGlobalUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalSint16:
-  PrintName("InitGlobalSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalUint16:
-  PrintName("InitGlobalUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalSint32:
-  PrintName("InitGlobalSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalUint32:
-  PrintName("InitGlobalUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalSint64:
-  PrintName("InitGlobalSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalUint64:
-  PrintName("InitGlobalUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalIntAP:
-  PrintName("InitGlobalIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalIntAPS:
-  PrintName("InitGlobalIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalBool:
-  PrintName("InitGlobalBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalFixedPoint:
-  PrintName("InitGlobalFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalPtr:
-  PrintName("InitGlobalPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_InitGlobalFnPtr:
-  PrintName("InitGlobalFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalMemberPtr:
-  PrintName("InitGlobalMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitGlobalFloat:
-  PrintName("InitGlobalFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitGlobalSint8( uint32_t , const SourceInfo &);
@@ -25178,7 +23656,6 @@ bool emitInitGlobalIntAPS( uint32_t , const SourceInfo &);
 bool emitInitGlobalBool( uint32_t , const SourceInfo &);
 bool emitInitGlobalFixedPoint( uint32_t , const SourceInfo &);
 bool emitInitGlobalPtr( uint32_t , const SourceInfo &);
-bool emitInitGlobalFnPtr( uint32_t , const SourceInfo &);
 bool emitInitGlobalMemberPtr( uint32_t , const SourceInfo &);
 bool emitInitGlobalFloat( uint32_t , const SourceInfo &);
 #endif
@@ -25220,8 +23697,6 @@ ByteCodeEmitter
     return emitInitGlobalFixedPoint(A0, I);
   case PT_Ptr:
     return emitInitGlobalPtr(A0, I);
-  case PT_FnPtr:
-    return emitInitGlobalFnPtr(A0, I);
   case PT_MemberPtr:
     return emitInitGlobalMemberPtr(A0, I);
   case PT_Float:
@@ -25269,9 +23744,6 @@ bool ByteCodeEmitter::emitInitGlobalFixedPoint( uint32_t A0, const SourceInfo &L
 }
 bool ByteCodeEmitter::emitInitGlobalPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitGlobalPtr, A0, L);
-}
-bool ByteCodeEmitter::emitInitGlobalFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_InitGlobalFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitInitGlobalMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitGlobalMemberPtr, A0, L);
@@ -25346,11 +23818,6 @@ bool EvalEmitter::emitInitGlobalPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return InitGlobal<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitInitGlobalFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitGlobal<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitInitGlobalMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -25376,7 +23843,6 @@ OP_InitGlobalTempIntAPS,
 OP_InitGlobalTempBool,
 OP_InitGlobalTempFixedPoint,
 OP_InitGlobalTempPtr,
-OP_InitGlobalTempFnPtr,
 OP_InitGlobalTempMemberPtr,
 OP_InitGlobalTempFloat,
 #endif
@@ -25472,13 +23938,6 @@ case OP_InitGlobalTempPtr: {
     return false;
   continue;
 }
-case OP_InitGlobalTempFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_FnPtr>(S, OpPC, V0, V1))
-    return false;
-  continue;
-}
 case OP_InitGlobalTempMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
@@ -25496,69 +23955,80 @@ case OP_InitGlobalTempFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitGlobalTempSint8:
-  PrintName("InitGlobalTempSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempUint8:
-  PrintName("InitGlobalTempUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempSint16:
-  PrintName("InitGlobalTempSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempUint16:
-  PrintName("InitGlobalTempUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempSint32:
-  PrintName("InitGlobalTempSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempUint32:
-  PrintName("InitGlobalTempUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempSint64:
-  PrintName("InitGlobalTempSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempUint64:
-  PrintName("InitGlobalTempUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempIntAP:
-  PrintName("InitGlobalTempIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempIntAPS:
-  PrintName("InitGlobalTempIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempBool:
-  PrintName("InitGlobalTempBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempFixedPoint:
-  PrintName("InitGlobalTempFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempPtr:
-  PrintName("InitGlobalTempPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
-case OP_InitGlobalTempFnPtr:
-  PrintName("InitGlobalTempFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempMemberPtr:
-  PrintName("InitGlobalTempMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 case OP_InitGlobalTempFloat:
-  PrintName("InitGlobalTempFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitGlobalTempSint8( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
@@ -25574,7 +24044,6 @@ bool emitInitGlobalTempIntAPS( uint32_t ,  const LifetimeExtendedTemporaryDecl *
 bool emitInitGlobalTempBool( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
 bool emitInitGlobalTempFixedPoint( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
 bool emitInitGlobalTempPtr( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
-bool emitInitGlobalTempFnPtr( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
 bool emitInitGlobalTempMemberPtr( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
 bool emitInitGlobalTempFloat( uint32_t ,  const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
 #endif
@@ -25616,8 +24085,6 @@ ByteCodeEmitter
     return emitInitGlobalTempFixedPoint(A0, A1, I);
   case PT_Ptr:
     return emitInitGlobalTempPtr(A0, A1, I);
-  case PT_FnPtr:
-    return emitInitGlobalTempFnPtr(A0, A1, I);
   case PT_MemberPtr:
     return emitInitGlobalTempMemberPtr(A0, A1, I);
   case PT_Float:
@@ -25665,9 +24132,6 @@ bool ByteCodeEmitter::emitInitGlobalTempFixedPoint( uint32_t A0,  const Lifetime
 }
 bool ByteCodeEmitter::emitInitGlobalTempPtr( uint32_t A0,  const LifetimeExtendedTemporaryDecl * A1, const SourceInfo &L) {
   return emitOp<uint32_t, const LifetimeExtendedTemporaryDecl *>(OP_InitGlobalTempPtr, A0, A1, L);
-}
-bool ByteCodeEmitter::emitInitGlobalTempFnPtr( uint32_t A0,  const LifetimeExtendedTemporaryDecl * A1, const SourceInfo &L) {
-  return emitOp<uint32_t, const LifetimeExtendedTemporaryDecl *>(OP_InitGlobalTempFnPtr, A0, A1, L);
 }
 bool ByteCodeEmitter::emitInitGlobalTempMemberPtr( uint32_t A0,  const LifetimeExtendedTemporaryDecl * A1, const SourceInfo &L) {
   return emitOp<uint32_t, const LifetimeExtendedTemporaryDecl *>(OP_InitGlobalTempMemberPtr, A0, A1, L);
@@ -25742,11 +24206,6 @@ bool EvalEmitter::emitInitGlobalTempPtr( uint32_t A0,  const LifetimeExtendedTem
   CurrentSource = L;
   return InitGlobalTemp<PT_Ptr>(S, OpPC, A0, A1);
 }
-bool EvalEmitter::emitInitGlobalTempFnPtr( uint32_t A0,  const LifetimeExtendedTemporaryDecl * A1, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitGlobalTemp<PT_FnPtr>(S, OpPC, A0, A1);
-}
 bool EvalEmitter::emitInitGlobalTempMemberPtr( uint32_t A0,  const LifetimeExtendedTemporaryDecl * A1, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -25771,9 +24230,9 @@ case OP_InitGlobalTempComp: {
 #endif
 #ifdef GET_DISASM
 case OP_InitGlobalTempComp:
-  PrintName("InitGlobalTempComp");
-  OS << "\t" << ReadArg<const LifetimeExtendedTemporaryDecl *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitGlobalTempComp");
+  Text.Args.push_back(printArg<const LifetimeExtendedTemporaryDecl *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitGlobalTempComp( const LifetimeExtendedTemporaryDecl * , const SourceInfo &);
@@ -25804,7 +24263,6 @@ OP_InitPopIntAPS,
 OP_InitPopBool,
 OP_InitPopFixedPoint,
 OP_InitPopPtr,
-OP_InitPopFnPtr,
 OP_InitPopMemberPtr,
 OP_InitPopFloat,
 #endif
@@ -25874,11 +24332,6 @@ case OP_InitPopPtr: {
     return false;
   continue;
 }
-case OP_InitPopFnPtr: {
-  if (!InitPop<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_InitPopMemberPtr: {
   if (!InitPop<PT_MemberPtr>(S, OpPC))
     return false;
@@ -25892,69 +24345,50 @@ case OP_InitPopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitPopSint8:
-  PrintName("InitPopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopSint8");
+  break;
 case OP_InitPopUint8:
-  PrintName("InitPopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopUint8");
+  break;
 case OP_InitPopSint16:
-  PrintName("InitPopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopSint16");
+  break;
 case OP_InitPopUint16:
-  PrintName("InitPopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopUint16");
+  break;
 case OP_InitPopSint32:
-  PrintName("InitPopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopSint32");
+  break;
 case OP_InitPopUint32:
-  PrintName("InitPopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopUint32");
+  break;
 case OP_InitPopSint64:
-  PrintName("InitPopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopSint64");
+  break;
 case OP_InitPopUint64:
-  PrintName("InitPopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopUint64");
+  break;
 case OP_InitPopIntAP:
-  PrintName("InitPopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopIntAP");
+  break;
 case OP_InitPopIntAPS:
-  PrintName("InitPopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopIntAPS");
+  break;
 case OP_InitPopBool:
-  PrintName("InitPopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopBool");
+  break;
 case OP_InitPopFixedPoint:
-  PrintName("InitPopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopFixedPoint");
+  break;
 case OP_InitPopPtr:
-  PrintName("InitPopPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_InitPopFnPtr:
-  PrintName("InitPopFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopPtr");
+  break;
 case OP_InitPopMemberPtr:
-  PrintName("InitPopMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopMemberPtr");
+  break;
 case OP_InitPopFloat:
-  PrintName("InitPopFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("InitPopFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitPopSint8(const SourceInfo &);
@@ -25970,7 +24404,6 @@ bool emitInitPopIntAPS(const SourceInfo &);
 bool emitInitPopBool(const SourceInfo &);
 bool emitInitPopFixedPoint(const SourceInfo &);
 bool emitInitPopPtr(const SourceInfo &);
-bool emitInitPopFnPtr(const SourceInfo &);
 bool emitInitPopMemberPtr(const SourceInfo &);
 bool emitInitPopFloat(const SourceInfo &);
 #endif
@@ -26012,8 +24445,6 @@ ByteCodeEmitter
     return emitInitPopFixedPoint(I);
   case PT_Ptr:
     return emitInitPopPtr(I);
-  case PT_FnPtr:
-    return emitInitPopFnPtr(I);
   case PT_MemberPtr:
     return emitInitPopMemberPtr(I);
   case PT_Float:
@@ -26061,9 +24492,6 @@ bool ByteCodeEmitter::emitInitPopFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitInitPopPtr(const SourceInfo &L) {
   return emitOp<>(OP_InitPopPtr, L);
-}
-bool ByteCodeEmitter::emitInitPopFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_InitPopFnPtr, L);
 }
 bool ByteCodeEmitter::emitInitPopMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_InitPopMemberPtr, L);
@@ -26138,11 +24566,6 @@ bool EvalEmitter::emitInitPopPtr(const SourceInfo &L) {
   CurrentSource = L;
   return InitPop<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitInitPopFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitPop<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitInitPopMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -26167,9 +24590,9 @@ case OP_InitScope: {
 #endif
 #ifdef GET_DISASM
 case OP_InitScope:
-  PrintName("InitScope");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitScope");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitScope( uint32_t , const SourceInfo &);
@@ -26288,53 +24711,65 @@ case OP_InitThisBitFieldFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_InitThisBitFieldSint8:
-  PrintName("InitThisBitFieldSint8");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldSint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldUint8:
-  PrintName("InitThisBitFieldUint8");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldUint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldSint16:
-  PrintName("InitThisBitFieldSint16");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldSint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldUint16:
-  PrintName("InitThisBitFieldUint16");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldUint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldSint32:
-  PrintName("InitThisBitFieldSint32");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldSint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldUint32:
-  PrintName("InitThisBitFieldUint32");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldUint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldSint64:
-  PrintName("InitThisBitFieldSint64");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldSint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldUint64:
-  PrintName("InitThisBitFieldUint64");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldUint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldIntAP:
-  PrintName("InitThisBitFieldIntAP");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldIntAP");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldIntAPS:
-  PrintName("InitThisBitFieldIntAPS");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldIntAPS");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldBool:
-  PrintName("InitThisBitFieldBool");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldBool");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisBitFieldFixedPoint:
-  PrintName("InitThisBitFieldFixedPoint");
-  OS << "\t" << ReadArg<const Record::Field *>(P, PC) << " " << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisBitFieldFixedPoint");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitThisBitFieldSint8( const Record::Field * ,  uint32_t , const SourceInfo &);
@@ -26505,7 +24940,6 @@ OP_InitThisFieldIntAPS,
 OP_InitThisFieldBool,
 OP_InitThisFieldFixedPoint,
 OP_InitThisFieldPtr,
-OP_InitThisFieldFnPtr,
 OP_InitThisFieldMemberPtr,
 OP_InitThisFieldFloat,
 #endif
@@ -26588,12 +25022,6 @@ case OP_InitThisFieldPtr: {
     return false;
   continue;
 }
-case OP_InitThisFieldFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_InitThisFieldMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!InitThisField<PT_MemberPtr>(S, OpPC, V0))
@@ -26609,69 +25037,65 @@ case OP_InitThisFieldFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_InitThisFieldSint8:
-  PrintName("InitThisFieldSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldUint8:
-  PrintName("InitThisFieldUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldSint16:
-  PrintName("InitThisFieldSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldUint16:
-  PrintName("InitThisFieldUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldSint32:
-  PrintName("InitThisFieldSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldUint32:
-  PrintName("InitThisFieldUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldSint64:
-  PrintName("InitThisFieldSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldUint64:
-  PrintName("InitThisFieldUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldIntAP:
-  PrintName("InitThisFieldIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldIntAPS:
-  PrintName("InitThisFieldIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldBool:
-  PrintName("InitThisFieldBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldFixedPoint:
-  PrintName("InitThisFieldFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldPtr:
-  PrintName("InitThisFieldPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_InitThisFieldFnPtr:
-  PrintName("InitThisFieldFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldMemberPtr:
-  PrintName("InitThisFieldMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_InitThisFieldFloat:
-  PrintName("InitThisFieldFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InitThisFieldFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitThisFieldSint8( uint32_t , const SourceInfo &);
@@ -26687,7 +25111,6 @@ bool emitInitThisFieldIntAPS( uint32_t , const SourceInfo &);
 bool emitInitThisFieldBool( uint32_t , const SourceInfo &);
 bool emitInitThisFieldFixedPoint( uint32_t , const SourceInfo &);
 bool emitInitThisFieldPtr( uint32_t , const SourceInfo &);
-bool emitInitThisFieldFnPtr( uint32_t , const SourceInfo &);
 bool emitInitThisFieldMemberPtr( uint32_t , const SourceInfo &);
 bool emitInitThisFieldFloat( uint32_t , const SourceInfo &);
 #endif
@@ -26729,8 +25152,6 @@ ByteCodeEmitter
     return emitInitThisFieldFixedPoint(A0, I);
   case PT_Ptr:
     return emitInitThisFieldPtr(A0, I);
-  case PT_FnPtr:
-    return emitInitThisFieldFnPtr(A0, I);
   case PT_MemberPtr:
     return emitInitThisFieldMemberPtr(A0, I);
   case PT_Float:
@@ -26778,9 +25199,6 @@ bool ByteCodeEmitter::emitInitThisFieldFixedPoint( uint32_t A0, const SourceInfo
 }
 bool ByteCodeEmitter::emitInitThisFieldPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitThisFieldPtr, A0, L);
-}
-bool ByteCodeEmitter::emitInitThisFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_InitThisFieldFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitInitThisFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_InitThisFieldMemberPtr, A0, L);
@@ -26855,11 +25273,6 @@ bool EvalEmitter::emitInitThisFieldPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return InitThisField<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitInitThisFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return InitThisField<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitInitThisFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -26883,9 +25296,8 @@ case OP_Inv: {
 #endif
 #ifdef GET_DISASM
 case OP_Inv:
-  PrintName("Inv");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Inv");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInv(const SourceInfo &);
@@ -26914,9 +25326,8 @@ case OP_Invalid: {
 #endif
 #ifdef GET_DISASM
 case OP_Invalid:
-  PrintName("Invalid");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Invalid");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInvalid(const SourceInfo &);
@@ -26938,7 +25349,7 @@ OP_InvalidCast,
 #endif
 #ifdef GET_INTERP
 case OP_InvalidCast: {
-  const auto V0 = ReadArg<CastKind>(S, PC);
+  const auto V0 = ReadArg<interp::CastKind>(S, PC);
   const auto V1 = ReadArg<bool>(S, PC);
   if (!InvalidCast(S, OpPC, V0, V1))
     return false;
@@ -26947,20 +25358,21 @@ case OP_InvalidCast: {
 #endif
 #ifdef GET_DISASM
 case OP_InvalidCast:
-  PrintName("InvalidCast");
-  OS << "\t" << ReadArg<CastKind>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InvalidCast");
+  Text.Args.push_back(printArg<interp::CastKind>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitInvalidCast( CastKind ,  bool , const SourceInfo &);
+bool emitInvalidCast( interp::CastKind ,  bool , const SourceInfo &);
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitInvalidCast( CastKind A0,  bool A1, const SourceInfo &L) {
-  return emitOp<CastKind, bool>(OP_InvalidCast, A0, A1, L);
+bool ByteCodeEmitter::emitInvalidCast( interp::CastKind A0,  bool A1, const SourceInfo &L) {
+  return emitOp<interp::CastKind, bool>(OP_InvalidCast, A0, A1, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitInvalidCast( CastKind A0,  bool A1, const SourceInfo &L) {
+bool EvalEmitter::emitInvalidCast( interp::CastKind A0,  bool A1, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return InvalidCast(S, OpPC, A0, A1);
@@ -26980,9 +25392,10 @@ case OP_InvalidDeclRef: {
 #endif
 #ifdef GET_DISASM
 case OP_InvalidDeclRef:
-  PrintName("InvalidDeclRef");
-  OS << "\t" << ReadArg<const DeclRefExpr *>(P, PC) << " " << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InvalidDeclRef");
+  Text.Args.push_back(printArg<const DeclRefExpr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInvalidDeclRef( const DeclRefExpr * ,  bool , const SourceInfo &);
@@ -27012,9 +25425,9 @@ case OP_InvalidNewDeleteExpr: {
 #endif
 #ifdef GET_DISASM
 case OP_InvalidNewDeleteExpr:
-  PrintName("InvalidNewDeleteExpr");
-  OS << "\t" << ReadArg<const Expr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InvalidNewDeleteExpr");
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInvalidNewDeleteExpr( const Expr * , const SourceInfo &);
@@ -27044,9 +25457,9 @@ case OP_InvalidShuffleVectorIndex: {
 #endif
 #ifdef GET_DISASM
 case OP_InvalidShuffleVectorIndex:
-  PrintName("InvalidShuffleVectorIndex");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("InvalidShuffleVectorIndex");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInvalidShuffleVectorIndex( uint32_t , const SourceInfo &);
@@ -27075,9 +25488,8 @@ case OP_IsConstantContext: {
 #endif
 #ifdef GET_DISASM
 case OP_IsConstantContext:
-  PrintName("IsConstantContext");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IsConstantContext");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitIsConstantContext(const SourceInfo &);
@@ -27096,17 +25508,11 @@ bool EvalEmitter::emitIsConstantContext(const SourceInfo &L) {
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_IsNonNullPtr,
-OP_IsNonNullFnPtr,
 OP_IsNonNullMemberPtr,
 #endif
 #ifdef GET_INTERP
 case OP_IsNonNullPtr: {
   if (!IsNonNull<PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_IsNonNullFnPtr: {
-  if (!IsNonNull<PT_FnPtr>(S, OpPC))
     return false;
   continue;
 }
@@ -27118,21 +25524,14 @@ case OP_IsNonNullMemberPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_IsNonNullPtr:
-  PrintName("IsNonNullPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_IsNonNullFnPtr:
-  PrintName("IsNonNullFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IsNonNullPtr");
+  break;
 case OP_IsNonNullMemberPtr:
-  PrintName("IsNonNullMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("IsNonNullMemberPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitIsNonNullPtr(const SourceInfo &);
-bool emitIsNonNullFnPtr(const SourceInfo &);
 bool emitIsNonNullMemberPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
@@ -27149,8 +25548,6 @@ ByteCodeEmitter
   switch (T0) {
   case PT_Ptr:
     return emitIsNonNullPtr(I);
-  case PT_FnPtr:
-    return emitIsNonNullFnPtr(I);
   case PT_MemberPtr:
     return emitIsNonNullMemberPtr(I);
   default: llvm_unreachable("invalid type: emitIsNonNull");
@@ -27162,9 +25559,6 @@ ByteCodeEmitter
 bool ByteCodeEmitter::emitIsNonNullPtr(const SourceInfo &L) {
   return emitOp<>(OP_IsNonNullPtr, L);
 }
-bool ByteCodeEmitter::emitIsNonNullFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_IsNonNullFnPtr, L);
-}
 bool ByteCodeEmitter::emitIsNonNullMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_IsNonNullMemberPtr, L);
 }
@@ -27174,11 +25568,6 @@ bool EvalEmitter::emitIsNonNullPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return IsNonNull<PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitIsNonNullFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return IsNonNull<PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitIsNonNullMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -27199,9 +25588,9 @@ case OP_Jf: {
 #endif
 #ifdef GET_DISASM
 case OP_Jf:
-  PrintName("Jf");
-  OS << "\t" << ReadArg<int32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Jf");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitJf( int32_t , const SourceInfo &);
@@ -27224,9 +25613,9 @@ case OP_Jmp: {
 #endif
 #ifdef GET_DISASM
 case OP_Jmp:
-  PrintName("Jmp");
-  OS << "\t" << ReadArg<int32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Jmp");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitJmp( int32_t , const SourceInfo &);
@@ -27249,9 +25638,9 @@ case OP_Jt: {
 #endif
 #ifdef GET_DISASM
 case OP_Jt:
-  PrintName("Jt");
-  OS << "\t" << ReadArg<int32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Jt");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitJt( int32_t , const SourceInfo &);
@@ -27259,6 +25648,36 @@ bool emitJt( int32_t , const SourceInfo &);
 #ifdef GET_LINK_IMPL
 bool ByteCodeEmitter::emitJt( int32_t A0, const SourceInfo &L) {
   return emitOp<int32_t>(OP_Jt, A0, L);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_Kill,
+#endif
+#ifdef GET_INTERP
+case OP_Kill: {
+  if (!Kill(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_Kill:
+  Text.Op = PrintName("Kill");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitKill(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitKill(const SourceInfo &L) {
+  return emitOp<>(OP_Kill, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitKill(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return Kill(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -27276,7 +25695,6 @@ OP_LEBool,
 OP_LEFixedPoint,
 OP_LEPtr,
 OP_LEFloat,
-OP_LEFnPtr,
 #endif
 #ifdef GET_INTERP
 case OP_LESint8: {
@@ -27349,73 +25767,50 @@ case OP_LEFloat: {
     return false;
   continue;
 }
-case OP_LEFnPtr: {
-  if (!LE<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_LESint8:
-  PrintName("LESint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LESint8");
+  break;
 case OP_LEUint8:
-  PrintName("LEUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEUint8");
+  break;
 case OP_LESint16:
-  PrintName("LESint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LESint16");
+  break;
 case OP_LEUint16:
-  PrintName("LEUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEUint16");
+  break;
 case OP_LESint32:
-  PrintName("LESint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LESint32");
+  break;
 case OP_LEUint32:
-  PrintName("LEUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEUint32");
+  break;
 case OP_LESint64:
-  PrintName("LESint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LESint64");
+  break;
 case OP_LEUint64:
-  PrintName("LEUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEUint64");
+  break;
 case OP_LEIntAP:
-  PrintName("LEIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEIntAP");
+  break;
 case OP_LEIntAPS:
-  PrintName("LEIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEIntAPS");
+  break;
 case OP_LEBool:
-  PrintName("LEBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEBool");
+  break;
 case OP_LEFixedPoint:
-  PrintName("LEFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEFixedPoint");
+  break;
 case OP_LEPtr:
-  PrintName("LEPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEPtr");
+  break;
 case OP_LEFloat:
-  PrintName("LEFloat");
-  OS << "\t" << "\n";
-  continue;
-case OP_LEFnPtr:
-  PrintName("LEFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LEFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitLESint8(const SourceInfo &);
@@ -27432,7 +25827,6 @@ bool emitLEBool(const SourceInfo &);
 bool emitLEFixedPoint(const SourceInfo &);
 bool emitLEPtr(const SourceInfo &);
 bool emitLEFloat(const SourceInfo &);
-bool emitLEFnPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitLE(PrimType, const SourceInfo &I);
@@ -27474,8 +25868,6 @@ ByteCodeEmitter
     return emitLEPtr(I);
   case PT_Float:
     return emitLEFloat(I);
-  case PT_FnPtr:
-    return emitLEFnPtr(I);
   default: llvm_unreachable("invalid type: emitLE");
   }
   llvm_unreachable("invalid enum value");
@@ -27523,9 +25915,6 @@ bool ByteCodeEmitter::emitLEPtr(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitLEFloat(const SourceInfo &L) {
   return emitOp<>(OP_LEFloat, L);
-}
-bool ByteCodeEmitter::emitLEFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_LEFnPtr, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -27599,11 +25988,6 @@ bool EvalEmitter::emitLEFloat(const SourceInfo &L) {
   CurrentSource = L;
   return LE<PT_Float>(S, OpPC);
 }
-bool EvalEmitter::emitLEFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return LE<PT_FnPtr>(S, OpPC);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_LTSint8,
@@ -27620,7 +26004,6 @@ OP_LTBool,
 OP_LTFixedPoint,
 OP_LTPtr,
 OP_LTFloat,
-OP_LTFnPtr,
 #endif
 #ifdef GET_INTERP
 case OP_LTSint8: {
@@ -27693,73 +26076,50 @@ case OP_LTFloat: {
     return false;
   continue;
 }
-case OP_LTFnPtr: {
-  if (!LT<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_LTSint8:
-  PrintName("LTSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTSint8");
+  break;
 case OP_LTUint8:
-  PrintName("LTUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTUint8");
+  break;
 case OP_LTSint16:
-  PrintName("LTSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTSint16");
+  break;
 case OP_LTUint16:
-  PrintName("LTUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTUint16");
+  break;
 case OP_LTSint32:
-  PrintName("LTSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTSint32");
+  break;
 case OP_LTUint32:
-  PrintName("LTUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTUint32");
+  break;
 case OP_LTSint64:
-  PrintName("LTSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTSint64");
+  break;
 case OP_LTUint64:
-  PrintName("LTUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTUint64");
+  break;
 case OP_LTIntAP:
-  PrintName("LTIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTIntAP");
+  break;
 case OP_LTIntAPS:
-  PrintName("LTIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTIntAPS");
+  break;
 case OP_LTBool:
-  PrintName("LTBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTBool");
+  break;
 case OP_LTFixedPoint:
-  PrintName("LTFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTFixedPoint");
+  break;
 case OP_LTPtr:
-  PrintName("LTPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTPtr");
+  break;
 case OP_LTFloat:
-  PrintName("LTFloat");
-  OS << "\t" << "\n";
-  continue;
-case OP_LTFnPtr:
-  PrintName("LTFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LTFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitLTSint8(const SourceInfo &);
@@ -27776,7 +26136,6 @@ bool emitLTBool(const SourceInfo &);
 bool emitLTFixedPoint(const SourceInfo &);
 bool emitLTPtr(const SourceInfo &);
 bool emitLTFloat(const SourceInfo &);
-bool emitLTFnPtr(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitLT(PrimType, const SourceInfo &I);
@@ -27818,8 +26177,6 @@ ByteCodeEmitter
     return emitLTPtr(I);
   case PT_Float:
     return emitLTFloat(I);
-  case PT_FnPtr:
-    return emitLTFnPtr(I);
   default: llvm_unreachable("invalid type: emitLT");
   }
   llvm_unreachable("invalid enum value");
@@ -27867,9 +26224,6 @@ bool ByteCodeEmitter::emitLTPtr(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitLTFloat(const SourceInfo &L) {
   return emitOp<>(OP_LTFloat, L);
-}
-bool ByteCodeEmitter::emitLTFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_LTFnPtr, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -27943,11 +26297,6 @@ bool EvalEmitter::emitLTFloat(const SourceInfo &L) {
   CurrentSource = L;
   return LT<PT_Float>(S, OpPC);
 }
-bool EvalEmitter::emitLTFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return LT<PT_FnPtr>(S, OpPC);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_LoadSint8,
@@ -27963,7 +26312,6 @@ OP_LoadIntAPS,
 OP_LoadBool,
 OP_LoadFixedPoint,
 OP_LoadPtr,
-OP_LoadFnPtr,
 OP_LoadMemberPtr,
 OP_LoadFloat,
 #endif
@@ -28033,11 +26381,6 @@ case OP_LoadPtr: {
     return false;
   continue;
 }
-case OP_LoadFnPtr: {
-  if (!Load<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_LoadMemberPtr: {
   if (!Load<PT_MemberPtr>(S, OpPC))
     return false;
@@ -28051,69 +26394,50 @@ case OP_LoadFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_LoadSint8:
-  PrintName("LoadSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadSint8");
+  break;
 case OP_LoadUint8:
-  PrintName("LoadUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadUint8");
+  break;
 case OP_LoadSint16:
-  PrintName("LoadSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadSint16");
+  break;
 case OP_LoadUint16:
-  PrintName("LoadUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadUint16");
+  break;
 case OP_LoadSint32:
-  PrintName("LoadSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadSint32");
+  break;
 case OP_LoadUint32:
-  PrintName("LoadUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadUint32");
+  break;
 case OP_LoadSint64:
-  PrintName("LoadSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadSint64");
+  break;
 case OP_LoadUint64:
-  PrintName("LoadUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadUint64");
+  break;
 case OP_LoadIntAP:
-  PrintName("LoadIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadIntAP");
+  break;
 case OP_LoadIntAPS:
-  PrintName("LoadIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadIntAPS");
+  break;
 case OP_LoadBool:
-  PrintName("LoadBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadBool");
+  break;
 case OP_LoadFixedPoint:
-  PrintName("LoadFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadFixedPoint");
+  break;
 case OP_LoadPtr:
-  PrintName("LoadPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_LoadFnPtr:
-  PrintName("LoadFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPtr");
+  break;
 case OP_LoadMemberPtr:
-  PrintName("LoadMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadMemberPtr");
+  break;
 case OP_LoadFloat:
-  PrintName("LoadFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitLoadSint8(const SourceInfo &);
@@ -28129,7 +26453,6 @@ bool emitLoadIntAPS(const SourceInfo &);
 bool emitLoadBool(const SourceInfo &);
 bool emitLoadFixedPoint(const SourceInfo &);
 bool emitLoadPtr(const SourceInfo &);
-bool emitLoadFnPtr(const SourceInfo &);
 bool emitLoadMemberPtr(const SourceInfo &);
 bool emitLoadFloat(const SourceInfo &);
 #endif
@@ -28171,8 +26494,6 @@ ByteCodeEmitter
     return emitLoadFixedPoint(I);
   case PT_Ptr:
     return emitLoadPtr(I);
-  case PT_FnPtr:
-    return emitLoadFnPtr(I);
   case PT_MemberPtr:
     return emitLoadMemberPtr(I);
   case PT_Float:
@@ -28220,9 +26541,6 @@ bool ByteCodeEmitter::emitLoadFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitLoadPtr(const SourceInfo &L) {
   return emitOp<>(OP_LoadPtr, L);
-}
-bool ByteCodeEmitter::emitLoadFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_LoadFnPtr, L);
 }
 bool ByteCodeEmitter::emitLoadMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_LoadMemberPtr, L);
@@ -28297,11 +26615,6 @@ bool EvalEmitter::emitLoadPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Load<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitLoadFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Load<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitLoadMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -28327,7 +26640,6 @@ OP_LoadPopIntAPS,
 OP_LoadPopBool,
 OP_LoadPopFixedPoint,
 OP_LoadPopPtr,
-OP_LoadPopFnPtr,
 OP_LoadPopMemberPtr,
 OP_LoadPopFloat,
 #endif
@@ -28397,11 +26709,6 @@ case OP_LoadPopPtr: {
     return false;
   continue;
 }
-case OP_LoadPopFnPtr: {
-  if (!LoadPop<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_LoadPopMemberPtr: {
   if (!LoadPop<PT_MemberPtr>(S, OpPC))
     return false;
@@ -28415,69 +26722,50 @@ case OP_LoadPopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_LoadPopSint8:
-  PrintName("LoadPopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopSint8");
+  break;
 case OP_LoadPopUint8:
-  PrintName("LoadPopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopUint8");
+  break;
 case OP_LoadPopSint16:
-  PrintName("LoadPopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopSint16");
+  break;
 case OP_LoadPopUint16:
-  PrintName("LoadPopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopUint16");
+  break;
 case OP_LoadPopSint32:
-  PrintName("LoadPopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopSint32");
+  break;
 case OP_LoadPopUint32:
-  PrintName("LoadPopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopUint32");
+  break;
 case OP_LoadPopSint64:
-  PrintName("LoadPopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopSint64");
+  break;
 case OP_LoadPopUint64:
-  PrintName("LoadPopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopUint64");
+  break;
 case OP_LoadPopIntAP:
-  PrintName("LoadPopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopIntAP");
+  break;
 case OP_LoadPopIntAPS:
-  PrintName("LoadPopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopIntAPS");
+  break;
 case OP_LoadPopBool:
-  PrintName("LoadPopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopBool");
+  break;
 case OP_LoadPopFixedPoint:
-  PrintName("LoadPopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopFixedPoint");
+  break;
 case OP_LoadPopPtr:
-  PrintName("LoadPopPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_LoadPopFnPtr:
-  PrintName("LoadPopFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopPtr");
+  break;
 case OP_LoadPopMemberPtr:
-  PrintName("LoadPopMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopMemberPtr");
+  break;
 case OP_LoadPopFloat:
-  PrintName("LoadPopFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("LoadPopFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitLoadPopSint8(const SourceInfo &);
@@ -28493,7 +26781,6 @@ bool emitLoadPopIntAPS(const SourceInfo &);
 bool emitLoadPopBool(const SourceInfo &);
 bool emitLoadPopFixedPoint(const SourceInfo &);
 bool emitLoadPopPtr(const SourceInfo &);
-bool emitLoadPopFnPtr(const SourceInfo &);
 bool emitLoadPopMemberPtr(const SourceInfo &);
 bool emitLoadPopFloat(const SourceInfo &);
 #endif
@@ -28535,8 +26822,6 @@ ByteCodeEmitter
     return emitLoadPopFixedPoint(I);
   case PT_Ptr:
     return emitLoadPopPtr(I);
-  case PT_FnPtr:
-    return emitLoadPopFnPtr(I);
   case PT_MemberPtr:
     return emitLoadPopMemberPtr(I);
   case PT_Float:
@@ -28584,9 +26869,6 @@ bool ByteCodeEmitter::emitLoadPopFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitLoadPopPtr(const SourceInfo &L) {
   return emitOp<>(OP_LoadPopPtr, L);
-}
-bool ByteCodeEmitter::emitLoadPopFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_LoadPopFnPtr, L);
 }
 bool ByteCodeEmitter::emitLoadPopMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_LoadPopMemberPtr, L);
@@ -28661,11 +26943,6 @@ bool EvalEmitter::emitLoadPopPtr(const SourceInfo &L) {
   CurrentSource = L;
   return LoadPop<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitLoadPopFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return LoadPop<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitLoadPopMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -28689,9 +26966,8 @@ case OP_Memcpy: {
 #endif
 #ifdef GET_DISASM
 case OP_Memcpy:
-  PrintName("Memcpy");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Memcpy");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitMemcpy(const SourceInfo &);
@@ -28786,53 +27062,41 @@ case OP_MulFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_MulSint8:
-  PrintName("MulSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulSint8");
+  break;
 case OP_MulUint8:
-  PrintName("MulUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulUint8");
+  break;
 case OP_MulSint16:
-  PrintName("MulSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulSint16");
+  break;
 case OP_MulUint16:
-  PrintName("MulUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulUint16");
+  break;
 case OP_MulSint32:
-  PrintName("MulSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulSint32");
+  break;
 case OP_MulUint32:
-  PrintName("MulUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulUint32");
+  break;
 case OP_MulSint64:
-  PrintName("MulSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulSint64");
+  break;
 case OP_MulUint64:
-  PrintName("MulUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulUint64");
+  break;
 case OP_MulIntAP:
-  PrintName("MulIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulIntAP");
+  break;
 case OP_MulIntAPS:
-  PrintName("MulIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulIntAPS");
+  break;
 case OP_MulBool:
-  PrintName("MulBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulBool");
+  break;
 case OP_MulFixedPoint:
-  PrintName("MulFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitMulSint8(const SourceInfo &);
@@ -29061,49 +27325,38 @@ case OP_MulcFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_MulcSint8:
-  PrintName("MulcSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcSint8");
+  break;
 case OP_MulcUint8:
-  PrintName("MulcUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcUint8");
+  break;
 case OP_MulcSint16:
-  PrintName("MulcSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcSint16");
+  break;
 case OP_MulcUint16:
-  PrintName("MulcUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcUint16");
+  break;
 case OP_MulcSint32:
-  PrintName("MulcSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcSint32");
+  break;
 case OP_MulcUint32:
-  PrintName("MulcUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcUint32");
+  break;
 case OP_MulcSint64:
-  PrintName("MulcSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcSint64");
+  break;
 case OP_MulcUint64:
-  PrintName("MulcUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcUint64");
+  break;
 case OP_MulcIntAP:
-  PrintName("MulcIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcIntAP");
+  break;
 case OP_MulcIntAPS:
-  PrintName("MulcIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcIntAPS");
+  break;
 case OP_MulcFloat:
-  PrintName("MulcFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("MulcFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitMulcSint8(const SourceInfo &);
@@ -29262,9 +27515,9 @@ case OP_Mulf: {
 #endif
 #ifdef GET_DISASM
 case OP_Mulf:
-  PrintName("Mulf");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Mulf");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitMulf( uint32_t , const SourceInfo &);
@@ -29295,7 +27548,6 @@ OP_NEIntAPS,
 OP_NEBool,
 OP_NEFixedPoint,
 OP_NEPtr,
-OP_NEFnPtr,
 OP_NEMemberPtr,
 OP_NEFloat,
 #endif
@@ -29365,11 +27617,6 @@ case OP_NEPtr: {
     return false;
   continue;
 }
-case OP_NEFnPtr: {
-  if (!NE<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_NEMemberPtr: {
   if (!NE<PT_MemberPtr>(S, OpPC))
     return false;
@@ -29383,69 +27630,50 @@ case OP_NEFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_NESint8:
-  PrintName("NESint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NESint8");
+  break;
 case OP_NEUint8:
-  PrintName("NEUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEUint8");
+  break;
 case OP_NESint16:
-  PrintName("NESint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NESint16");
+  break;
 case OP_NEUint16:
-  PrintName("NEUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEUint16");
+  break;
 case OP_NESint32:
-  PrintName("NESint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NESint32");
+  break;
 case OP_NEUint32:
-  PrintName("NEUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEUint32");
+  break;
 case OP_NESint64:
-  PrintName("NESint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NESint64");
+  break;
 case OP_NEUint64:
-  PrintName("NEUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEUint64");
+  break;
 case OP_NEIntAP:
-  PrintName("NEIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEIntAP");
+  break;
 case OP_NEIntAPS:
-  PrintName("NEIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEIntAPS");
+  break;
 case OP_NEBool:
-  PrintName("NEBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEBool");
+  break;
 case OP_NEFixedPoint:
-  PrintName("NEFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEFixedPoint");
+  break;
 case OP_NEPtr:
-  PrintName("NEPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_NEFnPtr:
-  PrintName("NEFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEPtr");
+  break;
 case OP_NEMemberPtr:
-  PrintName("NEMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEMemberPtr");
+  break;
 case OP_NEFloat:
-  PrintName("NEFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NEFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitNESint8(const SourceInfo &);
@@ -29461,7 +27689,6 @@ bool emitNEIntAPS(const SourceInfo &);
 bool emitNEBool(const SourceInfo &);
 bool emitNEFixedPoint(const SourceInfo &);
 bool emitNEPtr(const SourceInfo &);
-bool emitNEFnPtr(const SourceInfo &);
 bool emitNEMemberPtr(const SourceInfo &);
 bool emitNEFloat(const SourceInfo &);
 #endif
@@ -29503,8 +27730,6 @@ ByteCodeEmitter
     return emitNEFixedPoint(I);
   case PT_Ptr:
     return emitNEPtr(I);
-  case PT_FnPtr:
-    return emitNEFnPtr(I);
   case PT_MemberPtr:
     return emitNEMemberPtr(I);
   case PT_Float:
@@ -29552,9 +27777,6 @@ bool ByteCodeEmitter::emitNEFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitNEPtr(const SourceInfo &L) {
   return emitOp<>(OP_NEPtr, L);
-}
-bool ByteCodeEmitter::emitNEFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_NEFnPtr, L);
 }
 bool ByteCodeEmitter::emitNEMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_NEMemberPtr, L);
@@ -29629,11 +27851,6 @@ bool EvalEmitter::emitNEPtr(const SourceInfo &L) {
   CurrentSource = L;
   return NE<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitNEFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return NE<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitNEMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -29657,9 +27874,8 @@ case OP_NarrowPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_NarrowPtr:
-  PrintName("NarrowPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NarrowPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitNarrowPtr(const SourceInfo &);
@@ -29760,57 +27976,44 @@ case OP_NegFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_NegSint8:
-  PrintName("NegSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegSint8");
+  break;
 case OP_NegUint8:
-  PrintName("NegUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegUint8");
+  break;
 case OP_NegSint16:
-  PrintName("NegSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegSint16");
+  break;
 case OP_NegUint16:
-  PrintName("NegUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegUint16");
+  break;
 case OP_NegSint32:
-  PrintName("NegSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegSint32");
+  break;
 case OP_NegUint32:
-  PrintName("NegUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegUint32");
+  break;
 case OP_NegSint64:
-  PrintName("NegSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegSint64");
+  break;
 case OP_NegUint64:
-  PrintName("NegUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegUint64");
+  break;
 case OP_NegIntAP:
-  PrintName("NegIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegIntAP");
+  break;
 case OP_NegIntAPS:
-  PrintName("NegIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegIntAPS");
+  break;
 case OP_NegBool:
-  PrintName("NegBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegBool");
+  break;
 case OP_NegFloat:
-  PrintName("NegFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegFloat");
+  break;
 case OP_NegFixedPoint:
-  PrintName("NegFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NegFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitNegSint8(const SourceInfo &);
@@ -29990,9 +28193,8 @@ case OP_NoRet: {
 #endif
 #ifdef GET_DISASM
 case OP_NoRet:
-  PrintName("NoRet");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("NoRet");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitNoRet(const SourceInfo &);
@@ -30011,7 +28213,6 @@ bool EvalEmitter::emitNoRet(const SourceInfo &L) {
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_NullPtr,
-OP_NullFnPtr,
 OP_NullMemberPtr,
 #endif
 #ifdef GET_INTERP
@@ -30019,13 +28220,6 @@ case OP_NullPtr: {
   const auto V0 = ReadArg<uint64_t>(S, PC);
   const auto V1 = ReadArg<const Descriptor *>(S, PC);
   if (!Null<PT_Ptr>(S, OpPC, V0, V1))
-    return false;
-  continue;
-}
-case OP_NullFnPtr: {
-  const auto V0 = ReadArg<uint64_t>(S, PC);
-  const auto V1 = ReadArg<const Descriptor *>(S, PC);
-  if (!Null<PT_FnPtr>(S, OpPC, V0, V1))
     return false;
   continue;
 }
@@ -30039,21 +28233,18 @@ case OP_NullMemberPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_NullPtr:
-  PrintName("NullPtr");
-  OS << "\t" << ReadArg<uint64_t>(P, PC) << " " << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
-case OP_NullFnPtr:
-  PrintName("NullFnPtr");
-  OS << "\t" << ReadArg<uint64_t>(P, PC) << " " << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("NullPtr");
+  Text.Args.push_back(printArg<uint64_t>(P, PC));
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 case OP_NullMemberPtr:
-  PrintName("NullMemberPtr");
-  OS << "\t" << ReadArg<uint64_t>(P, PC) << " " << ReadArg<const Descriptor *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("NullMemberPtr");
+  Text.Args.push_back(printArg<uint64_t>(P, PC));
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitNullPtr( uint64_t ,  const Descriptor * , const SourceInfo &);
-bool emitNullFnPtr( uint64_t ,  const Descriptor * , const SourceInfo &);
 bool emitNullMemberPtr( uint64_t ,  const Descriptor * , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
@@ -30070,8 +28261,6 @@ ByteCodeEmitter
   switch (T0) {
   case PT_Ptr:
     return emitNullPtr(A0, A1, I);
-  case PT_FnPtr:
-    return emitNullFnPtr(A0, A1, I);
   case PT_MemberPtr:
     return emitNullMemberPtr(A0, A1, I);
   default: llvm_unreachable("invalid type: emitNull");
@@ -30083,9 +28272,6 @@ ByteCodeEmitter
 bool ByteCodeEmitter::emitNullPtr( uint64_t A0,  const Descriptor * A1, const SourceInfo &L) {
   return emitOp<uint64_t, const Descriptor *>(OP_NullPtr, A0, A1, L);
 }
-bool ByteCodeEmitter::emitNullFnPtr( uint64_t A0,  const Descriptor * A1, const SourceInfo &L) {
-  return emitOp<uint64_t, const Descriptor *>(OP_NullFnPtr, A0, A1, L);
-}
 bool ByteCodeEmitter::emitNullMemberPtr( uint64_t A0,  const Descriptor * A1, const SourceInfo &L) {
   return emitOp<uint64_t, const Descriptor *>(OP_NullMemberPtr, A0, A1, L);
 }
@@ -30095,11 +28281,6 @@ bool EvalEmitter::emitNullPtr( uint64_t A0,  const Descriptor * A1, const Source
   if (!isActive()) return true;
   CurrentSource = L;
   return Null<PT_Ptr>(S, OpPC, A0, A1);
-}
-bool EvalEmitter::emitNullFnPtr( uint64_t A0,  const Descriptor * A1, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Null<PT_FnPtr>(S, OpPC, A0, A1);
 }
 bool EvalEmitter::emitNullMemberPtr( uint64_t A0,  const Descriptor * A1, const SourceInfo &L) {
   if (!isActive()) return true;
@@ -30183,45 +28364,45 @@ case OP_OffsetOfIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_OffsetOfSint8:
-  PrintName("OffsetOfSint8");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfSint8");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfUint8:
-  PrintName("OffsetOfUint8");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfUint8");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfSint16:
-  PrintName("OffsetOfSint16");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfSint16");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfUint16:
-  PrintName("OffsetOfUint16");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfUint16");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfSint32:
-  PrintName("OffsetOfSint32");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfSint32");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfUint32:
-  PrintName("OffsetOfUint32");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfUint32");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfSint64:
-  PrintName("OffsetOfSint64");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfSint64");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfUint64:
-  PrintName("OffsetOfUint64");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfUint64");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfIntAP:
-  PrintName("OffsetOfIntAP");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfIntAP");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 case OP_OffsetOfIntAPS:
-  PrintName("OffsetOfIntAPS");
-  OS << "\t" << ReadArg<const OffsetOfExpr *>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("OffsetOfIntAPS");
+  Text.Args.push_back(printArg<const OffsetOfExpr *>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitOffsetOfSint8( const OffsetOfExpr * , const SourceInfo &);
@@ -30370,7 +28551,6 @@ OP_PopIntAPS,
 OP_PopBool,
 OP_PopFixedPoint,
 OP_PopPtr,
-OP_PopFnPtr,
 OP_PopMemberPtr,
 OP_PopFloat,
 #endif
@@ -30440,11 +28620,6 @@ case OP_PopPtr: {
     return false;
   continue;
 }
-case OP_PopFnPtr: {
-  if (!Pop<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_PopMemberPtr: {
   if (!Pop<PT_MemberPtr>(S, OpPC))
     return false;
@@ -30458,69 +28633,50 @@ case OP_PopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_PopSint8:
-  PrintName("PopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopSint8");
+  break;
 case OP_PopUint8:
-  PrintName("PopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopUint8");
+  break;
 case OP_PopSint16:
-  PrintName("PopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopSint16");
+  break;
 case OP_PopUint16:
-  PrintName("PopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopUint16");
+  break;
 case OP_PopSint32:
-  PrintName("PopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopSint32");
+  break;
 case OP_PopUint32:
-  PrintName("PopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopUint32");
+  break;
 case OP_PopSint64:
-  PrintName("PopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopSint64");
+  break;
 case OP_PopUint64:
-  PrintName("PopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopUint64");
+  break;
 case OP_PopIntAP:
-  PrintName("PopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopIntAP");
+  break;
 case OP_PopIntAPS:
-  PrintName("PopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopIntAPS");
+  break;
 case OP_PopBool:
-  PrintName("PopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopBool");
+  break;
 case OP_PopFixedPoint:
-  PrintName("PopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopFixedPoint");
+  break;
 case OP_PopPtr:
-  PrintName("PopPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_PopFnPtr:
-  PrintName("PopFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopPtr");
+  break;
 case OP_PopMemberPtr:
-  PrintName("PopMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopMemberPtr");
+  break;
 case OP_PopFloat:
-  PrintName("PopFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("PopFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitPopSint8(const SourceInfo &);
@@ -30536,7 +28692,6 @@ bool emitPopIntAPS(const SourceInfo &);
 bool emitPopBool(const SourceInfo &);
 bool emitPopFixedPoint(const SourceInfo &);
 bool emitPopPtr(const SourceInfo &);
-bool emitPopFnPtr(const SourceInfo &);
 bool emitPopMemberPtr(const SourceInfo &);
 bool emitPopFloat(const SourceInfo &);
 #endif
@@ -30578,8 +28733,6 @@ ByteCodeEmitter
     return emitPopFixedPoint(I);
   case PT_Ptr:
     return emitPopPtr(I);
-  case PT_FnPtr:
-    return emitPopFnPtr(I);
   case PT_MemberPtr:
     return emitPopMemberPtr(I);
   case PT_Float:
@@ -30627,9 +28780,6 @@ bool ByteCodeEmitter::emitPopFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitPopPtr(const SourceInfo &L) {
   return emitOp<>(OP_PopPtr, L);
-}
-bool ByteCodeEmitter::emitPopFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_PopFnPtr, L);
 }
 bool ByteCodeEmitter::emitPopMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_PopMemberPtr, L);
@@ -30704,11 +28854,6 @@ bool EvalEmitter::emitPopPtr(const SourceInfo &L) {
   CurrentSource = L;
   return Pop<PT_Ptr>(S, OpPC);
 }
-bool EvalEmitter::emitPopFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Pop<PT_FnPtr>(S, OpPC);
-}
 bool EvalEmitter::emitPopMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -30718,6 +28863,622 @@ bool EvalEmitter::emitPopFloat(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Pop<PT_Float>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_PopCC,
+#endif
+#ifdef GET_INTERP
+case OP_PopCC: {
+  if (!PopCC(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PopCC:
+  Text.Op = PrintName("PopCC");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPopCC(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPopCC(const SourceInfo &L) {
+  return emitOp<>(OP_PopCC, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPopCC(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PopCC(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_PreDecSint8,
+OP_PreDecUint8,
+OP_PreDecSint16,
+OP_PreDecUint16,
+OP_PreDecSint32,
+OP_PreDecUint32,
+OP_PreDecSint64,
+OP_PreDecUint64,
+OP_PreDecIntAP,
+OP_PreDecIntAPS,
+OP_PreDecBool,
+OP_PreDecFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_PreDecSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Sint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Uint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Sint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Uint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Sint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Uint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Uint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_IntAP>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_IntAPS>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_Bool>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreDecFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreDec<PT_FixedPoint>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PreDecSint8:
+  Text.Op = PrintName("PreDecSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecUint8:
+  Text.Op = PrintName("PreDecUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecSint16:
+  Text.Op = PrintName("PreDecSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecUint16:
+  Text.Op = PrintName("PreDecUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecSint32:
+  Text.Op = PrintName("PreDecSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecUint32:
+  Text.Op = PrintName("PreDecUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecSint64:
+  Text.Op = PrintName("PreDecSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecUint64:
+  Text.Op = PrintName("PreDecUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecIntAP:
+  Text.Op = PrintName("PreDecIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecIntAPS:
+  Text.Op = PrintName("PreDecIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecBool:
+  Text.Op = PrintName("PreDecBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreDecFixedPoint:
+  Text.Op = PrintName("PreDecFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPreDecSint8( bool , const SourceInfo &);
+bool emitPreDecUint8( bool , const SourceInfo &);
+bool emitPreDecSint16( bool , const SourceInfo &);
+bool emitPreDecUint16( bool , const SourceInfo &);
+bool emitPreDecSint32( bool , const SourceInfo &);
+bool emitPreDecUint32( bool , const SourceInfo &);
+bool emitPreDecSint64( bool , const SourceInfo &);
+bool emitPreDecUint64( bool , const SourceInfo &);
+bool emitPreDecIntAP( bool , const SourceInfo &);
+bool emitPreDecIntAPS( bool , const SourceInfo &);
+bool emitPreDecBool( bool , const SourceInfo &);
+bool emitPreDecFixedPoint( bool , const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitPreDec(PrimType, bool, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitPreDec(PrimType T0,  bool A0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitPreDecSint8(A0, I);
+  case PT_Uint8:
+    return emitPreDecUint8(A0, I);
+  case PT_Sint16:
+    return emitPreDecSint16(A0, I);
+  case PT_Uint16:
+    return emitPreDecUint16(A0, I);
+  case PT_Sint32:
+    return emitPreDecSint32(A0, I);
+  case PT_Uint32:
+    return emitPreDecUint32(A0, I);
+  case PT_Sint64:
+    return emitPreDecSint64(A0, I);
+  case PT_Uint64:
+    return emitPreDecUint64(A0, I);
+  case PT_IntAP:
+    return emitPreDecIntAP(A0, I);
+  case PT_IntAPS:
+    return emitPreDecIntAPS(A0, I);
+  case PT_Bool:
+    return emitPreDecBool(A0, I);
+  case PT_FixedPoint:
+    return emitPreDecFixedPoint(A0, I);
+  default: llvm_unreachable("invalid type: emitPreDec");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPreDecSint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecSint8, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecUint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecUint8, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecSint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecSint16, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecUint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecUint16, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecSint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecSint32, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecUint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecUint32, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecSint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecSint64, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecUint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecUint64, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecIntAP( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecIntAP, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecIntAPS( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecIntAPS, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecBool( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecBool, A0, L);
+}
+bool ByteCodeEmitter::emitPreDecFixedPoint( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreDecFixedPoint, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPreDecSint8( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Sint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecUint8( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Uint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecSint16( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Sint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecUint16( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Uint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecSint32( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Sint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecUint32( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Uint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecSint64( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecUint64( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Uint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecIntAP( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_IntAP>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecIntAPS( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_IntAPS>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecBool( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_Bool>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreDecFixedPoint( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDec<PT_FixedPoint>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_PreIncSint8,
+OP_PreIncUint8,
+OP_PreIncSint16,
+OP_PreIncUint16,
+OP_PreIncSint32,
+OP_PreIncUint32,
+OP_PreIncSint64,
+OP_PreIncUint64,
+OP_PreIncIntAP,
+OP_PreIncIntAPS,
+OP_PreIncBool,
+OP_PreIncFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_PreIncSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Sint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Uint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Sint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Uint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Sint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Uint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Uint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_IntAP>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_IntAPS>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_Bool>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_PreIncFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PreInc<PT_FixedPoint>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PreIncSint8:
+  Text.Op = PrintName("PreIncSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncUint8:
+  Text.Op = PrintName("PreIncUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncSint16:
+  Text.Op = PrintName("PreIncSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncUint16:
+  Text.Op = PrintName("PreIncUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncSint32:
+  Text.Op = PrintName("PreIncSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncUint32:
+  Text.Op = PrintName("PreIncUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncSint64:
+  Text.Op = PrintName("PreIncSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncUint64:
+  Text.Op = PrintName("PreIncUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncIntAP:
+  Text.Op = PrintName("PreIncIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncIntAPS:
+  Text.Op = PrintName("PreIncIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncBool:
+  Text.Op = PrintName("PreIncBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+case OP_PreIncFixedPoint:
+  Text.Op = PrintName("PreIncFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPreIncSint8( bool , const SourceInfo &);
+bool emitPreIncUint8( bool , const SourceInfo &);
+bool emitPreIncSint16( bool , const SourceInfo &);
+bool emitPreIncUint16( bool , const SourceInfo &);
+bool emitPreIncSint32( bool , const SourceInfo &);
+bool emitPreIncUint32( bool , const SourceInfo &);
+bool emitPreIncSint64( bool , const SourceInfo &);
+bool emitPreIncUint64( bool , const SourceInfo &);
+bool emitPreIncIntAP( bool , const SourceInfo &);
+bool emitPreIncIntAPS( bool , const SourceInfo &);
+bool emitPreIncBool( bool , const SourceInfo &);
+bool emitPreIncFixedPoint( bool , const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitPreInc(PrimType, bool, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitPreInc(PrimType T0,  bool A0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitPreIncSint8(A0, I);
+  case PT_Uint8:
+    return emitPreIncUint8(A0, I);
+  case PT_Sint16:
+    return emitPreIncSint16(A0, I);
+  case PT_Uint16:
+    return emitPreIncUint16(A0, I);
+  case PT_Sint32:
+    return emitPreIncSint32(A0, I);
+  case PT_Uint32:
+    return emitPreIncUint32(A0, I);
+  case PT_Sint64:
+    return emitPreIncSint64(A0, I);
+  case PT_Uint64:
+    return emitPreIncUint64(A0, I);
+  case PT_IntAP:
+    return emitPreIncIntAP(A0, I);
+  case PT_IntAPS:
+    return emitPreIncIntAPS(A0, I);
+  case PT_Bool:
+    return emitPreIncBool(A0, I);
+  case PT_FixedPoint:
+    return emitPreIncFixedPoint(A0, I);
+  default: llvm_unreachable("invalid type: emitPreInc");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPreIncSint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncSint8, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncUint8( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncUint8, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncSint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncSint16, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncUint16( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncUint16, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncSint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncSint32, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncUint32( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncUint32, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncSint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncSint64, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncUint64( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncUint64, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncIntAP( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncIntAP, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncIntAPS( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncIntAPS, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncBool( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncBool, A0, L);
+}
+bool ByteCodeEmitter::emitPreIncFixedPoint( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PreIncFixedPoint, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPreIncSint8( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Sint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncUint8( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Uint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncSint16( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Sint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncUint16( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Uint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncSint32( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Sint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncUint32( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Uint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncSint64( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncUint64( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Uint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncIntAP( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_IntAP>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncIntAPS( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_IntAPS>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncBool( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_Bool>(S, OpPC, A0);
+}
+bool EvalEmitter::emitPreIncFixedPoint( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreInc<PT_FixedPoint>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -30733,9 +29494,9 @@ case OP_PtrPtrCast: {
 #endif
 #ifdef GET_DISASM
 case OP_PtrPtrCast:
-  PrintName("PtrPtrCast");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("PtrPtrCast");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitPtrPtrCast( bool , const SourceInfo &);
@@ -30753,6 +29514,38 @@ bool EvalEmitter::emitPtrPtrCast( bool A0, const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_PushCC,
+#endif
+#ifdef GET_INTERP
+case OP_PushCC: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!PushCC(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PushCC:
+  Text.Op = PrintName("PushCC");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPushCC( bool , const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPushCC( bool A0, const SourceInfo &L) {
+  return emitOp<bool>(OP_PushCC, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPushCC( bool A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PushCC(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_RVOPtr,
 #endif
 #ifdef GET_INTERP
@@ -30764,9 +29557,8 @@ case OP_RVOPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_RVOPtr:
-  PrintName("RVOPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RVOPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitRVOPtr(const SourceInfo &);
@@ -30855,49 +29647,38 @@ case OP_RemFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_RemSint8:
-  PrintName("RemSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemSint8");
+  break;
 case OP_RemUint8:
-  PrintName("RemUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemUint8");
+  break;
 case OP_RemSint16:
-  PrintName("RemSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemSint16");
+  break;
 case OP_RemUint16:
-  PrintName("RemUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemUint16");
+  break;
 case OP_RemSint32:
-  PrintName("RemSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemSint32");
+  break;
 case OP_RemUint32:
-  PrintName("RemUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemUint32");
+  break;
 case OP_RemSint64:
-  PrintName("RemSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemSint64");
+  break;
 case OP_RemUint64:
-  PrintName("RemUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemUint64");
+  break;
 case OP_RemIntAP:
-  PrintName("RemIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemIntAP");
+  break;
 case OP_RemIntAPS:
-  PrintName("RemIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemIntAPS");
+  break;
 case OP_RemFixedPoint:
-  PrintName("RemFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RemFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitRemSint8(const SourceInfo &);
@@ -31057,7 +29838,6 @@ OP_RetIntAPS,
 OP_RetBool,
 OP_RetFixedPoint,
 OP_RetPtr,
-OP_RetFnPtr,
 OP_RetMemberPtr,
 OP_RetFloat,
 #endif
@@ -31192,16 +29972,6 @@ case OP_RetPtr: {
     return true;
   continue;
 }
-case OP_RetFnPtr: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_FnPtr>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
-}
 case OP_RetMemberPtr: {
   bool DoReturn = (S.Current == StartFrame);
   if (!Ret<PT_MemberPtr>(S, PC))
@@ -31225,69 +29995,50 @@ case OP_RetFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_RetSint8:
-  PrintName("RetSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetSint8");
+  break;
 case OP_RetUint8:
-  PrintName("RetUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetUint8");
+  break;
 case OP_RetSint16:
-  PrintName("RetSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetSint16");
+  break;
 case OP_RetUint16:
-  PrintName("RetUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetUint16");
+  break;
 case OP_RetSint32:
-  PrintName("RetSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetSint32");
+  break;
 case OP_RetUint32:
-  PrintName("RetUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetUint32");
+  break;
 case OP_RetSint64:
-  PrintName("RetSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetSint64");
+  break;
 case OP_RetUint64:
-  PrintName("RetUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetUint64");
+  break;
 case OP_RetIntAP:
-  PrintName("RetIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetIntAP");
+  break;
 case OP_RetIntAPS:
-  PrintName("RetIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetIntAPS");
+  break;
 case OP_RetBool:
-  PrintName("RetBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetBool");
+  break;
 case OP_RetFixedPoint:
-  PrintName("RetFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetFixedPoint");
+  break;
 case OP_RetPtr:
-  PrintName("RetPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_RetFnPtr:
-  PrintName("RetFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetPtr");
+  break;
 case OP_RetMemberPtr:
-  PrintName("RetMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetMemberPtr");
+  break;
 case OP_RetFloat:
-  PrintName("RetFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitRetSint8(const SourceInfo &);
@@ -31303,7 +30054,6 @@ bool emitRetIntAPS(const SourceInfo &);
 bool emitRetBool(const SourceInfo &);
 bool emitRetFixedPoint(const SourceInfo &);
 bool emitRetPtr(const SourceInfo &);
-bool emitRetFnPtr(const SourceInfo &);
 bool emitRetMemberPtr(const SourceInfo &);
 bool emitRetFloat(const SourceInfo &);
 #if defined(GET_EVAL_PROTO)
@@ -31414,13 +30164,6 @@ ByteCodeEmitter
     return emitRet<PT_Ptr>
 #endif
       (I);
-  case PT_FnPtr:
-#ifdef GET_LINK_IMPL
-    return emitRetFnPtr
-#else
-    return emitRet<PT_FnPtr>
-#endif
-      (I);
   case PT_MemberPtr:
 #ifdef GET_LINK_IMPL
     return emitRetMemberPtr
@@ -31479,9 +30222,6 @@ bool ByteCodeEmitter::emitRetFixedPoint(const SourceInfo &L) {
 bool ByteCodeEmitter::emitRetPtr(const SourceInfo &L) {
   return emitOp<>(OP_RetPtr, L);
 }
-bool ByteCodeEmitter::emitRetFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_RetFnPtr, L);
-}
 bool ByteCodeEmitter::emitRetMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_RetMemberPtr, L);
 }
@@ -31506,9 +30246,8 @@ case OP_RetValue: {
 #endif
 #ifdef GET_DISASM
 case OP_RetValue:
-  PrintName("RetValue");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetValue");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitRetValue(const SourceInfo &);
@@ -31535,9 +30274,8 @@ case OP_RetVoid: {
 #endif
 #ifdef GET_DISASM
 case OP_RetVoid:
-  PrintName("RetVoid");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("RetVoid");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitRetVoid(const SourceInfo &);
@@ -31561,7 +30299,6 @@ OP_SetFieldIntAPS,
 OP_SetFieldBool,
 OP_SetFieldFixedPoint,
 OP_SetFieldPtr,
-OP_SetFieldFnPtr,
 OP_SetFieldMemberPtr,
 OP_SetFieldFloat,
 #endif
@@ -31644,12 +30381,6 @@ case OP_SetFieldPtr: {
     return false;
   continue;
 }
-case OP_SetFieldFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_SetFieldMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!SetField<PT_MemberPtr>(S, OpPC, V0))
@@ -31665,69 +30396,65 @@ case OP_SetFieldFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_SetFieldSint8:
-  PrintName("SetFieldSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldUint8:
-  PrintName("SetFieldUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldSint16:
-  PrintName("SetFieldSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldUint16:
-  PrintName("SetFieldUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldSint32:
-  PrintName("SetFieldSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldUint32:
-  PrintName("SetFieldUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldSint64:
-  PrintName("SetFieldSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldUint64:
-  PrintName("SetFieldUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldIntAP:
-  PrintName("SetFieldIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldIntAPS:
-  PrintName("SetFieldIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldBool:
-  PrintName("SetFieldBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldFixedPoint:
-  PrintName("SetFieldFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldPtr:
-  PrintName("SetFieldPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_SetFieldFnPtr:
-  PrintName("SetFieldFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldMemberPtr:
-  PrintName("SetFieldMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetFieldFloat:
-  PrintName("SetFieldFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetFieldFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSetFieldSint8( uint32_t , const SourceInfo &);
@@ -31743,7 +30470,6 @@ bool emitSetFieldIntAPS( uint32_t , const SourceInfo &);
 bool emitSetFieldBool( uint32_t , const SourceInfo &);
 bool emitSetFieldFixedPoint( uint32_t , const SourceInfo &);
 bool emitSetFieldPtr( uint32_t , const SourceInfo &);
-bool emitSetFieldFnPtr( uint32_t , const SourceInfo &);
 bool emitSetFieldMemberPtr( uint32_t , const SourceInfo &);
 bool emitSetFieldFloat( uint32_t , const SourceInfo &);
 #endif
@@ -31785,8 +30511,6 @@ ByteCodeEmitter
     return emitSetFieldFixedPoint(A0, I);
   case PT_Ptr:
     return emitSetFieldPtr(A0, I);
-  case PT_FnPtr:
-    return emitSetFieldFnPtr(A0, I);
   case PT_MemberPtr:
     return emitSetFieldMemberPtr(A0, I);
   case PT_Float:
@@ -31834,9 +30558,6 @@ bool ByteCodeEmitter::emitSetFieldFixedPoint( uint32_t A0, const SourceInfo &L) 
 }
 bool ByteCodeEmitter::emitSetFieldPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetFieldPtr, A0, L);
-}
-bool ByteCodeEmitter::emitSetFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_SetFieldFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitSetFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetFieldMemberPtr, A0, L);
@@ -31911,11 +30632,6 @@ bool EvalEmitter::emitSetFieldPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return SetField<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSetFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return SetField<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitSetFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -31941,7 +30657,6 @@ OP_SetGlobalIntAPS,
 OP_SetGlobalBool,
 OP_SetGlobalFixedPoint,
 OP_SetGlobalPtr,
-OP_SetGlobalFnPtr,
 OP_SetGlobalMemberPtr,
 OP_SetGlobalFloat,
 #endif
@@ -32024,12 +30739,6 @@ case OP_SetGlobalPtr: {
     return false;
   continue;
 }
-case OP_SetGlobalFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_SetGlobalMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!SetGlobal<PT_MemberPtr>(S, OpPC, V0))
@@ -32045,69 +30754,65 @@ case OP_SetGlobalFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_SetGlobalSint8:
-  PrintName("SetGlobalSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalUint8:
-  PrintName("SetGlobalUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalSint16:
-  PrintName("SetGlobalSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalUint16:
-  PrintName("SetGlobalUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalSint32:
-  PrintName("SetGlobalSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalUint32:
-  PrintName("SetGlobalUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalSint64:
-  PrintName("SetGlobalSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalUint64:
-  PrintName("SetGlobalUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalIntAP:
-  PrintName("SetGlobalIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalIntAPS:
-  PrintName("SetGlobalIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalBool:
-  PrintName("SetGlobalBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalFixedPoint:
-  PrintName("SetGlobalFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalPtr:
-  PrintName("SetGlobalPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_SetGlobalFnPtr:
-  PrintName("SetGlobalFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalMemberPtr:
-  PrintName("SetGlobalMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetGlobalFloat:
-  PrintName("SetGlobalFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetGlobalFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSetGlobalSint8( uint32_t , const SourceInfo &);
@@ -32123,7 +30828,6 @@ bool emitSetGlobalIntAPS( uint32_t , const SourceInfo &);
 bool emitSetGlobalBool( uint32_t , const SourceInfo &);
 bool emitSetGlobalFixedPoint( uint32_t , const SourceInfo &);
 bool emitSetGlobalPtr( uint32_t , const SourceInfo &);
-bool emitSetGlobalFnPtr( uint32_t , const SourceInfo &);
 bool emitSetGlobalMemberPtr( uint32_t , const SourceInfo &);
 bool emitSetGlobalFloat( uint32_t , const SourceInfo &);
 #endif
@@ -32165,8 +30869,6 @@ ByteCodeEmitter
     return emitSetGlobalFixedPoint(A0, I);
   case PT_Ptr:
     return emitSetGlobalPtr(A0, I);
-  case PT_FnPtr:
-    return emitSetGlobalFnPtr(A0, I);
   case PT_MemberPtr:
     return emitSetGlobalMemberPtr(A0, I);
   case PT_Float:
@@ -32214,9 +30916,6 @@ bool ByteCodeEmitter::emitSetGlobalFixedPoint( uint32_t A0, const SourceInfo &L)
 }
 bool ByteCodeEmitter::emitSetGlobalPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetGlobalPtr, A0, L);
-}
-bool ByteCodeEmitter::emitSetGlobalFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_SetGlobalFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitSetGlobalMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetGlobalMemberPtr, A0, L);
@@ -32291,11 +30990,6 @@ bool EvalEmitter::emitSetGlobalPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return SetGlobal<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSetGlobalFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return SetGlobal<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitSetGlobalMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -32321,7 +31015,6 @@ OP_SetLocalIntAPS,
 OP_SetLocalBool,
 OP_SetLocalFixedPoint,
 OP_SetLocalPtr,
-OP_SetLocalFnPtr,
 OP_SetLocalMemberPtr,
 OP_SetLocalFloat,
 #endif
@@ -32404,12 +31097,6 @@ case OP_SetLocalPtr: {
     return false;
   continue;
 }
-case OP_SetLocalFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_SetLocalMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!SetLocal<PT_MemberPtr>(S, OpPC, V0))
@@ -32425,69 +31112,65 @@ case OP_SetLocalFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_SetLocalSint8:
-  PrintName("SetLocalSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalUint8:
-  PrintName("SetLocalUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalSint16:
-  PrintName("SetLocalSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalUint16:
-  PrintName("SetLocalUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalSint32:
-  PrintName("SetLocalSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalUint32:
-  PrintName("SetLocalUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalSint64:
-  PrintName("SetLocalSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalUint64:
-  PrintName("SetLocalUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalIntAP:
-  PrintName("SetLocalIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalIntAPS:
-  PrintName("SetLocalIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalBool:
-  PrintName("SetLocalBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalFixedPoint:
-  PrintName("SetLocalFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalPtr:
-  PrintName("SetLocalPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_SetLocalFnPtr:
-  PrintName("SetLocalFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalMemberPtr:
-  PrintName("SetLocalMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetLocalFloat:
-  PrintName("SetLocalFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetLocalFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSetLocalSint8( uint32_t , const SourceInfo &);
@@ -32503,7 +31186,6 @@ bool emitSetLocalIntAPS( uint32_t , const SourceInfo &);
 bool emitSetLocalBool( uint32_t , const SourceInfo &);
 bool emitSetLocalFixedPoint( uint32_t , const SourceInfo &);
 bool emitSetLocalPtr( uint32_t , const SourceInfo &);
-bool emitSetLocalFnPtr( uint32_t , const SourceInfo &);
 bool emitSetLocalMemberPtr( uint32_t , const SourceInfo &);
 bool emitSetLocalFloat( uint32_t , const SourceInfo &);
 #if defined(GET_EVAL_PROTO)
@@ -32614,13 +31296,6 @@ ByteCodeEmitter
     return emitSetLocal<PT_Ptr>
 #endif
       (A0, I);
-  case PT_FnPtr:
-#ifdef GET_LINK_IMPL
-    return emitSetLocalFnPtr
-#else
-    return emitSetLocal<PT_FnPtr>
-#endif
-      (A0, I);
   case PT_MemberPtr:
 #ifdef GET_LINK_IMPL
     return emitSetLocalMemberPtr
@@ -32679,9 +31354,6 @@ bool ByteCodeEmitter::emitSetLocalFixedPoint( uint32_t A0, const SourceInfo &L) 
 bool ByteCodeEmitter::emitSetLocalPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetLocalPtr, A0, L);
 }
-bool ByteCodeEmitter::emitSetLocalFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_SetLocalFnPtr, A0, L);
-}
 bool ByteCodeEmitter::emitSetLocalMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetLocalMemberPtr, A0, L);
 }
@@ -32703,7 +31375,6 @@ OP_SetParamIntAPS,
 OP_SetParamBool,
 OP_SetParamFixedPoint,
 OP_SetParamPtr,
-OP_SetParamFnPtr,
 OP_SetParamMemberPtr,
 OP_SetParamFloat,
 #endif
@@ -32786,12 +31457,6 @@ case OP_SetParamPtr: {
     return false;
   continue;
 }
-case OP_SetParamFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_SetParamMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!SetParam<PT_MemberPtr>(S, OpPC, V0))
@@ -32807,69 +31472,65 @@ case OP_SetParamFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_SetParamSint8:
-  PrintName("SetParamSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamUint8:
-  PrintName("SetParamUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamSint16:
-  PrintName("SetParamSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamUint16:
-  PrintName("SetParamUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamSint32:
-  PrintName("SetParamSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamUint32:
-  PrintName("SetParamUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamSint64:
-  PrintName("SetParamSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamUint64:
-  PrintName("SetParamUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamIntAP:
-  PrintName("SetParamIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamIntAPS:
-  PrintName("SetParamIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamBool:
-  PrintName("SetParamBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamFixedPoint:
-  PrintName("SetParamFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamPtr:
-  PrintName("SetParamPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_SetParamFnPtr:
-  PrintName("SetParamFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamMemberPtr:
-  PrintName("SetParamMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetParamFloat:
-  PrintName("SetParamFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetParamFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSetParamSint8( uint32_t , const SourceInfo &);
@@ -32885,7 +31546,6 @@ bool emitSetParamIntAPS( uint32_t , const SourceInfo &);
 bool emitSetParamBool( uint32_t , const SourceInfo &);
 bool emitSetParamFixedPoint( uint32_t , const SourceInfo &);
 bool emitSetParamPtr( uint32_t , const SourceInfo &);
-bool emitSetParamFnPtr( uint32_t , const SourceInfo &);
 bool emitSetParamMemberPtr( uint32_t , const SourceInfo &);
 bool emitSetParamFloat( uint32_t , const SourceInfo &);
 #endif
@@ -32927,8 +31587,6 @@ ByteCodeEmitter
     return emitSetParamFixedPoint(A0, I);
   case PT_Ptr:
     return emitSetParamPtr(A0, I);
-  case PT_FnPtr:
-    return emitSetParamFnPtr(A0, I);
   case PT_MemberPtr:
     return emitSetParamMemberPtr(A0, I);
   case PT_Float:
@@ -32976,9 +31634,6 @@ bool ByteCodeEmitter::emitSetParamFixedPoint( uint32_t A0, const SourceInfo &L) 
 }
 bool ByteCodeEmitter::emitSetParamPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetParamPtr, A0, L);
-}
-bool ByteCodeEmitter::emitSetParamFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_SetParamFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitSetParamMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetParamMemberPtr, A0, L);
@@ -33053,11 +31708,6 @@ bool EvalEmitter::emitSetParamPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return SetParam<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSetParamFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return SetParam<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitSetParamMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -33083,7 +31733,6 @@ OP_SetThisFieldIntAPS,
 OP_SetThisFieldBool,
 OP_SetThisFieldFixedPoint,
 OP_SetThisFieldPtr,
-OP_SetThisFieldFnPtr,
 OP_SetThisFieldMemberPtr,
 OP_SetThisFieldFloat,
 #endif
@@ -33166,12 +31815,6 @@ case OP_SetThisFieldPtr: {
     return false;
   continue;
 }
-case OP_SetThisFieldFnPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_FnPtr>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_SetThisFieldMemberPtr: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!SetThisField<PT_MemberPtr>(S, OpPC, V0))
@@ -33187,69 +31830,65 @@ case OP_SetThisFieldFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_SetThisFieldSint8:
-  PrintName("SetThisFieldSint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldUint8:
-  PrintName("SetThisFieldUint8");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldSint16:
-  PrintName("SetThisFieldSint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldUint16:
-  PrintName("SetThisFieldUint16");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldSint32:
-  PrintName("SetThisFieldSint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldUint32:
-  PrintName("SetThisFieldUint32");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldSint64:
-  PrintName("SetThisFieldSint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldUint64:
-  PrintName("SetThisFieldUint64");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldIntAP:
-  PrintName("SetThisFieldIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldIntAPS:
-  PrintName("SetThisFieldIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldBool:
-  PrintName("SetThisFieldBool");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldFixedPoint:
-  PrintName("SetThisFieldFixedPoint");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldPtr:
-  PrintName("SetThisFieldPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
-case OP_SetThisFieldFnPtr:
-  PrintName("SetThisFieldFnPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldMemberPtr:
-  PrintName("SetThisFieldMemberPtr");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 case OP_SetThisFieldFloat:
-  PrintName("SetThisFieldFloat");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("SetThisFieldFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSetThisFieldSint8( uint32_t , const SourceInfo &);
@@ -33265,7 +31904,6 @@ bool emitSetThisFieldIntAPS( uint32_t , const SourceInfo &);
 bool emitSetThisFieldBool( uint32_t , const SourceInfo &);
 bool emitSetThisFieldFixedPoint( uint32_t , const SourceInfo &);
 bool emitSetThisFieldPtr( uint32_t , const SourceInfo &);
-bool emitSetThisFieldFnPtr( uint32_t , const SourceInfo &);
 bool emitSetThisFieldMemberPtr( uint32_t , const SourceInfo &);
 bool emitSetThisFieldFloat( uint32_t , const SourceInfo &);
 #endif
@@ -33307,8 +31945,6 @@ ByteCodeEmitter
     return emitSetThisFieldFixedPoint(A0, I);
   case PT_Ptr:
     return emitSetThisFieldPtr(A0, I);
-  case PT_FnPtr:
-    return emitSetThisFieldFnPtr(A0, I);
   case PT_MemberPtr:
     return emitSetThisFieldMemberPtr(A0, I);
   case PT_Float:
@@ -33356,9 +31992,6 @@ bool ByteCodeEmitter::emitSetThisFieldFixedPoint( uint32_t A0, const SourceInfo 
 }
 bool ByteCodeEmitter::emitSetThisFieldPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetThisFieldPtr, A0, L);
-}
-bool ByteCodeEmitter::emitSetThisFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_SetThisFieldFnPtr, A0, L);
 }
 bool ByteCodeEmitter::emitSetThisFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_SetThisFieldMemberPtr, A0, L);
@@ -33433,11 +32066,6 @@ bool EvalEmitter::emitSetThisFieldPtr( uint32_t A0, const SourceInfo &L) {
   CurrentSource = L;
   return SetThisField<PT_Ptr>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSetThisFieldFnPtr( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return SetThisField<PT_FnPtr>(S, OpPC, A0);
-}
 bool EvalEmitter::emitSetThisFieldMemberPtr( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
@@ -33462,9 +32090,9 @@ case OP_ShiftFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_ShiftFixedPoint:
-  PrintName("ShiftFixedPoint");
-  OS << "\t" << ReadArg<bool>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ShiftFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitShiftFixedPoint( bool , const SourceInfo &);
@@ -34087,405 +32715,305 @@ case OP_ShlIntAPSIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_ShlSint8Sint8:
-  PrintName("ShlSint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Sint8");
+  break;
 case OP_ShlSint8Uint8:
-  PrintName("ShlSint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Uint8");
+  break;
 case OP_ShlSint8Sint16:
-  PrintName("ShlSint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Sint16");
+  break;
 case OP_ShlSint8Uint16:
-  PrintName("ShlSint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Uint16");
+  break;
 case OP_ShlSint8Sint32:
-  PrintName("ShlSint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Sint32");
+  break;
 case OP_ShlSint8Uint32:
-  PrintName("ShlSint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Uint32");
+  break;
 case OP_ShlSint8Sint64:
-  PrintName("ShlSint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Sint64");
+  break;
 case OP_ShlSint8Uint64:
-  PrintName("ShlSint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8Uint64");
+  break;
 case OP_ShlSint8IntAP:
-  PrintName("ShlSint8IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8IntAP");
+  break;
 case OP_ShlSint8IntAPS:
-  PrintName("ShlSint8IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint8IntAPS");
+  break;
 case OP_ShlUint8Sint8:
-  PrintName("ShlUint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Sint8");
+  break;
 case OP_ShlUint8Uint8:
-  PrintName("ShlUint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Uint8");
+  break;
 case OP_ShlUint8Sint16:
-  PrintName("ShlUint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Sint16");
+  break;
 case OP_ShlUint8Uint16:
-  PrintName("ShlUint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Uint16");
+  break;
 case OP_ShlUint8Sint32:
-  PrintName("ShlUint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Sint32");
+  break;
 case OP_ShlUint8Uint32:
-  PrintName("ShlUint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Uint32");
+  break;
 case OP_ShlUint8Sint64:
-  PrintName("ShlUint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Sint64");
+  break;
 case OP_ShlUint8Uint64:
-  PrintName("ShlUint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8Uint64");
+  break;
 case OP_ShlUint8IntAP:
-  PrintName("ShlUint8IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8IntAP");
+  break;
 case OP_ShlUint8IntAPS:
-  PrintName("ShlUint8IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint8IntAPS");
+  break;
 case OP_ShlSint16Sint8:
-  PrintName("ShlSint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Sint8");
+  break;
 case OP_ShlSint16Uint8:
-  PrintName("ShlSint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Uint8");
+  break;
 case OP_ShlSint16Sint16:
-  PrintName("ShlSint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Sint16");
+  break;
 case OP_ShlSint16Uint16:
-  PrintName("ShlSint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Uint16");
+  break;
 case OP_ShlSint16Sint32:
-  PrintName("ShlSint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Sint32");
+  break;
 case OP_ShlSint16Uint32:
-  PrintName("ShlSint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Uint32");
+  break;
 case OP_ShlSint16Sint64:
-  PrintName("ShlSint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Sint64");
+  break;
 case OP_ShlSint16Uint64:
-  PrintName("ShlSint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16Uint64");
+  break;
 case OP_ShlSint16IntAP:
-  PrintName("ShlSint16IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16IntAP");
+  break;
 case OP_ShlSint16IntAPS:
-  PrintName("ShlSint16IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint16IntAPS");
+  break;
 case OP_ShlUint16Sint8:
-  PrintName("ShlUint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Sint8");
+  break;
 case OP_ShlUint16Uint8:
-  PrintName("ShlUint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Uint8");
+  break;
 case OP_ShlUint16Sint16:
-  PrintName("ShlUint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Sint16");
+  break;
 case OP_ShlUint16Uint16:
-  PrintName("ShlUint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Uint16");
+  break;
 case OP_ShlUint16Sint32:
-  PrintName("ShlUint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Sint32");
+  break;
 case OP_ShlUint16Uint32:
-  PrintName("ShlUint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Uint32");
+  break;
 case OP_ShlUint16Sint64:
-  PrintName("ShlUint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Sint64");
+  break;
 case OP_ShlUint16Uint64:
-  PrintName("ShlUint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16Uint64");
+  break;
 case OP_ShlUint16IntAP:
-  PrintName("ShlUint16IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16IntAP");
+  break;
 case OP_ShlUint16IntAPS:
-  PrintName("ShlUint16IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint16IntAPS");
+  break;
 case OP_ShlSint32Sint8:
-  PrintName("ShlSint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Sint8");
+  break;
 case OP_ShlSint32Uint8:
-  PrintName("ShlSint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Uint8");
+  break;
 case OP_ShlSint32Sint16:
-  PrintName("ShlSint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Sint16");
+  break;
 case OP_ShlSint32Uint16:
-  PrintName("ShlSint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Uint16");
+  break;
 case OP_ShlSint32Sint32:
-  PrintName("ShlSint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Sint32");
+  break;
 case OP_ShlSint32Uint32:
-  PrintName("ShlSint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Uint32");
+  break;
 case OP_ShlSint32Sint64:
-  PrintName("ShlSint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Sint64");
+  break;
 case OP_ShlSint32Uint64:
-  PrintName("ShlSint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32Uint64");
+  break;
 case OP_ShlSint32IntAP:
-  PrintName("ShlSint32IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32IntAP");
+  break;
 case OP_ShlSint32IntAPS:
-  PrintName("ShlSint32IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint32IntAPS");
+  break;
 case OP_ShlUint32Sint8:
-  PrintName("ShlUint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Sint8");
+  break;
 case OP_ShlUint32Uint8:
-  PrintName("ShlUint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Uint8");
+  break;
 case OP_ShlUint32Sint16:
-  PrintName("ShlUint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Sint16");
+  break;
 case OP_ShlUint32Uint16:
-  PrintName("ShlUint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Uint16");
+  break;
 case OP_ShlUint32Sint32:
-  PrintName("ShlUint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Sint32");
+  break;
 case OP_ShlUint32Uint32:
-  PrintName("ShlUint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Uint32");
+  break;
 case OP_ShlUint32Sint64:
-  PrintName("ShlUint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Sint64");
+  break;
 case OP_ShlUint32Uint64:
-  PrintName("ShlUint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32Uint64");
+  break;
 case OP_ShlUint32IntAP:
-  PrintName("ShlUint32IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32IntAP");
+  break;
 case OP_ShlUint32IntAPS:
-  PrintName("ShlUint32IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint32IntAPS");
+  break;
 case OP_ShlSint64Sint8:
-  PrintName("ShlSint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Sint8");
+  break;
 case OP_ShlSint64Uint8:
-  PrintName("ShlSint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Uint8");
+  break;
 case OP_ShlSint64Sint16:
-  PrintName("ShlSint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Sint16");
+  break;
 case OP_ShlSint64Uint16:
-  PrintName("ShlSint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Uint16");
+  break;
 case OP_ShlSint64Sint32:
-  PrintName("ShlSint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Sint32");
+  break;
 case OP_ShlSint64Uint32:
-  PrintName("ShlSint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Uint32");
+  break;
 case OP_ShlSint64Sint64:
-  PrintName("ShlSint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Sint64");
+  break;
 case OP_ShlSint64Uint64:
-  PrintName("ShlSint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64Uint64");
+  break;
 case OP_ShlSint64IntAP:
-  PrintName("ShlSint64IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64IntAP");
+  break;
 case OP_ShlSint64IntAPS:
-  PrintName("ShlSint64IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlSint64IntAPS");
+  break;
 case OP_ShlUint64Sint8:
-  PrintName("ShlUint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Sint8");
+  break;
 case OP_ShlUint64Uint8:
-  PrintName("ShlUint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Uint8");
+  break;
 case OP_ShlUint64Sint16:
-  PrintName("ShlUint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Sint16");
+  break;
 case OP_ShlUint64Uint16:
-  PrintName("ShlUint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Uint16");
+  break;
 case OP_ShlUint64Sint32:
-  PrintName("ShlUint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Sint32");
+  break;
 case OP_ShlUint64Uint32:
-  PrintName("ShlUint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Uint32");
+  break;
 case OP_ShlUint64Sint64:
-  PrintName("ShlUint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Sint64");
+  break;
 case OP_ShlUint64Uint64:
-  PrintName("ShlUint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64Uint64");
+  break;
 case OP_ShlUint64IntAP:
-  PrintName("ShlUint64IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64IntAP");
+  break;
 case OP_ShlUint64IntAPS:
-  PrintName("ShlUint64IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlUint64IntAPS");
+  break;
 case OP_ShlIntAPSint8:
-  PrintName("ShlIntAPSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSint8");
+  break;
 case OP_ShlIntAPUint8:
-  PrintName("ShlIntAPUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPUint8");
+  break;
 case OP_ShlIntAPSint16:
-  PrintName("ShlIntAPSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSint16");
+  break;
 case OP_ShlIntAPUint16:
-  PrintName("ShlIntAPUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPUint16");
+  break;
 case OP_ShlIntAPSint32:
-  PrintName("ShlIntAPSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSint32");
+  break;
 case OP_ShlIntAPUint32:
-  PrintName("ShlIntAPUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPUint32");
+  break;
 case OP_ShlIntAPSint64:
-  PrintName("ShlIntAPSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSint64");
+  break;
 case OP_ShlIntAPUint64:
-  PrintName("ShlIntAPUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPUint64");
+  break;
 case OP_ShlIntAPIntAP:
-  PrintName("ShlIntAPIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPIntAP");
+  break;
 case OP_ShlIntAPIntAPS:
-  PrintName("ShlIntAPIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPIntAPS");
+  break;
 case OP_ShlIntAPSSint8:
-  PrintName("ShlIntAPSSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSSint8");
+  break;
 case OP_ShlIntAPSUint8:
-  PrintName("ShlIntAPSUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSUint8");
+  break;
 case OP_ShlIntAPSSint16:
-  PrintName("ShlIntAPSSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSSint16");
+  break;
 case OP_ShlIntAPSUint16:
-  PrintName("ShlIntAPSUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSUint16");
+  break;
 case OP_ShlIntAPSSint32:
-  PrintName("ShlIntAPSSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSSint32");
+  break;
 case OP_ShlIntAPSUint32:
-  PrintName("ShlIntAPSUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSUint32");
+  break;
 case OP_ShlIntAPSSint64:
-  PrintName("ShlIntAPSSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSSint64");
+  break;
 case OP_ShlIntAPSUint64:
-  PrintName("ShlIntAPSUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSUint64");
+  break;
 case OP_ShlIntAPSIntAP:
-  PrintName("ShlIntAPSIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSIntAP");
+  break;
 case OP_ShlIntAPSIntAPS:
-  PrintName("ShlIntAPSIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShlIntAPSIntAPS");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitShlSint8Sint8(const SourceInfo &);
@@ -36266,405 +34794,305 @@ case OP_ShrIntAPSIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_ShrSint8Sint8:
-  PrintName("ShrSint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Sint8");
+  break;
 case OP_ShrSint8Uint8:
-  PrintName("ShrSint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Uint8");
+  break;
 case OP_ShrSint8Sint16:
-  PrintName("ShrSint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Sint16");
+  break;
 case OP_ShrSint8Uint16:
-  PrintName("ShrSint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Uint16");
+  break;
 case OP_ShrSint8Sint32:
-  PrintName("ShrSint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Sint32");
+  break;
 case OP_ShrSint8Uint32:
-  PrintName("ShrSint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Uint32");
+  break;
 case OP_ShrSint8Sint64:
-  PrintName("ShrSint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Sint64");
+  break;
 case OP_ShrSint8Uint64:
-  PrintName("ShrSint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8Uint64");
+  break;
 case OP_ShrSint8IntAP:
-  PrintName("ShrSint8IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8IntAP");
+  break;
 case OP_ShrSint8IntAPS:
-  PrintName("ShrSint8IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint8IntAPS");
+  break;
 case OP_ShrUint8Sint8:
-  PrintName("ShrUint8Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Sint8");
+  break;
 case OP_ShrUint8Uint8:
-  PrintName("ShrUint8Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Uint8");
+  break;
 case OP_ShrUint8Sint16:
-  PrintName("ShrUint8Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Sint16");
+  break;
 case OP_ShrUint8Uint16:
-  PrintName("ShrUint8Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Uint16");
+  break;
 case OP_ShrUint8Sint32:
-  PrintName("ShrUint8Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Sint32");
+  break;
 case OP_ShrUint8Uint32:
-  PrintName("ShrUint8Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Uint32");
+  break;
 case OP_ShrUint8Sint64:
-  PrintName("ShrUint8Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Sint64");
+  break;
 case OP_ShrUint8Uint64:
-  PrintName("ShrUint8Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8Uint64");
+  break;
 case OP_ShrUint8IntAP:
-  PrintName("ShrUint8IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8IntAP");
+  break;
 case OP_ShrUint8IntAPS:
-  PrintName("ShrUint8IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint8IntAPS");
+  break;
 case OP_ShrSint16Sint8:
-  PrintName("ShrSint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Sint8");
+  break;
 case OP_ShrSint16Uint8:
-  PrintName("ShrSint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Uint8");
+  break;
 case OP_ShrSint16Sint16:
-  PrintName("ShrSint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Sint16");
+  break;
 case OP_ShrSint16Uint16:
-  PrintName("ShrSint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Uint16");
+  break;
 case OP_ShrSint16Sint32:
-  PrintName("ShrSint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Sint32");
+  break;
 case OP_ShrSint16Uint32:
-  PrintName("ShrSint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Uint32");
+  break;
 case OP_ShrSint16Sint64:
-  PrintName("ShrSint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Sint64");
+  break;
 case OP_ShrSint16Uint64:
-  PrintName("ShrSint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16Uint64");
+  break;
 case OP_ShrSint16IntAP:
-  PrintName("ShrSint16IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16IntAP");
+  break;
 case OP_ShrSint16IntAPS:
-  PrintName("ShrSint16IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint16IntAPS");
+  break;
 case OP_ShrUint16Sint8:
-  PrintName("ShrUint16Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Sint8");
+  break;
 case OP_ShrUint16Uint8:
-  PrintName("ShrUint16Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Uint8");
+  break;
 case OP_ShrUint16Sint16:
-  PrintName("ShrUint16Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Sint16");
+  break;
 case OP_ShrUint16Uint16:
-  PrintName("ShrUint16Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Uint16");
+  break;
 case OP_ShrUint16Sint32:
-  PrintName("ShrUint16Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Sint32");
+  break;
 case OP_ShrUint16Uint32:
-  PrintName("ShrUint16Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Uint32");
+  break;
 case OP_ShrUint16Sint64:
-  PrintName("ShrUint16Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Sint64");
+  break;
 case OP_ShrUint16Uint64:
-  PrintName("ShrUint16Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16Uint64");
+  break;
 case OP_ShrUint16IntAP:
-  PrintName("ShrUint16IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16IntAP");
+  break;
 case OP_ShrUint16IntAPS:
-  PrintName("ShrUint16IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint16IntAPS");
+  break;
 case OP_ShrSint32Sint8:
-  PrintName("ShrSint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Sint8");
+  break;
 case OP_ShrSint32Uint8:
-  PrintName("ShrSint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Uint8");
+  break;
 case OP_ShrSint32Sint16:
-  PrintName("ShrSint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Sint16");
+  break;
 case OP_ShrSint32Uint16:
-  PrintName("ShrSint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Uint16");
+  break;
 case OP_ShrSint32Sint32:
-  PrintName("ShrSint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Sint32");
+  break;
 case OP_ShrSint32Uint32:
-  PrintName("ShrSint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Uint32");
+  break;
 case OP_ShrSint32Sint64:
-  PrintName("ShrSint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Sint64");
+  break;
 case OP_ShrSint32Uint64:
-  PrintName("ShrSint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32Uint64");
+  break;
 case OP_ShrSint32IntAP:
-  PrintName("ShrSint32IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32IntAP");
+  break;
 case OP_ShrSint32IntAPS:
-  PrintName("ShrSint32IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint32IntAPS");
+  break;
 case OP_ShrUint32Sint8:
-  PrintName("ShrUint32Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Sint8");
+  break;
 case OP_ShrUint32Uint8:
-  PrintName("ShrUint32Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Uint8");
+  break;
 case OP_ShrUint32Sint16:
-  PrintName("ShrUint32Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Sint16");
+  break;
 case OP_ShrUint32Uint16:
-  PrintName("ShrUint32Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Uint16");
+  break;
 case OP_ShrUint32Sint32:
-  PrintName("ShrUint32Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Sint32");
+  break;
 case OP_ShrUint32Uint32:
-  PrintName("ShrUint32Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Uint32");
+  break;
 case OP_ShrUint32Sint64:
-  PrintName("ShrUint32Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Sint64");
+  break;
 case OP_ShrUint32Uint64:
-  PrintName("ShrUint32Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32Uint64");
+  break;
 case OP_ShrUint32IntAP:
-  PrintName("ShrUint32IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32IntAP");
+  break;
 case OP_ShrUint32IntAPS:
-  PrintName("ShrUint32IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint32IntAPS");
+  break;
 case OP_ShrSint64Sint8:
-  PrintName("ShrSint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Sint8");
+  break;
 case OP_ShrSint64Uint8:
-  PrintName("ShrSint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Uint8");
+  break;
 case OP_ShrSint64Sint16:
-  PrintName("ShrSint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Sint16");
+  break;
 case OP_ShrSint64Uint16:
-  PrintName("ShrSint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Uint16");
+  break;
 case OP_ShrSint64Sint32:
-  PrintName("ShrSint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Sint32");
+  break;
 case OP_ShrSint64Uint32:
-  PrintName("ShrSint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Uint32");
+  break;
 case OP_ShrSint64Sint64:
-  PrintName("ShrSint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Sint64");
+  break;
 case OP_ShrSint64Uint64:
-  PrintName("ShrSint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64Uint64");
+  break;
 case OP_ShrSint64IntAP:
-  PrintName("ShrSint64IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64IntAP");
+  break;
 case OP_ShrSint64IntAPS:
-  PrintName("ShrSint64IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrSint64IntAPS");
+  break;
 case OP_ShrUint64Sint8:
-  PrintName("ShrUint64Sint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Sint8");
+  break;
 case OP_ShrUint64Uint8:
-  PrintName("ShrUint64Uint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Uint8");
+  break;
 case OP_ShrUint64Sint16:
-  PrintName("ShrUint64Sint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Sint16");
+  break;
 case OP_ShrUint64Uint16:
-  PrintName("ShrUint64Uint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Uint16");
+  break;
 case OP_ShrUint64Sint32:
-  PrintName("ShrUint64Sint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Sint32");
+  break;
 case OP_ShrUint64Uint32:
-  PrintName("ShrUint64Uint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Uint32");
+  break;
 case OP_ShrUint64Sint64:
-  PrintName("ShrUint64Sint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Sint64");
+  break;
 case OP_ShrUint64Uint64:
-  PrintName("ShrUint64Uint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64Uint64");
+  break;
 case OP_ShrUint64IntAP:
-  PrintName("ShrUint64IntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64IntAP");
+  break;
 case OP_ShrUint64IntAPS:
-  PrintName("ShrUint64IntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrUint64IntAPS");
+  break;
 case OP_ShrIntAPSint8:
-  PrintName("ShrIntAPSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSint8");
+  break;
 case OP_ShrIntAPUint8:
-  PrintName("ShrIntAPUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPUint8");
+  break;
 case OP_ShrIntAPSint16:
-  PrintName("ShrIntAPSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSint16");
+  break;
 case OP_ShrIntAPUint16:
-  PrintName("ShrIntAPUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPUint16");
+  break;
 case OP_ShrIntAPSint32:
-  PrintName("ShrIntAPSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSint32");
+  break;
 case OP_ShrIntAPUint32:
-  PrintName("ShrIntAPUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPUint32");
+  break;
 case OP_ShrIntAPSint64:
-  PrintName("ShrIntAPSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSint64");
+  break;
 case OP_ShrIntAPUint64:
-  PrintName("ShrIntAPUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPUint64");
+  break;
 case OP_ShrIntAPIntAP:
-  PrintName("ShrIntAPIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPIntAP");
+  break;
 case OP_ShrIntAPIntAPS:
-  PrintName("ShrIntAPIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPIntAPS");
+  break;
 case OP_ShrIntAPSSint8:
-  PrintName("ShrIntAPSSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSSint8");
+  break;
 case OP_ShrIntAPSUint8:
-  PrintName("ShrIntAPSUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSUint8");
+  break;
 case OP_ShrIntAPSSint16:
-  PrintName("ShrIntAPSSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSSint16");
+  break;
 case OP_ShrIntAPSUint16:
-  PrintName("ShrIntAPSUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSUint16");
+  break;
 case OP_ShrIntAPSSint32:
-  PrintName("ShrIntAPSSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSSint32");
+  break;
 case OP_ShrIntAPSUint32:
-  PrintName("ShrIntAPSUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSUint32");
+  break;
 case OP_ShrIntAPSSint64:
-  PrintName("ShrIntAPSSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSSint64");
+  break;
 case OP_ShrIntAPSUint64:
-  PrintName("ShrIntAPSUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSUint64");
+  break;
 case OP_ShrIntAPSIntAP:
-  PrintName("ShrIntAPSIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSIntAP");
+  break;
 case OP_ShrIntAPSIntAPS:
-  PrintName("ShrIntAPSIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ShrIntAPSIntAPS");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitShrSint8Sint8(const SourceInfo &);
@@ -37851,9 +36279,8 @@ case OP_SideEffect: {
 #endif
 #ifdef GET_DISASM
 case OP_SideEffect:
-  PrintName("SideEffect");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SideEffect");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSideEffect(const SourceInfo &);
@@ -37882,9 +36309,8 @@ case OP_SizelessVectorElementSize: {
 #endif
 #ifdef GET_DISASM
 case OP_SizelessVectorElementSize:
-  PrintName("SizelessVectorElementSize");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SizelessVectorElementSize");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSizelessVectorElementSize(const SourceInfo &);
@@ -37902,6 +36328,36 @@ bool EvalEmitter::emitSizelessVectorElementSize(const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_StartSpeculation,
+#endif
+#ifdef GET_INTERP
+case OP_StartSpeculation: {
+  if (!StartSpeculation(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_StartSpeculation:
+  Text.Op = PrintName("StartSpeculation");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitStartSpeculation(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitStartSpeculation(const SourceInfo &L) {
+  return emitOp<>(OP_StartSpeculation, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitStartSpeculation(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StartSpeculation(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_StoreSint8,
 OP_StoreUint8,
 OP_StoreSint16,
@@ -37915,7 +36371,6 @@ OP_StoreIntAPS,
 OP_StoreBool,
 OP_StoreFixedPoint,
 OP_StorePtr,
-OP_StoreFnPtr,
 OP_StoreMemberPtr,
 OP_StoreFloat,
 #endif
@@ -37985,11 +36440,6 @@ case OP_StorePtr: {
     return false;
   continue;
 }
-case OP_StoreFnPtr: {
-  if (!Store<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_StoreMemberPtr: {
   if (!Store<PT_MemberPtr>(S, OpPC))
     return false;
@@ -38003,69 +36453,50 @@ case OP_StoreFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_StoreSint8:
-  PrintName("StoreSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreSint8");
+  break;
 case OP_StoreUint8:
-  PrintName("StoreUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreUint8");
+  break;
 case OP_StoreSint16:
-  PrintName("StoreSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreSint16");
+  break;
 case OP_StoreUint16:
-  PrintName("StoreUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreUint16");
+  break;
 case OP_StoreSint32:
-  PrintName("StoreSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreSint32");
+  break;
 case OP_StoreUint32:
-  PrintName("StoreUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreUint32");
+  break;
 case OP_StoreSint64:
-  PrintName("StoreSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreSint64");
+  break;
 case OP_StoreUint64:
-  PrintName("StoreUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreUint64");
+  break;
 case OP_StoreIntAP:
-  PrintName("StoreIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreIntAP");
+  break;
 case OP_StoreIntAPS:
-  PrintName("StoreIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreIntAPS");
+  break;
 case OP_StoreBool:
-  PrintName("StoreBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBool");
+  break;
 case OP_StoreFixedPoint:
-  PrintName("StoreFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreFixedPoint");
+  break;
 case OP_StorePtr:
-  PrintName("StorePtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_StoreFnPtr:
-  PrintName("StoreFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePtr");
+  break;
 case OP_StoreMemberPtr:
-  PrintName("StoreMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreMemberPtr");
+  break;
 case OP_StoreFloat:
-  PrintName("StoreFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitStoreSint8(const SourceInfo &);
@@ -38081,7 +36512,6 @@ bool emitStoreIntAPS(const SourceInfo &);
 bool emitStoreBool(const SourceInfo &);
 bool emitStoreFixedPoint(const SourceInfo &);
 bool emitStorePtr(const SourceInfo &);
-bool emitStoreFnPtr(const SourceInfo &);
 bool emitStoreMemberPtr(const SourceInfo &);
 bool emitStoreFloat(const SourceInfo &);
 #endif
@@ -38123,8 +36553,6 @@ ByteCodeEmitter
     return emitStoreFixedPoint(I);
   case PT_Ptr:
     return emitStorePtr(I);
-  case PT_FnPtr:
-    return emitStoreFnPtr(I);
   case PT_MemberPtr:
     return emitStoreMemberPtr(I);
   case PT_Float:
@@ -38172,9 +36600,6 @@ bool ByteCodeEmitter::emitStoreFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitStorePtr(const SourceInfo &L) {
   return emitOp<>(OP_StorePtr, L);
-}
-bool ByteCodeEmitter::emitStoreFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_StoreFnPtr, L);
 }
 bool ByteCodeEmitter::emitStoreMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_StoreMemberPtr, L);
@@ -38248,11 +36673,6 @@ bool EvalEmitter::emitStorePtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return Store<PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitStoreFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Store<PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitStoreMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -38343,53 +36763,41 @@ case OP_StoreBitFieldFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_StoreBitFieldSint8:
-  PrintName("StoreBitFieldSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldSint8");
+  break;
 case OP_StoreBitFieldUint8:
-  PrintName("StoreBitFieldUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldUint8");
+  break;
 case OP_StoreBitFieldSint16:
-  PrintName("StoreBitFieldSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldSint16");
+  break;
 case OP_StoreBitFieldUint16:
-  PrintName("StoreBitFieldUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldUint16");
+  break;
 case OP_StoreBitFieldSint32:
-  PrintName("StoreBitFieldSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldSint32");
+  break;
 case OP_StoreBitFieldUint32:
-  PrintName("StoreBitFieldUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldUint32");
+  break;
 case OP_StoreBitFieldSint64:
-  PrintName("StoreBitFieldSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldSint64");
+  break;
 case OP_StoreBitFieldUint64:
-  PrintName("StoreBitFieldUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldUint64");
+  break;
 case OP_StoreBitFieldIntAP:
-  PrintName("StoreBitFieldIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldIntAP");
+  break;
 case OP_StoreBitFieldIntAPS:
-  PrintName("StoreBitFieldIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldIntAPS");
+  break;
 case OP_StoreBitFieldBool:
-  PrintName("StoreBitFieldBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldBool");
+  break;
 case OP_StoreBitFieldFixedPoint:
-  PrintName("StoreBitFieldFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitStoreBitFieldSint8(const SourceInfo &);
@@ -38624,53 +37032,41 @@ case OP_StoreBitFieldPopFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_StoreBitFieldPopSint8:
-  PrintName("StoreBitFieldPopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopSint8");
+  break;
 case OP_StoreBitFieldPopUint8:
-  PrintName("StoreBitFieldPopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopUint8");
+  break;
 case OP_StoreBitFieldPopSint16:
-  PrintName("StoreBitFieldPopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopSint16");
+  break;
 case OP_StoreBitFieldPopUint16:
-  PrintName("StoreBitFieldPopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopUint16");
+  break;
 case OP_StoreBitFieldPopSint32:
-  PrintName("StoreBitFieldPopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopSint32");
+  break;
 case OP_StoreBitFieldPopUint32:
-  PrintName("StoreBitFieldPopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopUint32");
+  break;
 case OP_StoreBitFieldPopSint64:
-  PrintName("StoreBitFieldPopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopSint64");
+  break;
 case OP_StoreBitFieldPopUint64:
-  PrintName("StoreBitFieldPopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopUint64");
+  break;
 case OP_StoreBitFieldPopIntAP:
-  PrintName("StoreBitFieldPopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopIntAP");
+  break;
 case OP_StoreBitFieldPopIntAPS:
-  PrintName("StoreBitFieldPopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopIntAPS");
+  break;
 case OP_StoreBitFieldPopBool:
-  PrintName("StoreBitFieldPopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopBool");
+  break;
 case OP_StoreBitFieldPopFixedPoint:
-  PrintName("StoreBitFieldPopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StoreBitFieldPopFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitStoreBitFieldPopSint8(const SourceInfo &);
@@ -38841,7 +37237,6 @@ OP_StorePopIntAPS,
 OP_StorePopBool,
 OP_StorePopFixedPoint,
 OP_StorePopPtr,
-OP_StorePopFnPtr,
 OP_StorePopMemberPtr,
 OP_StorePopFloat,
 #endif
@@ -38911,11 +37306,6 @@ case OP_StorePopPtr: {
     return false;
   continue;
 }
-case OP_StorePopFnPtr: {
-  if (!StorePop<PT_FnPtr>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_StorePopMemberPtr: {
   if (!StorePop<PT_MemberPtr>(S, OpPC))
     return false;
@@ -38929,69 +37319,50 @@ case OP_StorePopFloat: {
 #endif
 #ifdef GET_DISASM
 case OP_StorePopSint8:
-  PrintName("StorePopSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopSint8");
+  break;
 case OP_StorePopUint8:
-  PrintName("StorePopUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopUint8");
+  break;
 case OP_StorePopSint16:
-  PrintName("StorePopSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopSint16");
+  break;
 case OP_StorePopUint16:
-  PrintName("StorePopUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopUint16");
+  break;
 case OP_StorePopSint32:
-  PrintName("StorePopSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopSint32");
+  break;
 case OP_StorePopUint32:
-  PrintName("StorePopUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopUint32");
+  break;
 case OP_StorePopSint64:
-  PrintName("StorePopSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopSint64");
+  break;
 case OP_StorePopUint64:
-  PrintName("StorePopUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopUint64");
+  break;
 case OP_StorePopIntAP:
-  PrintName("StorePopIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopIntAP");
+  break;
 case OP_StorePopIntAPS:
-  PrintName("StorePopIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopIntAPS");
+  break;
 case OP_StorePopBool:
-  PrintName("StorePopBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopBool");
+  break;
 case OP_StorePopFixedPoint:
-  PrintName("StorePopFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopFixedPoint");
+  break;
 case OP_StorePopPtr:
-  PrintName("StorePopPtr");
-  OS << "\t" << "\n";
-  continue;
-case OP_StorePopFnPtr:
-  PrintName("StorePopFnPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopPtr");
+  break;
 case OP_StorePopMemberPtr:
-  PrintName("StorePopMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopMemberPtr");
+  break;
 case OP_StorePopFloat:
-  PrintName("StorePopFloat");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("StorePopFloat");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitStorePopSint8(const SourceInfo &);
@@ -39007,7 +37378,6 @@ bool emitStorePopIntAPS(const SourceInfo &);
 bool emitStorePopBool(const SourceInfo &);
 bool emitStorePopFixedPoint(const SourceInfo &);
 bool emitStorePopPtr(const SourceInfo &);
-bool emitStorePopFnPtr(const SourceInfo &);
 bool emitStorePopMemberPtr(const SourceInfo &);
 bool emitStorePopFloat(const SourceInfo &);
 #endif
@@ -39049,8 +37419,6 @@ ByteCodeEmitter
     return emitStorePopFixedPoint(I);
   case PT_Ptr:
     return emitStorePopPtr(I);
-  case PT_FnPtr:
-    return emitStorePopFnPtr(I);
   case PT_MemberPtr:
     return emitStorePopMemberPtr(I);
   case PT_Float:
@@ -39098,9 +37466,6 @@ bool ByteCodeEmitter::emitStorePopFixedPoint(const SourceInfo &L) {
 }
 bool ByteCodeEmitter::emitStorePopPtr(const SourceInfo &L) {
   return emitOp<>(OP_StorePopPtr, L);
-}
-bool ByteCodeEmitter::emitStorePopFnPtr(const SourceInfo &L) {
-  return emitOp<>(OP_StorePopFnPtr, L);
 }
 bool ByteCodeEmitter::emitStorePopMemberPtr(const SourceInfo &L) {
   return emitOp<>(OP_StorePopMemberPtr, L);
@@ -39174,11 +37539,6 @@ bool EvalEmitter::emitStorePopPtr(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return StorePop<PT_Ptr>(S, OpPC);
-}
-bool EvalEmitter::emitStorePopFnPtr(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return StorePop<PT_FnPtr>(S, OpPC);
 }
 bool EvalEmitter::emitStorePopMemberPtr(const SourceInfo &L) {
   if (!isActive()) return true;
@@ -39269,53 +37629,41 @@ case OP_SubFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_SubSint8:
-  PrintName("SubSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubSint8");
+  break;
 case OP_SubUint8:
-  PrintName("SubUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubUint8");
+  break;
 case OP_SubSint16:
-  PrintName("SubSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubSint16");
+  break;
 case OP_SubUint16:
-  PrintName("SubUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubUint16");
+  break;
 case OP_SubSint32:
-  PrintName("SubSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubSint32");
+  break;
 case OP_SubUint32:
-  PrintName("SubUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubUint32");
+  break;
 case OP_SubSint64:
-  PrintName("SubSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubSint64");
+  break;
 case OP_SubUint64:
-  PrintName("SubUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubUint64");
+  break;
 case OP_SubIntAP:
-  PrintName("SubIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubIntAP");
+  break;
 case OP_SubIntAPS:
-  PrintName("SubIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubIntAPS");
+  break;
 case OP_SubBool:
-  PrintName("SubBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubBool");
+  break;
 case OP_SubFixedPoint:
-  PrintName("SubFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSubSint8(const SourceInfo &);
@@ -39550,53 +37898,41 @@ case OP_SubOffsetFixedPoint: {
 #endif
 #ifdef GET_DISASM
 case OP_SubOffsetSint8:
-  PrintName("SubOffsetSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetSint8");
+  break;
 case OP_SubOffsetUint8:
-  PrintName("SubOffsetUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetUint8");
+  break;
 case OP_SubOffsetSint16:
-  PrintName("SubOffsetSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetSint16");
+  break;
 case OP_SubOffsetUint16:
-  PrintName("SubOffsetUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetUint16");
+  break;
 case OP_SubOffsetSint32:
-  PrintName("SubOffsetSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetSint32");
+  break;
 case OP_SubOffsetUint32:
-  PrintName("SubOffsetUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetUint32");
+  break;
 case OP_SubOffsetSint64:
-  PrintName("SubOffsetSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetSint64");
+  break;
 case OP_SubOffsetUint64:
-  PrintName("SubOffsetUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetUint64");
+  break;
 case OP_SubOffsetIntAP:
-  PrintName("SubOffsetIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetIntAP");
+  break;
 case OP_SubOffsetIntAPS:
-  PrintName("SubOffsetIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetIntAPS");
+  break;
 case OP_SubOffsetBool:
-  PrintName("SubOffsetBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetBool");
+  break;
 case OP_SubOffsetFixedPoint:
-  PrintName("SubOffsetFixedPoint");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubOffsetFixedPoint");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSubOffsetSint8(const SourceInfo &);
@@ -39819,45 +38155,35 @@ case OP_SubPtrIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_SubPtrSint8:
-  PrintName("SubPtrSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrSint8");
+  break;
 case OP_SubPtrUint8:
-  PrintName("SubPtrUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrUint8");
+  break;
 case OP_SubPtrSint16:
-  PrintName("SubPtrSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrSint16");
+  break;
 case OP_SubPtrUint16:
-  PrintName("SubPtrUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrUint16");
+  break;
 case OP_SubPtrSint32:
-  PrintName("SubPtrSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrSint32");
+  break;
 case OP_SubPtrUint32:
-  PrintName("SubPtrUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrUint32");
+  break;
 case OP_SubPtrSint64:
-  PrintName("SubPtrSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrSint64");
+  break;
 case OP_SubPtrUint64:
-  PrintName("SubPtrUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrUint64");
+  break;
 case OP_SubPtrIntAP:
-  PrintName("SubPtrIntAP");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrIntAP");
+  break;
 case OP_SubPtrIntAPS:
-  PrintName("SubPtrIntAPS");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("SubPtrIntAPS");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSubPtrSint8(const SourceInfo &);
@@ -40005,9 +38331,9 @@ case OP_Subf: {
 #endif
 #ifdef GET_DISASM
 case OP_Subf:
-  PrintName("Subf");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("Subf");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSubf( uint32_t , const SourceInfo &);
@@ -40036,9 +38362,8 @@ case OP_This: {
 #endif
 #ifdef GET_DISASM
 case OP_This:
-  PrintName("This");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("This");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitThis(const SourceInfo &);
@@ -40067,9 +38392,8 @@ case OP_ToMemberPtr: {
 #endif
 #ifdef GET_DISASM
 case OP_ToMemberPtr:
-  PrintName("ToMemberPtr");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ToMemberPtr");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitToMemberPtr(const SourceInfo &);
@@ -40098,9 +38422,8 @@ case OP_Unsupported: {
 #endif
 #ifdef GET_DISASM
 case OP_Unsupported:
-  PrintName("Unsupported");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("Unsupported");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitUnsupported(const SourceInfo &);
@@ -40177,41 +38500,32 @@ case OP_ZeroBool: {
 #endif
 #ifdef GET_DISASM
 case OP_ZeroSint8:
-  PrintName("ZeroSint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroSint8");
+  break;
 case OP_ZeroUint8:
-  PrintName("ZeroUint8");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroUint8");
+  break;
 case OP_ZeroSint16:
-  PrintName("ZeroSint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroSint16");
+  break;
 case OP_ZeroUint16:
-  PrintName("ZeroUint16");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroUint16");
+  break;
 case OP_ZeroSint32:
-  PrintName("ZeroSint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroSint32");
+  break;
 case OP_ZeroUint32:
-  PrintName("ZeroUint32");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroUint32");
+  break;
 case OP_ZeroSint64:
-  PrintName("ZeroSint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroSint64");
+  break;
 case OP_ZeroUint64:
-  PrintName("ZeroUint64");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroUint64");
+  break;
 case OP_ZeroBool:
-  PrintName("ZeroBool");
-  OS << "\t" << "\n";
-  continue;
+  Text.Op = PrintName("ZeroBool");
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitZeroSint8(const SourceInfo &);
@@ -40348,9 +38662,9 @@ case OP_ZeroIntAP: {
 #endif
 #ifdef GET_DISASM
 case OP_ZeroIntAP:
-  PrintName("ZeroIntAP");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ZeroIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitZeroIntAP( uint32_t , const SourceInfo &);
@@ -40380,9 +38694,9 @@ case OP_ZeroIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_ZeroIntAPS:
-  PrintName("ZeroIntAPS");
-  OS << "\t" << ReadArg<uint32_t>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ZeroIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitZeroIntAPS( uint32_t , const SourceInfo &);
@@ -40412,9 +38726,9 @@ case OP_ConstIntAP: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstIntAP:
-  PrintName("ConstIntAP");
-  OS << "\t" << ReadArg<IntegralAP<false>>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstIntAP");
+  Text.Args.push_back(printArg<IntegralAP<false>>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstIntAP(const IntegralAP<false> &, const SourceInfo &);
@@ -40444,9 +38758,9 @@ case OP_ConstIntAPS: {
 #endif
 #ifdef GET_DISASM
 case OP_ConstIntAPS:
-  PrintName("ConstIntAPS");
-  OS << "\t" << ReadArg<IntegralAP<true>>(P, PC) << " " << "\n";
-  continue;
+  Text.Op = PrintName("ConstIntAPS");
+  Text.Args.push_back(printArg<IntegralAP<true>>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitConstIntAPS(const IntegralAP<true> &, const SourceInfo &);

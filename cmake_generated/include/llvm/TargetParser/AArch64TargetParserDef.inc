@@ -38,8 +38,9 @@ ARM_PROCESSOR_FAMILY(NeoverseV1)
 ARM_PROCESSOR_FAMILY(ThunderX)
 ARM_PROCESSOR_FAMILY(CortexA710)
 ARM_PROCESSOR_FAMILY(AppleM4)
-ARM_PROCESSOR_FAMILY(Oryon)
+ARM_PROCESSOR_FAMILY(Olympus)
 ARM_PROCESSOR_FAMILY(Ampere1)
+ARM_PROCESSOR_FAMILY(Oryon)
 ARM_PROCESSOR_FAMILY(CortexA78C)
 ARM_PROCESSOR_FAMILY(AppleA12)
 ARM_PROCESSOR_FAMILY(A64FX)
@@ -183,6 +184,7 @@ enum ArchExtKind : unsigned {
   AEK_SSBS,
   AEK_SSVE_AES,
   AEK_SSVE_BITPERM,
+  AEK_SSVE_FEXPA,
   AEK_SSVE_FP8DOT2,
   AEK_SSVE_FP8DOT4,
   AEK_SSVE_FP8FMA,
@@ -321,6 +323,7 @@ inline constexpr ExtensionInfo Extensions[] = {
   {"ssbs", {}, AArch64::AEK_SSBS, "FEAT_SSBS, FEAT_SSBS2", "Enable Speculative Store Bypass Safe bit", "+ssbs", "-ssbs"},
   {"ssve-aes", {}, AArch64::AEK_SSVE_AES, "FEAT_SSVE_AES", "Enable Armv9.6-A SVE AES support in streaming SVE mode", "+ssve-aes", "-ssve-aes"},
   {"ssve-bitperm", {}, AArch64::AEK_SSVE_BITPERM, "FEAT_SSVE_BitPerm", "Enable Armv9.6-A SVE BitPerm support in streaming SVE mode", "+ssve-bitperm", "-ssve-bitperm"},
+  {"ssve-fexpa", {}, AArch64::AEK_SSVE_FEXPA, "FEAT_SSVE_FEXPA", "Enable SVE FEXPA instruction in Streaming SVE mode", "+ssve-fexpa", "-ssve-fexpa"},
   {"ssve-fp8dot2", {}, AArch64::AEK_SSVE_FP8DOT2, "FEAT_SSVE_FP8DOT2", "Enable SVE2 FP8 2-way dot product instructions", "+ssve-fp8dot2", "-ssve-fp8dot2"},
   {"ssve-fp8dot4", {}, AArch64::AEK_SSVE_FP8DOT4, "FEAT_SSVE_FP8DOT4", "Enable SVE2 FP8 4-way dot product instructions", "+ssve-fp8dot4", "-ssve-fp8dot4"},
   {"ssve-fp8fma", {}, AArch64::AEK_SSVE_FP8FMA, "FEAT_SSVE_FP8FMA", "Enable SVE2 FP8 multiply-add instructions", "+ssve-fp8fma", "-ssve-fp8fma"},
@@ -356,7 +359,7 @@ inline constexpr ExtensionInfo Extensions[] = {
 const std::vector<llvm::AArch64::FMVInfo>& llvm::AArch64::getFMVInfo() {
   static std::vector<FMVInfo> I;
   if(I.size()) return I;
-  I.reserve(44);
+  I.reserve(45);
   I.emplace_back("aes", FEAT_PMULL, PRIOR_PMULL, AEK_AES);
   I.emplace_back("bf16", FEAT_BF16, PRIOR_BF16, AEK_BF16);
   I.emplace_back("bti", FEAT_BTI, PRIOR_BTI, AEK_BTI);
@@ -401,6 +404,7 @@ const std::vector<llvm::AArch64::FMVInfo>& llvm::AArch64::getFMVInfo() {
   I.emplace_back("sve2-sha3", FEAT_SVE_SHA3, PRIOR_SVE_SHA3, AEK_SVE2SHA3);
   I.emplace_back("sve2-sm4", FEAT_SVE_SM4, PRIOR_SVE_SM4, AEK_SVE2SM4);
   I.emplace_back("wfxt", FEAT_WFXT, PRIOR_WFXT, AEK_WFXT);
+  I.emplace_back("cssc", FEAT_CSSC, PRIOR_CSSC, AEK_CSSC);
   return I;
 }
 #undef EMIT_FMV_INFO
@@ -426,14 +430,11 @@ inline constexpr ExtensionDependency ExtensionDependencies[] = {
   {AEK_FP8, AEK_F8F16MM},
   {AEK_SIMD, AEK_F8F32MM},
   {AEK_FP8, AEK_F8F32MM},
+  {AEK_SIMD, AEK_FAMINMAX},
   {AEK_FP16, AEK_FP16FML},
   {AEK_SIMD, AEK_FP16FML},
-  {AEK_FAMINMAX, AEK_FP8},
-  {AEK_LUT, AEK_FP8},
-  {AEK_BF16, AEK_FP8},
-  {AEK_SIMD, AEK_FP8DOT2},
+  {AEK_SIMD, AEK_FP8},
   {AEK_FP8, AEK_FP8DOT2},
-  {AEK_SIMD, AEK_FP8DOT4},
   {AEK_FP8, AEK_FP8DOT4},
   {AEK_FP8, AEK_FP8FMA},
   {AEK_FP, AEK_FPRCVT},
@@ -446,6 +447,7 @@ inline constexpr ExtensionDependency ExtensionDependencies[] = {
   {AEK_FP, AEK_JSCVT},
   {AEK_LSE, AEK_LSE128},
   {AEK_FP, AEK_LSFE},
+  {AEK_SIMD, AEK_LUT},
   {AEK_RME, AEK_MEC},
   {AEK_FP, AEK_SIMD},
   {AEK_PAN, AEK_PAN_RWV},
@@ -481,6 +483,7 @@ inline constexpr ExtensionDependency ExtensionDependencies[] = {
   {AEK_SVEAES, AEK_SSVE_AES},
   {AEK_SME2, AEK_SSVE_BITPERM},
   {AEK_SVEBITPERM, AEK_SSVE_BITPERM},
+  {AEK_SME2, AEK_SSVE_FEXPA},
   {AEK_SME2, AEK_SSVE_FP8DOT2},
   {AEK_FP8, AEK_SSVE_FP8DOT2},
   {AEK_SME2, AEK_SSVE_FP8DOT4},
@@ -661,15 +664,20 @@ static constexpr std::array<const ArchInfo *, 18> ArchInfos = {
 #ifdef EMIT_CPU_ALIAS
 inline constexpr Alias CpuAliases[] = {
   { "cobalt-100", "neoverse-n2" },
-  { "grace", "neoverse-v2" },
   { "cyclone", "apple-a7" },
   { "apple-a8", "apple-a7" },
   { "apple-a9", "apple-a7" },
   { "apple-s4", "apple-a12" },
   { "apple-s5", "apple-a12" },
+  { "apple-s6", "apple-a13" },
+  { "apple-s7", "apple-a13" },
+  { "apple-s8", "apple-a13" },
   { "apple-m1", "apple-a14" },
   { "apple-m2", "apple-a15" },
   { "apple-m3", "apple-a16" },
+  { "apple-s9", "apple-a16" },
+  { "apple-s10", "apple-a16" },
+  { "apple-a18", "apple-m4" },
   { "apple-latest", "apple-m4" },
 };
 #undef EMIT_CPU_ALIAS
@@ -1449,6 +1457,41 @@ inline constexpr CpuInfo CpuInfos[] = {
     })
   },
   {
+    "grace",
+    ARMV9A,
+    AArch64::ExtensionBitset({
+      AArch64::AEK_BF16,
+      AArch64::AEK_PROFILE,
+      AArch64::AEK_PERFMON,
+      AArch64::AEK_ETE,
+      AArch64::AEK_I8MM,
+      AArch64::AEK_SIMD,
+      AArch64::AEK_SVEBITPERM,
+      AArch64::AEK_FP16FML,
+      AArch64::AEK_MTE,
+      AArch64::AEK_RAND,
+      AArch64::AEK_CCIDX,
+      AArch64::AEK_SVE,
+      AArch64::AEK_SVE2,
+      AArch64::AEK_SSBS,
+      AArch64::AEK_FP16,
+      AArch64::AEK_DOTPROD,
+      AArch64::AEK_FCMA,
+      AArch64::AEK_CRC,
+      AArch64::AEK_FP,
+      AArch64::AEK_JSCVT,
+      AArch64::AEK_LSE,
+      AArch64::AEK_PAUTH,
+      AArch64::AEK_RAS,
+      AArch64::AEK_RCPC,
+      AArch64::AEK_RDM,
+      AArch64::AEK_FPAC,
+      AArch64::AEK_SVE2SM4,
+      AArch64::AEK_SVEAES,
+      AArch64::AEK_SVE2SHA3,
+    })
+  },
+  {
     "neoverse-e1",
     ARMV8_2A,
     AArch64::ExtensionBitset({
@@ -1646,6 +1689,7 @@ inline constexpr CpuInfo CpuInfos[] = {
       AArch64::AEK_RAS,
       AArch64::AEK_RCPC,
       AArch64::AEK_RDM,
+      AArch64::AEK_FPAC,
     })
   },
   {
@@ -2182,7 +2226,9 @@ inline constexpr CpuInfo CpuInfos[] = {
       AArch64::AEK_SVEBITPERM,
       AArch64::AEK_ETE,
       AArch64::AEK_MEC,
+      AArch64::AEK_FAMINMAX,
       AArch64::AEK_FP8DOT2,
+      AArch64::AEK_LUT,
     })
   },
   {
@@ -2198,6 +2244,35 @@ inline constexpr CpuInfo CpuInfos[] = {
       AArch64::AEK_RAS,
       AArch64::AEK_RDM,
       AArch64::AEK_FP,
+    })
+  },
+  {
+    "olympus",
+    ARMV9_2A,
+    AArch64::ExtensionBitset({
+      AArch64::AEK_BRBE,
+      AArch64::AEK_CCIDX,
+      AArch64::AEK_CHK,
+      AArch64::AEK_ETE,
+      AArch64::AEK_FAMINMAX,
+      AArch64::AEK_FP16FML,
+      AArch64::AEK_FP8DOT2,
+      AArch64::AEK_FP8DOT4,
+      AArch64::AEK_FP8FMA,
+      AArch64::AEK_FPAC,
+      AArch64::AEK_LS64,
+      AArch64::AEK_LUT,
+      AArch64::AEK_MEC,
+      AArch64::AEK_MTE,
+      AArch64::AEK_PERFMON,
+      AArch64::AEK_RAND,
+      AArch64::AEK_PROFILE,
+      AArch64::AEK_SPE_EEF,
+      AArch64::AEK_SSBS,
+      AArch64::AEK_SVEBITPERM,
+      AArch64::AEK_SVE2SHA3,
+      AArch64::AEK_SVE2SM4,
+      AArch64::AEK_SVEAES,
     })
   },
   {

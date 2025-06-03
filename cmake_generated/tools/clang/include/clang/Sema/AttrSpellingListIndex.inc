@@ -355,14 +355,10 @@
       return 2;
     if (Name.size() == 24 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 3;
-    break;
-  }
-  case AT_AssertExclusiveLock: {
-    return 0;
-    break;
-  }
-  case AT_AssertSharedLock: {
-    return 0;
+    if (Name.size() == 21 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 4;
+    if (Name.size() == 18 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 5;
     break;
   }
   case AT_AssumeAligned: {
@@ -371,6 +367,15 @@
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
       return 1;
     if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 2;
+    break;
+  }
+  case AT_Atomic: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 2;
     break;
   }
@@ -1048,10 +1053,6 @@
       return 2;
     break;
   }
-  case AT_ExclusiveTrylockFunction: {
-    return 0;
-    break;
-  }
   case AT_ExplicitInit: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1062,7 +1063,12 @@
     break;
   }
   case AT_ExtVectorType: {
-    return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
     break;
   }
   case AT_ExternalSourceSymbol: {
@@ -1130,6 +1136,15 @@
     break;
   }
   case AT_FormatArg: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 2;
+    break;
+  }
+  case AT_FormatMatches: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
@@ -1218,10 +1233,6 @@
     break;
   }
   case AT_HLSLRawBuffer: {
-    return 0;
-    break;
-  }
-  case AT_HLSLResource: {
     return 0;
     break;
   }
@@ -1837,8 +1848,12 @@
       return 0;
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
       return 2;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 3;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 4;
     break;
   }
   case AT_NoSanitizeSpecific: {
@@ -2284,6 +2299,10 @@
       return 2;
     break;
   }
+  case AT_OpenACCRoutineAnnot: {
+    return 0;
+    break;
+  }
   case AT_OpenCLAccess: {
     if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -2510,6 +2529,10 @@
     return 0;
     break;
   }
+  case AT_PointerAuth: {
+    return 0;
+    break;
+  }
   case AT_PragmaClangBSSSection: {
     return 0;
     break;
@@ -2603,6 +2626,19 @@
   }
   case AT_RISCVRVVVectorBits: {
     return 0;
+    break;
+  }
+  case AT_RISCVVLSCC: {
+    if (Name.size() == 6 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::RISCV)
+      return 0;
+    if (Name.size() == 6 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::RISCV)
+      return 1;
+    if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 2;
+    if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 3;
+    if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 4;
     break;
   }
   case AT_RISCVVectorCC: {
@@ -2833,10 +2869,6 @@
       return 0;
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 1;
-    break;
-  }
-  case AT_SharedTrylockFunction: {
-    return 0;
     break;
   }
   case AT_SizedBy: {
@@ -3110,6 +3142,10 @@
       return 2;
     if (Name.size() == 29 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 3;
+    if (Name.size() == 26 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 4;
+    if (Name.size() == 23 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 5;
     break;
   }
   case AT_TypeNonNull: {

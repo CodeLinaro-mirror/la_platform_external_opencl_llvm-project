@@ -90,6 +90,18 @@ PRAGMADETECTMISMATCH(PragmaDetectMismatch, Decl)
 PRAGMACOMMENT(PragmaComment, Decl)
 #undef PRAGMACOMMENT
 
+#ifndef OPENACCROUTINE
+#  define OPENACCROUTINE(Type, Base) DECL(Type, Base)
+#endif
+OPENACCROUTINE(OpenACCRoutine, Decl)
+#undef OPENACCROUTINE
+
+#ifndef OPENACCDECLARE
+#  define OPENACCDECLARE(Type, Base) DECL(Type, Base)
+#endif
+OPENACCDECLARE(OpenACCDeclare, Decl)
+#undef OPENACCDECLARE
+
 #ifndef OBJCPROPERTYIMPL
 #  define OBJCPROPERTYIMPL(Type, Base) DECL(Type, Base)
 #endif

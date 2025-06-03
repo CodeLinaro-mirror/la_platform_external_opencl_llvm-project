@@ -104,6 +104,7 @@ enum class Directive {
   OMPD_sections,
   OMPD_simd,
   OMPD_single,
+  OMPD_stripe,
   OMPD_target,
   OMPD_target_data,
   OMPD_target_enter_data,
@@ -151,7 +152,7 @@ enum class Directive {
   OMPD_teams_loop,
 };
 
-static constexpr std::size_t Directive_enumSize = 114;
+static constexpr std::size_t Directive_enumSize = 115;
 
 constexpr auto OMPD_allocate = llvm::omp::Directive::OMPD_allocate;
 constexpr auto OMPD_allocators = llvm::omp::Directive::OMPD_allocators;
@@ -222,6 +223,7 @@ constexpr auto OMPD_section = llvm::omp::Directive::OMPD_section;
 constexpr auto OMPD_sections = llvm::omp::Directive::OMPD_sections;
 constexpr auto OMPD_simd = llvm::omp::Directive::OMPD_simd;
 constexpr auto OMPD_single = llvm::omp::Directive::OMPD_single;
+constexpr auto OMPD_stripe = llvm::omp::Directive::OMPD_stripe;
 constexpr auto OMPD_target = llvm::omp::Directive::OMPD_target;
 constexpr auto OMPD_target_data = llvm::omp::Directive::OMPD_target_data;
 constexpr auto OMPD_target_enter_data = llvm::omp::Directive::OMPD_target_enter_data;
@@ -319,6 +321,7 @@ enum class Clause {
   OMPC_inclusive,
   OMPC_indirect,
   OMPC_init,
+  OMPC_initializer,
   OMPC_is_device_ptr,
   OMPC_lastprivate,
   OMPC_linear,
@@ -330,6 +333,7 @@ enum class Clause {
   OMPC_message,
   OMPC_nogroup,
   OMPC_no_openmp,
+  OMPC_no_openmp_constructs,
   OMPC_no_openmp_routines,
   OMPC_no_parallelism,
   OMPC_nowait,
@@ -345,6 +349,7 @@ enum class Clause {
   OMPC_ompx_dyn_cgroup_mem,
   OMPC_order,
   OMPC_ordered,
+  OMPC_otherwise,
   OMPC_partial,
   OMPC_permutation,
   OMPC_priority,
@@ -357,6 +362,7 @@ enum class Clause {
   OMPC_reverse_offload,
   OMPC_safelen,
   OMPC_schedule,
+  OMPC_self_maps,
   OMPC_seq_cst,
   OMPC_severity,
   OMPC_shared,
@@ -383,7 +389,7 @@ enum class Clause {
   OMPC_write,
 };
 
-static constexpr std::size_t Clause_enumSize = 112;
+static constexpr std::size_t Clause_enumSize = 116;
 
 constexpr auto OMPC_absent = llvm::omp::Clause::OMPC_absent;
 constexpr auto OMPC_acq_rel = llvm::omp::Clause::OMPC_acq_rel;
@@ -435,6 +441,7 @@ constexpr auto OMPC_inbranch = llvm::omp::Clause::OMPC_inbranch;
 constexpr auto OMPC_inclusive = llvm::omp::Clause::OMPC_inclusive;
 constexpr auto OMPC_indirect = llvm::omp::Clause::OMPC_indirect;
 constexpr auto OMPC_init = llvm::omp::Clause::OMPC_init;
+constexpr auto OMPC_initializer = llvm::omp::Clause::OMPC_initializer;
 constexpr auto OMPC_is_device_ptr = llvm::omp::Clause::OMPC_is_device_ptr;
 constexpr auto OMPC_lastprivate = llvm::omp::Clause::OMPC_lastprivate;
 constexpr auto OMPC_linear = llvm::omp::Clause::OMPC_linear;
@@ -446,6 +453,7 @@ constexpr auto OMPC_mergeable = llvm::omp::Clause::OMPC_mergeable;
 constexpr auto OMPC_message = llvm::omp::Clause::OMPC_message;
 constexpr auto OMPC_nogroup = llvm::omp::Clause::OMPC_nogroup;
 constexpr auto OMPC_no_openmp = llvm::omp::Clause::OMPC_no_openmp;
+constexpr auto OMPC_no_openmp_constructs = llvm::omp::Clause::OMPC_no_openmp_constructs;
 constexpr auto OMPC_no_openmp_routines = llvm::omp::Clause::OMPC_no_openmp_routines;
 constexpr auto OMPC_no_parallelism = llvm::omp::Clause::OMPC_no_parallelism;
 constexpr auto OMPC_nowait = llvm::omp::Clause::OMPC_nowait;
@@ -461,6 +469,7 @@ constexpr auto OMPC_ompx_bare = llvm::omp::Clause::OMPC_ompx_bare;
 constexpr auto OMPC_ompx_dyn_cgroup_mem = llvm::omp::Clause::OMPC_ompx_dyn_cgroup_mem;
 constexpr auto OMPC_order = llvm::omp::Clause::OMPC_order;
 constexpr auto OMPC_ordered = llvm::omp::Clause::OMPC_ordered;
+constexpr auto OMPC_otherwise = llvm::omp::Clause::OMPC_otherwise;
 constexpr auto OMPC_partial = llvm::omp::Clause::OMPC_partial;
 constexpr auto OMPC_permutation = llvm::omp::Clause::OMPC_permutation;
 constexpr auto OMPC_priority = llvm::omp::Clause::OMPC_priority;
@@ -473,6 +482,7 @@ constexpr auto OMPC_release = llvm::omp::Clause::OMPC_release;
 constexpr auto OMPC_reverse_offload = llvm::omp::Clause::OMPC_reverse_offload;
 constexpr auto OMPC_safelen = llvm::omp::Clause::OMPC_safelen;
 constexpr auto OMPC_schedule = llvm::omp::Clause::OMPC_schedule;
+constexpr auto OMPC_self_maps = llvm::omp::Clause::OMPC_self_maps;
 constexpr auto OMPC_seq_cst = llvm::omp::Clause::OMPC_seq_cst;
 constexpr auto OMPC_severity = llvm::omp::Clause::OMPC_severity;
 constexpr auto OMPC_shared = llvm::omp::Clause::OMPC_shared;
