@@ -179,16 +179,12 @@ public:
   QualType readDependentSizedArrayType() {
     auto &ctx = R.getASTContext();
     Expr* size = R.find("size").readExprRef();
-    SourceLocation leftBracketLoc = R.find("leftBracketLoc").readSourceLocation();
-    SourceLocation rightBracketLoc = R.find("rightBracketLoc").readSourceLocation();
     QualType elementType = R.find("elementType").readQualType();
     ArraySizeModifier sizeModifier = R.find("sizeModifier").readArraySizeModifier();
     Qualifiers indexQualifiers = R.find("indexQualifiers").readQualifiers();
     
     return ctx.getDependentSizedArrayType(elementType, size, sizeModifier,
-                                          indexQualifiers.getCVRQualifiers(),
-                                          SourceRange(leftBracketLoc,
-                                                      rightBracketLoc));
+                                          indexQualifiers.getCVRQualifiers());
   
   }
 
@@ -205,17 +201,13 @@ public:
 
   QualType readVariableArrayType() {
     auto &ctx = R.getASTContext();
-    SourceLocation leftBracketLoc = R.find("leftBracketLoc").readSourceLocation();
-    SourceLocation rightBracketLoc = R.find("rightBracketLoc").readSourceLocation();
     Expr* size = R.find("size").readExprRef();
     QualType elementType = R.find("elementType").readQualType();
     ArraySizeModifier sizeModifier = R.find("sizeModifier").readArraySizeModifier();
     Qualifiers indexQualifiers = R.find("indexQualifiers").readQualifiers();
     
     return ctx.getVariableArrayType(elementType, size, sizeModifier,
-                                    indexQualifiers.getCVRQualifiers(),
-                                    SourceRange(leftBracketLoc,
-                                                rightBracketLoc));
+                                    indexQualifiers.getCVRQualifiers());
   
   }
 
@@ -388,12 +380,8 @@ public:
     ElaboratedTypeKeyword keyword = R.find("keyword").readElaboratedTypeKeyword();
     NestedNameSpecifier * qualifier = R.find("qualifier").readNestedNameSpecifier();
     IdentifierInfo* name = R.find("name").readIdentifier();
-    std::optional<QualType> underlyingType = R.find("underlyingType").template readOptional<QualType>();
     
-    QualType canon = (underlyingType
-                        ? ctx.getCanonicalType(*underlyingType)
-                        : QualType());
-    return ctx.getDependentNameType(keyword, qualifier, name, canon);
+    return ctx.getDependentNameType(keyword, qualifier, name);
   
   }
 
@@ -409,14 +397,21 @@ public:
 
   QualType readDependentTemplateSpecializationType() {
     auto &ctx = R.getASTContext();
-    ElaboratedTypeKeyword keyword = R.find("keyword").readElaboratedTypeKeyword();
     NestedNameSpecifier * qualifier = R.find("qualifier").readNestedNameSpecifier();
-    IdentifierInfo* name = R.find("name").readIdentifier();
+    std::optional<IdentifierInfo*> identifier = R.find("identifier").template readOptional<IdentifierInfo*>();
+    std::optional<OverloadedOperatorKind> operatorKind;
+    if ( !identifier ) {
+      operatorKind.emplace(R.find("operatorKind").readOverloadedOperatorKind());
+    }
+    bool HasTemplateKeyword = R.find("HasTemplateKeyword").readBool();
+    ElaboratedTypeKeyword keyword = R.find("keyword").readElaboratedTypeKeyword();
     llvm::SmallVector<TemplateArgument, 8> templateArguments_buffer_0;
     llvm::ArrayRef<TemplateArgument> templateArguments = R.find("templateArguments").template readArray<TemplateArgument>(templateArguments_buffer_0);
     
-    return ctx.getDependentTemplateSpecializationType(keyword, qualifier,
-                                                      name, templateArguments);
+    DependentTemplateStorage S(qualifier, identifier ? IdentifierOrOverloadedOperator(*identifier) :
+                                                       IdentifierOrOverloadedOperator(*operatorKind),
+                               HasTemplateKeyword);
+    return ctx.getDependentTemplateSpecializationType(keyword, S, templateArguments);
   
   }
 
@@ -581,9 +576,10 @@ public:
   QualType readMemberPointerType() {
     auto &ctx = R.getASTContext();
     QualType pointeeType = R.find("pointeeType").readQualType();
-    QualType baseType = R.find("baseType").readQualType();
+    NestedNameSpecifier * Qualifier = R.find("Qualifier").readNestedNameSpecifier();
+    Decl* Cls = R.find("Cls").readDeclRef();
     
-    return ctx.getMemberPointerType(pointeeType, baseType.getTypePtr());
+    return ctx.getMemberPointerType(pointeeType, Qualifier, cast_or_null<CXXRecordDecl>(Cls));
   
   }
 
@@ -631,7 +627,7 @@ public:
   QualType readPackExpansionType() {
     auto &ctx = R.getASTContext();
     QualType pattern = R.find("pattern").readQualType();
-    std::optional<uint32_t> numExpansions = R.find("numExpansions").template readOptional<uint32_t>();
+    UnsignedOrNone numExpansions = R.find("numExpansions").readUnsignedOrNone();
     
     return ctx.getPackExpansionType(pattern, numExpansions,
                                     /*ExpectPackInType*/false);
@@ -706,11 +702,11 @@ public:
     QualType replacementType = R.find("replacementType").readQualType();
     Decl* associatedDecl = R.find("associatedDecl").readDeclRef();
     uint32_t Index = R.find("Index").readUInt32();
-    std::optional<uint32_t> PackIndex = R.find("PackIndex").template readOptional<uint32_t>();
-    SubstTemplateTypeParmTypeFlag SubstitutionFlag = R.find("SubstitutionFlag").readSubstTemplateTypeParmTypeFlag();
+    UnsignedOrNone PackIndex = R.find("PackIndex").readUnsignedOrNone();
+    bool Final = R.find("Final").readBool();
     
     return ctx.getSubstTemplateTypeParmType(
-        replacementType, associatedDecl, Index, PackIndex, SubstitutionFlag);
+        replacementType, associatedDecl, Index, PackIndex, Final);
   
   }
 
@@ -743,25 +739,12 @@ public:
 
   QualType readTemplateSpecializationType() {
     auto &ctx = R.getASTContext();
-    bool dependent = R.find("dependent").readBool();
     TemplateName templateName = R.find("templateName").readTemplateName();
-    llvm::SmallVector<TemplateArgument, 8> templateArguments_buffer_0;
-    llvm::ArrayRef<TemplateArgument> templateArguments = R.find("templateArguments").template readArray<TemplateArgument>(templateArguments_buffer_0);
-    std::optional<QualType> underlyingType = R.find("underlyingType").template readOptional<QualType>();
+    llvm::SmallVector<TemplateArgument, 8> args_buffer_0;
+    llvm::ArrayRef<TemplateArgument> args = R.find("args").template readArray<TemplateArgument>(args_buffer_0);
+    QualType UnderlyingType = R.find("UnderlyingType").readQualType();
     
-    QualType result;
-    if (!underlyingType) {
-      result = ctx.getCanonicalTemplateSpecializationType(templateName,
-                                                          templateArguments);
-    } else {
-      result = ctx.getTemplateSpecializationType(templateName,
-                                                 templateArguments,
-                                                 *underlyingType);
-    }
-    if (dependent)
-      const_cast<Type *>(result.getTypePtr())
-          ->addDependence(TypeDependence::DependentInstantiation);
-    return result;
+    return ctx.getTemplateSpecializationType(templateName, args, std::nullopt, UnderlyingType);
   
   }
 

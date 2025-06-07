@@ -268,10 +268,10 @@
 #define PACKAGE_NAME "LLVM"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "LLVM 20.0.0git"
+#define PACKAGE_STRING "LLVM 21.0.0git"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "20.0.0git"
+#define PACKAGE_VERSION "21.0.0git"
 
 /* Define to the vendor of this package. */
 /* #undef PACKAGE_VENDOR */
@@ -294,5 +294,7 @@
 /* #undef HAVE_PROC_PID_RUSAGE */
 
 #define HAVE_BUILTIN_THREAD_POINTER 1
+
+#define HAVE_GETAUXVAL 1
 
 #endif
