@@ -7,33 +7,52 @@
 \*===----------------------------------------------------------------------===*/
 
 
-#if defined(BUILTIN) && !defined(LIBBUILTIN)
-#  define LIBBUILTIN(ID, TYPE, ATTRS, HEADER, BUILTIN_LANG) BUILTIN(ID, TYPE, ATTRS)
+#ifdef GET_BUILTIN_ENUMERATORS
+    BI__builtin_spirv_distance,
+    BI__builtin_spirv_length,
+    BI__builtin_spirv_reflect,
+    BI__builtin_spirv_smoothstep,
+
+#endif // GET_BUILTIN_ENUMERATORS
+
+#ifdef GET_BUILTIN_STR_TABLE
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverlength-strings"
+#endif
+static constexpr char BuiltinStringsStorage[] = 
+  "\0"
+  "__builtin_spirv_distance\0"
+  "v.\0"
+  "nc\0"
+  "__builtin_spirv_length\0"
+  "__builtin_spirv_reflect\0"
+  "__builtin_spirv_smoothstep\0"
+  "nct\0"
+  ;
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
-#if defined(BUILTIN) && !defined(LANGBUILTIN)
-#  define LANGBUILTIN(ID, TYPE, ATTRS, BUILTIN_LANG) BUILTIN(ID, TYPE, ATTRS)
-#endif
+static constexpr llvm::StringTable BuiltinStrings =
+    BuiltinStringsStorage;
 
-// Some of our atomics builtins are handled by AtomicExpr rather than
-// as normal builtin CallExprs. This macro is used for such builtins.
-#ifndef ATOMIC_BUILTIN
-#  define ATOMIC_BUILTIN(ID, TYPE, ATTRS) BUILTIN(ID, TYPE, ATTRS)
-#endif
+#endif // GET_BUILTIN_STR_TABLE
 
-#if defined(BUILTIN) && !defined(TARGET_BUILTIN)
-#  define TARGET_BUILTIN(ID, TYPE, ATTRS, FEATURE) BUILTIN(ID, TYPE, ATTRS)
-#endif
+#ifdef GET_BUILTIN_INFOS
+    Builtin::Info{Builtin::Info::StrOffsets{1 /* __builtin_spirv_distance */, 26 /* v. */, 29 /* nc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{32 /* __builtin_spirv_length */, 26 /* v. */, 29 /* nc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{55 /* __builtin_spirv_reflect */, 26 /* v. */, 29 /* nc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{79 /* __builtin_spirv_smoothstep */, 26 /* v. */, 106 /* nct */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
 
-#if defined(BUILTIN) && !defined(TARGET_HEADER_BUILTIN)
-#  define TARGET_HEADER_BUILTIN(ID, TYPE, ATTRS, HEADER, LANG, FEATURE) BUILTIN(ID, TYPE, ATTRS)
-#endif
-BUILTIN(__builtin_spirv_distance, "v.", "nc")
-BUILTIN(__builtin_spirv_length, "v.", "nc")
+#endif // GET_BUILTIN_INFOS
 
+#ifdef GET_BUILTIN_PREFIXED_INFOS
+
+#endif // GET_BUILTIN_PREFIXED_INFOS
+
+#ifdef ATOMIC_BUILTIN
+
+#endif // ATOMIC_BUILTIN
 #undef ATOMIC_BUILTIN
-#undef BUILTIN
-#undef LIBBUILTIN
-#undef LANGBUILTIN
-#undef TARGET_BUILTIN
-#undef TARGET_HEADER_BUILTIN

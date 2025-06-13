@@ -1,17 +1,21 @@
-name: "llvm-project"
-description:
-    "The LLVM Project is a collection of modular and reusable compiler and "
-    "toolchain technologies."
+# This project was upgraded with external_updater.
+# Usage: tools/external_updater/updater.sh update external/opencl/llvm-project
+# For more info, check https://cs.android.com/android/platform/superproject/main/+/main:tools/external_updater/README.md
 
+name: "llvm-project"
+description: "The LLVM Project is a collection of modular and reusable compiler and toolchain technologies."
 third_party {
-homepage: "https://llvm.org/"
+  license_type: NOTICE
+  last_upgrade_date {
+    year: 2025
+    month: 5
+    day: 30
+  }
+  homepage: "https://llvm.org/"
   identifier {
     type: "Git"
     value: "https://github.com/llvm/llvm-project"
+    version: "e0a6905287050d57ea0413cba7f011803b1f65ef"
     primary_source: true
-    version: "7d172f96ff2c4c7cf5c428b79a3c18e067ce0079"
   }
-  version: "7d172f96ff2c4c7cf5c428b79a3c18e067ce0079"
-  last_upgrade_date { year: 2025 month: 4 day: 15 }
-  license_type: NOTICE
 }

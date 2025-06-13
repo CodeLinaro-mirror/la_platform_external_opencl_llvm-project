@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum PPCIntrinsics : unsigned {
 // Enum values for intrinsics.
-    ppc_addex = 9914,                                 // llvm.ppc.addex
+    ppc_addex = 10195,                                 // llvm.ppc.addex
     ppc_addf128_round_to_odd,                  // llvm.ppc.addf128.round.to.odd
     ppc_addg6s,                                // llvm.ppc.addg6s
     ppc_addg6sd,                               // llvm.ppc.addg6sd
@@ -433,6 +433,15 @@ enum PPCIntrinsics : unsigned {
     ppc_minfs,                                 // llvm.ppc.minfs
     ppc_mma_assemble_acc,                      // llvm.ppc.mma.assemble.acc
     ppc_mma_disassemble_acc,                   // llvm.ppc.mma.disassemble.acc
+    ppc_mma_dmmr,                              // llvm.ppc.mma.dmmr
+    ppc_mma_dmsetdmrz,                         // llvm.ppc.mma.dmsetdmrz
+    ppc_mma_dmxor,                             // llvm.ppc.mma.dmxor
+    ppc_mma_dmxvi8gerx4,                       // llvm.ppc.mma.dmxvi8gerx4
+    ppc_mma_dmxvi8gerx4pp,                     // llvm.ppc.mma.dmxvi8gerx4pp
+    ppc_mma_dmxvi8gerx4spp,                    // llvm.ppc.mma.dmxvi8gerx4spp
+    ppc_mma_pmdmxvi8gerx4,                     // llvm.ppc.mma.pmdmxvi8gerx4
+    ppc_mma_pmdmxvi8gerx4pp,                   // llvm.ppc.mma.pmdmxvi8gerx4pp
+    ppc_mma_pmdmxvi8gerx4spp,                  // llvm.ppc.mma.pmdmxvi8gerx4spp
     ppc_mma_pmxvbf16ger2,                      // llvm.ppc.mma.pmxvbf16ger2
     ppc_mma_pmxvbf16ger2nn,                    // llvm.ppc.mma.pmxvbf16ger2nn
     ppc_mma_pmxvbf16ger2np,                    // llvm.ppc.mma.pmxvbf16ger2np

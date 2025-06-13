@@ -11,11 +11,13 @@
 namespace llvm::Intrinsic {
 enum SPVIntrinsics : unsigned {
 // Enum values for intrinsics.
-    spv_all = 11546,                                   // llvm.spv.all
+    spv_all = 11836,                                   // llvm.spv.all
     spv_alloca,                                // llvm.spv.alloca
     spv_alloca_array,                          // llvm.spv.alloca.array
     spv_any,                                   // llvm.spv.any
+    spv_assign_aliasing_decoration,            // llvm.spv.assign.aliasing.decoration
     spv_assign_decoration,                     // llvm.spv.assign.decoration
+    spv_assign_fpmaxerror_decoration,          // llvm.spv.assign.fpmaxerror.decoration
     spv_assign_name,                           // llvm.spv.assign.name
     spv_assign_ptr_type,                       // llvm.spv.assign.ptr.type
     spv_assign_type,                           // llvm.spv.assign.type
@@ -36,6 +38,7 @@ enum SPVIntrinsics : unsigned {
     spv_firstbitlow,                           // llvm.spv.firstbitlow
     spv_firstbitshigh,                         // llvm.spv.firstbitshigh
     spv_firstbituhigh,                         // llvm.spv.firstbituhigh
+    spv_flattened_thread_id_in_group,          // llvm.spv.flattened.thread.id.in.group
     spv_frac,                                  // llvm.spv.frac
     spv_gep,                                   // llvm.spv.gep
     spv_group_id,                              // llvm.spv.group.id
@@ -54,6 +57,7 @@ enum SPVIntrinsics : unsigned {
     spv_normalize,                             // llvm.spv.normalize
     spv_ptrcast,                               // llvm.spv.ptrcast
     spv_radians,                               // llvm.spv.radians
+    spv_reflect,                               // llvm.spv.reflect
     spv_resource_getpointer,                   // llvm.spv.resource.getpointer
     spv_resource_handlefrombinding,            // llvm.spv.resource.handlefrombinding
     spv_resource_load_typedbuffer,             // llvm.spv.resource.load.typedbuffer
@@ -65,6 +69,7 @@ enum SPVIntrinsics : unsigned {
     spv_sdot,                                  // llvm.spv.sdot
     spv_selection_merge,                       // llvm.spv.selection.merge
     spv_sign,                                  // llvm.spv.sign
+    spv_smoothstep,                            // llvm.spv.smoothstep
     spv_step,                                  // llvm.spv.step
     spv_store,                                 // llvm.spv.store
     spv_switch,                                // llvm.spv.switch
