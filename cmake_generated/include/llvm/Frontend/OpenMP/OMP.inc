@@ -47,6 +47,7 @@ namespace omp {
     llvm::omp::Clause::OMPC_no_openmp,
     llvm::omp::Clause::OMPC_no_openmp_routines,
     llvm::omp::Clause::OMPC_no_parallelism,
+    llvm::omp::Clause::OMPC_no_openmp_constructs,
   };
 
   static OmpClauseSet allowedExclusiveClauses_OMPD_assume {
@@ -61,6 +62,12 @@ namespace omp {
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_assumes {
+    llvm::omp::Clause::OMPC_absent,
+    llvm::omp::Clause::OMPC_contains,
+    llvm::omp::Clause::OMPC_holds,
+    llvm::omp::Clause::OMPC_no_openmp,
+    llvm::omp::Clause::OMPC_no_openmp_routines,
+    llvm::omp::Clause::OMPC_no_parallelism,
   };
 
   static OmpClauseSet allowedExclusiveClauses_OMPD_assumes {
@@ -116,6 +123,12 @@ namespace omp {
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_begin_assumes {
+    llvm::omp::Clause::OMPC_absent,
+    llvm::omp::Clause::OMPC_contains,
+    llvm::omp::Clause::OMPC_holds,
+    llvm::omp::Clause::OMPC_no_openmp,
+    llvm::omp::Clause::OMPC_no_openmp_routines,
+    llvm::omp::Clause::OMPC_no_parallelism,
   };
 
   static OmpClauseSet allowedExclusiveClauses_OMPD_begin_assumes {
@@ -162,6 +175,7 @@ namespace omp {
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_cancel {
+    llvm::omp::Clause::OMPC_cancellation_construct_type,
     llvm::omp::Clause::OMPC_if,
   };
 
@@ -177,6 +191,7 @@ namespace omp {
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_cancellation_point {
+    llvm::omp::Clause::OMPC_cancellation_construct_type,
   };
 
   static OmpClauseSet allowedExclusiveClauses_OMPD_cancellation_point {
@@ -221,6 +236,7 @@ namespace omp {
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_declare_reduction {
+    llvm::omp::Clause::OMPC_initializer,
   };
 
   static OmpClauseSet allowedExclusiveClauses_OMPD_declare_reduction {
@@ -936,6 +952,7 @@ namespace omp {
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_metadirective {
+    llvm::omp::Clause::OMPC_otherwise,
     llvm::omp::Clause::OMPC_default,
   };
 
@@ -1392,6 +1409,7 @@ namespace omp {
     llvm::omp::Clause::OMPC_unified_shared_memory,
     llvm::omp::Clause::OMPC_atomic_default_mem_order,
     llvm::omp::Clause::OMPC_dynamic_allocators,
+    llvm::omp::Clause::OMPC_self_maps,
     llvm::omp::Clause::OMPC_reverse_offload,
   };
 
@@ -1516,17 +1534,32 @@ namespace omp {
     llvm::omp::Clause::OMPC_allocate,
     llvm::omp::Clause::OMPC_copyprivate,
     llvm::omp::Clause::OMPC_firstprivate,
-    llvm::omp::Clause::OMPC_nowait,
     llvm::omp::Clause::OMPC_private,
   };
 
   static OmpClauseSet allowedOnceClauses_OMPD_single {
+    llvm::omp::Clause::OMPC_nowait,
   };
 
   static OmpClauseSet allowedExclusiveClauses_OMPD_single {
   };
 
   static OmpClauseSet requiredClauses_OMPD_single {
+  };
+
+  // Sets for stripe
+
+  static OmpClauseSet allowedClauses_OMPD_stripe {
+  };
+
+  static OmpClauseSet allowedOnceClauses_OMPD_stripe {
+    llvm::omp::Clause::OMPC_sizes,
+  };
+
+  static OmpClauseSet allowedExclusiveClauses_OMPD_stripe {
+  };
+
+  static OmpClauseSet requiredClauses_OMPD_stripe {
   };
 
   // Sets for target
@@ -3392,6 +3425,14 @@ namespace omp {
       llvm::omp::requiredClauses_OMPD_single,
     }
   },
+  {llvm::omp::Directive::OMPD_stripe,
+    {
+      llvm::omp::allowedClauses_OMPD_stripe,
+      llvm::omp::allowedOnceClauses_OMPD_stripe,
+      llvm::omp::allowedExclusiveClauses_OMPD_stripe,
+      llvm::omp::requiredClauses_OMPD_stripe,
+    }
+  },
   {llvm::omp::Directive::OMPD_target,
     {
       llvm::omp::allowedClauses_OMPD_target,
@@ -3759,7 +3800,7 @@ namespace omp {
 #ifdef GEN_FLANG_CLAUSE_PARSER_CLASSES
 #undef GEN_FLANG_CLAUSE_PARSER_CLASSES
 
-EMPTY_CLASS(Absent);
+WRAPPER_CLASS(Absent, OmpAbsentClause);
 EMPTY_CLASS(AcqRel);
 EMPTY_CLASS(Acquire);
 EMPTY_CLASS(AdjustArgs);
@@ -3772,11 +3813,11 @@ EMPTY_CLASS(AppendArgs);
 WRAPPER_CLASS(At, OmpAtClause);
 WRAPPER_CLASS(AtomicDefaultMemOrder, OmpAtomicDefaultMemOrderClause);
 WRAPPER_CLASS(Bind, OmpBindClause);
-EMPTY_CLASS(CancellationConstructType);
+WRAPPER_CLASS(CancellationConstructType, OmpCancellationConstructTypeClause);
 EMPTY_CLASS(Capture);
 WRAPPER_CLASS(Collapse, ScalarIntConstantExpr);
 EMPTY_CLASS(Compare);
-EMPTY_CLASS(Contains);
+WRAPPER_CLASS(Contains, OmpContainsClause);
 WRAPPER_CLASS(Copyprivate, OmpObjectList);
 WRAPPER_CLASS(Copyin, OmpObjectList);
 WRAPPER_CLASS(Default, OmpDefaultClause);
@@ -3802,24 +3843,26 @@ EMPTY_CLASS(Full);
 WRAPPER_CLASS(Grainsize, OmpGrainsizeClause);
 WRAPPER_CLASS(HasDeviceAddr, OmpObjectList);
 WRAPPER_CLASS(Hint, ConstantExpr);
-EMPTY_CLASS(Holds);
+WRAPPER_CLASS(Holds, OmpHoldsClause);
 WRAPPER_CLASS(If, OmpIfClause);
 WRAPPER_CLASS(InReduction, OmpInReductionClause);
 EMPTY_CLASS(Inbranch);
 WRAPPER_CLASS(Inclusive, OmpObjectList);
 EMPTY_CLASS(Indirect);
-EMPTY_CLASS(Init);
+WRAPPER_CLASS(Init, OmpInitClause);
+WRAPPER_CLASS(Initializer, OmpInitializerClause);
 WRAPPER_CLASS(IsDevicePtr, OmpObjectList);
 WRAPPER_CLASS(Lastprivate, OmpLastprivateClause);
 WRAPPER_CLASS(Linear, OmpLinearClause);
 WRAPPER_CLASS(Link, OmpObjectList);
 WRAPPER_CLASS(Map, OmpMapClause);
-EMPTY_CLASS(Match);
+WRAPPER_CLASS(Match, OmpMatchClause);
 EMPTY_CLASS(MemoryOrder);
 EMPTY_CLASS(Mergeable);
 WRAPPER_CLASS(Message, OmpMessageClause);
 EMPTY_CLASS(Nogroup);
 EMPTY_CLASS(NoOpenmp);
+EMPTY_CLASS(NoOpenmpConstructs);
 EMPTY_CLASS(NoOpenmpRoutines);
 EMPTY_CLASS(NoParallelism);
 EMPTY_CLASS(Nowait);
@@ -3835,6 +3878,7 @@ EMPTY_CLASS(OmpxBare);
 WRAPPER_CLASS(OmpxDynCgroupMem, ScalarIntExpr);
 WRAPPER_CLASS(Order, OmpOrderClause);
 WRAPPER_CLASS(Ordered, std::optional<ScalarIntConstantExpr>);
+WRAPPER_CLASS(Otherwise, std::optional<OmpOtherwiseClause>);
 WRAPPER_CLASS(Partial, std::optional<ScalarIntConstantExpr>);
 WRAPPER_CLASS(Permutation, std::list<ScalarIntExpr>);
 WRAPPER_CLASS(Priority, ScalarIntExpr);
@@ -3847,6 +3891,7 @@ EMPTY_CLASS(Release);
 EMPTY_CLASS(ReverseOffload);
 WRAPPER_CLASS(Safelen, ScalarIntConstantExpr);
 WRAPPER_CLASS(Schedule, OmpScheduleClause);
+EMPTY_CLASS(SelfMaps);
 EMPTY_CLASS(SeqCst);
 WRAPPER_CLASS(Severity, OmpSeverityClause);
 WRAPPER_CLASS(Shared, OmpObjectList);
@@ -3864,12 +3909,12 @@ WRAPPER_CLASS(Uniform, std::list<Name>);
 EMPTY_CLASS(Unknown);
 EMPTY_CLASS(Untied);
 WRAPPER_CLASS(Update, OmpUpdateClause);
-EMPTY_CLASS(Use);
+WRAPPER_CLASS(Use, OmpUseClause);
 WRAPPER_CLASS(UseDeviceAddr, OmpObjectList);
 WRAPPER_CLASS(UseDevicePtr, OmpObjectList);
 EMPTY_CLASS(UsesAllocators);
 EMPTY_CLASS(Weak);
-EMPTY_CLASS(When);
+WRAPPER_CLASS(When, OmpWhenClause);
 EMPTY_CLASS(Write);
 
 #endif // GEN_FLANG_CLAUSE_PARSER_CLASSES
@@ -3927,6 +3972,7 @@ Absent
 , Inclusive
 , Indirect
 , Init
+, Initializer
 , IsDevicePtr
 , Lastprivate
 , Linear
@@ -3938,6 +3984,7 @@ Absent
 , Message
 , Nogroup
 , NoOpenmp
+, NoOpenmpConstructs
 , NoOpenmpRoutines
 , NoParallelism
 , Nowait
@@ -3953,6 +4000,7 @@ Absent
 , OmpxDynCgroupMem
 , Order
 , Ordered
+, Otherwise
 , Partial
 , Permutation
 , Priority
@@ -3965,6 +4013,7 @@ Absent
 , ReverseOffload
 , Safelen
 , Schedule
+, SelfMaps
 , SeqCst
 , Severity
 , Shared
@@ -4045,6 +4094,7 @@ NODE(OmpClause, Inbranch)
 NODE(OmpClause, Inclusive)
 NODE(OmpClause, Indirect)
 NODE(OmpClause, Init)
+NODE(OmpClause, Initializer)
 NODE(OmpClause, IsDevicePtr)
 NODE(OmpClause, Lastprivate)
 NODE(OmpClause, Linear)
@@ -4056,6 +4106,7 @@ NODE(OmpClause, Mergeable)
 NODE(OmpClause, Message)
 NODE(OmpClause, Nogroup)
 NODE(OmpClause, NoOpenmp)
+NODE(OmpClause, NoOpenmpConstructs)
 NODE(OmpClause, NoOpenmpRoutines)
 NODE(OmpClause, NoParallelism)
 NODE(OmpClause, Nowait)
@@ -4071,6 +4122,7 @@ NODE(OmpClause, OmpxBare)
 NODE(OmpClause, OmpxDynCgroupMem)
 NODE(OmpClause, Order)
 NODE(OmpClause, Ordered)
+NODE(OmpClause, Otherwise)
 NODE(OmpClause, Partial)
 NODE(OmpClause, Permutation)
 NODE(OmpClause, Priority)
@@ -4083,6 +4135,7 @@ NODE(OmpClause, Release)
 NODE(OmpClause, ReverseOffload)
 NODE(OmpClause, Safelen)
 NODE(OmpClause, Schedule)
+NODE(OmpClause, SelfMaps)
 NODE(OmpClause, SeqCst)
 NODE(OmpClause, Severity)
 NODE(OmpClause, Shared)
@@ -4113,7 +4166,12 @@ NODE(OmpClause, Write)
 #ifdef GEN_FLANG_CLAUSE_UNPARSE
 #undef GEN_FLANG_CLAUSE_UNPARSE
 
-void Before(const OmpClause::Absent &) { Word("ABSENT"); }
+void Unparse(const OmpClause::Absent &x) {
+  Word("ABSENT");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Before(const OmpClause::AcqRel &) { Word("ACQ_REL"); }
 void Before(const OmpClause::Acquire &) { Word("ACQUIRE"); }
 void Before(const OmpClause::AdjustArgs &) { Word("ADJUST_ARGS"); }
@@ -4166,7 +4224,12 @@ void Unparse(const OmpClause::Bind &x) {
   Walk(x.v);
   Put(")");
 }
-void Before(const OmpClause::CancellationConstructType &) { Word("CANCELLATION_CONSTRUCT_TYPE"); }
+void Unparse(const OmpClause::CancellationConstructType &x) {
+  Word("CANCELLATION_CONSTRUCT_TYPE");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Before(const OmpClause::Capture &) { Word("CAPTURE"); }
 void Unparse(const OmpClause::Collapse &x) {
   Word("COLLAPSE");
@@ -4175,7 +4238,12 @@ void Unparse(const OmpClause::Collapse &x) {
   Put(")");
 }
 void Before(const OmpClause::Compare &) { Word("COMPARE"); }
-void Before(const OmpClause::Contains &) { Word("CONTAINS"); }
+void Unparse(const OmpClause::Contains &x) {
+  Word("CONTAINS");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Unparse(const OmpClause::Copyprivate &x) {
   Word("COPYPRIVATE");
   Put("(");
@@ -4302,7 +4370,12 @@ void Unparse(const OmpClause::Hint &x) {
   Walk(x.v);
   Put(")");
 }
-void Before(const OmpClause::Holds &) { Word("HOLDS"); }
+void Unparse(const OmpClause::Holds &x) {
+  Word("HOLDS");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Unparse(const OmpClause::If &x) {
   Word("IF");
   Put("(");
@@ -4323,7 +4396,18 @@ void Unparse(const OmpClause::Inclusive &x) {
   Put(")");
 }
 void Before(const OmpClause::Indirect &) { Word("INDIRECT"); }
-void Before(const OmpClause::Init &) { Word("INIT"); }
+void Unparse(const OmpClause::Init &x) {
+  Word("INIT");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
+void Unparse(const OmpClause::Initializer &x) {
+  Word("INITIALIZER");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Unparse(const OmpClause::IsDevicePtr &x) {
   Word("IS_DEVICE_PTR");
   Put("(");
@@ -4354,7 +4438,12 @@ void Unparse(const OmpClause::Map &x) {
   Walk(x.v);
   Put(")");
 }
-void Before(const OmpClause::Match &) { Word("MATCH"); }
+void Unparse(const OmpClause::Match &x) {
+  Word("MATCH");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Before(const OmpClause::MemoryOrder &) { Word("MEMORY_ORDER"); }
 void Before(const OmpClause::Mergeable &) { Word("MERGEABLE"); }
 void Unparse(const OmpClause::Message &x) {
@@ -4365,6 +4454,7 @@ void Unparse(const OmpClause::Message &x) {
 }
 void Before(const OmpClause::Nogroup &) { Word("NOGROUP"); }
 void Before(const OmpClause::NoOpenmp &) { Word("NO_OPENMP"); }
+void Before(const OmpClause::NoOpenmpConstructs &) { Word("NO_OPENMP_CONSTRUCTS"); }
 void Before(const OmpClause::NoOpenmpRoutines &) { Word("NO_OPENMP_ROUTINES"); }
 void Before(const OmpClause::NoParallelism &) { Word("NO_PARALLELISM"); }
 void Before(const OmpClause::Nowait &) { Word("NOWAIT"); }
@@ -4423,6 +4513,10 @@ void Unparse(const OmpClause::Ordered &x) {
   Word("ORDERED");
   Walk("(", x.v, ")");
 }
+void Unparse(const OmpClause::Otherwise &x) {
+  Word("OTHERWISE");
+  Walk("(", x.v, ")");
+}
 void Unparse(const OmpClause::Partial &x) {
   Word("PARTIAL");
   Walk("(", x.v, ")");
@@ -4473,6 +4567,7 @@ void Unparse(const OmpClause::Schedule &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::SelfMaps &) { Word("SELF_MAPS"); }
 void Before(const OmpClause::SeqCst &) { Word("SEQ_CST"); }
 void Unparse(const OmpClause::Severity &x) {
   Word("SEVERITY");
@@ -4535,7 +4630,12 @@ void Unparse(const OmpClause::Update &x) {
   Walk(x.v);
   Put(")");
 }
-void Before(const OmpClause::Use &) { Word("USE"); }
+void Unparse(const OmpClause::Use &x) {
+  Word("USE");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Unparse(const OmpClause::UseDeviceAddr &x) {
   Word("USE_DEVICE_ADDR");
   Put("(");
@@ -4550,7 +4650,12 @@ void Unparse(const OmpClause::UseDevicePtr &x) {
 }
 void Before(const OmpClause::UsesAllocators &) { Word("USES_ALLOCATORS"); }
 void Before(const OmpClause::Weak &) { Word("WEAK"); }
-void Before(const OmpClause::When &) { Word("WHEN"); }
+void Unparse(const OmpClause::When &x) {
+  Word("WHEN");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Before(const OmpClause::Write &) { Word("WRITE"); }
 
 #endif // GEN_FLANG_CLAUSE_UNPARSE
@@ -4608,6 +4713,7 @@ void Enter(const parser::OmpClause::Inbranch &);
 void Enter(const parser::OmpClause::Inclusive &);
 void Enter(const parser::OmpClause::Indirect &);
 void Enter(const parser::OmpClause::Init &);
+void Enter(const parser::OmpClause::Initializer &);
 void Enter(const parser::OmpClause::IsDevicePtr &);
 void Enter(const parser::OmpClause::Lastprivate &);
 void Enter(const parser::OmpClause::Linear &);
@@ -4619,6 +4725,7 @@ void Enter(const parser::OmpClause::Mergeable &);
 void Enter(const parser::OmpClause::Message &);
 void Enter(const parser::OmpClause::Nogroup &);
 void Enter(const parser::OmpClause::NoOpenmp &);
+void Enter(const parser::OmpClause::NoOpenmpConstructs &);
 void Enter(const parser::OmpClause::NoOpenmpRoutines &);
 void Enter(const parser::OmpClause::NoParallelism &);
 void Enter(const parser::OmpClause::Nowait &);
@@ -4634,6 +4741,7 @@ void Enter(const parser::OmpClause::OmpxBare &);
 void Enter(const parser::OmpClause::OmpxDynCgroupMem &);
 void Enter(const parser::OmpClause::Order &);
 void Enter(const parser::OmpClause::Ordered &);
+void Enter(const parser::OmpClause::Otherwise &);
 void Enter(const parser::OmpClause::Partial &);
 void Enter(const parser::OmpClause::Permutation &);
 void Enter(const parser::OmpClause::Priority &);
@@ -4646,6 +4754,7 @@ void Enter(const parser::OmpClause::Release &);
 void Enter(const parser::OmpClause::ReverseOffload &);
 void Enter(const parser::OmpClause::Safelen &);
 void Enter(const parser::OmpClause::Schedule &);
+void Enter(const parser::OmpClause::SelfMaps &);
 void Enter(const parser::OmpClause::SeqCst &);
 void Enter(const parser::OmpClause::Severity &);
 void Enter(const parser::OmpClause::Shared &);
@@ -4776,6 +4885,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Indirect>)
   return llvm::omp::Clause::OMPC_indirect;
 if constexpr (std::is_same_v<A, parser::OmpClause::Init>)
   return llvm::omp::Clause::OMPC_init;
+if constexpr (std::is_same_v<A, parser::OmpClause::Initializer>)
+  return llvm::omp::Clause::OMPC_initializer;
 if constexpr (std::is_same_v<A, parser::OmpClause::IsDevicePtr>)
   return llvm::omp::Clause::OMPC_is_device_ptr;
 if constexpr (std::is_same_v<A, parser::OmpClause::Lastprivate>)
@@ -4798,6 +4909,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Nogroup>)
   return llvm::omp::Clause::OMPC_nogroup;
 if constexpr (std::is_same_v<A, parser::OmpClause::NoOpenmp>)
   return llvm::omp::Clause::OMPC_no_openmp;
+if constexpr (std::is_same_v<A, parser::OmpClause::NoOpenmpConstructs>)
+  return llvm::omp::Clause::OMPC_no_openmp_constructs;
 if constexpr (std::is_same_v<A, parser::OmpClause::NoOpenmpRoutines>)
   return llvm::omp::Clause::OMPC_no_openmp_routines;
 if constexpr (std::is_same_v<A, parser::OmpClause::NoParallelism>)
@@ -4828,6 +4941,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Order>)
   return llvm::omp::Clause::OMPC_order;
 if constexpr (std::is_same_v<A, parser::OmpClause::Ordered>)
   return llvm::omp::Clause::OMPC_ordered;
+if constexpr (std::is_same_v<A, parser::OmpClause::Otherwise>)
+  return llvm::omp::Clause::OMPC_otherwise;
 if constexpr (std::is_same_v<A, parser::OmpClause::Partial>)
   return llvm::omp::Clause::OMPC_partial;
 if constexpr (std::is_same_v<A, parser::OmpClause::Permutation>)
@@ -4852,6 +4967,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Safelen>)
   return llvm::omp::Clause::OMPC_safelen;
 if constexpr (std::is_same_v<A, parser::OmpClause::Schedule>)
   return llvm::omp::Clause::OMPC_schedule;
+if constexpr (std::is_same_v<A, parser::OmpClause::SelfMaps>)
+  return llvm::omp::Clause::OMPC_self_maps;
 if constexpr (std::is_same_v<A, parser::OmpClause::SeqCst>)
   return llvm::omp::Clause::OMPC_seq_cst;
 if constexpr (std::is_same_v<A, parser::OmpClause::Severity>)
@@ -4909,12 +5026,12 @@ llvm_unreachable("Invalid OpenMP Parser clause");
 
 TYPE_PARSER(
   "write" >> construct<OmpClause>(construct<OmpClause::Write>()) ||
-  "when" >> construct<OmpClause>(construct<OmpClause::When>()) ||
+  "when" >> construct<OmpClause>(construct<OmpClause::When>(parenthesized(Parser<OmpWhenClause>{}))) ||
   "weak" >> construct<OmpClause>(construct<OmpClause::Weak>()) ||
   "uses_allocators" >> construct<OmpClause>(construct<OmpClause::UsesAllocators>()) ||
   "use_device_ptr" >> construct<OmpClause>(construct<OmpClause::UseDevicePtr>(parenthesized(Parser<OmpObjectList>{}))) ||
   "use_device_addr" >> construct<OmpClause>(construct<OmpClause::UseDeviceAddr>(parenthesized(Parser<OmpObjectList>{}))) ||
-  "use" >> construct<OmpClause>(construct<OmpClause::Use>()) ||
+  "use" >> construct<OmpClause>(construct<OmpClause::Use>(parenthesized(Parser<OmpUseClause>{}))) ||
   "update" >> construct<OmpClause>(construct<OmpClause::Update>(parenthesized(Parser<OmpUpdateClause>{}))) ||
   "untied" >> construct<OmpClause>(construct<OmpClause::Untied>()) ||
   "unknown" >> construct<OmpClause>(construct<OmpClause::Unknown>()) ||
@@ -4932,6 +5049,7 @@ TYPE_PARSER(
   "shared" >> construct<OmpClause>(construct<OmpClause::Shared>(parenthesized(Parser<OmpObjectList>{}))) ||
   "severity" >> construct<OmpClause>(construct<OmpClause::Severity>(parenthesized(Parser<OmpSeverityClause>{}))) ||
   "seq_cst" >> construct<OmpClause>(construct<OmpClause::SeqCst>()) ||
+  "self_maps" >> construct<OmpClause>(construct<OmpClause::SelfMaps>()) ||
   "schedule" >> construct<OmpClause>(construct<OmpClause::Schedule>(parenthesized(Parser<OmpScheduleClause>{}))) ||
   "safelen" >> construct<OmpClause>(construct<OmpClause::Safelen>(parenthesized(scalarIntConstantExpr))) ||
   "reverse_offload" >> construct<OmpClause>(construct<OmpClause::ReverseOffload>()) ||
@@ -4944,6 +5062,7 @@ TYPE_PARSER(
   "priority" >> construct<OmpClause>(construct<OmpClause::Priority>(parenthesized(scalarIntExpr))) ||
   "permutation" >> construct<OmpClause>(construct<OmpClause::Permutation>(parenthesized(nonemptyList(scalarIntExpr)))) ||
   "partial" >> construct<OmpClause>(construct<OmpClause::Partial>(maybe(parenthesized(scalarIntConstantExpr)))) ||
+  "otherwise" >> construct<OmpClause>(construct<OmpClause::Otherwise>(maybe(parenthesized(Parser<OmpOtherwiseClause>{})))) ||
   "ordered" >> construct<OmpClause>(construct<OmpClause::Ordered>(maybe(parenthesized(scalarIntConstantExpr)))) ||
   "order" >> construct<OmpClause>(construct<OmpClause::Order>(parenthesized(Parser<OmpOrderClause>{}))) ||
   "ompx_dyn_cgroup_mem" >> construct<OmpClause>(construct<OmpClause::OmpxDynCgroupMem>(parenthesized(scalarIntExpr))) ||
@@ -4960,23 +5079,25 @@ TYPE_PARSER(
   "nocontext" >> construct<OmpClause>(construct<OmpClause::Nocontext>(parenthesized(scalarLogicalExpr))) ||
   "no_parallelism" >> construct<OmpClause>(construct<OmpClause::NoParallelism>()) ||
   "no_openmp_routines" >> construct<OmpClause>(construct<OmpClause::NoOpenmpRoutines>()) ||
+  "no_openmp_constructs" >> construct<OmpClause>(construct<OmpClause::NoOpenmpConstructs>()) ||
   "no_openmp" >> construct<OmpClause>(construct<OmpClause::NoOpenmp>()) ||
   "message" >> construct<OmpClause>(construct<OmpClause::Message>(parenthesized(Parser<OmpMessageClause>{}))) ||
   "mergeable" >> construct<OmpClause>(construct<OmpClause::Mergeable>()) ||
   "memory_order" >> construct<OmpClause>(construct<OmpClause::MemoryOrder>()) ||
-  "match" >> construct<OmpClause>(construct<OmpClause::Match>()) ||
+  "match" >> construct<OmpClause>(construct<OmpClause::Match>(parenthesized(Parser<OmpMatchClause>{}))) ||
   "map" >> construct<OmpClause>(construct<OmpClause::Map>(parenthesized(Parser<OmpMapClause>{}))) ||
   "link" >> construct<OmpClause>(construct<OmpClause::Link>(parenthesized(Parser<OmpObjectList>{}))) ||
   "linear" >> construct<OmpClause>(construct<OmpClause::Linear>(parenthesized(Parser<OmpLinearClause>{}))) ||
   "lastprivate" >> construct<OmpClause>(construct<OmpClause::Lastprivate>(parenthesized(Parser<OmpLastprivateClause>{}))) ||
   "is_device_ptr" >> construct<OmpClause>(construct<OmpClause::IsDevicePtr>(parenthesized(Parser<OmpObjectList>{}))) ||
-  "init" >> construct<OmpClause>(construct<OmpClause::Init>()) ||
+  "initializer" >> construct<OmpClause>(construct<OmpClause::Initializer>(parenthesized(Parser<OmpInitializerClause>{}))) ||
+  "init" >> construct<OmpClause>(construct<OmpClause::Init>(parenthesized(Parser<OmpInitClause>{}))) ||
   "indirect" >> construct<OmpClause>(construct<OmpClause::Indirect>()) ||
   "inclusive" >> construct<OmpClause>(construct<OmpClause::Inclusive>(parenthesized(Parser<OmpObjectList>{}))) ||
   "inbranch" >> construct<OmpClause>(construct<OmpClause::Inbranch>()) ||
   "in_reduction" >> construct<OmpClause>(construct<OmpClause::InReduction>(parenthesized(Parser<OmpInReductionClause>{}))) ||
   "if" >> construct<OmpClause>(construct<OmpClause::If>(parenthesized(Parser<OmpIfClause>{}))) ||
-  "holds" >> construct<OmpClause>(construct<OmpClause::Holds>()) ||
+  "holds" >> construct<OmpClause>(construct<OmpClause::Holds>(parenthesized(Parser<OmpHoldsClause>{}))) ||
   "hint" >> construct<OmpClause>(construct<OmpClause::Hint>(parenthesized(Parser<ConstantExpr>{}))) ||
   "has_device_addr" >> construct<OmpClause>(construct<OmpClause::HasDeviceAddr>(parenthesized(Parser<OmpObjectList>{}))) ||
   "grainsize" >> construct<OmpClause>(construct<OmpClause::Grainsize>(parenthesized(Parser<OmpGrainsizeClause>{}))) ||
@@ -5002,11 +5123,11 @@ TYPE_PARSER(
   "default" >> construct<OmpClause>(construct<OmpClause::Default>(parenthesized(Parser<OmpDefaultClause>{}))) ||
   "copyprivate" >> construct<OmpClause>(construct<OmpClause::Copyprivate>(parenthesized(Parser<OmpObjectList>{}))) ||
   "copyin" >> construct<OmpClause>(construct<OmpClause::Copyin>(parenthesized(Parser<OmpObjectList>{}))) ||
-  "contains" >> construct<OmpClause>(construct<OmpClause::Contains>()) ||
+  "contains" >> construct<OmpClause>(construct<OmpClause::Contains>(parenthesized(Parser<OmpContainsClause>{}))) ||
   "compare" >> construct<OmpClause>(construct<OmpClause::Compare>()) ||
   "collapse" >> construct<OmpClause>(construct<OmpClause::Collapse>(parenthesized(scalarIntConstantExpr))) ||
   "capture" >> construct<OmpClause>(construct<OmpClause::Capture>()) ||
-  "cancellation_construct_type" >> construct<OmpClause>(construct<OmpClause::CancellationConstructType>()) ||
+  "cancellation_construct_type" >> construct<OmpClause>(construct<OmpClause::CancellationConstructType>(parenthesized(Parser<OmpCancellationConstructTypeClause>{}))) ||
   "bind" >> construct<OmpClause>(construct<OmpClause::Bind>(parenthesized(Parser<OmpBindClause>{}))) ||
   "atomic_default_mem_order" >> construct<OmpClause>(construct<OmpClause::AtomicDefaultMemOrder>(parenthesized(Parser<OmpAtomicDefaultMemOrderClause>{}))) ||
   "at" >> construct<OmpClause>(construct<OmpClause::At>(parenthesized(Parser<OmpAtClause>{}))) ||
@@ -5019,7 +5140,7 @@ TYPE_PARSER(
   "adjust_args" >> construct<OmpClause>(construct<OmpClause::AdjustArgs>()) ||
   "acquire" >> construct<OmpClause>(construct<OmpClause::Acquire>()) ||
   "acq_rel" >> construct<OmpClause>(construct<OmpClause::AcqRel>()) ||
-  "absent" >> construct<OmpClause>(construct<OmpClause::Absent>())
+  "absent" >> construct<OmpClause>(construct<OmpClause::Absent>(parenthesized(Parser<OmpAbsentClause>{})))
 )
 
 #endif // GEN_FLANG_CLAUSES_PARSER
@@ -5100,6 +5221,7 @@ __CLAUSE_NO_CLASS(inbranch)
 __CLAUSE(inclusive, OMPInclusiveClause)
 __CLAUSE_NO_CLASS(indirect)
 __CLAUSE(init, OMPInitClause)
+__CLAUSE_NO_CLASS(initializer)
 __CLAUSE(is_device_ptr, OMPIsDevicePtrClause)
 __CLAUSE(lastprivate, OMPLastprivateClause)
 __CLAUSE(linear, OMPLinearClause)
@@ -5111,6 +5233,7 @@ __CLAUSE(mergeable, OMPMergeableClause)
 __CLAUSE(message, OMPMessageClause)
 __CLAUSE(nogroup, OMPNogroupClause)
 __CLAUSE(no_openmp, OMPNoOpenMPClause)
+__CLAUSE(no_openmp_constructs, OMPNoOpenMPConstructsClause)
 __CLAUSE(no_openmp_routines, OMPNoOpenMPRoutinesClause)
 __CLAUSE(no_parallelism, OMPNoParallelismClause)
 __CLAUSE(nowait, OMPNowaitClause)
@@ -5126,6 +5249,7 @@ __CLAUSE(ompx_bare, OMPXBareClause)
 __CLAUSE(ompx_dyn_cgroup_mem, OMPXDynCGroupMemClause)
 __CLAUSE(order, OMPOrderClause)
 __CLAUSE(ordered, OMPOrderedClause)
+__CLAUSE_NO_CLASS(otherwise)
 __CLAUSE(partial, OMPPartialClause)
 __CLAUSE(permutation, OMPPermutationClause)
 __CLAUSE(priority, OMPPriorityClause)
@@ -5138,6 +5262,7 @@ __CLAUSE(release, OMPReleaseClause)
 __CLAUSE(reverse_offload, OMPReverseOffloadClause)
 __CLAUSE(safelen, OMPSafelenClause)
 __CLAUSE(schedule, OMPScheduleClause)
+__CLAUSE(self_maps, OMPSelfMapsClause)
 __CLAUSE(seq_cst, OMPSeqCstClause)
 __CLAUSE(severity, OMPSeverityClause)
 __CLAUSE(shared, OMPSharedClause)
@@ -5249,6 +5374,7 @@ Directive llvm::omp::getOpenMPDirectiveKind(llvm::StringRef Str) {
     .Case("sections",OMPD_sections)
     .Case("simd",OMPD_simd)
     .Case("single",OMPD_single)
+    .Case("stripe",OMPD_stripe)
     .Case("target",OMPD_target)
     .Case("target data",OMPD_target_data)
     .Case("target enter data",OMPD_target_enter_data)
@@ -5437,6 +5563,8 @@ llvm::StringRef llvm::omp::getOpenMPDirectiveName(Directive Kind) {
       return "simd";
     case OMPD_single:
       return "single";
+    case OMPD_stripe:
+      return "stripe";
     case OMPD_target:
       return "target";
     case OMPD_target_data:
@@ -5583,6 +5711,7 @@ Clause llvm::omp::getOpenMPClauseKind(llvm::StringRef Str) {
     .Case("inclusive",OMPC_inclusive)
     .Case("indirect",OMPC_indirect)
     .Case("init",OMPC_init)
+    .Case("initializer",OMPC_initializer)
     .Case("is_device_ptr",OMPC_is_device_ptr)
     .Case("lastprivate",OMPC_lastprivate)
     .Case("linear",OMPC_linear)
@@ -5594,6 +5723,7 @@ Clause llvm::omp::getOpenMPClauseKind(llvm::StringRef Str) {
     .Case("message",OMPC_message)
     .Case("nogroup",OMPC_nogroup)
     .Case("no_openmp",OMPC_no_openmp)
+    .Case("no_openmp_constructs",OMPC_no_openmp_constructs)
     .Case("no_openmp_routines",OMPC_no_openmp_routines)
     .Case("no_parallelism",OMPC_no_parallelism)
     .Case("nowait",OMPC_nowait)
@@ -5609,6 +5739,7 @@ Clause llvm::omp::getOpenMPClauseKind(llvm::StringRef Str) {
     .Case("ompx_dyn_cgroup_mem",OMPC_ompx_dyn_cgroup_mem)
     .Case("order",OMPC_order)
     .Case("ordered",OMPC_ordered)
+    .Case("otherwise",OMPC_otherwise)
     .Case("partial",OMPC_partial)
     .Case("permutation",OMPC_permutation)
     .Case("priority",OMPC_priority)
@@ -5621,6 +5752,7 @@ Clause llvm::omp::getOpenMPClauseKind(llvm::StringRef Str) {
     .Case("reverse_offload",OMPC_reverse_offload)
     .Case("safelen",OMPC_safelen)
     .Case("schedule",OMPC_schedule)
+    .Case("self_maps",OMPC_self_maps)
     .Case("seq_cst",OMPC_seq_cst)
     .Case("severity",OMPC_severity)
     .Case("shared",OMPC_shared)
@@ -5750,6 +5882,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(Clause Kind) {
       return "indirect";
     case OMPC_init:
       return "init";
+    case OMPC_initializer:
+      return "initializer";
     case OMPC_is_device_ptr:
       return "is_device_ptr";
     case OMPC_lastprivate:
@@ -5772,6 +5906,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(Clause Kind) {
       return "nogroup";
     case OMPC_no_openmp:
       return "no_openmp";
+    case OMPC_no_openmp_constructs:
+      return "no_openmp_constructs";
     case OMPC_no_openmp_routines:
       return "no_openmp_routines";
     case OMPC_no_parallelism:
@@ -5802,6 +5938,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(Clause Kind) {
       return "order";
     case OMPC_ordered:
       return "ordered";
+    case OMPC_otherwise:
+      return "otherwise";
     case OMPC_partial:
       return "partial";
     case OMPC_permutation:
@@ -5826,6 +5964,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(Clause Kind) {
       return "safelen";
     case OMPC_schedule:
       return "schedule";
+    case OMPC_self_maps:
+      return "self_maps";
     case OMPC_seq_cst:
       return "seq_cst";
     case OMPC_severity:
@@ -6098,12 +6238,29 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
           return 51 <= Version && 2147483647 >= Version;
         case OMPC_no_parallelism:
           return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_openmp_constructs:
+          return 60 <= Version && 2147483647 >= Version;
         default:
           return false;
       }
       break;
     case OMPD_assumes:
-      return false;
+      switch (C) {
+        case OMPC_absent:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_contains:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_holds:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_openmp:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_openmp_routines:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_parallelism:
+          return 51 <= Version && 2147483647 >= Version;
+        default:
+          return false;
+      }
       break;
     case OMPD_atomic:
       switch (C) {
@@ -6141,7 +6298,22 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
       return false;
       break;
     case OMPD_begin_assumes:
-      return false;
+      switch (C) {
+        case OMPC_absent:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_contains:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_holds:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_openmp:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_openmp_routines:
+          return 51 <= Version && 2147483647 >= Version;
+        case OMPC_no_parallelism:
+          return 51 <= Version && 2147483647 >= Version;
+        default:
+          return false;
+      }
       break;
     case OMPD_begin_declare_target:
       switch (C) {
@@ -6162,6 +6334,8 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
       break;
     case OMPD_cancel:
       switch (C) {
+        case OMPC_cancellation_construct_type:
+          return 1 <= Version && 2147483647 >= Version;
         case OMPC_if:
           return 1 <= Version && 2147483647 >= Version;
         default:
@@ -6169,7 +6343,12 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
       }
       break;
     case OMPD_cancellation_point:
-      return false;
+      switch (C) {
+        case OMPC_cancellation_construct_type:
+          return 1 <= Version && 2147483647 >= Version;
+        default:
+          return false;
+      }
       break;
     case OMPD_critical:
       switch (C) {
@@ -6188,7 +6367,12 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
       }
       break;
     case OMPD_declare_reduction:
-      return false;
+      switch (C) {
+        case OMPC_initializer:
+          return 1 <= Version && 2147483647 >= Version;
+        default:
+          return false;
+      }
       break;
     case OMPD_declare_simd:
       switch (C) {
@@ -6900,8 +7084,10 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
       switch (C) {
         case OMPC_when:
           return 1 <= Version && 2147483647 >= Version;
+        case OMPC_otherwise:
+          return 52 <= Version && 2147483647 >= Version;
         case OMPC_default:
-          return 1 <= Version && 2147483647 >= Version;
+          return 50 <= Version && 51 >= Version;
         default:
           return false;
       }
@@ -7457,6 +7643,8 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
           return 1 <= Version && 2147483647 >= Version;
         case OMPC_dynamic_allocators:
           return 1 <= Version && 2147483647 >= Version;
+        case OMPC_self_maps:
+          return 1 <= Version && 2147483647 >= Version;
         case OMPC_reverse_offload:
           return 99 <= Version && 2147483647 >= Version;
         default:
@@ -7551,10 +7739,18 @@ bool llvm::omp::isAllowedClauseForDirective(Directive D, Clause C, unsigned Vers
           return 1 <= Version && 2147483647 >= Version;
         case OMPC_firstprivate:
           return 1 <= Version && 2147483647 >= Version;
-        case OMPC_nowait:
-          return 1 <= Version && 2147483647 >= Version;
         case OMPC_private:
           return 1 <= Version && 2147483647 >= Version;
+        case OMPC_nowait:
+          return 1 <= Version && 2147483647 >= Version;
+        default:
+          return false;
+      }
+      break;
+    case OMPD_stripe:
+      switch (C) {
+        case OMPC_sizes:
+          return 60 <= Version && 2147483647 >= Version;
         default:
           return false;
       }
@@ -9310,6 +9506,8 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
     return llvm::omp::Association::Loop;
   case llvm::omp::Directive::OMPD_single:
     return llvm::omp::Association::Block;
+  case llvm::omp::Directive::OMPD_stripe:
+    return llvm::omp::Association::Loop;
   case llvm::omp::Directive::OMPD_target:
     return llvm::omp::Association::Block;
   case llvm::omp::Directive::OMPD_target_data:
@@ -9544,6 +9742,8 @@ llvm::omp::Category llvm::omp::getDirectiveCategory(llvm::omp::Directive Dir) {
     return llvm::omp::Category::Executable;
   case llvm::omp::OMPD_single:
     return llvm::omp::Category::Executable;
+  case llvm::omp::OMPD_stripe:
+    return llvm::omp::Category::Executable;
   case llvm::omp::OMPD_target:
     return llvm::omp::Category::Executable;
   case llvm::omp::OMPD_target_data:
@@ -9677,6 +9877,7 @@ static_assert(sizeof(llvm::omp::Directive) == sizeof(int));
     {llvm::omp::OMPD_sections, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_simd, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_single, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
+    {llvm::omp::OMPD_stripe, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_target, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_target_data, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_target_enter_data, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
@@ -9756,10 +9957,10 @@ static_assert(sizeof(llvm::omp::Directive) == sizeof(int));
     {llvm::omp::OMPD_end_do_simd, static_cast<llvm::omp::Directive>(2), llvm::omp::OMPD_do, llvm::omp::OMPD_simd, static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
 };
 
-[[maybe_unused]] static auto LeafConstructTableEndDirective = LeafConstructTable + 105;
+[[maybe_unused]] static auto LeafConstructTableEndDirective = LeafConstructTable + 106;
 
 [[maybe_unused]] static const int LeafConstructTableOrdering[] = {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 57, 58, 59, 60, 61, 19, 62, 105, 106, 107, 108, 113, 109, 110, 111, 112, 20, 21, 22, 63, 23, 103, 104, 24, 64, 65, 25, 26, 27, 28, 66, 67, 68, 69, 76, 77, 78, 70, 71, 72, 73, 74, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 79, 80, 81, 82, 83, 85, 86, 87, 88, 89, 90, 91, 92, 41, 42, 43, 44, 95, 45, 46, 47, 96, 97, 98, 99, 100, 101, 48, 49, 50, 51, 52, 53, 54, 55, 56, 75, 94, 84, 93, 102,
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 58, 59, 60, 61, 62, 19, 63, 106, 107, 108, 109, 114, 110, 111, 112, 113, 20, 21, 22, 64, 23, 104, 105, 24, 65, 66, 25, 26, 27, 28, 67, 68, 69, 70, 77, 78, 79, 71, 72, 73, 74, 75, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 80, 81, 82, 83, 84, 86, 87, 88, 89, 90, 91, 92, 93, 42, 43, 44, 45, 96, 46, 47, 48, 97, 98, 99, 100, 101, 102, 49, 50, 51, 52, 53, 54, 55, 56, 57, 76, 95, 85, 94, 103,
 };
 
 #endif // GEN_DIRECTIVES_IMPL

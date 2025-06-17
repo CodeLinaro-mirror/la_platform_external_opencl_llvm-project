@@ -139,6 +139,31 @@
     const auto *SA = cast<AssertCapabilityAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
   }
+  void VisitAtomicAttr(const AtomicAttr *A) {
+    const auto *SA = cast<AtomicAttr>(A); (void)SA;
+    for (AtomicAttr::atomicOptions_iterator I = SA->atomicOptions_begin(), E = SA->atomicOptions_end(); I != E; ++I) {
+      switch(*I) {
+    case AtomicAttr::ConsumedOption::remote_memory:
+      OS << " remote_memory";
+      break;
+    case AtomicAttr::ConsumedOption::no_remote_memory:
+      OS << " no_remote_memory";
+      break;
+    case AtomicAttr::ConsumedOption::fine_grained_memory:
+      OS << " fine_grained_memory";
+      break;
+    case AtomicAttr::ConsumedOption::no_fine_grained_memory:
+      OS << " no_fine_grained_memory";
+      break;
+    case AtomicAttr::ConsumedOption::ignore_denormal_mode:
+      OS << " ignore_denormal_mode";
+      break;
+    case AtomicAttr::ConsumedOption::no_ignore_denormal_mode:
+      OS << " no_ignore_denormal_mode";
+      break;
+      }
+    }
+  }
   void VisitAvailabilityAttr(const AvailabilityAttr *A) {
     const auto *SA = cast<AvailabilityAttr>(A); (void)SA;
     if (SA->getPlatform())
@@ -362,6 +387,12 @@
     const auto *SA = cast<FormatArgAttr>(A); (void)SA;
     OS << " " << SA->getFormatIdx().getSourceIndex();
   }
+  void VisitFormatMatchesAttr(const FormatMatchesAttr *A) {
+    const auto *SA = cast<FormatMatchesAttr>(A); (void)SA;
+    if (SA->getType())
+      OS << " " << SA->getType()->getName();
+    OS << " " << SA->getFormatIdx();
+  }
   void VisitFunctionReturnThunksAttr(const FunctionReturnThunksAttr *A) {
     const auto *SA = cast<FunctionReturnThunksAttr>(A); (void)SA;
     switch(SA->getThunkType()) {
@@ -400,67 +431,6 @@
     const auto *SA = cast<HLSLParamModifierAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
     if (SA->getMergedSpelling()) OS << " MergedSpelling";
-  }
-  void VisitHLSLResourceAttr(const HLSLResourceAttr *A) {
-    const auto *SA = cast<HLSLResourceAttr>(A); (void)SA;
-    switch(SA->getResourceKind()) {
-    case llvm::hlsl::ResourceKind::Texture1D:
-      OS << " Texture1D";
-      break;
-    case llvm::hlsl::ResourceKind::Texture2D:
-      OS << " Texture2D";
-      break;
-    case llvm::hlsl::ResourceKind::Texture2DMS:
-      OS << " Texture2DMS";
-      break;
-    case llvm::hlsl::ResourceKind::Texture3D:
-      OS << " Texture3D";
-      break;
-    case llvm::hlsl::ResourceKind::TextureCube:
-      OS << " TextureCube";
-      break;
-    case llvm::hlsl::ResourceKind::Texture1DArray:
-      OS << " Texture1DArray";
-      break;
-    case llvm::hlsl::ResourceKind::Texture2DArray:
-      OS << " Texture2DArray";
-      break;
-    case llvm::hlsl::ResourceKind::Texture2DMSArray:
-      OS << " Texture2DMSArray";
-      break;
-    case llvm::hlsl::ResourceKind::TextureCubeArray:
-      OS << " TextureCubeArray";
-      break;
-    case llvm::hlsl::ResourceKind::TypedBuffer:
-      OS << " TypedBuffer";
-      break;
-    case llvm::hlsl::ResourceKind::RawBuffer:
-      OS << " RawBuffer";
-      break;
-    case llvm::hlsl::ResourceKind::StructuredBuffer:
-      OS << " StructuredBuffer";
-      break;
-    case llvm::hlsl::ResourceKind::CBuffer:
-      OS << " CBuffer";
-      break;
-    case llvm::hlsl::ResourceKind::Sampler:
-      OS << " Sampler";
-      break;
-    case llvm::hlsl::ResourceKind::TBuffer:
-      OS << " TBuffer";
-      break;
-    case llvm::hlsl::ResourceKind::RTAccelerationStructure:
-      OS << " RTAccelerationStructure";
-      break;
-    case llvm::hlsl::ResourceKind::FeedbackTexture2D:
-      OS << " FeedbackTexture2D";
-      break;
-    case llvm::hlsl::ResourceKind::FeedbackTexture2DArray:
-      OS << " FeedbackTexture2DArray";
-      break;
-    default:
-      llvm_unreachable("Invalid attribute value");
-    }
   }
   void VisitHLSLResourceBindingAttr(const HLSLResourceBindingAttr *A) {
     const auto *SA = cast<HLSLResourceBindingAttr>(A); (void)SA;
@@ -939,6 +909,7 @@
     const auto *SA = cast<PatchableFunctionEntryAttr>(A); (void)SA;
     OS << " " << SA->getCount();
     OS << " " << SA->getOffset();
+    OS << " \"" << SA->getSection() << "\"";
   }
   void VisitPcsAttr(const PcsAttr *A) {
     const auto *SA = cast<PcsAttr>(A); (void)SA;
@@ -954,6 +925,12 @@
   void VisitPointerAttr(const PointerAttr *A) {
     const auto *SA = cast<PointerAttr>(A); (void)SA;
     if (SA->getDerefTypeLoc())    OS << " " << SA->getDerefType().getAsString();
+  }
+  void VisitPointerAuthAttr(const PointerAuthAttr *A) {
+    const auto *SA = cast<PointerAuthAttr>(A); (void)SA;
+    OS << " " << SA->getKey();
+    if (SA->getAddressDiscriminated()) OS << " AddressDiscriminated";
+    OS << " " << SA->getExtraDiscriminator();
   }
   void VisitPragmaClangBSSSectionAttr(const PragmaClangBSSSectionAttr *A) {
     const auto *SA = cast<PragmaClangBSSSectionAttr>(A); (void)SA;
@@ -992,7 +969,18 @@
     case RISCVInterruptAttr::InterruptType::machine:
       OS << " machine";
       break;
+    case RISCVInterruptAttr::InterruptType::qcinest:
+      OS << " qcinest";
+      break;
+    case RISCVInterruptAttr::InterruptType::qcinonest:
+      OS << " qcinonest";
+      break;
     }
+  }
+  void VisitRISCVVLSCCAttr(const RISCVVLSCCAttr *A) {
+    const auto *SA = cast<RISCVVLSCCAttr>(A); (void)SA;
+    OS << " " << A->getSpelling();
+    OS << " " << SA->getVectorWidth();
   }
   void VisitRISCVVectorCCAttr(const RISCVVectorCCAttr *A) {
     OS << " " << A->getSpelling();
@@ -1005,18 +993,15 @@
     const auto *SA = cast<ReleaseHandleAttr>(A); (void)SA;
     OS << " \"" << SA->getHandleType() << "\"";
   }
-  void VisitReqdWorkGroupSizeAttr(const ReqdWorkGroupSizeAttr *A) {
-    const auto *SA = cast<ReqdWorkGroupSizeAttr>(A); (void)SA;
-    OS << " " << SA->getXDim();
-    OS << " " << SA->getYDim();
-    OS << " " << SA->getZDim();
-  }
   void VisitRequiresCapabilityAttr(const RequiresCapabilityAttr *A) {
     const auto *SA = cast<RequiresCapabilityAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
   }
   void VisitRestrictAttr(const RestrictAttr *A) {
+    const auto *SA = cast<RestrictAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
+    if (SA->getDeallocatorPtrArgIndex().isValid())
+      OS << " " << SA->getDeallocatorPtrArgIndex().getSourceIndex();
   }
   void VisitReturnTypestateAttr(const ReturnTypestateAttr *A) {
     const auto *SA = cast<ReturnTypestateAttr>(A); (void)SA;
@@ -1339,12 +1324,6 @@
   void VisitWebAssemblyImportNameAttr(const WebAssemblyImportNameAttr *A) {
     const auto *SA = cast<WebAssemblyImportNameAttr>(A); (void)SA;
     OS << " \"" << SA->getImportName() << "\"";
-  }
-  void VisitWorkGroupSizeHintAttr(const WorkGroupSizeHintAttr *A) {
-    const auto *SA = cast<WorkGroupSizeHintAttr>(A); (void)SA;
-    OS << " " << SA->getXDim();
-    OS << " " << SA->getYDim();
-    OS << " " << SA->getZDim();
   }
   void VisitXRayInstrumentAttr(const XRayInstrumentAttr *A) {
     OS << " " << A->getSpelling();

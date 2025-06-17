@@ -43,6 +43,7 @@
 #if defined(CLANG_ATTR_IDENTIFIER_ARG_LIST)
 .Case("__clang_arm_builtin_alias", true)
 .Case("argument_with_type_tag", true)
+.Case("atomic", true)
 .Case("availability", true)
 .Case("blocks", true)
 .Case("builtin_alias", true)
@@ -53,6 +54,7 @@
 .Case("declare target", true)
 .Case("enum_extensibility", true)
 .Case("format", true)
+.Case("format_matches", true)
 .Case("function_return", true)
 .Case("guard", true)
 .Case("interrupt", (Syntax==AttributeCommonInfo::AS_GNU && !ScopeName && true && (T.getArch() == llvm::Triple::arm || T.getArch() == llvm::Triple::thumb || T.getArch() == llvm::Triple::armeb || T.getArch() == llvm::Triple::thumbeb)) ? 1 : (Syntax==AttributeCommonInfo::AS_CXX11 && ScopeName && ScopeName->getName()=="gnu" && true && (T.getArch() == llvm::Triple::arm || T.getArch() == llvm::Triple::thumb || T.getArch() == llvm::Triple::armeb || T.getArch() == llvm::Triple::thumbeb)) ? 1 : (Syntax==AttributeCommonInfo::AS_C23 && ScopeName && ScopeName->getName()=="gnu" && true && (T.getArch() == llvm::Triple::arm || T.getArch() == llvm::Triple::thumb || T.getArch() == llvm::Triple::armeb || T.getArch() == llvm::Triple::thumbeb)) ? 1 : (Syntax==AttributeCommonInfo::AS_GNU && !ScopeName && true && (T.getArch() == llvm::Triple::mips || T.getArch() == llvm::Triple::mipsel)) ? 1 : (Syntax==AttributeCommonInfo::AS_CXX11 && ScopeName && ScopeName->getName()=="gnu" && true && (T.getArch() == llvm::Triple::mips || T.getArch() == llvm::Triple::mipsel)) ? 1 : (Syntax==AttributeCommonInfo::AS_C23 && ScopeName && ScopeName->getName()=="gnu" && true && (T.getArch() == llvm::Triple::mips || T.getArch() == llvm::Triple::mipsel)) ? 1 : (Syntax==AttributeCommonInfo::AS_GNU && !ScopeName && true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64)) ? 1 : (Syntax==AttributeCommonInfo::AS_CXX11 && ScopeName && ScopeName->getName()=="gnu" && true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64)) ? 1 : (Syntax==AttributeCommonInfo::AS_C23 && ScopeName && ScopeName->getName()=="gnu" && true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64)) ? 1 : 0)
@@ -136,6 +138,7 @@
 .Case("no_specializations", 1)
 .Case("nodiscard", 1)
 .Case("objc_runtime_name", 1)
+.Case("patchable_function_entry", 4)
 .Case("pcs", 1)
 .Case("ptrauth_vtable_pointer", 7)
 .Case("register", 3)
@@ -202,7 +205,6 @@
 .Case("assert_exclusive_lock", 1)
 .Case("assert_shared_lock", 1)
 .Case("diagnose_if", 1)
-.Case("exclusive_trylock_function", 1)
 .Case("lock_returned", 1)
 .Case("locks_excluded", 1)
 .Case("release_capability", 1)
@@ -213,9 +215,10 @@
 .Case("exclusive_locks_required", 1)
 .Case("requires_shared_capability", 1)
 .Case("shared_locks_required", 1)
-.Case("shared_trylock_function", 1)
 .Case("try_acquire_capability", 1)
 .Case("try_acquire_shared_capability", 1)
+.Case("exclusive_trylock_function", 1)
+.Case("shared_trylock_function", 1)
 #endif // CLANG_ATTR_LATE_PARSED_LIST
 
 #if defined(CLANG_ATTR_LATE_PARSED_EXPERIMENTAL_EXT_LIST)
@@ -230,6 +233,7 @@
 #endif // CLANG_ATTR_LATE_PARSED_EXPERIMENTAL_EXT_LIST
 
 #if defined(CLANG_ATTR_STRICT_IDENTIFIER_ARG_LIST)
+.Case("atomic", true)
 .Case("ptrauth_vtable_pointer", true)
 #endif // CLANG_ATTR_STRICT_IDENTIFIER_ARG_LIST
 
