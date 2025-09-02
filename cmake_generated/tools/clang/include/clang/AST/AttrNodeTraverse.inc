@@ -27,15 +27,21 @@
     const auto *SA = cast<AcquireCapabilityAttr>(A); (void)SA;
     for (AcquireCapabilityAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
       Visit(*I);
+    for (AcquireCapabilityAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitAcquiredAfterAttr(const AcquiredAfterAttr *A) {
     const auto *SA = cast<AcquiredAfterAttr>(A); (void)SA;
     for (AcquiredAfterAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
       Visit(*I);
+    for (AcquiredAfterAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitAcquiredBeforeAttr(const AcquiredBeforeAttr *A) {
     const auto *SA = cast<AcquiredBeforeAttr>(A); (void)SA;
     for (AcquiredBeforeAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
+      Visit(*I);
+    for (AcquiredBeforeAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
       Visit(*I);
   }
   void VisitAlignValueAttr(const AlignValueAttr *A) {
@@ -64,6 +70,8 @@
   void VisitAssertCapabilityAttr(const AssertCapabilityAttr *A) {
     const auto *SA = cast<AssertCapabilityAttr>(A); (void)SA;
     for (AssertCapabilityAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
+      Visit(*I);
+    for (AssertCapabilityAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
       Visit(*I);
   }
   void VisitAssumeAlignedAttr(const AssumeAlignedAttr *A) {
@@ -121,6 +129,8 @@
     const auto *SA = cast<LocksExcludedAttr>(A); (void)SA;
     for (LocksExcludedAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
       Visit(*I);
+    for (LocksExcludedAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitLoopHintAttr(const LoopHintAttr *A) {
     const auto *SA = cast<LoopHintAttr>(A); (void)SA;
@@ -164,6 +174,8 @@
       Visit(*I);
     for (OMPDeclareVariantAttr::adjustArgsNeedDevicePtr_iterator I = SA->adjustArgsNeedDevicePtr_begin(), E = SA->adjustArgsNeedDevicePtr_end(); I != E; ++I)
       Visit(*I);
+    for (OMPDeclareVariantAttr::adjustArgsNeedDeviceAddr_iterator I = SA->adjustArgsNeedDeviceAddr_begin(), E = SA->adjustArgsNeedDeviceAddr_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitOMPReferencedVarAttr(const OMPReferencedVarAttr *A) {
     const auto *SA = cast<OMPReferencedVarAttr>(A); (void)SA;
@@ -177,6 +189,8 @@
     const auto *SA = cast<ReleaseCapabilityAttr>(A); (void)SA;
     for (ReleaseCapabilityAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
       Visit(*I);
+    for (ReleaseCapabilityAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitReqdWorkGroupSizeAttr(const ReqdWorkGroupSizeAttr *A) {
     const auto *SA = cast<ReqdWorkGroupSizeAttr>(A); (void)SA;
@@ -187,6 +201,8 @@
   void VisitRequiresCapabilityAttr(const RequiresCapabilityAttr *A) {
     const auto *SA = cast<RequiresCapabilityAttr>(A); (void)SA;
     for (RequiresCapabilityAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
+      Visit(*I);
+    for (RequiresCapabilityAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
       Visit(*I);
   }
   void VisitRestrictAttr(const RestrictAttr *A) {
@@ -209,6 +225,8 @@
     const auto *SA = cast<TryAcquireCapabilityAttr>(A); (void)SA;
     Visit(SA->getSuccessValue());
     for (TryAcquireCapabilityAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
+      Visit(*I);
+    for (TryAcquireCapabilityAttr::delayedArgs_iterator I = SA->delayedArgs_begin(), E = SA->delayedArgs_end(); I != E; ++I)
       Visit(*I);
   }
   void VisitWorkGroupSizeHintAttr(const WorkGroupSizeHintAttr *A) {

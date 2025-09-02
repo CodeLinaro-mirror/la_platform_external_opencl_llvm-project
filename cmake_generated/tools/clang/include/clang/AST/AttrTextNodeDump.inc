@@ -38,6 +38,29 @@
       break;
     }
   }
+  void VisitARMInterruptSaveFPAttr(const ARMInterruptSaveFPAttr *A) {
+    const auto *SA = cast<ARMInterruptSaveFPAttr>(A); (void)SA;
+    switch(SA->getInterrupt()) {
+    case ARMInterruptSaveFPAttr::InterruptType::IRQ:
+      OS << " IRQ";
+      break;
+    case ARMInterruptSaveFPAttr::InterruptType::FIQ:
+      OS << " FIQ";
+      break;
+    case ARMInterruptSaveFPAttr::InterruptType::SWI:
+      OS << " SWI";
+      break;
+    case ARMInterruptSaveFPAttr::InterruptType::ABORT:
+      OS << " ABORT";
+      break;
+    case ARMInterruptSaveFPAttr::InterruptType::UNDEF:
+      OS << " UNDEF";
+      break;
+    case ARMInterruptSaveFPAttr::InterruptType::Generic:
+      OS << " Generic";
+      break;
+    }
+  }
   void VisitAbiTagAttr(const AbiTagAttr *A) {
     const auto *SA = cast<AbiTagAttr>(A); (void)SA;
     for (const auto &Val : SA->tags())
@@ -315,6 +338,9 @@
     const auto *SA = cast<DestructorAttr>(A); (void)SA;
     OS << " " << SA->getPriority();
   }
+  void VisitDeviceKernelAttr(const DeviceKernelAttr *A) {
+    OS << " " << A->getSpelling();
+  }
   void VisitDiagnoseAsBuiltinAttr(const DiagnoseAsBuiltinAttr *A) {
     const auto *SA = cast<DiagnoseAsBuiltinAttr>(A); (void)SA;
     OS << " ";
@@ -502,6 +528,14 @@
     default:
       llvm_unreachable("Invalid attribute value");
     }
+  }
+  void VisitHLSLVkConstantIdAttr(const HLSLVkConstantIdAttr *A) {
+    const auto *SA = cast<HLSLVkConstantIdAttr>(A); (void)SA;
+    OS << " " << SA->getId();
+  }
+  void VisitHLSLVkExtBuiltinInputAttr(const HLSLVkExtBuiltinInputAttr *A) {
+    const auto *SA = cast<HLSLVkExtBuiltinInputAttr>(A); (void)SA;
+    OS << " " << SA->getBuiltIn();
   }
   void VisitHLSLWaveSizeAttr(const HLSLWaveSizeAttr *A) {
     const auto *SA = cast<HLSLWaveSizeAttr>(A); (void)SA;
@@ -962,7 +996,8 @@
   }
   void VisitRISCVInterruptAttr(const RISCVInterruptAttr *A) {
     const auto *SA = cast<RISCVInterruptAttr>(A); (void)SA;
-    switch(SA->getInterrupt()) {
+    for (RISCVInterruptAttr::interrupt_iterator I = SA->interrupt_begin(), E = SA->interrupt_end(); I != E; ++I) {
+      switch(*I) {
     case RISCVInterruptAttr::InterruptType::supervisor:
       OS << " supervisor";
       break;
@@ -975,6 +1010,13 @@
     case RISCVInterruptAttr::InterruptType::qcinonest:
       OS << " qcinonest";
       break;
+    case RISCVInterruptAttr::InterruptType::SiFiveCLICPreemptible:
+      OS << " SiFiveCLICPreemptible";
+      break;
+    case RISCVInterruptAttr::InterruptType::SiFiveCLICStackSwap:
+      OS << " SiFiveCLICStackSwap";
+      break;
+      }
     }
   }
   void VisitRISCVVLSCCAttr(const RISCVVLSCCAttr *A) {
@@ -1016,6 +1058,13 @@
       OS << " Unconsumed";
       break;
     }
+  }
+  void VisitRootSignatureAttr(const RootSignatureAttr *A) {
+    const auto *SA = cast<RootSignatureAttr>(A); (void)SA;
+    if (SA->getSignatureIdent())
+      OS << " " << SA->getSignatureIdent()->getName();
+    OS << " ";
+    dumpBareDeclRef(SA->getSignatureDecl());
   }
   void VisitSYCLKernelEntryPointAttr(const SYCLKernelEntryPointAttr *A) {
     const auto *SA = cast<SYCLKernelEntryPointAttr>(A); (void)SA;
@@ -1140,6 +1189,27 @@
       OS << " NK_Enum";
       break;
     }
+  }
+  void VisitSwiftNullabilityAttr(const SwiftNullabilityAttr *A) {
+    const auto *SA = cast<SwiftNullabilityAttr>(A); (void)SA;
+    switch(SA->getKind()) {
+    case SwiftNullabilityAttr::Kind::NonNull:
+      OS << " NonNull";
+      break;
+    case SwiftNullabilityAttr::Kind::Nullable:
+      OS << " Nullable";
+      break;
+    case SwiftNullabilityAttr::Kind::Unspecified:
+      OS << " Unspecified";
+      break;
+    case SwiftNullabilityAttr::Kind::NullableResult:
+      OS << " NullableResult";
+      break;
+    }
+  }
+  void VisitSwiftTypeAttr(const SwiftTypeAttr *A) {
+    const auto *SA = cast<SwiftTypeAttr>(A); (void)SA;
+    OS << " \"" << SA->getTypeString() << "\"";
   }
   void VisitSwiftVersionedAdditionAttr(const SwiftVersionedAdditionAttr *A) {
     const auto *SA = cast<SwiftVersionedAdditionAttr>(A); (void)SA;

@@ -1995,7 +1995,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #endif
-static constexpr char BuiltinStringsStorage[] = 
+static constexpr char BuiltinStringsStorage[] =
   "\0"
   "__builtin_SI_to_SXTHI_asrh\0"
   "ii\0"
@@ -4216,8 +4216,8 @@ static constexpr char BuiltinStringsStorage[] =
 #pragma GCC diagnostic pop
 #endif
 
-static constexpr llvm::StringTable BuiltinStrings =
-    BuiltinStringsStorage;
+static constexpr llvm::StringTable
+BuiltinStrings = BuiltinStringsStorage;
 
 #endif // GET_BUILTIN_STR_TABLE
 

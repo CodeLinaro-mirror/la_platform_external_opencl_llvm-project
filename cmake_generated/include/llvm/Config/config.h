@@ -19,10 +19,6 @@
 /* Define to 1 to enable crash memory dumps, and to 0 otherwise. */
 #define LLVM_ENABLE_CRASH_DUMPS 0
 
-/* Define to 1 to enable expensive checks for debug location coverage checking,
-   and to 0 otherwise. */
-#define ENABLE_DEBUGLOC_COVERAGE_TRACKING 0
-
 /* Define to 1 to prefer forward slashes on Windows, and to 0 prefer
    backslashes. */
 #define LLVM_WINDOWS_PREFER_FORWARD_SLASH 0
@@ -168,6 +164,9 @@
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #define HAVE_SYS_MMAN_H 1
 
+/* Define to 1 if you have the <sys/ioctl.h> header file. */
+#define HAVE_SYS_IOCTL_H 1
+
 /* Define to 1 if stat struct has st_mtimespec member .*/
 /* #undef HAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC */
 
@@ -240,6 +239,12 @@
 /* Have host's ___chkstk_ms */
 /* #undef HAVE____CHKSTK_MS */
 
+/* Define if ICU library is available */
+#define HAVE_ICU 0
+
+/* Define if iconv library is available */
+#define HAVE_ICONV 0
+
 /* Linker version detected at compile time. */
 /* #undef HOST_LINK_VERSION */
 
@@ -268,10 +273,10 @@
 #define PACKAGE_NAME "LLVM"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "LLVM 21.0.0git"
+#define PACKAGE_STRING "LLVM 22.0.0git"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "21.0.0git"
+#define PACKAGE_VERSION "22.0.0git"
 
 /* Define to the vendor of this package. */
 /* #undef PACKAGE_VENDOR */
