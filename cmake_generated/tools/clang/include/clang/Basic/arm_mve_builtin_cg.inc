@@ -8524,11 +8524,11 @@ case ARM::BI__builtin_arm_mve_vrndxq_f32: {
     Param1 = llvm::FixedVectorType::get(FloatTy, 4);
     break;
   case ARM::BI__builtin_arm_mve_vrndnq_f16:
-    Param0 = Intrinsic::arm_mve_vrintn;
+    Param0 = Intrinsic::roundeven;
     Param1 = llvm::FixedVectorType::get(HalfTy, 8);
     break;
   case ARM::BI__builtin_arm_mve_vrndnq_f32:
-    Param0 = Intrinsic::arm_mve_vrintn;
+    Param0 = Intrinsic::roundeven;
     Param1 = llvm::FixedVectorType::get(FloatTy, 4);
     break;
   case ARM::BI__builtin_arm_mve_vrndpq_f16:

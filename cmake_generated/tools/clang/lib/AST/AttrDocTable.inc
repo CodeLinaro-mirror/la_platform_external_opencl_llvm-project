@@ -72,8 +72,6 @@ An error will be given if:
   - Specified values are not compatible with values provided through other
     attributes.)reST";
 
-static const char AttrDoc_AMDGPUKernelCall[] = R"reST(No documentation.)reST";
-
 static const char AttrDoc_AMDGPUMaxNumWorkGroups[] = R"reST(This attribute specifies the max number of work groups when the kernel
 is dispatched.
 
@@ -221,6 +219,15 @@ The semantics are as follows:
   handler, where the offset from "lr" to the preferred return address depends on
   the execution state of the code which generated the exception. In this case
   a sequence equivalent to "movs pc, lr" will be used.)reST";
+
+static const char AttrDoc_ARMInterruptSaveFP[] = R"reST(Clang supports the GNU style ``__attribute__((interrupt_save_fp("TYPE")))``
+on ARM targets. This attribute behaves the same way as the ARM interrupt
+attribute, except the general purpose floating point registers are also saved,
+along with FPEXC and FPSCR. Note, even on M-class CPUs, where the floating
+point context can be automatically saved depending on the FPCCR, the general
+purpose floating point registers will be saved.)reST";
+
+static const char AttrDoc_ARMSaveFP[] = R"reST()reST";
 
 static const char AttrDoc_AVRInterrupt[] = R"reST(Clang supports the GNU style ``__attribute__((interrupt))`` attribute on
 AVR targets. This attribute may be attached to a function definition and instructs
@@ -1243,6 +1250,49 @@ static const char AttrDoc_CFICanonicalJumpTable[] = R"reST(Use ``__attribute__((
 make the function's CFI jump table canonical. See :ref:`the CFI documentation
 <cfi-canonical-jump-tables>` for more details.)reST";
 
+static const char AttrDoc_CFIUncheckedCallee[] = R"reST(``cfi_unchecked_callee`` is a function type attribute which prevents the compiler from instrumenting
+`Control Flow Integrity <https://clang.llvm.org/docs/ControlFlowIntegrity.html>`_ checks on indirect
+function calls. Specifically, the attribute has the following semantics:
+
+1. Indirect calls to a function type with this attribute will not be instrumented with CFI. That is,
+   the indirect call will not be checked. Note that this only changes the behavior for indirect calls
+   on pointers to function types having this attribute. It does not prevent all indirect function calls
+   for a given type from being checked.
+2. All direct references to a function whose type has this attribute will always reference the
+   function definition rather than an entry in the CFI jump table.
+3. When a pointer to a function with this attribute is implicitly cast to a pointer to a function
+   without this attribute, the compiler will give a warning saying this attribute is discarded. This
+   warning can be silenced with an explicit cast. Note an explicit cast just disables the warning, so
+   direct references to a function with a ``cfi_unchecked_callee`` attribute will still reference the
+   function definition rather than the CFI jump table.
+
+.. code-block:: c
+
+  #define CFI_UNCHECKED_CALLEE __attribute__((cfi_unchecked_callee))
+
+  void no_cfi() CFI_UNCHECKED_CALLEE {}
+
+  void (*with_cfi)() = no_cfi;  // warning: implicit conversion discards `cfi_unchecked_callee` attribute.
+                                // `with_cfi` also points to the actual definition of `no_cfi` rather than
+                                // its jump table entry.
+
+  void invoke(void (CFI_UNCHECKED_CALLEE *func)()) {
+    func();  // CFI will not instrument this indirect call.
+
+    void (*func2)() = func;  // warning: implicit conversion discards `cfi_unchecked_callee` attribute.
+
+    func2();  // CFI will instrument this indirect call. Users should be careful however because if this
+              // references a function with type `cfi_unchecked_callee`, then the CFI check may incorrectly
+              // fail because the reference will be to the function definition rather than the CFI jump
+              // table entry.
+  }
+
+This attribute can only be applied on functions or member functions. This attribute can be a good
+alternative to ``no_sanitize("cfi")`` if you only want to disable innstrumentation for specific indirect
+calls rather than applying ``no_sanitize("cfi")`` on the whole function containing indirect call. Note
+that ``cfi_unchecked_attribute`` is a type attribute doesn't disable CFI instrumentation on a function
+body.)reST";
+
 static const char AttrDoc_CFReturnsNotRetained[] = R"reST(The behavior of a function with respect to reference counting for Foundation
 (Objective-C), CoreFoundation (C) and OSObject (C++) is determined by a naming
 convention (e.g. functions starting with "get" are assumed to return at
@@ -1946,14 +1996,14 @@ Example:
   })reST";
 
 static const char AttrDoc_CoroDisableLifetimeBound[] = R"reST(The ``[[clang::coro_lifetimebound]]`` is a class attribute which can be applied
-to a coroutine return type (`CRT`_) (i.e.
+to a coroutine return type (`coro_return_type, coro_wrapper`_) (i.e.
 it should also be annotated with ``[[clang::coro_return_type]]``).
 
 All parameters of a function are considered to be lifetime bound if the function returns a
 coroutine return type (CRT) annotated with ``[[clang::coro_lifetimebound]]``.
 This lifetime bound analysis can be disabled for a coroutine wrapper or a coroutine by annotating the function
 with ``[[clang::coro_disable_lifetimebound]]`` function attribute .
-See `documentation`_ of ``[[clang::lifetimebound]]`` for details about lifetime bound analysis.
+See documentation of `lifetimebound`_ for details about lifetime bound analysis.
 
 
 Reference parameters of a coroutine are susceptible to capturing references to temporaries or local variables.
@@ -2012,20 +2062,17 @@ but do not pass them to the underlying coroutine or pass them by value.
   }
   void use() {
     auto task = coro_wrapper(1); // use of temporary is fine as the argument is not lifetime bound.
-  }
-
-.. _`documentation`: https://clang.llvm.org/docs/AttributeReference.html#lifetimebound
-.. _`CRT`: https://clang.llvm.org/docs/AttributeReference.html#coro-return-type)reST";
+  })reST";
 
 static const char AttrDoc_CoroLifetimeBound[] = R"reST(The ``[[clang::coro_lifetimebound]]`` is a class attribute which can be applied
-to a coroutine return type (`CRT`_) (i.e.
+to a coroutine return type (`coro_return_type, coro_wrapper`_) (i.e.
 it should also be annotated with ``[[clang::coro_return_type]]``).
 
 All parameters of a function are considered to be lifetime bound if the function returns a
 coroutine return type (CRT) annotated with ``[[clang::coro_lifetimebound]]``.
 This lifetime bound analysis can be disabled for a coroutine wrapper or a coroutine by annotating the function
 with ``[[clang::coro_disable_lifetimebound]]`` function attribute .
-See `documentation`_ of ``[[clang::lifetimebound]]`` for details about lifetime bound analysis.
+See documentation of `lifetimebound`_ for details about lifetime bound analysis.
 
 
 Reference parameters of a coroutine are susceptible to capturing references to temporaries or local variables.
@@ -2084,10 +2131,7 @@ but do not pass them to the underlying coroutine or pass them by value.
   }
   void use() {
     auto task = coro_wrapper(1); // use of temporary is fine as the argument is not lifetime bound.
-  }
-
-.. _`documentation`: https://clang.llvm.org/docs/AttributeReference.html#lifetimebound
-.. _`CRT`: https://clang.llvm.org/docs/AttributeReference.html#coro-return-type)reST";
+  })reST";
 
 static const char AttrDoc_CoroOnlyDestroyWhenComplete[] = R"reST(The `coro_only_destroy_when_complete` attribute should be marked on a C++ class. The coroutines
 whose return type is marked with the attribute are assumed to be destroyed only after the coroutine has
@@ -2466,6 +2510,79 @@ relative ordering of values is important. For example:
 ``bar()`` will be called before ``foo()``, and both will be called before
 ``main()``. If no argument is given to the ``constructor`` or ``destructor``
 attribute, they default to the value ``65535``.)reST";
+
+static const char AttrDoc_DeviceKernel[] = R"reST(These attributes specify that the function represents a kernel for device offloading.
+The specific semantics depend on the offloading language, target, and attribute spelling.
+The ``sycl_kernel`` attribute specifies that a function template will be used
+to outline device code and to generate an OpenCL kernel.
+Here is a code example of the SYCL program, which demonstrates the compiler's
+outlining job:
+
+.. code-block:: c++
+
+  int foo(int x) { return ++x; }
+
+  using namespace cl::sycl;
+  queue Q;
+  buffer<int, 1> a(range<1>{1024});
+  Q.submit([&](handler& cgh) {
+    auto A = a.get_access<access::mode::write>(cgh);
+    cgh.parallel_for<init_a>(range<1>{1024}, [=](id<1> index) {
+      A[index] = index[0] + foo(42);
+    });
+  }
+
+A C++ function object passed to the ``parallel_for`` is called a "SYCL kernel".
+A SYCL kernel defines the entry point to the "device part" of the code. The
+compiler will emit all symbols accessible from a "kernel". In this code
+example, the compiler will emit "foo" function. More details about the
+compilation of functions for the device part can be found in the SYCL 1.2.1
+specification Section 6.4.
+To show to the compiler entry point to the "device part" of the code, the SYCL
+runtime can use the ``sycl_kernel`` attribute in the following way:
+
+.. code-block:: c++
+
+  namespace cl {
+  namespace sycl {
+  class handler {
+    template <typename KernelName, typename KernelType/*, ...*/>
+    __attribute__((sycl_kernel)) void sycl_kernel_function(KernelType KernelFuncObj) {
+      // ...
+      KernelFuncObj();
+    }
+
+    template <typename KernelName, typename KernelType, int Dims>
+    void parallel_for(range<Dims> NumWorkItems, KernelType KernelFunc) {
+  #ifdef __SYCL_DEVICE_ONLY__
+      sycl_kernel_function<KernelName, KernelType, Dims>(KernelFunc);
+  #else
+      // Host implementation
+  #endif
+    }
+  };
+  } // namespace sycl
+  } // namespace cl
+
+The compiler will also generate an OpenCL kernel using the function marked with
+the ``sycl_kernel`` attribute.
+Here is the list of SYCL device compiler expectations with regard to the
+function marked with the ``sycl_kernel`` attribute:
+
+- The function must be a template with at least two type template parameters.
+  The compiler generates an OpenCL kernel and uses the first template parameter
+  as a unique name for the generated OpenCL kernel. The host application uses
+  this unique name to invoke the OpenCL kernel generated for the SYCL kernel
+  specialized by this name and second template parameter ``KernelType`` (which
+  might be an unnamed function object type).
+- The function must have at least one parameter. The first parameter is
+  required to be a function object type (named or unnamed i.e. lambda). The
+  compiler uses function object type fields to generate OpenCL kernel
+  parameters.
+- The function must return void. The compiler reuses the body of marked functions to
+  generate the OpenCL kernel body, and the OpenCL kernel must return ``void``.
+
+The SYCL kernel in the previous code sample meets these expectations.)reST";
 
 static const char AttrDoc_DiagnoseAsBuiltin[] = R"reST(The ``diagnose_as_builtin`` attribute indicates that Fortify diagnostics are to
 be applied to the declared function as if it were the function specified by the
@@ -2881,9 +2998,9 @@ to guard against use of uninitialized memory.
 
 Rather, it is intended for use in "parameter-objects", used to simulate,
 for example, the passing of named parameters.
-The attribute generates a warning when explicit initializers for such
-variables are not provided (this occurs regardless of whether any in-class field
-initializers exist):
+Except inside unevaluated contexts, the attribute generates a warning when
+explicit initializers for such variables are not provided (this occurs
+regardless of whether any in-class field initializers exist):
 
 .. code-block:: c++
 
@@ -3481,6 +3598,15 @@ only supported in compute shaders.
 
 The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-groupthreadid)reST";
 
+static const char AttrDoc_HLSLSV_Position[] = R"reST(The ``SV_Position`` semantic, when applied to an input parameter in a pixel
+shader, contains the location of the pixel center (x, y) in screen space.
+This semantic can be applied to the parameter, or a field in a struct used
+as an input parameter.
+This attribute is supported as an input in pixel, hull, domain and mesh shaders.
+This attribute is supported as an output in vertex, geometry and domain shaders.
+
+The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics)reST";
+
 static const char AttrDoc_HLSLShader[] = R"reST(The ``shader`` type attribute applies to HLSL shader entry functions to
 identify the shader type for the entry function.
 The syntax is:
@@ -3496,6 +3622,34 @@ by shader target with the ``-T`` option like ``-Tps_6_1``. When compiling to a
 library target like ``lib_6_3``, the shader type attribute can help the
 compiler to identify the shader type. It is mostly used by Raytracing shaders
 where shaders must be compiled into a library and linked at runtime.)reST";
+
+static const char AttrDoc_HLSLVkConstantId[] = R"reST(The ``vk::constant_id`` attribute specifies the id for a SPIR-V specialization
+constant. The attribute applies to const global scalar variables. The variable must be initialized with a C++11 constexpr.
+In SPIR-V, the
+variable will be replaced with an `OpSpecConstant` with the given id.
+The syntax is:
+
+.. code-block:: text
+
+  ``[[vk::constant_id(<Id>)]] const T Name = <Init>``)reST";
+
+static const char AttrDoc_HLSLVkExtBuiltinInput[] = R"reST(Vulkan shaders have `Input` builtins. Those variables are externally
+initialized by the driver/pipeline, but each copy is private to the current
+lane.
+
+Those builtins can be declared using the `[[vk::ext_builtin_input]]` attribute
+like follows:
+
+.. code-block:: c++
+
+  [[vk::ext_builtin_input(/* WorkgroupId */ 26)]]
+  static const uint3 groupid;
+
+This variable will be lowered into a module-level variable, with the `Input`
+storage class, and the `BuiltIn 26` decoration.
+
+The full documentation for this inline SPIR-V attribute can be found here:
+https://github.com/microsoft/hlsl-specs/blob/main/proposals/0011-inline-spirv.md)reST";
 
 static const char AttrDoc_HLSLWaveSize[] = R"reST(The ``WaveSize`` attribute specify a wave size on a shader entry point in order
 to indicate either that a shader depends on or strongly prefers a specific wave
@@ -3570,6 +3724,8 @@ Not all targets support this attribute:
   that calls the resolver.
 - Baremetal target supports it on AVR.
 - Other targets currently do not support this attribute.)reST";
+
+static const char AttrDoc_InferredNoReturn[] = R"reST()reST";
 
 static const char AttrDoc_InitPriority[] = R"reST(In C++, the order in which global variables are initialized across translation
 units is unspecified, unlike the ordering within a single translation unit. The
@@ -3804,9 +3960,7 @@ annotated parameter.
       std::string str;
       addToSet(str, s); // Not detected.
     }
-  }
-
-.. _`lifetimebound`: https://clang.llvm.org/docs/AttributeReference.html#lifetimebound)reST";
+  })reST";
 
 static const char AttrDoc_Likely[] = R"reST(The ``likely`` and ``unlikely`` attributes are used as compiler hints.
 The attributes are used to aid the compiler to determine which branch is
@@ -4574,8 +4728,6 @@ C++ methods, and Objective-C methods and properties.
 Attributes ``X_consumed`` can be added to parameters of methods, functions,
 and Objective-C methods.)reST";
 
-static const char AttrDoc_NVPTXKernel[] = R"reST(No documentation.)reST";
-
 static const char AttrDoc_Naked[] = R"reST(No documentation.)reST";
 
 static const char AttrDoc_NoAlias[] = R"reST(The ``noalias`` attribute indicates that the only memory accesses inside
@@ -5074,6 +5226,16 @@ parameter is undefined behavior, which the optimizer may take advantage of to,
 e.g., remove null checks. The ``_Nonnull`` type qualifier indicates that a
 pointer cannot be null in a more general manner (because it is part of the type
 system) and does not imply undefined behavior, making it more widely applicable.)reST";
+
+static const char AttrDoc_NonString[] = R"reST(The ``nonstring`` attribute can be applied to the declaration of a variable or
+a field whose type is a character pointer or character array to specify that
+the buffer is not intended to behave like a null-terminated string. This will
+silence diagnostics with code like:
+
+.. code-block:: c
+
+  char BadStr[3] = "foo"; // No space for the null terminator, diagnosed
+  __attribute__((nonstring)) char NotAStr[3] = "foo"; // Not diagnosed)reST";
 
 static const char AttrDoc_NotTailCalled[] = R"reST(The ``not_tail_called`` attribute prevents tail-call optimization on statically
 bound calls. Objective-c methods, and functions marked as ``always_inline``
@@ -6008,8 +6170,6 @@ code. See `cl_intel_required_subgroup_size
 <https://www.khronos.org/registry/OpenCL/extensions/intel/cl_intel_required_subgroup_size.txt>`
 for details.)reST";
 
-static const char AttrDoc_OpenCLKernel[] = R"reST(No documentation.)reST";
-
 static const char AttrDoc_OpenCLLocalAddressSpace[] = R"reST(The local address space specifies that an object is allocated in the local (work
 group) memory area, which is accessible to all work items in the same work
 group. The content stored in this memory region is not accessible after
@@ -6638,8 +6798,9 @@ targets. This attribute may be attached to a function definition and instructs
 the backend to generate appropriate function entry/exit code so that it can be
 used directly as an interrupt service routine.
 
-Permissible values for this parameter are ``supervisor``, ``machine``,
-``qci-nest`` and ``qci-nonest``. If there is no parameter, then it defaults to
+Permissible values for this parameter are ``machine``, ``supervisor``,
+``qci-nest``, ``qci-nonest``, ``SiFive-CLIC-preemptible``, and
+``SiFive-CLIC-stack-swap``. If there is no parameter, then it defaults to
 ``machine``.
 
 The ``qci-nest`` and ``qci-nonest`` values require Qualcomm's Xqciint extension
@@ -6650,6 +6811,15 @@ restore interrupt state to the stack -- the ``qci-nest`` value will use
 begin the interrupt handler. Both of these will use ``qc.c.mileaveret`` to
 restore the state and return to the previous context.
 
+The ``SiFive-CLIC-preemptible`` and ``SiFive-CLIC-stack-swap`` values are used
+for machine-mode interrupts. For ``SiFive-CLIC-preemptible`` interrupts, the
+values of ``mcause`` and ``mepc`` are saved onto the stack, and interrupts are
+re-enabled. For ``SiFive-CLIC-stack-swap`` interrupts, the stack pointer is
+swapped with ``mscratch`` before its first use and after its last use.
+
+The SiFive CLIC values may be combined with each other and with the ``machine``
+attribute value. Any other combination of different values is not allowed.
+
 Repeated interrupt attribute on the same declaration will cause a warning
 to be emitted. In case of repeated declarations, the last one prevails.
 
@@ -6658,7 +6828,8 @@ https://gcc.gnu.org/onlinedocs/gcc/RISC-V-Function-Attributes.html
 https://riscv.org/specifications/privileged-isa/
 The RISC-V Instruction Set Manual Volume II: Privileged Architecture
 Version 1.10.
-https://github.com/quic/riscv-unified-db/releases/tag/Xqci-0.7)reST";
+https://github.com/quic/riscv-unified-db/releases/tag/Xqci-0.13.0
+https://sifive.cdn.prismic.io/sifive/d1984d2b-c9b9-4c91-8de0-d68a5e64fa0f_sifive-interrupt-cookbook-v1p2.pdf)reST";
 
 static const char AttrDoc_RISCVVLSCC[] = R"reST(The ``riscv_vls_cc`` attribute can be applied to a function. Functions
 declared with this attribute will utilize the standard fixed-length vector
@@ -6732,6 +6903,8 @@ static const char AttrDoc_ReadOnlyPlacement[] = R"reST(This attribute is attache
   5. A type ``Q`` inherits from type ``T`` and it does not have the
      ``enforce_read_only_placement`` attribute.)reST";
 
+static const char AttrDoc_ReentrantCapability[] = R"reST(No documentation.)reST";
+
 static const char AttrDoc_RegCall[] = R"reST(On x86 targets, this attribute changes the calling convention to
 `__regcall`_ convention. This convention aims to pass as many arguments
 as possible in registers. It also tries to utilize registers for the
@@ -6771,6 +6944,8 @@ attribute requires a string literal argument to identify the handle being releas
 .. code-block:: c++
 
   zx_status_t zx_handle_close(zx_handle_t handle [[clang::release_handle("tag")]]);)reST";
+
+static const char AttrDoc_Replaceable[] = R"reST()reST";
 
 static const char AttrDoc_ReqdWorkGroupSize[] = R"reST(No documentation.)reST";
 
@@ -6834,79 +7009,14 @@ making it more widely applicable)reST";
 
 static const char AttrDoc_ReturnsTwice[] = R"reST(No documentation.)reST";
 
+static const char AttrDoc_RootSignature[] = R"reST(The ``RootSignature`` attribute applies to HLSL entry functions to define what
+types of resources are bound to the graphics pipeline.
+
+For details about the use and specification of Root Signatures please see here:
+https://learn.microsoft.com/en-us/windows/win32/direct3d12/root-signatures)reST";
+
 static const char AttrDoc_SPtr[] = R"reST(The ``__sptr`` qualifier specifies that a 32-bit pointer should be sign
 extended when converted to a 64-bit pointer.)reST";
-
-static const char AttrDoc_SYCLKernel[] = R"reST(The ``sycl_kernel`` attribute specifies that a function template will be used
-to outline device code and to generate an OpenCL kernel.
-Here is a code example of the SYCL program, which demonstrates the compiler's
-outlining job:
-
-.. code-block:: c++
-
-  int foo(int x) { return ++x; }
-
-  using namespace cl::sycl;
-  queue Q;
-  buffer<int, 1> a(range<1>{1024});
-  Q.submit([&](handler& cgh) {
-    auto A = a.get_access<access::mode::write>(cgh);
-    cgh.parallel_for<init_a>(range<1>{1024}, [=](id<1> index) {
-      A[index] = index[0] + foo(42);
-    });
-  }
-
-A C++ function object passed to the ``parallel_for`` is called a "SYCL kernel".
-A SYCL kernel defines the entry point to the "device part" of the code. The
-compiler will emit all symbols accessible from a "kernel". In this code
-example, the compiler will emit "foo" function. More details about the
-compilation of functions for the device part can be found in the SYCL 1.2.1
-specification Section 6.4.
-To show to the compiler entry point to the "device part" of the code, the SYCL
-runtime can use the ``sycl_kernel`` attribute in the following way:
-
-.. code-block:: c++
-
-  namespace cl {
-  namespace sycl {
-  class handler {
-    template <typename KernelName, typename KernelType/*, ...*/>
-    __attribute__((sycl_kernel)) void sycl_kernel_function(KernelType KernelFuncObj) {
-      // ...
-      KernelFuncObj();
-    }
-
-    template <typename KernelName, typename KernelType, int Dims>
-    void parallel_for(range<Dims> NumWorkItems, KernelType KernelFunc) {
-  #ifdef __SYCL_DEVICE_ONLY__
-      sycl_kernel_function<KernelName, KernelType, Dims>(KernelFunc);
-  #else
-      // Host implementation
-  #endif
-    }
-  };
-  } // namespace sycl
-  } // namespace cl
-
-The compiler will also generate an OpenCL kernel using the function marked with
-the ``sycl_kernel`` attribute.
-Here is the list of SYCL device compiler expectations with regard to the
-function marked with the ``sycl_kernel`` attribute:
-
-- The function must be a template with at least two type template parameters.
-  The compiler generates an OpenCL kernel and uses the first template parameter
-  as a unique name for the generated OpenCL kernel. The host application uses
-  this unique name to invoke the OpenCL kernel generated for the SYCL kernel
-  specialized by this name and second template parameter ``KernelType`` (which
-  might be an unnamed function object type).
-- The function must have at least one parameter. The first parameter is
-  required to be a function object type (named or unnamed i.e. lambda). The
-  compiler uses function object type fields to generate OpenCL kernel
-  parameters.
-- The function must return void. The compiler reuses the body of marked functions to
-  generate the OpenCL kernel body, and the OpenCL kernel must return ``void``.
-
-The SYCL kernel in the previous code sample meets these expectations.)reST";
 
 static const char AttrDoc_SYCLKernelEntryPoint[] = R"reST(The ``sycl_kernel_entry_point`` attribute facilitates the generation of an
 offload kernel entry point, sometimes called a SYCL kernel caller function,
@@ -7821,6 +7931,8 @@ new code.
     // values being members of the type structure.
     typedef NSString * UIFontDescriptorFeatureKey __attribute__((__swift_newtype__(struct)));)reST";
 
+static const char AttrDoc_SwiftNullability[] = R"reST()reST";
+
 static const char AttrDoc_SwiftObjCMembers[] = R"reST(This attribute indicates that Swift subclasses and members of Swift extensions
 of this class will be implicitly marked with the ``@objcMembers`` Swift
 attribute, exposing them back to Objective-C.)reST";
@@ -7831,6 +7943,8 @@ Swift SDK overlay.
 
 The purpose of this attribute is to permit a more idomatic implementation of
 declarations in Swift while hiding the non-idiomatic one.)reST";
+
+static const char AttrDoc_SwiftType[] = R"reST()reST";
 
 static const char AttrDoc_SwiftVersionedAddition[] = R"reST()reST";
 
@@ -8029,7 +8143,14 @@ destroy the object before returning. The lifetime of the copy of the parameter
 in the caller ends without a destructor call when the call begins.
 
 If a type is trivial for the purpose of calls, it is assumed to be trivially
-relocatable for the purpose of ``__is_trivially_relocatable``.
+relocatable for the purpose of ``__is_trivially_relocatable`` and
+``__builtin_is_cpp_trivially_relocatable``.
+When a type marked with ``[[trivial_abi]]`` is used as a function argument,
+the compiler may omit the call to the copy constructor.
+Thus, side effects of the copy constructor are potentially not performed.
+For example, objects that contain pointers to themselves or otherwise depend
+on their address (or the address or their subobjects) should not be declared
+``[[trivial_abi]]``.
 
 Attribute ``trivial_abi`` has no effect in the following cases:
 
@@ -8042,6 +8163,8 @@ Attribute ``trivial_abi`` has no effect in the following cases:
   - classes that are non-trivial for the purposes of calls
   - __weak-qualified types in Objective-C++
   - arrays of any of the above)reST";
+
+static const char AttrDoc_TriviallyRelocatable[] = R"reST()reST";
 
 static const char AttrDoc_TryAcquireCapability[] = R"reST(Marks a function that attempts to acquire a capability. This function may fail to
 actually acquire the capability; they accept a Boolean value determining

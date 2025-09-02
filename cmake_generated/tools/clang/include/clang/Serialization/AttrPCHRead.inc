@@ -40,16 +40,6 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::AMDGPUKernelCall: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) AMDGPUKernelCallAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
   case attr::AMDGPUMaxNumWorkGroups: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -108,6 +98,27 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::ARMInterruptSaveFP: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    ARMInterruptSaveFPAttr::InterruptType interrupt(static_cast<ARMInterruptSaveFPAttr::InterruptType>(Record.readInt()));
+    New = new (Context) ARMInterruptSaveFPAttr(Context, Info, interrupt);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::ARMSaveFP: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) ARMSaveFPAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::AVRInterrupt: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -149,6 +160,11 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -158,6 +174,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<AcquireCapabilityAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::AcquireHandle: {
@@ -175,6 +192,11 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -184,12 +206,18 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<AcquiredAfterAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::AcquiredBefore: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -199,6 +227,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<AcquiredBeforeAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::AddressSpace: {
@@ -596,6 +625,11 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -605,6 +639,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<AssertCapabilityAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::AssumeAligned: {
@@ -808,6 +843,14 @@
     bool isPackExpansion = Record.readInt();
     New = new (Context) CFICanonicalJumpTableAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::CFIUncheckedCallee: {
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) CFIUncheckedCalleeAttr(Context, Info);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -1382,6 +1425,16 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::DeviceKernel: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) DeviceKernelAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::DiagnoseAsBuiltin: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -1827,12 +1880,44 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::HLSLSV_Position: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) HLSLSV_PositionAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::HLSLShader: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     llvm::Triple::EnvironmentType type(static_cast<llvm::Triple::EnvironmentType>(Record.readInt()));
     New = new (Context) HLSLShaderAttr(Context, Info, type);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::HLSLVkConstantId: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    int id = Record.readInt();
+    New = new (Context) HLSLVkConstantIdAttr(Context, Info, id);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::HLSLVkExtBuiltinInput: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    unsigned builtIn = Record.readInt();
+    New = new (Context) HLSLVkExtBuiltinInputAttr(Context, Info, builtIn);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1907,6 +1992,16 @@
     bool isPackExpansion = Record.readInt();
     std::string resolver= Record.readString();
     New = new (Context) IFuncAttr(Context, Info, resolver);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::InferredNoReturn: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) InferredNoReturnAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -2038,6 +2133,11 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -2047,6 +2147,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<LocksExcludedAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::LoopHint: {
@@ -2350,16 +2451,6 @@
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     New = new (Context) NSReturnsRetainedAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::NVPTXKernel: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) NVPTXKernelAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -2691,6 +2782,16 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::NonString: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) NonStringAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::NotTailCalled: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -2815,6 +2916,11 @@
     adjustArgsNeedDevicePtr.reserve(adjustArgsNeedDevicePtrSize);
     for (unsigned i = 0; i != adjustArgsNeedDevicePtrSize; ++i)
       adjustArgsNeedDevicePtr.push_back(Record.readExpr());
+    unsigned adjustArgsNeedDeviceAddrSize = Record.readInt();
+    SmallVector<Expr *, 4> adjustArgsNeedDeviceAddr;
+    adjustArgsNeedDeviceAddr.reserve(adjustArgsNeedDeviceAddrSize);
+    for (unsigned i = 0; i != adjustArgsNeedDeviceAddrSize; ++i)
+      adjustArgsNeedDeviceAddr.push_back(Record.readExpr());
     unsigned appendArgsSize = Record.readInt();
     SmallVector<OMPInteropInfo, 4> appendArgs;
     appendArgs.reserve(appendArgsSize);
@@ -2823,7 +2929,7 @@
       bool IsTargetSync = Record.readBool();
       appendArgs.emplace_back(IsTarget, IsTargetSync);
     }
-    New = new (Context) OMPDeclareVariantAttr(Context, Info, variantFuncRef, traitInfos, adjustArgsNothing.data(), adjustArgsNothingSize, adjustArgsNeedDevicePtr.data(), adjustArgsNeedDevicePtrSize, appendArgs.data(), appendArgsSize);
+    New = new (Context) OMPDeclareVariantAttr(Context, Info, variantFuncRef, traitInfos, adjustArgsNothing.data(), adjustArgsNothingSize, adjustArgsNeedDevicePtr.data(), adjustArgsNeedDevicePtrSize, adjustArgsNeedDeviceAddr.data(), adjustArgsNeedDeviceAddrSize, appendArgs.data(), appendArgsSize);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -3253,16 +3359,6 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::OpenCLKernel: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) OpenCLKernelAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
   case attr::OpenCLLocalAddressSpace: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
@@ -3589,8 +3685,12 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    RISCVInterruptAttr::InterruptType interrupt(static_cast<RISCVInterruptAttr::InterruptType>(Record.readInt()));
-    New = new (Context) RISCVInterruptAttr(Context, Info, interrupt);
+    unsigned interruptSize = Record.readInt();
+    SmallVector<RISCVInterruptAttr::InterruptType, 4> interrupt;
+    interrupt.reserve(interruptSize);
+    for (unsigned i = interruptSize; i; --i)
+      interrupt.push_back(static_cast<RISCVInterruptAttr::InterruptType>(Record.readInt()));
+    New = new (Context) RISCVInterruptAttr(Context, Info, interrupt.data(), interruptSize);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -3637,6 +3737,16 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::ReentrantCapability: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) ReentrantCapabilityAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::RegCall: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -3661,6 +3771,11 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -3670,6 +3785,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<ReleaseCapabilityAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::ReleaseHandle: {
@@ -3678,6 +3794,16 @@
     bool isPackExpansion = Record.readInt();
     std::string handleType= Record.readString();
     New = new (Context) ReleaseHandleAttr(Context, Info, handleType);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::Replaceable: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) ReplaceableAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -3700,6 +3826,11 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
     args.reserve(argsSize);
@@ -3709,6 +3840,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<RequiresCapabilityAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::Restrict: {
@@ -3764,20 +3896,20 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::SPtr: {
+  case attr::RootSignature: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) SPtrAttr(Context, Info);
+    IdentifierInfo * signatureIdent = Record.readIdentifier();
+    HLSLRootSignatureDecl * signatureDecl = Record.readDeclAs<HLSLRootSignatureDecl >();
+    New = new (Context) RootSignatureAttr(Context, Info, signatureIdent, signatureDecl);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::SYCLKernel: {
-    bool isInherited = Record.readInt();
+  case attr::SPtr: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) SYCLKernelAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New = new (Context) SPtrAttr(Context, Info);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -4131,6 +4263,15 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::SwiftNullability: {
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    SwiftNullabilityAttr::Kind kind(static_cast<SwiftNullabilityAttr::Kind>(Record.readInt()));
+    New = new (Context) SwiftNullabilityAttr(Context, Info, kind);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::SwiftObjCMembers: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
@@ -4145,6 +4286,15 @@
     bool isPackExpansion = Record.readInt();
     New = new (Context) SwiftPrivateAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::SwiftType: {
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    std::string typeString= Record.readString();
+    New = new (Context) SwiftTypeAttr(Context, Info, typeString);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -4281,10 +4431,25 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::TriviallyRelocatable: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) TriviallyRelocatableAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::TryAcquireCapability: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
+    unsigned delayedArgsSize = Record.readInt();
+    SmallVector<Expr *, 4> delayedArgs;
+    delayedArgs.reserve(delayedArgsSize);
+    for (unsigned i = 0; i != delayedArgsSize; ++i)
+      delayedArgs.push_back(Record.readExpr());
     Expr * successValue = Record.readExpr();
     unsigned argsSize = Record.readInt();
     SmallVector<Expr *, 4> args;
@@ -4295,6 +4460,7 @@
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
+    cast<TryAcquireCapabilityAttr>(New)->setDelayedArgs(Context, delayedArgs.data(), delayedArgsSize);
     break;
   }
   case attr::TypeNonNull: {

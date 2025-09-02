@@ -319,9 +319,11 @@ case SME::BI__builtin_sme_svmls_za64_u16_vg4x2:
 case SME::BI__builtin_sme_svmls_za64_u16_vg4x4:
 case SME::BI__builtin_sme_svmop4a_1x1_za16_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_1x1_za16_f16_f16:
+case SME::BI__builtin_sme_svmop4a_1x1_za16_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_1x1_za32_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_1x1_za32_f16_f16:
 case SME::BI__builtin_sme_svmop4a_1x1_za32_f32_f32:
+case SME::BI__builtin_sme_svmop4a_1x1_za32_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_1x1_za32_s16_s16:
 case SME::BI__builtin_sme_svmop4a_1x1_za32_s8_s8:
 case SME::BI__builtin_sme_svmop4a_1x1_za32_s8_u8:
@@ -335,9 +337,11 @@ case SME::BI__builtin_sme_svmop4a_1x1_za64_u16_s16:
 case SME::BI__builtin_sme_svmop4a_1x1_za64_u16_u16:
 case SME::BI__builtin_sme_svmop4a_1x2_za16_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_1x2_za16_f16_f16:
+case SME::BI__builtin_sme_svmop4a_1x2_za16_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_1x2_za32_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_1x2_za32_f16_f16:
 case SME::BI__builtin_sme_svmop4a_1x2_za32_f32_f32:
+case SME::BI__builtin_sme_svmop4a_1x2_za32_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_1x2_za32_s16_s16:
 case SME::BI__builtin_sme_svmop4a_1x2_za32_s8_s8:
 case SME::BI__builtin_sme_svmop4a_1x2_za32_s8_u8:
@@ -351,9 +355,11 @@ case SME::BI__builtin_sme_svmop4a_1x2_za64_u16_s16:
 case SME::BI__builtin_sme_svmop4a_1x2_za64_u16_u16:
 case SME::BI__builtin_sme_svmop4a_2x1_za16_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_2x1_za16_f16_f16:
+case SME::BI__builtin_sme_svmop4a_2x1_za16_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_2x1_za32_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_2x1_za32_f16_f16:
 case SME::BI__builtin_sme_svmop4a_2x1_za32_f32_f32:
+case SME::BI__builtin_sme_svmop4a_2x1_za32_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_2x1_za32_s16_s16:
 case SME::BI__builtin_sme_svmop4a_2x1_za32_s8_s8:
 case SME::BI__builtin_sme_svmop4a_2x1_za32_s8_u8:
@@ -367,9 +373,11 @@ case SME::BI__builtin_sme_svmop4a_2x1_za64_u16_s16:
 case SME::BI__builtin_sme_svmop4a_2x1_za64_u16_u16:
 case SME::BI__builtin_sme_svmop4a_2x2_za16_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_2x2_za16_f16_f16:
+case SME::BI__builtin_sme_svmop4a_2x2_za16_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_2x2_za32_bf16_bf16:
 case SME::BI__builtin_sme_svmop4a_2x2_za32_f16_f16:
 case SME::BI__builtin_sme_svmop4a_2x2_za32_f32_f32:
+case SME::BI__builtin_sme_svmop4a_2x2_za32_mf8_mf8_fpm:
 case SME::BI__builtin_sme_svmop4a_2x2_za32_s16_s16:
 case SME::BI__builtin_sme_svmop4a_2x2_za32_s8_s8:
 case SME::BI__builtin_sme_svmop4a_2x2_za32_s8_u8:

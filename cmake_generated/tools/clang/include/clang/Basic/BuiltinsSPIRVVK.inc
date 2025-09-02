@@ -8,10 +8,9 @@
 
 
 #ifdef GET_BUILTIN_ENUMERATORS
-    BI__builtin_spirv_distance,
-    BI__builtin_spirv_length,
+    BI__builtin_spirv_faceforward,
     BI__builtin_spirv_reflect,
-    BI__builtin_spirv_smoothstep,
+    BI__builtin_spirv_refract,
 
 #endif // GET_BUILTIN_ENUMERATORS
 
@@ -21,30 +20,28 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #endif
-static constexpr char BuiltinStringsStorage[] = 
+static constexpr char BuiltinStringsStorage[] =
   "\0"
-  "__builtin_spirv_distance\0"
+  "__builtin_spirv_faceforward\0"
   "v.\0"
-  "nc\0"
-  "__builtin_spirv_length\0"
+  "nnct\0"
   "__builtin_spirv_reflect\0"
-  "__builtin_spirv_smoothstep\0"
-  "nct\0"
+  "nnc\0"
+  "__builtin_spirv_refract\0"
   ;
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
 
-static constexpr llvm::StringTable BuiltinStrings =
-    BuiltinStringsStorage;
+static constexpr llvm::StringTable
+BuiltinStrings = BuiltinStringsStorage;
 
 #endif // GET_BUILTIN_STR_TABLE
 
 #ifdef GET_BUILTIN_INFOS
-    Builtin::Info{Builtin::Info::StrOffsets{1 /* __builtin_spirv_distance */, 26 /* v. */, 29 /* nc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{32 /* __builtin_spirv_length */, 26 /* v. */, 29 /* nc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{55 /* __builtin_spirv_reflect */, 26 /* v. */, 29 /* nc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{79 /* __builtin_spirv_smoothstep */, 26 /* v. */, 106 /* nct */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1 /* __builtin_spirv_faceforward */, 29 /* v. */, 32 /* nnct */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{37 /* __builtin_spirv_reflect */, 29 /* v. */, 61 /* nnc */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{65 /* __builtin_spirv_refract */, 29 /* v. */, 32 /* nnct */, 0}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
 
 #endif // GET_BUILTIN_INFOS
 
