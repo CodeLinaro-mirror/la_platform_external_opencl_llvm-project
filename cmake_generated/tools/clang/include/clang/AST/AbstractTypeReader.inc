@@ -72,6 +72,8 @@ public:
       return readFunctionProtoType();
     case Type::HLSLAttributedResource:
       return readHLSLAttributedResourceType();
+    case Type::HLSLInlineSpirv:
+      return readHLSLInlineSpirvType();
     case Type::InjectedClassName:
       return readInjectedClassNameType();
     case Type::MacroQualified:
@@ -100,6 +102,8 @@ public:
       return readPipeType();
     case Type::Pointer:
       return readPointerType();
+    case Type::PredefinedSugar:
+      return readPredefinedSugarType();
     case Type::LValueReference:
       return readLValueReferenceType();
     case Type::RValueReference:
@@ -281,7 +285,7 @@ public:
 
 #define SVE_TYPE(NAME, ID, SINGLETON_ID) \
       case BuiltinType::ID: return ctx.SINGLETON_ID;
-#include "clang/Basic/AArch64SVEACLETypes.def"
+#include "clang/Basic/AArch64ACLETypes.def"
 
 #define PPC_VECTOR_TYPE(NAME, ID, SIZE) \
       case BuiltinType::ID: return ctx.ID##Ty;
@@ -463,6 +467,7 @@ public:
     auto &ctx = R.getASTContext();
     bool variadic = R.find("variadic").readBool();
     bool trailingReturn = R.find("trailingReturn").readBool();
+    bool cfiUncheckedCallee = R.find("cfiUncheckedCallee").readBool();
     Qualifiers methodQualifiers = R.find("methodQualifiers").readQualifiers();
     RefQualifierKind refQualifier = R.find("refQualifier").readRefQualifierKind();
     llvm::SmallVector<QualType, 8> exceptionSpecifier_buffer_0;
@@ -494,6 +499,7 @@ public:
     epi.ExtInfo = extInfo;
     epi.Variadic = variadic;
     epi.HasTrailingReturn = trailingReturn;
+    epi.CFIUncheckedCallee = cfiUncheckedCallee;
     epi.TypeQuals = methodQualifiers;
     epi.RefQualifier = refQualifier;
     epi.ExceptionSpec = exceptionSpecifier;
@@ -515,6 +521,18 @@ public:
     
     HLSLAttributedResourceType::Attributes attrs(static_cast<llvm::dxil::ResourceClass>(resClass), isROV, rawBuffer);
     return ctx.getHLSLAttributedResourceType(wrappedTy, containedTy, attrs);
+  
+  }
+
+  QualType readHLSLInlineSpirvType() {
+    auto &ctx = R.getASTContext();
+    uint32_t opcode = R.find("opcode").readUInt32();
+    uint32_t size = R.find("size").readUInt32();
+    uint32_t alignment = R.find("alignment").readUInt32();
+    llvm::SmallVector<SpirvOperand, 8> operands_buffer_0;
+    llvm::ArrayRef<SpirvOperand> operands = R.find("operands").template readArray<SpirvOperand>(operands_buffer_0);
+    
+    return ctx.getHLSLInlineSpirvType(opcode, size, alignment, operands);
   
   }
 
@@ -667,6 +685,14 @@ public:
      return ctx.getPointerType(pointeeType); 
   }
 
+  QualType readPredefinedSugarType() {
+    auto &ctx = R.getASTContext();
+    uint32_t kind = R.find("kind").readUInt32();
+    
+    return ctx.getPredefinedSugarType(static_cast<PredefinedSugarType::Kind>(kind));
+  
+  }
+
   QualType readLValueReferenceType() {
     auto &ctx = R.getASTContext();
     bool isSpelledAsLValue = R.find("isSpelledAsLValue").readBool();
@@ -744,7 +770,7 @@ public:
     llvm::ArrayRef<TemplateArgument> args = R.find("args").template readArray<TemplateArgument>(args_buffer_0);
     QualType UnderlyingType = R.find("UnderlyingType").readQualType();
     
-    return ctx.getTemplateSpecializationType(templateName, args, std::nullopt, UnderlyingType);
+    return ctx.getTemplateSpecializationType(templateName, args, {}, UnderlyingType);
   
   }
 

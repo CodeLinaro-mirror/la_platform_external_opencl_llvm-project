@@ -153,16 +153,18 @@ def LLVM_PowOp : LLVM_BinarySameArgsIntrOpF<"pow">;
 def LLVM_PowIOp : LLVM_PowFI<"powi">;
 def LLVM_RintOp : LLVM_UnaryIntrOpF<"rint">;
 def LLVM_NearbyintOp : LLVM_UnaryIntrOpF<"nearbyint">;
-class LLVM_IntRoundIntrOpBase<string func> :
+class LLVM_IntRoundIntrOpBase<string func, Type element = LLVM_AnyFloat> :
         LLVM_OneResultIntrOp<func, [0], [0], [Pure]> {
-  let arguments = (ins LLVM_AnyFloat:$val);
+  let arguments = (ins element:$val);
   let assemblyFormat = "`(` operands `)` attr-dict `:` "
       "functional-type(operands, results)";
 }
-def LLVM_LroundOp : LLVM_IntRoundIntrOpBase<"lround">;
+class LLVM_ScalarOrVectorIntRoundIntrOpBase<string func> :
+  LLVM_IntRoundIntrOpBase<func, LLVM_ScalarOrVectorOf<LLVM_AnyFloat>>;
+def LLVM_LroundOp : LLVM_ScalarOrVectorIntRoundIntrOpBase<"lround">;
 def LLVM_LlroundOp : LLVM_IntRoundIntrOpBase<"llround">;
-def LLVM_LrintOp : LLVM_IntRoundIntrOpBase<"lrint">;
-def LLVM_LlrintOp : LLVM_IntRoundIntrOpBase<"llrint">;
+def LLVM_LrintOp : LLVM_ScalarOrVectorIntRoundIntrOpBase<"lrint">;
+def LLVM_LlrintOp : LLVM_ScalarOrVectorIntRoundIntrOpBase<"llrint">;
 def LLVM_BitReverseOp : LLVM_UnaryIntrOpI<"bitreverse">;
 def LLVM_ByteSwapOp : LLVM_UnaryIntrOpI<"bswap">;
 def LLVM_CountLeadingZerosOp : LLVM_CountZerosIntrOp<"ctlz">;
@@ -322,8 +324,8 @@ def LLVM_NoAliasScopeDeclOp
       return success();
     if (scopeAttrs->size() != 1)
       return failure();
-    $_op = $_builder.create<LLVM::NoAliasScopeDeclOp>(
-      $_location, (*scopeAttrs)[0]);
+    $_op = LLVM::NoAliasScopeDeclOp::create(
+      $_builder, $_location, (*scopeAttrs)[0]);
   }];
   let assemblyFormat = "$scope attr-dict";
 }
@@ -466,7 +468,7 @@ class LLVM_ConstrainedIntr<string mnem, int numArgs,
         $_builder.getNamedAttr($_qualCppClassName::getRoundingModeAttrName(),
                                roundingModeAttr));
     }], true : "") # [{
-    $res = $_builder.create<$_qualCppClassName>($_location,
+    $res = $_qualCppClassName::create($_builder, $_location,
       $_resultType, mlirOperands, mlirAttrs);
   }];
 }
@@ -553,8 +555,6 @@ def LLVM_AssumeOp
 
   let builders = [
     OpBuilder<(ins "Value":$cond)>,
-    OpBuilder<(ins "Value":$cond,
-                   "ArrayRef<llvm::OperandBundleDefT<Value>>":$opBundles)>,
     OpBuilder<(ins "Value":$cond, "llvm::StringRef":$tag, "ValueRange":$args)>,
     OpBuilder<(ins "Value":$cond, "AssumeAlignTag":$tag, "Value":$ptr,
                    "Value":$align)>,
@@ -741,7 +741,7 @@ def LLVM_DbgLabelOp : LLVM_IntrOp<"dbg.label", [], [], [], 0> {
     // Drop the intrinsic if the label translation fails due to cylic metadata.
     if (!labelAttr)
       return success();
-    $_op = $_builder.create<$_qualCppClassName>($_location, labelAttr);
+    $_op = $_qualCppClassName::create($_builder, $_location, labelAttr);
   }];
   let assemblyFormat = "$label attr-dict";
 }
@@ -881,7 +881,7 @@ def LLVM_MatrixColumnMajorLoadOp : LLVM_OneResultIntrOp<"matrix.column.major.loa
       $columns);
   }];
   string mlirBuilder = [{
-    $res = $_builder.create<LLVM::MatrixColumnMajorLoadOp>(
+    $res = LLVM::MatrixColumnMajorLoadOp::create($_builder,
       $_location, $_resultType, $data, $stride,
       $_int_attr($isVolatile), $_int_attr($rows), $_int_attr($columns));
   }];
@@ -915,7 +915,7 @@ def LLVM_MatrixColumnMajorStoreOp : LLVM_ZeroResultIntrOp<"matrix.column.major.s
       $rows, $columns);
   }];
   string mlirBuilder = [{
-    $_op = $_builder.create<LLVM::MatrixColumnMajorStoreOp>(
+    $_op = LLVM::MatrixColumnMajorStoreOp::create($_builder,
       $_location, $matrix, $data, $stride,
       $_int_attr($isVolatile), $_int_attr($rows), $_int_attr($columns));
   }];
@@ -938,7 +938,7 @@ def LLVM_MatrixMultiplyOp : LLVM_OneResultIntrOp<"matrix.multiply"> {
       $rhs_columns);
   }];
   string mlirBuilder = [{
-    $res = $_builder.create<LLVM::MatrixMultiplyOp>(
+    $res = LLVM::MatrixMultiplyOp::create($_builder,
       $_location, $_resultType, $lhs, $rhs,
       $_int_attr($lhs_rows), $_int_attr($lhs_columns), $_int_attr($rhs_columns));
   }];
@@ -958,7 +958,7 @@ def LLVM_MatrixTransposeOp : LLVM_OneResultIntrOp<"matrix.transpose"> {
       $matrix, $rows, $columns);
   }];
   string mlirBuilder = [{
-    $res = $_builder.create<LLVM::MatrixTransposeOp>(
+    $res = LLVM::MatrixTransposeOp::create($_builder,
       $_location, $_resultType, $matrix,
       $_int_attr($rows), $_int_attr($columns));
   }];
@@ -995,7 +995,7 @@ def LLVM_MaskedLoadOp : LLVM_OneResultIntrOp<"masked.load"> {
   string mlirBuilder = [{
     auto *intrinInst = dyn_cast<llvm::IntrinsicInst>(inst);
     bool nontemporal = intrinInst->hasMetadata(llvm::LLVMContext::MD_nontemporal);
-    $res = $_builder.create<LLVM::MaskedLoadOp>($_location,
+    $res = LLVM::MaskedLoadOp::create($_builder, $_location,
       $_resultType, $data, $mask, $pass_thru, $_int_attr($alignment),
         nontemporal ? $_builder.getUnitAttr() : nullptr);
   }];
@@ -1015,7 +1015,7 @@ def LLVM_MaskedStoreOp : LLVM_ZeroResultIntrOp<"masked.store"> {
       $value, $data, llvm::Align($alignment), $mask);
   }];
   string mlirBuilder = [{
-    $_op = $_builder.create<LLVM::MaskedStoreOp>($_location,
+    $_op = LLVM::MaskedStoreOp::create($_builder, $_location,
       $value, $data, $mask, $_int_attr($alignment));
   }];
   list<int> llvmArgIndices = [0, 1, 3, 2];
@@ -1038,7 +1038,7 @@ def LLVM_masked_gather : LLVM_OneResultIntrOp<"masked.gather"> {
         $_resultType, $ptrs, llvm::Align($alignment), $mask, $pass_thru[0]);
   }];
   string mlirBuilder = [{
-    $res = $_builder.create<LLVM::masked_gather>($_location,
+    $res = LLVM::masked_gather::create($_builder, $_location,
       $_resultType, $ptrs, $mask, $pass_thru, $_int_attr($alignment));
   }];
   list<int> llvmArgIndices = [0, 2, 3, 1];
@@ -1059,7 +1059,7 @@ def LLVM_masked_scatter : LLVM_ZeroResultIntrOp<"masked.scatter"> {
       $value, $ptrs, llvm::Align($alignment), $mask);
   }];
   string mlirBuilder = [{
-    $_op = $_builder.create<LLVM::masked_scatter>($_location,
+    $_op = LLVM::masked_scatter::create($_builder, $_location,
       $value, $ptrs, $mask, $_int_attr($alignment));
   }];
   list<int> llvmArgIndices = [0, 1, 3, 2];

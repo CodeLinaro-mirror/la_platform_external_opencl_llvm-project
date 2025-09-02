@@ -72,6 +72,8 @@ public:
       return writeFunctionProtoType(static_cast<const FunctionProtoType *>(node));
     case Type::HLSLAttributedResource:
       return writeHLSLAttributedResourceType(static_cast<const HLSLAttributedResourceType *>(node));
+    case Type::HLSLInlineSpirv:
+      return writeHLSLInlineSpirvType(static_cast<const HLSLInlineSpirvType *>(node));
     case Type::InjectedClassName:
       return writeInjectedClassNameType(static_cast<const InjectedClassNameType *>(node));
     case Type::MacroQualified:
@@ -100,6 +102,8 @@ public:
       return writePipeType(static_cast<const PipeType *>(node));
     case Type::Pointer:
       return writePointerType(static_cast<const PointerType *>(node));
+    case Type::PredefinedSugar:
+      return writePredefinedSugarType(static_cast<const PredefinedSugarType *>(node));
     case Type::LValueReference:
       return writeLValueReferenceType(static_cast<const LValueReferenceType *>(node));
     case Type::RValueReference:
@@ -400,6 +404,8 @@ public:
     W.find("variadic").writeBool(variadic);
     bool trailingReturn = ( node->hasTrailingReturn() );
     W.find("trailingReturn").writeBool(trailingReturn);
+    bool cfiUncheckedCallee = ( node->hasCFIUncheckedCallee() );
+    W.find("cfiUncheckedCallee").writeBool(cfiUncheckedCallee);
     Qualifiers methodQualifiers = ( node->getMethodQuals() );
     W.find("methodQualifiers").writeQualifiers(methodQualifiers);
     RefQualifierKind refQualifier = ( node->getRefQualifier() );
@@ -410,7 +416,7 @@ public:
     W.find("parameters").writeArray(parameters);
     llvm::ArrayRef<FunctionProtoType::ExtParameterInfo> extParameterInfo = ( node->hasExtParameterInfos()
                     ? node->getExtParameterInfos()
-                    : llvm::ArrayRef<FunctionProtoType::ExtParameterInfo>() );
+                    : ArrayRef<FunctionProtoType::ExtParameterInfo>() );
     W.find("extParameterInfo").writeArray(extParameterInfo);
     uint32_t AArch64SMEAttributes = ( node->getAArch64SMEAttributes() );
     W.find("AArch64SMEAttributes").writeUInt32(AArch64SMEAttributes);
@@ -449,6 +455,17 @@ public:
     W.find("wrappedTy").writeQualType(wrappedTy);
     QualType containedTy = ( node->getContainedType() );
     W.find("containedTy").writeQualType(containedTy);
+  }
+
+  void writeHLSLInlineSpirvType(const HLSLInlineSpirvType *node) {
+    uint32_t opcode = ( node->getOpcode() );
+    W.find("opcode").writeUInt32(opcode);
+    uint32_t size = ( node->getSize() );
+    W.find("size").writeUInt32(size);
+    uint32_t alignment = ( node->getAlignment() );
+    W.find("alignment").writeUInt32(alignment);
+    llvm::ArrayRef<SpirvOperand> operands = ( node->getOperands() );
+    W.find("operands").writeArray(operands);
   }
 
   void writeInjectedClassNameType(const InjectedClassNameType *node) {
@@ -553,6 +570,11 @@ public:
   void writePointerType(const PointerType *node) {
     QualType pointeeType = ( node->getPointeeType() );
     W.find("pointeeType").writeQualType(pointeeType);
+  }
+
+  void writePredefinedSugarType(const PredefinedSugarType *node) {
+    uint32_t kind = ( static_cast<uint32_t>(node->getKind()) );
+    W.find("kind").writeUInt32(kind);
   }
 
   void writeLValueReferenceType(const LValueReferenceType *node) {

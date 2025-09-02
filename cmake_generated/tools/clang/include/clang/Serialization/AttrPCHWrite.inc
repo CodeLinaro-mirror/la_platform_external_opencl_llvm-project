@@ -31,13 +31,6 @@
     Record.AddStmt(SA->getMax());
     break;
   }
-  case attr::AMDGPUKernelCall: {
-    const auto *SA = cast<AMDGPUKernelCallAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    break;
-  }
   case attr::AMDGPUMaxNumWorkGroups: {
     const auto *SA = cast<AMDGPUMaxNumWorkGroupsAttr>(A);
     Record.push_back(SA->isInherited());
@@ -81,6 +74,21 @@
 Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     break;
   }
+  case attr::ARMInterruptSaveFP: {
+    const auto *SA = cast<ARMInterruptSaveFPAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
+    break;
+  }
+  case attr::ARMSaveFP: {
+    const auto *SA = cast<ARMSaveFPAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::AVRInterrupt: {
     const auto *SA = cast<AVRInterruptAttr>(A);
     Record.push_back(SA->isInherited());
@@ -109,6 +117,9 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -127,6 +138,9 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -137,6 +151,9 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -404,6 +421,9 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -554,6 +574,11 @@ Record.push_back(static_cast<uint64_t>(SA->getGuard()));
   case attr::CFICanonicalJumpTable: {
     const auto *SA = cast<CFICanonicalJumpTableAttr>(A);
     Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
+  case attr::CFIUncheckedCallee: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     break;
@@ -960,6 +985,13 @@ Record.push_back(static_cast<uint64_t>(SA->getDefaultState()));
     Record.push_back(SA->getPriority());
     break;
   }
+  case attr::DeviceKernel: {
+    const auto *SA = cast<DeviceKernelAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::DiagnoseAsBuiltin: {
     const auto *SA = cast<DiagnoseAsBuiltinAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1281,12 +1313,35 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(A->isPackExpansion());
     break;
   }
+  case attr::HLSLSV_Position: {
+    const auto *SA = cast<HLSLSV_PositionAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::HLSLShader: {
     const auto *SA = cast<HLSLShaderAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
 Record.push_back(static_cast<uint64_t>(SA->getType()));
+    break;
+  }
+  case attr::HLSLVkConstantId: {
+    const auto *SA = cast<HLSLVkConstantIdAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->getId());
+    break;
+  }
+  case attr::HLSLVkExtBuiltinInput: {
+    const auto *SA = cast<HLSLVkExtBuiltinInputAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->getBuiltIn());
     break;
   }
   case attr::HLSLWaveSize: {
@@ -1340,6 +1395,13 @@ Record.push_back(static_cast<uint64_t>(SA->getType()));
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     Record.AddString(SA->getResolver());
+    break;
+  }
+  case attr::InferredNoReturn: {
+    const auto *SA = cast<InferredNoReturnAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
     break;
   }
   case attr::InitPriority: {
@@ -1433,6 +1495,9 @@ Record.push_back(static_cast<uint64_t>(SA->getType()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -1651,13 +1716,6 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
   }
   case attr::NSReturnsRetained: {
     const auto *SA = cast<NSReturnsRetainedAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    break;
-  }
-  case attr::NVPTXKernel: {
-    const auto *SA = cast<NVPTXKernelAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
@@ -1885,6 +1943,13 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
       Record.push_back(Val.serialize());
     break;
   }
+  case attr::NonString: {
+    const auto *SA = cast<NonStringAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::NotTailCalled: {
     const auto *SA = cast<NotTailCalledAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1974,6 +2039,9 @@ Record.push_back(static_cast<uint64_t>(SA->getDevType()));
       Record.AddStmt(Val);
     Record.push_back(SA->adjustArgsNeedDevicePtr_size());
     for (auto &Val : SA->adjustArgsNeedDevicePtr())
+      Record.AddStmt(Val);
+    Record.push_back(SA->adjustArgsNeedDeviceAddr_size());
+    for (auto &Val : SA->adjustArgsNeedDeviceAddr())
       Record.AddStmt(Val);
     Record.push_back(SA->appendArgs_size());
     for (OMPDeclareVariantAttr::appendArgs_iterator I = SA->appendArgs_begin(), E = SA->appendArgs_end(); I != E; ++I) {
@@ -2274,13 +2342,6 @@ Record.push_back(static_cast<uint64_t>(SA->getFamily()));
     Record.push_back(SA->getSubGroupSize());
     break;
   }
-  case attr::OpenCLKernel: {
-    const auto *SA = cast<OpenCLKernelAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    break;
-  }
   case attr::OpenCLLocalAddressSpace: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
@@ -2515,7 +2576,9 @@ Record.push_back(static_cast<uint64_t>(SA->getPCS()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
-Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
+    Record.push_back(SA->interrupt_size());
+    for (RISCVInterruptAttr::interrupt_iterator i = SA->interrupt_begin(), e = SA->interrupt_end(); i != e; ++i)
+      Record.push_back((*i));
     break;
   }
   case attr::RISCVVLSCC: {
@@ -2547,6 +2610,13 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(A->isPackExpansion());
     break;
   }
+  case attr::ReentrantCapability: {
+    const auto *SA = cast<ReentrantCapabilityAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::RegCall: {
     const auto *SA = cast<RegCallAttr>(A);
     Record.push_back(SA->isInherited());
@@ -2566,6 +2636,9 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -2577,6 +2650,13 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     Record.AddString(SA->getHandleType());
+    break;
+  }
+  case attr::Replaceable: {
+    const auto *SA = cast<ReplaceableAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
     break;
   }
   case attr::ReqdWorkGroupSize: {
@@ -2594,6 +2674,9 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())
       Record.AddStmt(Val);
@@ -2637,14 +2720,15 @@ Record.push_back(static_cast<uint64_t>(SA->getState()));
     Record.push_back(A->isPackExpansion());
     break;
   }
-  case attr::SPtr: {
+  case attr::RootSignature: {
+    const auto *SA = cast<RootSignatureAttr>(A);
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.AddIdentifierRef(SA->getSignatureIdent());
+    Record.AddDeclRef(SA->getSignatureDecl());
     break;
   }
-  case attr::SYCLKernel: {
-    const auto *SA = cast<SYCLKernelAttr>(A);
-    Record.push_back(SA->isInherited());
+  case attr::SPtr: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     break;
@@ -2896,6 +2980,13 @@ Record.push_back(static_cast<uint64_t>(SA->getConvention()));
 Record.push_back(static_cast<uint64_t>(SA->getNewtypeKind()));
     break;
   }
+  case attr::SwiftNullability: {
+    const auto *SA = cast<SwiftNullabilityAttr>(A);
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+Record.push_back(static_cast<uint64_t>(SA->getKind()));
+    break;
+  }
   case attr::SwiftObjCMembers: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
@@ -2906,6 +2997,13 @@ Record.push_back(static_cast<uint64_t>(SA->getNewtypeKind()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    break;
+  }
+  case attr::SwiftType: {
+    const auto *SA = cast<SwiftTypeAttr>(A);
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.AddString(SA->getTypeString());
     break;
   }
   case attr::SwiftVersionedAddition: {
@@ -3000,11 +3098,21 @@ Record.push_back(static_cast<uint64_t>(SA->getTestState()));
     Record.push_back(A->isPackExpansion());
     break;
   }
+  case attr::TriviallyRelocatable: {
+    const auto *SA = cast<TriviallyRelocatableAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::TryAcquireCapability: {
     const auto *SA = cast<TryAcquireCapabilityAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->delayedArgs_size());
+    for (auto &Val : SA->delayedArgs())
+      Record.AddStmt(Val);
     Record.AddStmt(SA->getSuccessValue());
     Record.push_back(SA->args_size());
     for (auto &Val : SA->args())

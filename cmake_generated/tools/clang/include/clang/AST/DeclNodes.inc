@@ -182,12 +182,6 @@ DECL_RANGE(ObjCContainer, ObjCProtocol, ObjCCategory)
 
 #undef OBJCCONTAINER
 
-#ifndef NAMESPACE
-#  define NAMESPACE(Type, Base) NAMED(Type, Base)
-#endif
-NAMESPACE(Namespace, NamedDecl)
-#undef NAMESPACE
-
 #ifndef HLSLBUFFER
 #  define HLSLBUFFER(Type, Base) NAMED(Type, Base)
 #endif
@@ -574,17 +568,37 @@ OBJCPROPERTY(ObjCProperty, NamedDecl)
 OBJCCOMPATIBLEALIAS(ObjCCompatibleAlias, NamedDecl)
 #undef OBJCCOMPATIBLEALIAS
 
-#ifndef NAMESPACEALIAS
-#  define NAMESPACEALIAS(Type, Base) NAMED(Type, Base)
+#ifndef NAMESPACEBASE
+#  define NAMESPACEBASE(Type, Base) NAMED(Type, Base)
 #endif
-NAMESPACEALIAS(NamespaceAlias, NamedDecl)
+ABSTRACT_DECL(NAMESPACEBASE(NamespaceBase, NamedDecl))
+#ifndef NAMESPACE
+#  define NAMESPACE(Type, Base) NAMESPACEBASE(Type, Base)
+#endif
+NAMESPACE(Namespace, NamespaceBaseDecl)
+#undef NAMESPACE
+
+#ifndef NAMESPACEALIAS
+#  define NAMESPACEALIAS(Type, Base) NAMESPACEBASE(Type, Base)
+#endif
+NAMESPACEALIAS(NamespaceAlias, NamespaceBaseDecl)
 #undef NAMESPACEALIAS
+
+DECL_RANGE(NamespaceBase, Namespace, NamespaceAlias)
+
+#undef NAMESPACEBASE
 
 #ifndef LABEL
 #  define LABEL(Type, Base) NAMED(Type, Base)
 #endif
 LABEL(Label, NamedDecl)
 #undef LABEL
+
+#ifndef HLSLROOTSIGNATURE
+#  define HLSLROOTSIGNATURE(Type, Base) NAMED(Type, Base)
+#endif
+HLSLROOTSIGNATURE(HLSLRootSignature, NamedDecl)
+#undef HLSLROOTSIGNATURE
 
 #ifndef BASEUSING
 #  define BASEUSING(Type, Base) NAMED(Type, Base)
