@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum NVVMIntrinsics : unsigned {
 // Enum values for intrinsics.
-    nvvm_activemask = 8220,                           // llvm.nvvm.activemask
+    nvvm_activemask = 8315,                           // llvm.nvvm.activemask
     nvvm_add_rm_d,                             // llvm.nvvm.add.rm.d
     nvvm_add_rm_f,                             // llvm.nvvm.add.rm.f
     nvvm_add_rm_ftz_f,                         // llvm.nvvm.add.rm.ftz.f
@@ -48,19 +48,19 @@ enum NVVMIntrinsics : unsigned {
     nvvm_atomic_or_gen_i_sys,                  // llvm.nvvm.atomic.or.gen.i.sys
     nvvm_atomic_xor_gen_i_cta,                 // llvm.nvvm.atomic.xor.gen.i.cta
     nvvm_atomic_xor_gen_i_sys,                 // llvm.nvvm.atomic.xor.gen.i.sys
-    nvvm_bar_sync,                             // llvm.nvvm.bar.sync
     nvvm_bar_warp_sync,                        // llvm.nvvm.bar.warp.sync
-    nvvm_barrier,                              // llvm.nvvm.barrier
     nvvm_barrier_cluster_arrive,               // llvm.nvvm.barrier.cluster.arrive
     nvvm_barrier_cluster_arrive_aligned,       // llvm.nvvm.barrier.cluster.arrive.aligned
     nvvm_barrier_cluster_arrive_relaxed,       // llvm.nvvm.barrier.cluster.arrive.relaxed
     nvvm_barrier_cluster_arrive_relaxed_aligned,  // llvm.nvvm.barrier.cluster.arrive.relaxed.aligned
     nvvm_barrier_cluster_wait,                 // llvm.nvvm.barrier.cluster.wait
     nvvm_barrier_cluster_wait_aligned,         // llvm.nvvm.barrier.cluster.wait.aligned
-    nvvm_barrier_n,                            // llvm.nvvm.barrier.n
-    nvvm_barrier_sync,                         // llvm.nvvm.barrier.sync
-    nvvm_barrier_sync_cnt,                     // llvm.nvvm.barrier.sync.cnt
-    nvvm_barrier0,                             // llvm.nvvm.barrier0
+    nvvm_barrier_cta_arrive_aligned_count,     // llvm.nvvm.barrier.cta.arrive.aligned.count
+    nvvm_barrier_cta_arrive_count,             // llvm.nvvm.barrier.cta.arrive.count
+    nvvm_barrier_cta_sync_aligned_all,         // llvm.nvvm.barrier.cta.sync.aligned.all
+    nvvm_barrier_cta_sync_aligned_count,       // llvm.nvvm.barrier.cta.sync.aligned.count
+    nvvm_barrier_cta_sync_all,                 // llvm.nvvm.barrier.cta.sync.all
+    nvvm_barrier_cta_sync_count,               // llvm.nvvm.barrier.cta.sync.count
     nvvm_barrier0_and,                         // llvm.nvvm.barrier0.and
     nvvm_barrier0_or,                          // llvm.nvvm.barrier0.or
     nvvm_barrier0_popc,                        // llvm.nvvm.barrier0.popc
@@ -70,9 +70,17 @@ enum NVVMIntrinsics : unsigned {
     nvvm_bf16x2_to_ue8m0x2_rz_satfinite,       // llvm.nvvm.bf16x2.to.ue8m0x2.rz.satfinite
     nvvm_bf2h_rn,                              // llvm.nvvm.bf2h.rn
     nvvm_bf2h_rn_ftz,                          // llvm.nvvm.bf2h.rn.ftz
+    nvvm_bmsk_clamp,                           // llvm.nvvm.bmsk.clamp
+    nvvm_bmsk_wrap,                            // llvm.nvvm.bmsk.wrap
     nvvm_ceil_d,                               // llvm.nvvm.ceil.d
     nvvm_ceil_f,                               // llvm.nvvm.ceil.f
     nvvm_ceil_ftz_f,                           // llvm.nvvm.ceil.ftz.f
+    nvvm_clusterlaunchcontrol_query_cancel_get_first_ctaid_x,  // llvm.nvvm.clusterlaunchcontrol.query_cancel.get_first_ctaid.x
+    nvvm_clusterlaunchcontrol_query_cancel_get_first_ctaid_y,  // llvm.nvvm.clusterlaunchcontrol.query_cancel.get_first_ctaid.y
+    nvvm_clusterlaunchcontrol_query_cancel_get_first_ctaid_z,  // llvm.nvvm.clusterlaunchcontrol.query_cancel.get_first_ctaid.z
+    nvvm_clusterlaunchcontrol_query_cancel_is_canceled,  // llvm.nvvm.clusterlaunchcontrol.query_cancel.is_canceled
+    nvvm_clusterlaunchcontrol_try_cancel_async_multicast_shared,  // llvm.nvvm.clusterlaunchcontrol.try_cancel.async.multicast.shared
+    nvvm_clusterlaunchcontrol_try_cancel_async_shared,  // llvm.nvvm.clusterlaunchcontrol.try_cancel.async.shared
     nvvm_compiler_error,                       // llvm.nvvm.compiler.error
     nvvm_compiler_warn,                        // llvm.nvvm.compiler.warn
     nvvm_cos_approx_f,                         // llvm.nvvm.cos.approx.f
@@ -82,22 +90,52 @@ enum NVVMIntrinsics : unsigned {
     nvvm_cp_async_bulk_prefetch_L2,            // llvm.nvvm.cp.async.bulk.prefetch.L2
     nvvm_cp_async_bulk_shared_cta_to_cluster,  // llvm.nvvm.cp.async.bulk.shared.cta.to.cluster
     nvvm_cp_async_bulk_shared_cta_to_global,   // llvm.nvvm.cp.async.bulk.shared.cta.to.global
+    nvvm_cp_async_bulk_shared_cta_to_global_bytemask,  // llvm.nvvm.cp.async.bulk.shared.cta.to.global.bytemask
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_3d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.3d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_4d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.4d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_5d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.5d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_w_128_3d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.w.128.3d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_w_128_4d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.w.128.4d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_w_128_5d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.w.128.5d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_w_3d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.w.3d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_w_4d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.w.4d
+    nvvm_cp_async_bulk_tensor_g2s_cta_im2col_w_5d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.im2col.w.5d
+    nvvm_cp_async_bulk_tensor_g2s_cta_tile_1d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.tile.1d
+    nvvm_cp_async_bulk_tensor_g2s_cta_tile_2d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.tile.2d
+    nvvm_cp_async_bulk_tensor_g2s_cta_tile_3d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.tile.3d
+    nvvm_cp_async_bulk_tensor_g2s_cta_tile_4d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.tile.4d
+    nvvm_cp_async_bulk_tensor_g2s_cta_tile_5d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.tile.5d
+    nvvm_cp_async_bulk_tensor_g2s_cta_tile_gather4_2d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.cta.tile.gather4.2d
     nvvm_cp_async_bulk_tensor_g2s_im2col_3d,   // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.3d
     nvvm_cp_async_bulk_tensor_g2s_im2col_4d,   // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.4d
     nvvm_cp_async_bulk_tensor_g2s_im2col_5d,   // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.5d
+    nvvm_cp_async_bulk_tensor_g2s_im2col_w_128_3d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.w.128.3d
+    nvvm_cp_async_bulk_tensor_g2s_im2col_w_128_4d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.w.128.4d
+    nvvm_cp_async_bulk_tensor_g2s_im2col_w_128_5d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.w.128.5d
+    nvvm_cp_async_bulk_tensor_g2s_im2col_w_3d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.w.3d
+    nvvm_cp_async_bulk_tensor_g2s_im2col_w_4d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.w.4d
+    nvvm_cp_async_bulk_tensor_g2s_im2col_w_5d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.im2col.w.5d
     nvvm_cp_async_bulk_tensor_g2s_tile_1d,     // llvm.nvvm.cp.async.bulk.tensor.g2s.tile.1d
     nvvm_cp_async_bulk_tensor_g2s_tile_2d,     // llvm.nvvm.cp.async.bulk.tensor.g2s.tile.2d
     nvvm_cp_async_bulk_tensor_g2s_tile_3d,     // llvm.nvvm.cp.async.bulk.tensor.g2s.tile.3d
     nvvm_cp_async_bulk_tensor_g2s_tile_4d,     // llvm.nvvm.cp.async.bulk.tensor.g2s.tile.4d
     nvvm_cp_async_bulk_tensor_g2s_tile_5d,     // llvm.nvvm.cp.async.bulk.tensor.g2s.tile.5d
+    nvvm_cp_async_bulk_tensor_g2s_tile_gather4_2d,  // llvm.nvvm.cp.async.bulk.tensor.g2s.tile.gather4.2d
     nvvm_cp_async_bulk_tensor_prefetch_im2col_3d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.3d
     nvvm_cp_async_bulk_tensor_prefetch_im2col_4d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.4d
     nvvm_cp_async_bulk_tensor_prefetch_im2col_5d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.5d
+    nvvm_cp_async_bulk_tensor_prefetch_im2col_w_128_3d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.w.128.3d
+    nvvm_cp_async_bulk_tensor_prefetch_im2col_w_128_4d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.w.128.4d
+    nvvm_cp_async_bulk_tensor_prefetch_im2col_w_128_5d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.w.128.5d
+    nvvm_cp_async_bulk_tensor_prefetch_im2col_w_3d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.w.3d
+    nvvm_cp_async_bulk_tensor_prefetch_im2col_w_4d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.w.4d
+    nvvm_cp_async_bulk_tensor_prefetch_im2col_w_5d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.im2col.w.5d
     nvvm_cp_async_bulk_tensor_prefetch_tile_1d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.tile.1d
     nvvm_cp_async_bulk_tensor_prefetch_tile_2d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.tile.2d
     nvvm_cp_async_bulk_tensor_prefetch_tile_3d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.tile.3d
     nvvm_cp_async_bulk_tensor_prefetch_tile_4d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.tile.4d
     nvvm_cp_async_bulk_tensor_prefetch_tile_5d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.tile.5d
+    nvvm_cp_async_bulk_tensor_prefetch_tile_gather4_2d,  // llvm.nvvm.cp.async.bulk.tensor.prefetch.tile.gather4.2d
     nvvm_cp_async_bulk_tensor_reduce_add_im2col_3d,  // llvm.nvvm.cp.async.bulk.tensor.reduce.add.im2col.3d
     nvvm_cp_async_bulk_tensor_reduce_add_im2col_4d,  // llvm.nvvm.cp.async.bulk.tensor.reduce.add.im2col.4d
     nvvm_cp_async_bulk_tensor_reduce_add_im2col_5d,  // llvm.nvvm.cp.async.bulk.tensor.reduce.add.im2col.5d
@@ -170,6 +208,7 @@ enum NVVMIntrinsics : unsigned {
     nvvm_cp_async_bulk_tensor_s2g_tile_3d,     // llvm.nvvm.cp.async.bulk.tensor.s2g.tile.3d
     nvvm_cp_async_bulk_tensor_s2g_tile_4d,     // llvm.nvvm.cp.async.bulk.tensor.s2g.tile.4d
     nvvm_cp_async_bulk_tensor_s2g_tile_5d,     // llvm.nvvm.cp.async.bulk.tensor.s2g.tile.5d
+    nvvm_cp_async_bulk_tensor_s2g_tile_scatter4_2d,  // llvm.nvvm.cp.async.bulk.tensor.s2g.tile.scatter4.2d
     nvvm_cp_async_bulk_wait_group,             // llvm.nvvm.cp.async.bulk.wait.group
     nvvm_cp_async_bulk_wait_group_read,        // llvm.nvvm.cp.async.bulk.wait.group.read
     nvvm_cp_async_ca_shared_global_16,         // llvm.nvvm.cp.async.ca.shared.global.16
@@ -231,6 +270,8 @@ enum NVVMIntrinsics : unsigned {
     nvvm_div_rz_d,                             // llvm.nvvm.div.rz.d
     nvvm_div_rz_f,                             // llvm.nvvm.div.rz.f
     nvvm_div_rz_ftz_f,                         // llvm.nvvm.div.rz.ftz.f
+    nvvm_e2m1x2_to_f16x2_rn,                   // llvm.nvvm.e2m1x2.to.f16x2.rn
+    nvvm_e2m1x2_to_f16x2_rn_relu,              // llvm.nvvm.e2m1x2.to.f16x2.rn.relu
     nvvm_e2m3x2_to_f16x2_rn,                   // llvm.nvvm.e2m3x2.to.f16x2.rn
     nvvm_e2m3x2_to_f16x2_rn_relu,              // llvm.nvvm.e2m3x2.to.f16x2.rn.relu
     nvvm_e3m2x2_to_f16x2_rn,                   // llvm.nvvm.e3m2x2.to.f16x2.rn
@@ -309,6 +350,8 @@ enum NVVMIntrinsics : unsigned {
     nvvm_fence_proxy_tensormap_generic_release_gpu,  // llvm.nvvm.fence.proxy.tensormap_generic.release.gpu
     nvvm_fence_proxy_tensormap_generic_release_sys,  // llvm.nvvm.fence.proxy.tensormap_generic.release.sys
     nvvm_fence_sc_cluster,                     // llvm.nvvm.fence.sc.cluster
+    nvvm_ff_to_e2m1x2_rn_relu_satfinite,       // llvm.nvvm.ff.to.e2m1x2.rn.relu.satfinite
+    nvvm_ff_to_e2m1x2_rn_satfinite,            // llvm.nvvm.ff.to.e2m1x2.rn.satfinite
     nvvm_ff_to_e2m3x2_rn_relu_satfinite,       // llvm.nvvm.ff.to.e2m3x2.rn.relu.satfinite
     nvvm_ff_to_e2m3x2_rn_satfinite,            // llvm.nvvm.ff.to.e2m3x2.rn.satfinite
     nvvm_ff_to_e3m2x2_rn_relu_satfinite,       // llvm.nvvm.ff.to.e3m2x2.rn.relu.satfinite
@@ -475,6 +518,7 @@ enum NVVMIntrinsics : unsigned {
     nvvm_idp4a_s_u,                            // llvm.nvvm.idp4a.s.u
     nvvm_idp4a_u_s,                            // llvm.nvvm.idp4a.u.s
     nvvm_idp4a_u_u,                            // llvm.nvvm.idp4a.u.u
+    nvvm_internal_addrspace_wrap,              // llvm.nvvm.internal.addrspace.wrap
     nvvm_is_explicit_cluster,                  // llvm.nvvm.is_explicit_cluster
     nvvm_isspacep_const,                       // llvm.nvvm.isspacep.const
     nvvm_isspacep_global,                      // llvm.nvvm.isspacep.global
@@ -647,6 +691,7 @@ enum NVVMIntrinsics : unsigned {
     nvvm_nanosleep,                            // llvm.nvvm.nanosleep
     nvvm_neg_bf16,                             // llvm.nvvm.neg.bf16
     nvvm_neg_bf16x2,                           // llvm.nvvm.neg.bf16x2
+    nvvm_pm_event_mask,                        // llvm.nvvm.pm.event.mask
     nvvm_prefetch_L1,                          // llvm.nvvm.prefetch.L1
     nvvm_prefetch_L2,                          // llvm.nvvm.prefetch.L2
     nvvm_prefetch_global_L1,                   // llvm.nvvm.prefetch.global.L1
@@ -657,8 +702,12 @@ enum NVVMIntrinsics : unsigned {
     nvvm_prefetch_local_L2,                    // llvm.nvvm.prefetch.local.L2
     nvvm_prefetchu_L1,                         // llvm.nvvm.prefetchu.L1
     nvvm_prmt,                                 // llvm.nvvm.prmt
-    nvvm_ptr_gen_to_param,                     // llvm.nvvm.ptr.gen.to.param
-    nvvm_ptr_param_to_gen,                     // llvm.nvvm.ptr.param.to.gen
+    nvvm_prmt_b4e,                             // llvm.nvvm.prmt.b4e
+    nvvm_prmt_ecl,                             // llvm.nvvm.prmt.ecl
+    nvvm_prmt_ecr,                             // llvm.nvvm.prmt.ecr
+    nvvm_prmt_f4e,                             // llvm.nvvm.prmt.f4e
+    nvvm_prmt_rc16,                            // llvm.nvvm.prmt.rc16
+    nvvm_prmt_rc8,                             // llvm.nvvm.prmt.rc8
     nvvm_rcp_approx_ftz_d,                     // llvm.nvvm.rcp.approx.ftz.d
     nvvm_rcp_approx_ftz_f,                     // llvm.nvvm.rcp.approx.ftz.f
     nvvm_rcp_rm_d,                             // llvm.nvvm.rcp.rm.d
@@ -793,6 +842,8 @@ enum NVVMIntrinsics : unsigned {
     nvvm_saturate_ftz_f,                       // llvm.nvvm.saturate.ftz.f
     nvvm_setmaxnreg_dec_sync_aligned_u32,      // llvm.nvvm.setmaxnreg.dec.sync.aligned.u32
     nvvm_setmaxnreg_inc_sync_aligned_u32,      // llvm.nvvm.setmaxnreg.inc.sync.aligned.u32
+    nvvm_sext_clamp,                           // llvm.nvvm.sext.clamp
+    nvvm_sext_wrap,                            // llvm.nvvm.sext.wrap
     nvvm_shfl_bfly_f32,                        // llvm.nvvm.shfl.bfly.f32
     nvvm_shfl_bfly_f32p,                       // llvm.nvvm.shfl.bfly.f32p
     nvvm_shfl_bfly_i32,                        // llvm.nvvm.shfl.bfly.i32
@@ -844,6 +895,15 @@ enum NVVMIntrinsics : unsigned {
     nvvm_sqrt_rz_ftz_f,                        // llvm.nvvm.sqrt.rz.ftz.f
     nvvm_st_bulk,                              // llvm.nvvm.st.bulk
     nvvm_st_bulk_shared_cta,                   // llvm.nvvm.st.bulk.shared.cta
+    nvvm_stmatrix_sync_aligned_m16n8_x1_trans_b8,  // llvm.nvvm.stmatrix.sync.aligned.m16n8.x1.trans.b8
+    nvvm_stmatrix_sync_aligned_m16n8_x2_trans_b8,  // llvm.nvvm.stmatrix.sync.aligned.m16n8.x2.trans.b8
+    nvvm_stmatrix_sync_aligned_m16n8_x4_trans_b8,  // llvm.nvvm.stmatrix.sync.aligned.m16n8.x4.trans.b8
+    nvvm_stmatrix_sync_aligned_m8n8_x1_b16,    // llvm.nvvm.stmatrix.sync.aligned.m8n8.x1.b16
+    nvvm_stmatrix_sync_aligned_m8n8_x1_trans_b16,  // llvm.nvvm.stmatrix.sync.aligned.m8n8.x1.trans.b16
+    nvvm_stmatrix_sync_aligned_m8n8_x2_b16,    // llvm.nvvm.stmatrix.sync.aligned.m8n8.x2.b16
+    nvvm_stmatrix_sync_aligned_m8n8_x2_trans_b16,  // llvm.nvvm.stmatrix.sync.aligned.m8n8.x2.trans.b16
+    nvvm_stmatrix_sync_aligned_m8n8_x4_b16,    // llvm.nvvm.stmatrix.sync.aligned.m8n8.x4.b16
+    nvvm_stmatrix_sync_aligned_m8n8_x4_trans_b16,  // llvm.nvvm.stmatrix.sync.aligned.m8n8.x4.trans.b16
     nvvm_suld_1d_array_i16_clamp,              // llvm.nvvm.suld.1d.array.i16.clamp
     nvvm_suld_1d_array_i16_trap,               // llvm.nvvm.suld.1d.array.i16.trap
     nvvm_suld_1d_array_i16_zero,               // llvm.nvvm.suld.1d.array.i16.zero
@@ -1986,6 +2046,8 @@ enum NVVMIntrinsics : unsigned {
     nvvm_wmma_m8n8k4_store_d_f64_col_stride,   // llvm.nvvm.wmma.m8n8k4.store.d.col.stride.f64
     nvvm_wmma_m8n8k4_store_d_f64_row,          // llvm.nvvm.wmma.m8n8k4.store.d.row.f64
     nvvm_wmma_m8n8k4_store_d_f64_row_stride,   // llvm.nvvm.wmma.m8n8k4.store.d.row.stride.f64
+    nvvm_zext_clamp,                           // llvm.nvvm.zext.clamp
+    nvvm_zext_wrap,                            // llvm.nvvm.zext.wrap
 }; // enum
 } // namespace llvm::Intrinsic
 #endif

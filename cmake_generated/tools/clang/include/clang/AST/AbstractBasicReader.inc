@@ -185,6 +185,13 @@ struct ReadDispatcher<FunctionEffect> {
   }
 };
 template <>
+struct ReadDispatcher<SpirvOperand> {
+  template <class BasicReader, class... Args>
+  static SpirvOperand read(BasicReader &R, Args &&... args) {
+    return R.readHLSLSpirvOperand(std::forward<Args>(args)...);
+  }
+};
+template <>
 struct ReadDispatcher<IdentifierInfo*> {
   template <class BasicReader, class... Args>
   static IdentifierInfo* read(BasicReader &R, Args &&... args) {
@@ -217,6 +224,13 @@ struct ReadDispatcher<NamespaceAliasDecl*> {
   template <class BasicReader, class... Args>
   static NamespaceAliasDecl* read(BasicReader &R, Args &&... args) {
     return R.readNamespaceAliasDeclRef(std::forward<Args>(args)...);
+  }
+};
+template <>
+struct ReadDispatcher<NamespaceBaseDecl*> {
+  template <class BasicReader, class... Args>
+  static NamespaceBaseDecl* read(BasicReader &R, Args &&... args) {
+    return R.readNamespaceBaseDeclRef(std::forward<Args>(args)...);
   }
 };
 template <>
@@ -488,6 +502,12 @@ struct UnpackOptionalValue<NamespaceAliasDecl*> {
   }
 };
 template <>
+struct UnpackOptionalValue<NamespaceBaseDecl*> {
+  static std::optional<NamespaceBaseDecl*> unpack(NamespaceBaseDecl* value) {
+    return value ? std::optional<NamespaceBaseDecl*>(value) : std::nullopt;
+  }
+};
+template <>
 struct UnpackOptionalValue<NamespaceDecl*> {
   static std::optional<NamespaceDecl*> unpack(NamespaceDecl* value) {
     return value ? std::optional<NamespaceDecl*>(value) : std::nullopt;
@@ -685,7 +705,8 @@ public:
     Decl* fieldDecl = subR.find("fieldDecl").readDeclRef();
     APValue value = subR.find("value").readAPValue();
     
-    return APValue(cast<clang::FieldDecl>(fieldDecl), std::move(value));
+    // node.getUnionField() / fieldDecl can be null, thus, using `cast_if_present`
+    return APValue(cast_if_present<clang::FieldDecl>(fieldDecl), std::move(value));
   
     }
 
@@ -920,6 +941,9 @@ public:
   NamespaceAliasDecl* readNamespaceAliasDeclRef() {
     return cast_or_null<NamespaceAliasDecl>(asImpl().readDeclRef());
   }
+  NamespaceBaseDecl* readNamespaceBaseDeclRef() {
+    return cast_or_null<NamespaceBaseDecl>(asImpl().readDeclRef());
+  }
   NamespaceDecl* readNamespaceDeclRef() {
     return cast_or_null<NamespaceDecl>(asImpl().readDeclRef());
   }
@@ -1029,7 +1053,7 @@ public:
     TemplateArgument *ctxElements = new (ctx) TemplateArgument[elements.size()];
     for (size_t i = 0, e = elements.size(); i != e; ++i)
       ctxElements[i] = elements[i];
-    return TemplateArgument(llvm::ArrayRef(ctxElements, elements.size()));
+    return TemplateArgument(ArrayRef(ctxElements, elements.size()));
   
     }
 

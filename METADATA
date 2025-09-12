@@ -8,14 +8,14 @@ third_party {
   license_type: NOTICE
   last_upgrade_date {
     year: 2025
-    month: 5
-    day: 30
+    month: 9
+    day: 1
   }
   homepage: "https://llvm.org/"
   identifier {
     type: "Git"
     value: "https://github.com/llvm/llvm-project"
-    version: "e0a6905287050d57ea0413cba7f011803b1f65ef"
+    version: "e68a20e0b7623738d6af736d3aa02625cba6126a"
     primary_source: true
   }
 }

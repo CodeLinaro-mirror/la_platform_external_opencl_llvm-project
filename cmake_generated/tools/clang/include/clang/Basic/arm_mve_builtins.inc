@@ -2975,7 +2975,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #endif
-static constexpr char BuiltinStringsStorage[] = 
+static constexpr char BuiltinStringsStorage[] =
   "\0"
   "n\0"
   "nt\0"
@@ -5954,8 +5954,8 @@ static constexpr char BuiltinStringsStorage[] =
 #pragma GCC diagnostic pop
 #endif
 
-static constexpr llvm::StringTable BuiltinStrings =
-    BuiltinStringsStorage;
+static constexpr llvm::StringTable
+BuiltinStrings = BuiltinStringsStorage;
 #endif // GET_MVE_BUILTIN_STR_TABLE
 
 #ifdef GET_MVE_BUILTIN_INFOS

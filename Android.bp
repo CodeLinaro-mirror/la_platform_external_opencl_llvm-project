@@ -52,6 +52,7 @@ cc_library_static {
     ],
     shared_libs: ["libz"],
     local_include_dirs: [
+        "llvm/../third-party/siphash/include",
         "llvm/lib/Support",
         "llvm/lib/Support/BLAKE3",
     ],
@@ -237,6 +238,20 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMDebugInfoGSYM_a",
+    srcs: ["llvm/lib/DebugInfo/GSYM/*.cpp"],
+    local_include_dirs: ["llvm/lib/DebugInfo/GSYM"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
+    srcs: ["llvm/lib/DebugInfo/DWARF/LowLevel/*.cpp"],
+    local_include_dirs: ["llvm/lib/DebugInfo/DWARF/LowLevel"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libLLVMDebugInfoDWARF_a",
     srcs: ["llvm/lib/DebugInfo/DWARF/*.cpp"],
     local_include_dirs: ["llvm/lib/DebugInfo/DWARF"],
@@ -307,6 +322,13 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMFrontendDirective_a",
+    srcs: ["llvm/lib/Frontend/Directive/Spelling.cpp"],
+    local_include_dirs: ["llvm/lib/Frontend/Directive"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendAtomic_a",
     srcs: ["llvm/lib/Frontend/Atomic/Atomic.cpp"],
     local_include_dirs: ["llvm/lib/Frontend/Atomic"],
@@ -340,6 +362,13 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMFrontendHLSL_a",
+    srcs: ["llvm/lib/Frontend/HLSL/*.cpp"],
+    local_include_dirs: ["llvm/lib/Frontend/HLSL"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libclangAnalysis_a",
     srcs: ["clang/lib/Analysis/*.cpp"],
     local_include_dirs: [
@@ -369,13 +398,6 @@ cc_library_static {
         "clang/lib/APINotes",
         "cmake_generated/tools/clang/include",
     ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMFrontendHLSL_a",
-    srcs: ["llvm/lib/Frontend/HLSL/*.cpp"],
-    local_include_dirs: ["llvm/lib/Frontend/HLSL"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -499,9 +521,9 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libLLVMPasses_a",
-    srcs: ["llvm/lib/Passes/*.cpp"],
-    local_include_dirs: ["llvm/lib/Passes"],
+    name: "llvm-project_lib_libLLVMSelectionDAG_a",
+    srcs: ["llvm/lib/CodeGen/SelectionDAG/*.cpp"],
+    local_include_dirs: ["llvm/lib/CodeGen/SelectionDAG"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -509,27 +531,6 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMObjCARCOpts_a",
     srcs: ["llvm/lib/Transforms/ObjCARC/*.cpp"],
     local_include_dirs: ["llvm/lib/Transforms/ObjCARC"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMIRPrinter_a",
-    srcs: ["llvm/lib/IRPrinter/IRPrintingPasses.cpp"],
-    local_include_dirs: ["llvm/lib/IRPrinter"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMHipStdPar_a",
-    srcs: ["llvm/lib/Transforms/HipStdPar/HipStdPar.cpp"],
-    local_include_dirs: ["llvm/lib/Transforms/HipStdPar"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMCoroutines_a",
-    srcs: ["llvm/lib/Transforms/Coroutines/*.cpp"],
-    local_include_dirs: ["llvm/lib/Transforms/Coroutines"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -554,6 +555,41 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMCGData_a",
     srcs: ["llvm/lib/CGData/*.cpp"],
     local_include_dirs: ["llvm/lib/CGData"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMPasses_a",
+    srcs: ["llvm/lib/Passes/*.cpp"],
+    local_include_dirs: ["llvm/lib/Passes"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMIRPrinter_a",
+    srcs: ["llvm/lib/IRPrinter/IRPrintingPasses.cpp"],
+    local_include_dirs: ["llvm/lib/IRPrinter"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMHipStdPar_a",
+    srcs: ["llvm/lib/Transforms/HipStdPar/HipStdPar.cpp"],
+    local_include_dirs: ["llvm/lib/Transforms/HipStdPar"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMGlobalISel_a",
+    srcs: ["llvm/lib/CodeGen/GlobalISel/*.cpp"],
+    local_include_dirs: ["llvm/lib/CodeGen/GlobalISel"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMCoroutines_a",
+    srcs: ["llvm/lib/Transforms/Coroutines/*.cpp"],
+    local_include_dirs: ["llvm/lib/Transforms/Coroutines"],
     defaults: ["llvm-project-defaults"],
 }
 
