@@ -18,4 +18,7 @@ third_party {
     version: "e68a20e0b7623738d6af736d3aa02625cba6126a"
     primary_source: true
   }
+  security: {
+    tag: "NVD-CPE2.3:cpe:/a:llvm:llvm:21.1.0"
+  }
 }
