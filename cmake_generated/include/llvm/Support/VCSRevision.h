@@ -1,2 +1,2 @@
-#define LLVM_REVISION "fc2789e7a81e4f7438f8b3e1906a30566875c17d"
-#define LLVM_REPOSITORY "sso://googleplex-android/platform/external/opencl/llvm-project"
+#define LLVM_REVISION "75c986d17fa0498f6fd156e4841f69ce551e4151"
+#define LLVM_REPOSITORY "/usr/local/google/home/rjodin/aosp/external/opencl/llvm-project/llvm"

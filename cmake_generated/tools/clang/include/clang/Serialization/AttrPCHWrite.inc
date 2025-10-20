@@ -413,7 +413,6 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     Record.AddString(SA->getLabel());
-    Record.push_back(SA->getIsLiteralLabel());
     break;
   }
   case attr::AssertCapability: {
@@ -576,6 +575,13 @@ Record.push_back(static_cast<uint64_t>(SA->getGuard()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    break;
+  }
+  case attr::CFISalt: {
+    const auto *SA = cast<CFISaltAttr>(A);
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.AddString(SA->getSalt());
     break;
   }
   case attr::CFIUncheckedCallee: {
@@ -841,7 +847,7 @@ Record.push_back(static_cast<uint64_t>(SA->getModel()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
-    Record.push_back(SA->getPriority());
+    Record.AddStmt(SA->getPriority());
     break;
   }
   case attr::Consumable: {
@@ -982,7 +988,7 @@ Record.push_back(static_cast<uint64_t>(SA->getDefaultState()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
-    Record.push_back(SA->getPriority());
+    Record.AddStmt(SA->getPriority());
     break;
   }
   case attr::DeviceKernel: {
@@ -1225,6 +1231,11 @@ Record.push_back(static_cast<uint64_t>(SA->getThunkType()));
     Record.push_back(A->isPackExpansion());
     break;
   }
+  case attr::HLSLIsCounter: {
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::HLSLLoopHint: {
     const auto *SA = cast<HLSLLoopHintAttr>(A);
     Record.push_back(A->isImplicit());
@@ -1326,6 +1337,24 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
 Record.push_back(static_cast<uint64_t>(SA->getType()));
+    break;
+  }
+  case attr::HLSLUnparsedSemantic: {
+    const auto *SA = cast<HLSLUnparsedSemanticAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->getIndex());
+    Record.push_back(SA->getExplicitIndex());
+    break;
+  }
+  case attr::HLSLVkBinding: {
+    const auto *SA = cast<HLSLVkBindingAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.push_back(SA->getBinding());
+    Record.push_back(SA->getSet());
     break;
   }
   case attr::HLSLVkConstantId: {
@@ -2050,6 +2079,13 @@ Record.push_back(static_cast<uint64_t>(SA->getDevType()));
     }
     break;
   }
+  case attr::OMPGroupPrivateDecl: {
+    const auto *SA = cast<OMPGroupPrivateDeclAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
   case attr::OMPReferencedVar: {
     const auto *SA = cast<OMPReferencedVarAttr>(A);
     Record.push_back(A->isImplicit());
@@ -2729,6 +2765,13 @@ Record.push_back(static_cast<uint64_t>(SA->getState()));
     break;
   }
   case attr::SPtr: {
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
+  case attr::SYCLExternal: {
+    const auto *SA = cast<SYCLExternalAttr>(A);
+    Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     break;
