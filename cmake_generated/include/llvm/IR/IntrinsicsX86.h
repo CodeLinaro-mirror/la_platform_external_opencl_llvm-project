@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum X86Intrinsics : unsigned {
 // Enum values for intrinsics.
-    x86_aadd32 = 13251,                                // llvm.x86.aadd32
+    x86_aadd32 = 13475,                                // llvm.x86.aadd32
     x86_aadd64,                                // llvm.x86.aadd64
     x86_aand32,                                // llvm.x86.aand32
     x86_aand64,                                // llvm.x86.aand64

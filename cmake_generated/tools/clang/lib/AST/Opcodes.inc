@@ -1,4 +1,66 @@
 #ifdef GET_OPCODE_NAMES
+OP_Activate,
+#endif
+#ifdef GET_INTERP
+case OP_Activate: {
+  if (!Activate(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_Activate:
+  Text.Op = PrintName("Activate");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitActivate(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitActivate(const SourceInfo &L) {
+  return emitOp<>(OP_Activate, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitActivate(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return Activate(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_ActivateThisField,
+#endif
+#ifdef GET_INTERP
+case OP_ActivateThisField: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!ActivateThisField(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_ActivateThisField:
+  Text.Op = PrintName("ActivateThisField");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitActivateThisField( uint32_t , const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitActivateThisField( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_ActivateThisField, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitActivateThisField( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return ActivateThisField(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_AddSint8,
 OP_AddUint8,
 OP_AddSint16,
@@ -4019,10 +4081,9 @@ OP_CallBI,
 #endif
 #ifdef GET_INTERP
 case OP_CallBI: {
-  const auto V0 = ReadArg<const Function *>(S, PC);
-  const auto V1 = ReadArg<const CallExpr *>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CallBI(S, OpPC, V0, V1, V2))
+  const auto V0 = ReadArg<const CallExpr *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!CallBI(S, OpPC, V0, V1))
     return false;
   continue;
 }
@@ -4030,24 +4091,23 @@ case OP_CallBI: {
 #ifdef GET_DISASM
 case OP_CallBI:
   Text.Op = PrintName("CallBI");
-  Text.Args.push_back(printArg<const Function *>(P, PC));
   Text.Args.push_back(printArg<const CallExpr *>(P, PC));
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitCallBI( const Function * ,  const CallExpr * ,  uint32_t , const SourceInfo &);
+bool emitCallBI( const CallExpr * ,  uint32_t , const SourceInfo &);
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitCallBI( const Function * A0,  const CallExpr * A1,  uint32_t A2, const SourceInfo &L) {
-  return emitOp<const Function *, const CallExpr *, uint32_t>(OP_CallBI, A0, A1, A2, L);
+bool ByteCodeEmitter::emitCallBI( const CallExpr * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const CallExpr *, uint32_t>(OP_CallBI, A0, A1, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitCallBI( const Function * A0,  const CallExpr * A1,  uint32_t A2, const SourceInfo &L) {
+bool EvalEmitter::emitCallBI( const CallExpr * A0,  uint32_t A1, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CallBI(S, OpPC, A0, A1, A2);
+  return CallBI(S, OpPC, A0, A1);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -7086,29 +7146,23 @@ bool EvalEmitter::emitCastFixedPointFloating( const llvm::fltSemantics * A0, con
 }
 #endif
 #ifdef GET_OPCODE_NAMES
-OP_CastFixedPointIntegralUint8,
 OP_CastFixedPointIntegralSint8,
-OP_CastFixedPointIntegralUint16,
+OP_CastFixedPointIntegralUint8,
 OP_CastFixedPointIntegralSint16,
-OP_CastFixedPointIntegralUint32,
+OP_CastFixedPointIntegralUint16,
 OP_CastFixedPointIntegralSint32,
-OP_CastFixedPointIntegralUint64,
+OP_CastFixedPointIntegralUint32,
 OP_CastFixedPointIntegralSint64,
-OP_CastFixedPointIntegralBool,
+OP_CastFixedPointIntegralUint64,
 #endif
 #ifdef GET_INTERP
-case OP_CastFixedPointIntegralUint8: {
-  if (!CastFixedPointIntegral<PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
 case OP_CastFixedPointIntegralSint8: {
   if (!CastFixedPointIntegral<PT_Sint8>(S, OpPC))
     return false;
   continue;
 }
-case OP_CastFixedPointIntegralUint16: {
-  if (!CastFixedPointIntegral<PT_Uint16>(S, OpPC))
+case OP_CastFixedPointIntegralUint8: {
+  if (!CastFixedPointIntegral<PT_Uint8>(S, OpPC))
     return false;
   continue;
 }
@@ -7117,8 +7171,8 @@ case OP_CastFixedPointIntegralSint16: {
     return false;
   continue;
 }
-case OP_CastFixedPointIntegralUint32: {
-  if (!CastFixedPointIntegral<PT_Uint32>(S, OpPC))
+case OP_CastFixedPointIntegralUint16: {
+  if (!CastFixedPointIntegral<PT_Uint16>(S, OpPC))
     return false;
   continue;
 }
@@ -7127,8 +7181,8 @@ case OP_CastFixedPointIntegralSint32: {
     return false;
   continue;
 }
-case OP_CastFixedPointIntegralUint64: {
-  if (!CastFixedPointIntegral<PT_Uint64>(S, OpPC))
+case OP_CastFixedPointIntegralUint32: {
+  if (!CastFixedPointIntegral<PT_Uint32>(S, OpPC))
     return false;
   continue;
 }
@@ -7137,51 +7191,47 @@ case OP_CastFixedPointIntegralSint64: {
     return false;
   continue;
 }
-case OP_CastFixedPointIntegralBool: {
-  if (!CastFixedPointIntegral<PT_Bool>(S, OpPC))
+case OP_CastFixedPointIntegralUint64: {
+  if (!CastFixedPointIntegral<PT_Uint64>(S, OpPC))
     return false;
   continue;
 }
 #endif
 #ifdef GET_DISASM
-case OP_CastFixedPointIntegralUint8:
-  Text.Op = PrintName("CastFixedPointIntegralUint8");
-  break;
 case OP_CastFixedPointIntegralSint8:
   Text.Op = PrintName("CastFixedPointIntegralSint8");
   break;
-case OP_CastFixedPointIntegralUint16:
-  Text.Op = PrintName("CastFixedPointIntegralUint16");
+case OP_CastFixedPointIntegralUint8:
+  Text.Op = PrintName("CastFixedPointIntegralUint8");
   break;
 case OP_CastFixedPointIntegralSint16:
   Text.Op = PrintName("CastFixedPointIntegralSint16");
   break;
-case OP_CastFixedPointIntegralUint32:
-  Text.Op = PrintName("CastFixedPointIntegralUint32");
+case OP_CastFixedPointIntegralUint16:
+  Text.Op = PrintName("CastFixedPointIntegralUint16");
   break;
 case OP_CastFixedPointIntegralSint32:
   Text.Op = PrintName("CastFixedPointIntegralSint32");
   break;
-case OP_CastFixedPointIntegralUint64:
-  Text.Op = PrintName("CastFixedPointIntegralUint64");
+case OP_CastFixedPointIntegralUint32:
+  Text.Op = PrintName("CastFixedPointIntegralUint32");
   break;
 case OP_CastFixedPointIntegralSint64:
   Text.Op = PrintName("CastFixedPointIntegralSint64");
   break;
-case OP_CastFixedPointIntegralBool:
-  Text.Op = PrintName("CastFixedPointIntegralBool");
+case OP_CastFixedPointIntegralUint64:
+  Text.Op = PrintName("CastFixedPointIntegralUint64");
   break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitCastFixedPointIntegralUint8(const SourceInfo &);
 bool emitCastFixedPointIntegralSint8(const SourceInfo &);
-bool emitCastFixedPointIntegralUint16(const SourceInfo &);
+bool emitCastFixedPointIntegralUint8(const SourceInfo &);
 bool emitCastFixedPointIntegralSint16(const SourceInfo &);
-bool emitCastFixedPointIntegralUint32(const SourceInfo &);
+bool emitCastFixedPointIntegralUint16(const SourceInfo &);
 bool emitCastFixedPointIntegralSint32(const SourceInfo &);
-bool emitCastFixedPointIntegralUint64(const SourceInfo &);
+bool emitCastFixedPointIntegralUint32(const SourceInfo &);
 bool emitCastFixedPointIntegralSint64(const SourceInfo &);
-bool emitCastFixedPointIntegralBool(const SourceInfo &);
+bool emitCastFixedPointIntegralUint64(const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitCastFixedPointIntegral(PrimType, const SourceInfo &I);
@@ -7195,103 +7245,93 @@ ByteCodeEmitter
 #endif
 ::emitCastFixedPointIntegral(PrimType T0, const SourceInfo &I) {
   switch (T0) {
-  case PT_Uint8:
-    return emitCastFixedPointIntegralUint8(I);
   case PT_Sint8:
     return emitCastFixedPointIntegralSint8(I);
-  case PT_Uint16:
-    return emitCastFixedPointIntegralUint16(I);
+  case PT_Uint8:
+    return emitCastFixedPointIntegralUint8(I);
   case PT_Sint16:
     return emitCastFixedPointIntegralSint16(I);
-  case PT_Uint32:
-    return emitCastFixedPointIntegralUint32(I);
+  case PT_Uint16:
+    return emitCastFixedPointIntegralUint16(I);
   case PT_Sint32:
     return emitCastFixedPointIntegralSint32(I);
-  case PT_Uint64:
-    return emitCastFixedPointIntegralUint64(I);
+  case PT_Uint32:
+    return emitCastFixedPointIntegralUint32(I);
   case PT_Sint64:
     return emitCastFixedPointIntegralSint64(I);
-  case PT_Bool:
-    return emitCastFixedPointIntegralBool(I);
+  case PT_Uint64:
+    return emitCastFixedPointIntegralUint64(I);
   default: llvm_unreachable("invalid type: emitCastFixedPointIntegral");
   }
   llvm_unreachable("invalid enum value");
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitCastFixedPointIntegralUint8(const SourceInfo &L) {
-  return emitOp<>(OP_CastFixedPointIntegralUint8, L);
-}
 bool ByteCodeEmitter::emitCastFixedPointIntegralSint8(const SourceInfo &L) {
   return emitOp<>(OP_CastFixedPointIntegralSint8, L);
 }
-bool ByteCodeEmitter::emitCastFixedPointIntegralUint16(const SourceInfo &L) {
-  return emitOp<>(OP_CastFixedPointIntegralUint16, L);
+bool ByteCodeEmitter::emitCastFixedPointIntegralUint8(const SourceInfo &L) {
+  return emitOp<>(OP_CastFixedPointIntegralUint8, L);
 }
 bool ByteCodeEmitter::emitCastFixedPointIntegralSint16(const SourceInfo &L) {
   return emitOp<>(OP_CastFixedPointIntegralSint16, L);
 }
-bool ByteCodeEmitter::emitCastFixedPointIntegralUint32(const SourceInfo &L) {
-  return emitOp<>(OP_CastFixedPointIntegralUint32, L);
+bool ByteCodeEmitter::emitCastFixedPointIntegralUint16(const SourceInfo &L) {
+  return emitOp<>(OP_CastFixedPointIntegralUint16, L);
 }
 bool ByteCodeEmitter::emitCastFixedPointIntegralSint32(const SourceInfo &L) {
   return emitOp<>(OP_CastFixedPointIntegralSint32, L);
 }
-bool ByteCodeEmitter::emitCastFixedPointIntegralUint64(const SourceInfo &L) {
-  return emitOp<>(OP_CastFixedPointIntegralUint64, L);
+bool ByteCodeEmitter::emitCastFixedPointIntegralUint32(const SourceInfo &L) {
+  return emitOp<>(OP_CastFixedPointIntegralUint32, L);
 }
 bool ByteCodeEmitter::emitCastFixedPointIntegralSint64(const SourceInfo &L) {
   return emitOp<>(OP_CastFixedPointIntegralSint64, L);
 }
-bool ByteCodeEmitter::emitCastFixedPointIntegralBool(const SourceInfo &L) {
-  return emitOp<>(OP_CastFixedPointIntegralBool, L);
+bool ByteCodeEmitter::emitCastFixedPointIntegralUint64(const SourceInfo &L) {
+  return emitOp<>(OP_CastFixedPointIntegralUint64, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitCastFixedPointIntegralUint8(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return CastFixedPointIntegral<PT_Uint8>(S, OpPC);
-}
 bool EvalEmitter::emitCastFixedPointIntegralSint8(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFixedPointIntegral<PT_Sint8>(S, OpPC);
 }
-bool EvalEmitter::emitCastFixedPointIntegralUint16(const SourceInfo &L) {
+bool EvalEmitter::emitCastFixedPointIntegralUint8(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFixedPointIntegral<PT_Uint16>(S, OpPC);
+  return CastFixedPointIntegral<PT_Uint8>(S, OpPC);
 }
 bool EvalEmitter::emitCastFixedPointIntegralSint16(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFixedPointIntegral<PT_Sint16>(S, OpPC);
 }
-bool EvalEmitter::emitCastFixedPointIntegralUint32(const SourceInfo &L) {
+bool EvalEmitter::emitCastFixedPointIntegralUint16(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFixedPointIntegral<PT_Uint32>(S, OpPC);
+  return CastFixedPointIntegral<PT_Uint16>(S, OpPC);
 }
 bool EvalEmitter::emitCastFixedPointIntegralSint32(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFixedPointIntegral<PT_Sint32>(S, OpPC);
 }
-bool EvalEmitter::emitCastFixedPointIntegralUint64(const SourceInfo &L) {
+bool EvalEmitter::emitCastFixedPointIntegralUint32(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFixedPointIntegral<PT_Uint64>(S, OpPC);
+  return CastFixedPointIntegral<PT_Uint32>(S, OpPC);
 }
 bool EvalEmitter::emitCastFixedPointIntegralSint64(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFixedPointIntegral<PT_Sint64>(S, OpPC);
 }
-bool EvalEmitter::emitCastFixedPointIntegralBool(const SourceInfo &L) {
+bool EvalEmitter::emitCastFixedPointIntegralUint64(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFixedPointIntegral<PT_Bool>(S, OpPC);
+  return CastFixedPointIntegral<PT_Uint64>(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -7327,32 +7367,26 @@ bool EvalEmitter::emitCastFloatingFixedPoint( uint32_t A0, const SourceInfo &L) 
 }
 #endif
 #ifdef GET_OPCODE_NAMES
-OP_CastFloatingIntegralUint8,
 OP_CastFloatingIntegralSint8,
-OP_CastFloatingIntegralUint16,
+OP_CastFloatingIntegralUint8,
 OP_CastFloatingIntegralSint16,
-OP_CastFloatingIntegralUint32,
+OP_CastFloatingIntegralUint16,
 OP_CastFloatingIntegralSint32,
-OP_CastFloatingIntegralUint64,
+OP_CastFloatingIntegralUint32,
 OP_CastFloatingIntegralSint64,
+OP_CastFloatingIntegralUint64,
 OP_CastFloatingIntegralBool,
 #endif
 #ifdef GET_INTERP
-case OP_CastFloatingIntegralUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_CastFloatingIntegralSint8: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!CastFloatingIntegral<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
-case OP_CastFloatingIntegralUint16: {
+case OP_CastFloatingIntegralUint8: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint16>(S, OpPC, V0))
+  if (!CastFloatingIntegral<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -7362,9 +7396,9 @@ case OP_CastFloatingIntegralSint16: {
     return false;
   continue;
 }
-case OP_CastFloatingIntegralUint32: {
+case OP_CastFloatingIntegralUint16: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint32>(S, OpPC, V0))
+  if (!CastFloatingIntegral<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -7374,15 +7408,21 @@ case OP_CastFloatingIntegralSint32: {
     return false;
   continue;
 }
-case OP_CastFloatingIntegralUint64: {
+case OP_CastFloatingIntegralUint32: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint64>(S, OpPC, V0))
+  if (!CastFloatingIntegral<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_CastFloatingIntegralSint64: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!CastFloatingIntegral<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_CastFloatingIntegralUint64: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!CastFloatingIntegral<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -7394,36 +7434,36 @@ case OP_CastFloatingIntegralBool: {
 }
 #endif
 #ifdef GET_DISASM
-case OP_CastFloatingIntegralUint8:
-  Text.Op = PrintName("CastFloatingIntegralUint8");
-  Text.Args.push_back(printArg<uint32_t>(P, PC));
-  break;
 case OP_CastFloatingIntegralSint8:
   Text.Op = PrintName("CastFloatingIntegralSint8");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
-case OP_CastFloatingIntegralUint16:
-  Text.Op = PrintName("CastFloatingIntegralUint16");
+case OP_CastFloatingIntegralUint8:
+  Text.Op = PrintName("CastFloatingIntegralUint8");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastFloatingIntegralSint16:
   Text.Op = PrintName("CastFloatingIntegralSint16");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
-case OP_CastFloatingIntegralUint32:
-  Text.Op = PrintName("CastFloatingIntegralUint32");
+case OP_CastFloatingIntegralUint16:
+  Text.Op = PrintName("CastFloatingIntegralUint16");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastFloatingIntegralSint32:
   Text.Op = PrintName("CastFloatingIntegralSint32");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
-case OP_CastFloatingIntegralUint64:
-  Text.Op = PrintName("CastFloatingIntegralUint64");
+case OP_CastFloatingIntegralUint32:
+  Text.Op = PrintName("CastFloatingIntegralUint32");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastFloatingIntegralSint64:
   Text.Op = PrintName("CastFloatingIntegralSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_CastFloatingIntegralUint64:
+  Text.Op = PrintName("CastFloatingIntegralUint64");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastFloatingIntegralBool:
@@ -7432,14 +7472,14 @@ case OP_CastFloatingIntegralBool:
   break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitCastFloatingIntegralUint8( uint32_t , const SourceInfo &);
 bool emitCastFloatingIntegralSint8( uint32_t , const SourceInfo &);
-bool emitCastFloatingIntegralUint16( uint32_t , const SourceInfo &);
+bool emitCastFloatingIntegralUint8( uint32_t , const SourceInfo &);
 bool emitCastFloatingIntegralSint16( uint32_t , const SourceInfo &);
-bool emitCastFloatingIntegralUint32( uint32_t , const SourceInfo &);
+bool emitCastFloatingIntegralUint16( uint32_t , const SourceInfo &);
 bool emitCastFloatingIntegralSint32( uint32_t , const SourceInfo &);
-bool emitCastFloatingIntegralUint64( uint32_t , const SourceInfo &);
+bool emitCastFloatingIntegralUint32( uint32_t , const SourceInfo &);
 bool emitCastFloatingIntegralSint64( uint32_t , const SourceInfo &);
+bool emitCastFloatingIntegralUint64( uint32_t , const SourceInfo &);
 bool emitCastFloatingIntegralBool( uint32_t , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
@@ -7454,22 +7494,22 @@ ByteCodeEmitter
 #endif
 ::emitCastFloatingIntegral(PrimType T0,  uint32_t A0, const SourceInfo &I) {
   switch (T0) {
-  case PT_Uint8:
-    return emitCastFloatingIntegralUint8(A0, I);
   case PT_Sint8:
     return emitCastFloatingIntegralSint8(A0, I);
-  case PT_Uint16:
-    return emitCastFloatingIntegralUint16(A0, I);
+  case PT_Uint8:
+    return emitCastFloatingIntegralUint8(A0, I);
   case PT_Sint16:
     return emitCastFloatingIntegralSint16(A0, I);
-  case PT_Uint32:
-    return emitCastFloatingIntegralUint32(A0, I);
+  case PT_Uint16:
+    return emitCastFloatingIntegralUint16(A0, I);
   case PT_Sint32:
     return emitCastFloatingIntegralSint32(A0, I);
-  case PT_Uint64:
-    return emitCastFloatingIntegralUint64(A0, I);
+  case PT_Uint32:
+    return emitCastFloatingIntegralUint32(A0, I);
   case PT_Sint64:
     return emitCastFloatingIntegralSint64(A0, I);
+  case PT_Uint64:
+    return emitCastFloatingIntegralUint64(A0, I);
   case PT_Bool:
     return emitCastFloatingIntegralBool(A0, I);
   default: llvm_unreachable("invalid type: emitCastFloatingIntegral");
@@ -7478,74 +7518,74 @@ ByteCodeEmitter
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitCastFloatingIntegralUint8( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastFloatingIntegralUint8, A0, L);
-}
 bool ByteCodeEmitter::emitCastFloatingIntegralSint8( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastFloatingIntegralSint8, A0, L);
 }
-bool ByteCodeEmitter::emitCastFloatingIntegralUint16( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastFloatingIntegralUint16, A0, L);
+bool ByteCodeEmitter::emitCastFloatingIntegralUint8( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastFloatingIntegralUint8, A0, L);
 }
 bool ByteCodeEmitter::emitCastFloatingIntegralSint16( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastFloatingIntegralSint16, A0, L);
 }
-bool ByteCodeEmitter::emitCastFloatingIntegralUint32( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastFloatingIntegralUint32, A0, L);
+bool ByteCodeEmitter::emitCastFloatingIntegralUint16( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastFloatingIntegralUint16, A0, L);
 }
 bool ByteCodeEmitter::emitCastFloatingIntegralSint32( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastFloatingIntegralSint32, A0, L);
 }
-bool ByteCodeEmitter::emitCastFloatingIntegralUint64( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastFloatingIntegralUint64, A0, L);
+bool ByteCodeEmitter::emitCastFloatingIntegralUint32( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastFloatingIntegralUint32, A0, L);
 }
 bool ByteCodeEmitter::emitCastFloatingIntegralSint64( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastFloatingIntegralSint64, A0, L);
+}
+bool ByteCodeEmitter::emitCastFloatingIntegralUint64( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastFloatingIntegralUint64, A0, L);
 }
 bool ByteCodeEmitter::emitCastFloatingIntegralBool( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastFloatingIntegralBool, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitCastFloatingIntegralUint8( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return CastFloatingIntegral<PT_Uint8>(S, OpPC, A0);
-}
 bool EvalEmitter::emitCastFloatingIntegralSint8( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFloatingIntegral<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCastFloatingIntegralUint16( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitCastFloatingIntegralUint8( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFloatingIntegral<PT_Uint16>(S, OpPC, A0);
+  return CastFloatingIntegral<PT_Uint8>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastFloatingIntegralSint16( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFloatingIntegral<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCastFloatingIntegralUint32( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitCastFloatingIntegralUint16( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFloatingIntegral<PT_Uint32>(S, OpPC, A0);
+  return CastFloatingIntegral<PT_Uint16>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastFloatingIntegralSint32( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFloatingIntegral<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCastFloatingIntegralUint64( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitCastFloatingIntegralUint32( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastFloatingIntegral<PT_Uint64>(S, OpPC, A0);
+  return CastFloatingIntegral<PT_Uint32>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastFloatingIntegralSint64( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastFloatingIntegral<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitCastFloatingIntegralUint64( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CastFloatingIntegral<PT_Uint64>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastFloatingIntegralBool( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
@@ -7622,32 +7662,26 @@ bool EvalEmitter::emitCastFloatingIntegralAPS( uint32_t A0,  uint32_t A1, const 
 }
 #endif
 #ifdef GET_OPCODE_NAMES
-OP_CastIntegralFixedPointUint8,
 OP_CastIntegralFixedPointSint8,
-OP_CastIntegralFixedPointUint16,
+OP_CastIntegralFixedPointUint8,
 OP_CastIntegralFixedPointSint16,
-OP_CastIntegralFixedPointUint32,
+OP_CastIntegralFixedPointUint16,
 OP_CastIntegralFixedPointSint32,
-OP_CastIntegralFixedPointUint64,
+OP_CastIntegralFixedPointUint32,
 OP_CastIntegralFixedPointSint64,
+OP_CastIntegralFixedPointUint64,
 OP_CastIntegralFixedPointBool,
 #endif
 #ifdef GET_INTERP
-case OP_CastIntegralFixedPointUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
-}
 case OP_CastIntegralFixedPointSint8: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!CastIntegralFixedPoint<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
-case OP_CastIntegralFixedPointUint16: {
+case OP_CastIntegralFixedPointUint8: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint16>(S, OpPC, V0))
+  if (!CastIntegralFixedPoint<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -7657,9 +7691,9 @@ case OP_CastIntegralFixedPointSint16: {
     return false;
   continue;
 }
-case OP_CastIntegralFixedPointUint32: {
+case OP_CastIntegralFixedPointUint16: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint32>(S, OpPC, V0))
+  if (!CastIntegralFixedPoint<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -7669,15 +7703,21 @@ case OP_CastIntegralFixedPointSint32: {
     return false;
   continue;
 }
-case OP_CastIntegralFixedPointUint64: {
+case OP_CastIntegralFixedPointUint32: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint64>(S, OpPC, V0))
+  if (!CastIntegralFixedPoint<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_CastIntegralFixedPointSint64: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   if (!CastIntegralFixedPoint<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_CastIntegralFixedPointUint64: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!CastIntegralFixedPoint<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -7689,36 +7729,36 @@ case OP_CastIntegralFixedPointBool: {
 }
 #endif
 #ifdef GET_DISASM
-case OP_CastIntegralFixedPointUint8:
-  Text.Op = PrintName("CastIntegralFixedPointUint8");
-  Text.Args.push_back(printArg<uint32_t>(P, PC));
-  break;
 case OP_CastIntegralFixedPointSint8:
   Text.Op = PrintName("CastIntegralFixedPointSint8");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
-case OP_CastIntegralFixedPointUint16:
-  Text.Op = PrintName("CastIntegralFixedPointUint16");
+case OP_CastIntegralFixedPointUint8:
+  Text.Op = PrintName("CastIntegralFixedPointUint8");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastIntegralFixedPointSint16:
   Text.Op = PrintName("CastIntegralFixedPointSint16");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
-case OP_CastIntegralFixedPointUint32:
-  Text.Op = PrintName("CastIntegralFixedPointUint32");
+case OP_CastIntegralFixedPointUint16:
+  Text.Op = PrintName("CastIntegralFixedPointUint16");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastIntegralFixedPointSint32:
   Text.Op = PrintName("CastIntegralFixedPointSint32");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
-case OP_CastIntegralFixedPointUint64:
-  Text.Op = PrintName("CastIntegralFixedPointUint64");
+case OP_CastIntegralFixedPointUint32:
+  Text.Op = PrintName("CastIntegralFixedPointUint32");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastIntegralFixedPointSint64:
   Text.Op = PrintName("CastIntegralFixedPointSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_CastIntegralFixedPointUint64:
+  Text.Op = PrintName("CastIntegralFixedPointUint64");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   break;
 case OP_CastIntegralFixedPointBool:
@@ -7727,14 +7767,14 @@ case OP_CastIntegralFixedPointBool:
   break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitCastIntegralFixedPointUint8( uint32_t , const SourceInfo &);
 bool emitCastIntegralFixedPointSint8( uint32_t , const SourceInfo &);
-bool emitCastIntegralFixedPointUint16( uint32_t , const SourceInfo &);
+bool emitCastIntegralFixedPointUint8( uint32_t , const SourceInfo &);
 bool emitCastIntegralFixedPointSint16( uint32_t , const SourceInfo &);
-bool emitCastIntegralFixedPointUint32( uint32_t , const SourceInfo &);
+bool emitCastIntegralFixedPointUint16( uint32_t , const SourceInfo &);
 bool emitCastIntegralFixedPointSint32( uint32_t , const SourceInfo &);
-bool emitCastIntegralFixedPointUint64( uint32_t , const SourceInfo &);
+bool emitCastIntegralFixedPointUint32( uint32_t , const SourceInfo &);
 bool emitCastIntegralFixedPointSint64( uint32_t , const SourceInfo &);
+bool emitCastIntegralFixedPointUint64( uint32_t , const SourceInfo &);
 bool emitCastIntegralFixedPointBool( uint32_t , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
@@ -7749,22 +7789,22 @@ ByteCodeEmitter
 #endif
 ::emitCastIntegralFixedPoint(PrimType T0,  uint32_t A0, const SourceInfo &I) {
   switch (T0) {
-  case PT_Uint8:
-    return emitCastIntegralFixedPointUint8(A0, I);
   case PT_Sint8:
     return emitCastIntegralFixedPointSint8(A0, I);
-  case PT_Uint16:
-    return emitCastIntegralFixedPointUint16(A0, I);
+  case PT_Uint8:
+    return emitCastIntegralFixedPointUint8(A0, I);
   case PT_Sint16:
     return emitCastIntegralFixedPointSint16(A0, I);
-  case PT_Uint32:
-    return emitCastIntegralFixedPointUint32(A0, I);
+  case PT_Uint16:
+    return emitCastIntegralFixedPointUint16(A0, I);
   case PT_Sint32:
     return emitCastIntegralFixedPointSint32(A0, I);
-  case PT_Uint64:
-    return emitCastIntegralFixedPointUint64(A0, I);
+  case PT_Uint32:
+    return emitCastIntegralFixedPointUint32(A0, I);
   case PT_Sint64:
     return emitCastIntegralFixedPointSint64(A0, I);
+  case PT_Uint64:
+    return emitCastIntegralFixedPointUint64(A0, I);
   case PT_Bool:
     return emitCastIntegralFixedPointBool(A0, I);
   default: llvm_unreachable("invalid type: emitCastIntegralFixedPoint");
@@ -7773,74 +7813,74 @@ ByteCodeEmitter
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitCastIntegralFixedPointUint8( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint8, A0, L);
-}
 bool ByteCodeEmitter::emitCastIntegralFixedPointSint8( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastIntegralFixedPointSint8, A0, L);
 }
-bool ByteCodeEmitter::emitCastIntegralFixedPointUint16( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint16, A0, L);
+bool ByteCodeEmitter::emitCastIntegralFixedPointUint8( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint8, A0, L);
 }
 bool ByteCodeEmitter::emitCastIntegralFixedPointSint16( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastIntegralFixedPointSint16, A0, L);
 }
-bool ByteCodeEmitter::emitCastIntegralFixedPointUint32( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint32, A0, L);
+bool ByteCodeEmitter::emitCastIntegralFixedPointUint16( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint16, A0, L);
 }
 bool ByteCodeEmitter::emitCastIntegralFixedPointSint32( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastIntegralFixedPointSint32, A0, L);
 }
-bool ByteCodeEmitter::emitCastIntegralFixedPointUint64( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint64, A0, L);
+bool ByteCodeEmitter::emitCastIntegralFixedPointUint32( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint32, A0, L);
 }
 bool ByteCodeEmitter::emitCastIntegralFixedPointSint64( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastIntegralFixedPointSint64, A0, L);
+}
+bool ByteCodeEmitter::emitCastIntegralFixedPointUint64( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_CastIntegralFixedPointUint64, A0, L);
 }
 bool ByteCodeEmitter::emitCastIntegralFixedPointBool( uint32_t A0, const SourceInfo &L) {
   return emitOp<uint32_t>(OP_CastIntegralFixedPointBool, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitCastIntegralFixedPointUint8( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return CastIntegralFixedPoint<PT_Uint8>(S, OpPC, A0);
-}
 bool EvalEmitter::emitCastIntegralFixedPointSint8( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastIntegralFixedPoint<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCastIntegralFixedPointUint16( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitCastIntegralFixedPointUint8( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastIntegralFixedPoint<PT_Uint16>(S, OpPC, A0);
+  return CastIntegralFixedPoint<PT_Uint8>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastIntegralFixedPointSint16( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastIntegralFixedPoint<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCastIntegralFixedPointUint32( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitCastIntegralFixedPointUint16( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastIntegralFixedPoint<PT_Uint32>(S, OpPC, A0);
+  return CastIntegralFixedPoint<PT_Uint16>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastIntegralFixedPointSint32( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastIntegralFixedPoint<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitCastIntegralFixedPointUint64( uint32_t A0, const SourceInfo &L) {
+bool EvalEmitter::emitCastIntegralFixedPointUint32( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return CastIntegralFixedPoint<PT_Uint64>(S, OpPC, A0);
+  return CastIntegralFixedPoint<PT_Uint32>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastIntegralFixedPointSint64( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CastIntegralFixedPoint<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitCastIntegralFixedPointUint64( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CastIntegralFixedPoint<PT_Uint64>(S, OpPC, A0);
 }
 bool EvalEmitter::emitCastIntegralFixedPointBool( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
@@ -8496,6 +8536,38 @@ bool EvalEmitter::emitCheckAllocations(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CheckAllocations(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_CheckArraySize,
+#endif
+#ifdef GET_INTERP
+case OP_CheckArraySize: {
+  const auto V0 = ReadArg<uint64_t>(S, PC);
+  if (!CheckArraySize(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CheckArraySize:
+  Text.Op = PrintName("CheckArraySize");
+  Text.Args.push_back(printArg<uint64_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCheckArraySize( uint64_t , const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCheckArraySize( uint64_t A0, const SourceInfo &L) {
+  return emitOp<uint64_t>(OP_CheckArraySize, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCheckArraySize( uint64_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CheckArraySize(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -9170,6 +9242,66 @@ bool EvalEmitter::emitCheckNonNullArgMemberPtr(const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_CheckNull,
+#endif
+#ifdef GET_INTERP
+case OP_CheckNull: {
+  if (!CheckNull(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CheckNull:
+  Text.Op = PrintName("CheckNull");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCheckNull(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCheckNull(const SourceInfo &L) {
+  return emitOp<>(OP_CheckNull, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCheckNull(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CheckNull(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_CheckPseudoDtor,
+#endif
+#ifdef GET_INTERP
+case OP_CheckPseudoDtor: {
+  if (!CheckPseudoDtor(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CheckPseudoDtor:
+  Text.Op = PrintName("CheckPseudoDtor");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCheckPseudoDtor(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCheckPseudoDtor(const SourceInfo &L) {
+  return emitOp<>(OP_CheckPseudoDtor, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCheckPseudoDtor(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CheckPseudoDtor(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_CompSint8,
 OP_CompUint8,
 OP_CompSint16,
@@ -9468,7 +9600,7 @@ OP_ConstFloat,
 #ifdef GET_INTERP
 case OP_ConstFloat: {
   const auto &V0 = ReadArg<Floating>(S, PC);
-  if (!Const<PT_Float>(S, OpPC, V0))
+  if (!ConstFloat(S, OpPC, V0))
     return false;
   continue;
 }
@@ -9491,7 +9623,71 @@ bool ByteCodeEmitter::emitConstFloat(const Floating &A0, const SourceInfo &L) {
 bool EvalEmitter::emitConstFloat(const Floating &A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return Const<PT_Float>(S, OpPC, A0);
+  return ConstFloat(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_ConstIntAP,
+#endif
+#ifdef GET_INTERP
+case OP_ConstIntAP: {
+  const auto &V0 = ReadArg<IntegralAP<false>>(S, PC);
+  if (!Const<PT_IntAP>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_ConstIntAP:
+  Text.Op = PrintName("ConstIntAP");
+  Text.Args.push_back(printArg<IntegralAP<false>>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitConstIntAP(const IntegralAP<false> &, const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitConstIntAP(const IntegralAP<false> &A0, const SourceInfo &L) {
+  return emitOp<IntegralAP<false>>(OP_ConstIntAP, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitConstIntAP(const IntegralAP<false> &A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return Const<PT_IntAP>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_ConstIntAPS,
+#endif
+#ifdef GET_INTERP
+case OP_ConstIntAPS: {
+  const auto &V0 = ReadArg<IntegralAP<true>>(S, PC);
+  if (!Const<PT_IntAPS>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_ConstIntAPS:
+  Text.Op = PrintName("ConstIntAPS");
+  Text.Args.push_back(printArg<IntegralAP<true>>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitConstIntAPS(const IntegralAP<true> &, const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitConstIntAPS(const IntegralAP<true> &A0, const SourceInfo &L) {
+  return emitOp<IntegralAP<true>>(OP_ConstIntAPS, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitConstIntAPS(const IntegralAP<true> &A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return Const<PT_IntAPS>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -12239,6 +12435,66 @@ bool EvalEmitter::emitEQFloat(const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_EndLifetime,
+#endif
+#ifdef GET_INTERP
+case OP_EndLifetime: {
+  if (!EndLifetime(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_EndLifetime:
+  Text.Op = PrintName("EndLifetime");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitEndLifetime(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitEndLifetime(const SourceInfo &L) {
+  return emitOp<>(OP_EndLifetime, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitEndLifetime(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return EndLifetime(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_EndLifetimePop,
+#endif
+#ifdef GET_INTERP
+case OP_EndLifetimePop: {
+  if (!EndLifetimePop(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_EndLifetimePop:
+  Text.Op = PrintName("EndLifetimePop");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitEndLifetimePop(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitEndLifetimePop(const SourceInfo &L) {
+  return emitOp<>(OP_EndLifetimePop, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitEndLifetimePop(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return EndLifetimePop(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_EndSpeculation,
 #endif
 #ifdef GET_INTERP
@@ -12356,6 +12612,96 @@ bool EvalEmitter::emitFinishInit(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return FinishInit(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_FinishInitActivate,
+#endif
+#ifdef GET_INTERP
+case OP_FinishInitActivate: {
+  if (!FinishInitActivate(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_FinishInitActivate:
+  Text.Op = PrintName("FinishInitActivate");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitFinishInitActivate(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitFinishInitActivate(const SourceInfo &L) {
+  return emitOp<>(OP_FinishInitActivate, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitFinishInitActivate(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return FinishInitActivate(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_FinishInitActivatePop,
+#endif
+#ifdef GET_INTERP
+case OP_FinishInitActivatePop: {
+  if (!FinishInitActivatePop(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_FinishInitActivatePop:
+  Text.Op = PrintName("FinishInitActivatePop");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitFinishInitActivatePop(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitFinishInitActivatePop(const SourceInfo &L) {
+  return emitOp<>(OP_FinishInitActivatePop, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitFinishInitActivatePop(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return FinishInitActivatePop(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_FinishInitGlobal,
+#endif
+#ifdef GET_INTERP
+case OP_FinishInitGlobal: {
+  if (!FinishInitGlobal(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_FinishInitGlobal:
+  Text.Op = PrintName("FinishInitGlobal");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitFinishInitGlobal(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitFinishInitGlobal(const SourceInfo &L) {
+  return emitOp<>(OP_FinishInitGlobal, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitFinishInitGlobal(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return FinishInitGlobal(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -20228,70 +20574,6 @@ bool EvalEmitter::emitGetParamFloat( uint32_t A0, const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
-OP_GetPtrActiveField,
-#endif
-#ifdef GET_INTERP
-case OP_GetPtrActiveField: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrActiveField(S, OpPC, V0))
-    return false;
-  continue;
-}
-#endif
-#ifdef GET_DISASM
-case OP_GetPtrActiveField:
-  Text.Op = PrintName("GetPtrActiveField");
-  Text.Args.push_back(printArg<uint32_t>(P, PC));
-  break;
-#endif
-#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitGetPtrActiveField( uint32_t , const SourceInfo &);
-#endif
-#ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitGetPtrActiveField( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetPtrActiveField, A0, L);
-}
-#endif
-#ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitGetPtrActiveField( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetPtrActiveField(S, OpPC, A0);
-}
-#endif
-#ifdef GET_OPCODE_NAMES
-OP_GetPtrActiveThisField,
-#endif
-#ifdef GET_INTERP
-case OP_GetPtrActiveThisField: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrActiveThisField(S, OpPC, V0))
-    return false;
-  continue;
-}
-#endif
-#ifdef GET_DISASM
-case OP_GetPtrActiveThisField:
-  Text.Op = PrintName("GetPtrActiveThisField");
-  Text.Args.push_back(printArg<uint32_t>(P, PC));
-  break;
-#endif
-#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitGetPtrActiveThisField( uint32_t , const SourceInfo &);
-#endif
-#ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitGetPtrActiveThisField( uint32_t A0, const SourceInfo &L) {
-  return emitOp<uint32_t>(OP_GetPtrActiveThisField, A0, L);
-}
-#endif
-#ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitGetPtrActiveThisField( uint32_t A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetPtrActiveThisField(S, OpPC, A0);
-}
-#endif
-#ifdef GET_OPCODE_NAMES
 OP_GetPtrBase,
 #endif
 #ifdef GET_INTERP
@@ -20364,7 +20646,8 @@ OP_GetPtrDerivedPop,
 case OP_GetPtrDerivedPop: {
   const auto V0 = ReadArg<uint32_t>(S, PC);
   const auto V1 = ReadArg<bool>(S, PC);
-  if (!GetPtrDerivedPop(S, OpPC, V0, V1))
+  const auto V2 = ReadArg<const Type *>(S, PC);
+  if (!GetPtrDerivedPop(S, OpPC, V0, V1, V2))
     return false;
   continue;
 }
@@ -20374,21 +20657,22 @@ case OP_GetPtrDerivedPop:
   Text.Op = PrintName("GetPtrDerivedPop");
   Text.Args.push_back(printArg<uint32_t>(P, PC));
   Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<const Type *>(P, PC));
   break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitGetPtrDerivedPop( uint32_t ,  bool , const SourceInfo &);
+bool emitGetPtrDerivedPop( uint32_t ,  bool ,  const Type * , const SourceInfo &);
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1, const SourceInfo &L) {
-  return emitOp<uint32_t, bool>(OP_GetPtrDerivedPop, A0, A1, L);
+bool ByteCodeEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1,  const Type * A2, const SourceInfo &L) {
+  return emitOp<uint32_t, bool, const Type *>(OP_GetPtrDerivedPop, A0, A1, A2, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1, const SourceInfo &L) {
+bool EvalEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1,  const Type * A2, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return GetPtrDerivedPop(S, OpPC, A0, A1);
+  return GetPtrDerivedPop(S, OpPC, A0, A1, A2);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -22116,7 +22400,6 @@ OP_InitBitFieldUint64,
 OP_InitBitFieldIntAP,
 OP_InitBitFieldIntAPS,
 OP_InitBitFieldBool,
-OP_InitBitFieldFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_InitBitFieldSint8: {
@@ -22185,12 +22468,6 @@ case OP_InitBitFieldBool: {
     return false;
   continue;
 }
-case OP_InitBitFieldFixedPoint: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_InitBitFieldSint8:
@@ -22237,10 +22514,6 @@ case OP_InitBitFieldBool:
   Text.Op = PrintName("InitBitFieldBool");
   Text.Args.push_back(printArg<const Record::Field *>(P, PC));
   break;
-case OP_InitBitFieldFixedPoint:
-  Text.Op = PrintName("InitBitFieldFixedPoint");
-  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
-  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitInitBitFieldSint8( const Record::Field * , const SourceInfo &);
@@ -22254,7 +22527,6 @@ bool emitInitBitFieldUint64( const Record::Field * , const SourceInfo &);
 bool emitInitBitFieldIntAP( const Record::Field * , const SourceInfo &);
 bool emitInitBitFieldIntAPS( const Record::Field * , const SourceInfo &);
 bool emitInitBitFieldBool( const Record::Field * , const SourceInfo &);
-bool emitInitBitFieldFixedPoint( const Record::Field * , const SourceInfo &);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitInitBitField(PrimType, const Record::Field *, const SourceInfo &I);
@@ -22290,8 +22562,6 @@ ByteCodeEmitter
     return emitInitBitFieldIntAPS(A0, I);
   case PT_Bool:
     return emitInitBitFieldBool(A0, I);
-  case PT_FixedPoint:
-    return emitInitBitFieldFixedPoint(A0, I);
   default: llvm_unreachable("invalid type: emitInitBitField");
   }
   llvm_unreachable("invalid enum value");
@@ -22330,9 +22600,6 @@ bool ByteCodeEmitter::emitInitBitFieldIntAPS( const Record::Field * A0, const So
 }
 bool ByteCodeEmitter::emitInitBitFieldBool( const Record::Field * A0, const SourceInfo &L) {
   return emitOp<const Record::Field *>(OP_InitBitFieldBool, A0, L);
-}
-bool ByteCodeEmitter::emitInitBitFieldFixedPoint( const Record::Field * A0, const SourceInfo &L) {
-  return emitOp<const Record::Field *>(OP_InitBitFieldFixedPoint, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -22391,10 +22658,276 @@ bool EvalEmitter::emitInitBitFieldBool( const Record::Field * A0, const SourceIn
   CurrentSource = L;
   return InitBitField<PT_Bool>(S, OpPC, A0);
 }
-bool EvalEmitter::emitInitBitFieldFixedPoint( const Record::Field * A0, const SourceInfo &L) {
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_InitBitFieldActivateSint8,
+OP_InitBitFieldActivateUint8,
+OP_InitBitFieldActivateSint16,
+OP_InitBitFieldActivateUint16,
+OP_InitBitFieldActivateSint32,
+OP_InitBitFieldActivateUint32,
+OP_InitBitFieldActivateSint64,
+OP_InitBitFieldActivateUint64,
+OP_InitBitFieldActivateIntAP,
+OP_InitBitFieldActivateIntAPS,
+OP_InitBitFieldActivateBool,
+#endif
+#ifdef GET_INTERP
+case OP_InitBitFieldActivateSint8: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Sint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateUint8: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Uint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateSint16: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Sint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateUint16: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Uint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateSint32: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Sint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateUint32: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Uint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateSint64: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateUint64: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Uint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateIntAP: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_IntAP>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateIntAPS: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_IntAPS>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitBitFieldActivateBool: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  if (!InitBitFieldActivate<PT_Bool>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_InitBitFieldActivateSint8:
+  Text.Op = PrintName("InitBitFieldActivateSint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateUint8:
+  Text.Op = PrintName("InitBitFieldActivateUint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateSint16:
+  Text.Op = PrintName("InitBitFieldActivateSint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateUint16:
+  Text.Op = PrintName("InitBitFieldActivateUint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateSint32:
+  Text.Op = PrintName("InitBitFieldActivateSint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateUint32:
+  Text.Op = PrintName("InitBitFieldActivateUint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateSint64:
+  Text.Op = PrintName("InitBitFieldActivateSint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateUint64:
+  Text.Op = PrintName("InitBitFieldActivateUint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateIntAP:
+  Text.Op = PrintName("InitBitFieldActivateIntAP");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateIntAPS:
+  Text.Op = PrintName("InitBitFieldActivateIntAPS");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+case OP_InitBitFieldActivateBool:
+  Text.Op = PrintName("InitBitFieldActivateBool");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitInitBitFieldActivateSint8( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateUint8( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateSint16( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateUint16( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateSint32( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateUint32( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateSint64( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateUint64( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateIntAP( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateIntAPS( const Record::Field * , const SourceInfo &);
+bool emitInitBitFieldActivateBool( const Record::Field * , const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitInitBitFieldActivate(PrimType, const Record::Field *, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitInitBitFieldActivate(PrimType T0,  const Record::Field * A0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitInitBitFieldActivateSint8(A0, I);
+  case PT_Uint8:
+    return emitInitBitFieldActivateUint8(A0, I);
+  case PT_Sint16:
+    return emitInitBitFieldActivateSint16(A0, I);
+  case PT_Uint16:
+    return emitInitBitFieldActivateUint16(A0, I);
+  case PT_Sint32:
+    return emitInitBitFieldActivateSint32(A0, I);
+  case PT_Uint32:
+    return emitInitBitFieldActivateUint32(A0, I);
+  case PT_Sint64:
+    return emitInitBitFieldActivateSint64(A0, I);
+  case PT_Uint64:
+    return emitInitBitFieldActivateUint64(A0, I);
+  case PT_IntAP:
+    return emitInitBitFieldActivateIntAP(A0, I);
+  case PT_IntAPS:
+    return emitInitBitFieldActivateIntAPS(A0, I);
+  case PT_Bool:
+    return emitInitBitFieldActivateBool(A0, I);
+  default: llvm_unreachable("invalid type: emitInitBitFieldActivate");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitInitBitFieldActivateSint8( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateSint8, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateUint8( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateUint8, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateSint16( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateSint16, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateUint16( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateUint16, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateSint32( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateSint32, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateUint32( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateUint32, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateSint64( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateSint64, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateUint64( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateUint64, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateIntAP( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateIntAP, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateIntAPS( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateIntAPS, A0, L);
+}
+bool ByteCodeEmitter::emitInitBitFieldActivateBool( const Record::Field * A0, const SourceInfo &L) {
+  return emitOp<const Record::Field *>(OP_InitBitFieldActivateBool, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitInitBitFieldActivateSint8( const Record::Field * A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return InitBitField<PT_FixedPoint>(S, OpPC, A0);
+  return InitBitFieldActivate<PT_Sint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateUint8( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Uint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateSint16( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Sint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateUint16( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Uint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateSint32( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Sint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateUint32( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Uint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateSint64( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateUint64( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Uint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateIntAP( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_IntAP>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateIntAPS( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_IntAPS>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitBitFieldActivateBool( const Record::Field * A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitBitFieldActivate<PT_Bool>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -23469,6 +24002,364 @@ bool EvalEmitter::emitInitFieldFloat( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return InitField<PT_Float>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_InitFieldActivateSint8,
+OP_InitFieldActivateUint8,
+OP_InitFieldActivateSint16,
+OP_InitFieldActivateUint16,
+OP_InitFieldActivateSint32,
+OP_InitFieldActivateUint32,
+OP_InitFieldActivateSint64,
+OP_InitFieldActivateUint64,
+OP_InitFieldActivateIntAP,
+OP_InitFieldActivateIntAPS,
+OP_InitFieldActivateBool,
+OP_InitFieldActivateFixedPoint,
+OP_InitFieldActivatePtr,
+OP_InitFieldActivateMemberPtr,
+OP_InitFieldActivateFloat,
+#endif
+#ifdef GET_INTERP
+case OP_InitFieldActivateSint8: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Sint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateUint8: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Uint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateSint16: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Sint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateUint16: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Uint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateSint32: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Sint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateUint32: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Uint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateSint64: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateUint64: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Uint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateIntAP: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_IntAP>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateIntAPS: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_IntAPS>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateBool: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Bool>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateFixedPoint: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_FixedPoint>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivatePtr: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Ptr>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateMemberPtr: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_MemberPtr>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitFieldActivateFloat: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitFieldActivate<PT_Float>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_InitFieldActivateSint8:
+  Text.Op = PrintName("InitFieldActivateSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateUint8:
+  Text.Op = PrintName("InitFieldActivateUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateSint16:
+  Text.Op = PrintName("InitFieldActivateSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateUint16:
+  Text.Op = PrintName("InitFieldActivateUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateSint32:
+  Text.Op = PrintName("InitFieldActivateSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateUint32:
+  Text.Op = PrintName("InitFieldActivateUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateSint64:
+  Text.Op = PrintName("InitFieldActivateSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateUint64:
+  Text.Op = PrintName("InitFieldActivateUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateIntAP:
+  Text.Op = PrintName("InitFieldActivateIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateIntAPS:
+  Text.Op = PrintName("InitFieldActivateIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateBool:
+  Text.Op = PrintName("InitFieldActivateBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateFixedPoint:
+  Text.Op = PrintName("InitFieldActivateFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivatePtr:
+  Text.Op = PrintName("InitFieldActivatePtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateMemberPtr:
+  Text.Op = PrintName("InitFieldActivateMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitFieldActivateFloat:
+  Text.Op = PrintName("InitFieldActivateFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitInitFieldActivateSint8( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateUint8( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateSint16( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateUint16( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateSint32( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateUint32( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateSint64( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateUint64( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateIntAP( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateIntAPS( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateBool( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateFixedPoint( uint32_t , const SourceInfo &);
+bool emitInitFieldActivatePtr( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateMemberPtr( uint32_t , const SourceInfo &);
+bool emitInitFieldActivateFloat( uint32_t , const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitInitFieldActivate(PrimType, uint32_t, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitInitFieldActivate(PrimType T0,  uint32_t A0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitInitFieldActivateSint8(A0, I);
+  case PT_Uint8:
+    return emitInitFieldActivateUint8(A0, I);
+  case PT_Sint16:
+    return emitInitFieldActivateSint16(A0, I);
+  case PT_Uint16:
+    return emitInitFieldActivateUint16(A0, I);
+  case PT_Sint32:
+    return emitInitFieldActivateSint32(A0, I);
+  case PT_Uint32:
+    return emitInitFieldActivateUint32(A0, I);
+  case PT_Sint64:
+    return emitInitFieldActivateSint64(A0, I);
+  case PT_Uint64:
+    return emitInitFieldActivateUint64(A0, I);
+  case PT_IntAP:
+    return emitInitFieldActivateIntAP(A0, I);
+  case PT_IntAPS:
+    return emitInitFieldActivateIntAPS(A0, I);
+  case PT_Bool:
+    return emitInitFieldActivateBool(A0, I);
+  case PT_FixedPoint:
+    return emitInitFieldActivateFixedPoint(A0, I);
+  case PT_Ptr:
+    return emitInitFieldActivatePtr(A0, I);
+  case PT_MemberPtr:
+    return emitInitFieldActivateMemberPtr(A0, I);
+  case PT_Float:
+    return emitInitFieldActivateFloat(A0, I);
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitInitFieldActivateSint8( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateSint8, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateUint8( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateUint8, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateSint16( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateSint16, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateUint16( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateUint16, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateSint32( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateSint32, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateUint32( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateUint32, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateSint64( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateSint64, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateUint64( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateUint64, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateIntAP( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateIntAP, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateIntAPS( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateIntAPS, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateBool( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateBool, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateFixedPoint( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateFixedPoint, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivatePtr( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivatePtr, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateMemberPtr( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateMemberPtr, A0, L);
+}
+bool ByteCodeEmitter::emitInitFieldActivateFloat( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitFieldActivateFloat, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitInitFieldActivateSint8( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Sint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateUint8( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Uint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateSint16( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Sint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateUint16( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Uint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateSint32( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Sint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateUint32( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Uint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateSint64( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateUint64( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Uint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateIntAP( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_IntAP>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateIntAPS( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_IntAPS>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateBool( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Bool>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateFixedPoint( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_FixedPoint>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivatePtr( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Ptr>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateMemberPtr( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_MemberPtr>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitFieldActivateFloat( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitFieldActivate<PT_Float>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -24927,6 +25818,323 @@ bool EvalEmitter::emitInitThisBitFieldFixedPoint( const Record::Field * A0,  uin
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_InitThisBitFieldActivateSint8,
+OP_InitThisBitFieldActivateUint8,
+OP_InitThisBitFieldActivateSint16,
+OP_InitThisBitFieldActivateUint16,
+OP_InitThisBitFieldActivateSint32,
+OP_InitThisBitFieldActivateUint32,
+OP_InitThisBitFieldActivateSint64,
+OP_InitThisBitFieldActivateUint64,
+OP_InitThisBitFieldActivateIntAP,
+OP_InitThisBitFieldActivateIntAPS,
+OP_InitThisBitFieldActivateBool,
+OP_InitThisBitFieldActivateFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_InitThisBitFieldActivateSint8: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateUint8: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateSint16: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateUint16: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateSint32: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateUint32: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateSint64: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateUint64: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateIntAP: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateIntAPS: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateBool: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_InitThisBitFieldActivateFixedPoint: {
+  const auto V0 = ReadArg<const Record::Field *>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisBitFieldActivate<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_InitThisBitFieldActivateSint8:
+  Text.Op = PrintName("InitThisBitFieldActivateSint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateUint8:
+  Text.Op = PrintName("InitThisBitFieldActivateUint8");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateSint16:
+  Text.Op = PrintName("InitThisBitFieldActivateSint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateUint16:
+  Text.Op = PrintName("InitThisBitFieldActivateUint16");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateSint32:
+  Text.Op = PrintName("InitThisBitFieldActivateSint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateUint32:
+  Text.Op = PrintName("InitThisBitFieldActivateUint32");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateSint64:
+  Text.Op = PrintName("InitThisBitFieldActivateSint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateUint64:
+  Text.Op = PrintName("InitThisBitFieldActivateUint64");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateIntAP:
+  Text.Op = PrintName("InitThisBitFieldActivateIntAP");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateIntAPS:
+  Text.Op = PrintName("InitThisBitFieldActivateIntAPS");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateBool:
+  Text.Op = PrintName("InitThisBitFieldActivateBool");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisBitFieldActivateFixedPoint:
+  Text.Op = PrintName("InitThisBitFieldActivateFixedPoint");
+  Text.Args.push_back(printArg<const Record::Field *>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitInitThisBitFieldActivateSint8( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateUint8( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateSint16( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateUint16( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateSint32( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateUint32( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateSint64( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateUint64( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateIntAP( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateIntAPS( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateBool( const Record::Field * ,  uint32_t , const SourceInfo &);
+bool emitInitThisBitFieldActivateFixedPoint( const Record::Field * ,  uint32_t , const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitInitThisBitFieldActivate(PrimType, const Record::Field *, uint32_t, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitInitThisBitFieldActivate(PrimType T0,  const Record::Field * A0,  uint32_t A1, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitInitThisBitFieldActivateSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitInitThisBitFieldActivateUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitInitThisBitFieldActivateSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitInitThisBitFieldActivateUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitInitThisBitFieldActivateSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitInitThisBitFieldActivateUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitInitThisBitFieldActivateSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitInitThisBitFieldActivateUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitInitThisBitFieldActivateIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitInitThisBitFieldActivateIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitInitThisBitFieldActivateBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitInitThisBitFieldActivateFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitInitThisBitFieldActivate");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitInitThisBitFieldActivateSint8( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateUint8( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateSint16( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateUint16( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateSint32( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateUint32( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateSint64( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateUint64( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateIntAP( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateIntAPS( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateBool( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitInitThisBitFieldActivateFixedPoint( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  return emitOp<const Record::Field *, uint32_t>(OP_InitThisBitFieldActivateFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitInitThisBitFieldActivateSint8( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateUint8( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateSint16( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateUint16( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateSint32( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateUint32( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateSint64( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateUint64( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateIntAP( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateIntAPS( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateBool( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitInitThisBitFieldActivateFixedPoint( const Record::Field * A0,  uint32_t A1, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisBitFieldActivate<PT_FixedPoint>(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_InitThisFieldSint8,
 OP_InitThisFieldUint8,
 OP_InitThisFieldSint16,
@@ -25282,6 +26490,364 @@ bool EvalEmitter::emitInitThisFieldFloat( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return InitThisField<PT_Float>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_InitThisFieldActivateSint8,
+OP_InitThisFieldActivateUint8,
+OP_InitThisFieldActivateSint16,
+OP_InitThisFieldActivateUint16,
+OP_InitThisFieldActivateSint32,
+OP_InitThisFieldActivateUint32,
+OP_InitThisFieldActivateSint64,
+OP_InitThisFieldActivateUint64,
+OP_InitThisFieldActivateIntAP,
+OP_InitThisFieldActivateIntAPS,
+OP_InitThisFieldActivateBool,
+OP_InitThisFieldActivateFixedPoint,
+OP_InitThisFieldActivatePtr,
+OP_InitThisFieldActivateMemberPtr,
+OP_InitThisFieldActivateFloat,
+#endif
+#ifdef GET_INTERP
+case OP_InitThisFieldActivateSint8: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Sint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateUint8: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Uint8>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateSint16: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Sint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateUint16: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Uint16>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateSint32: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Sint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateUint32: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Uint32>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateSint64: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Sint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateUint64: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Uint64>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateIntAP: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_IntAP>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateIntAPS: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_IntAPS>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateBool: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Bool>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateFixedPoint: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_FixedPoint>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivatePtr: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Ptr>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateMemberPtr: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_MemberPtr>(S, OpPC, V0))
+    return false;
+  continue;
+}
+case OP_InitThisFieldActivateFloat: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!InitThisFieldActivate<PT_Float>(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_InitThisFieldActivateSint8:
+  Text.Op = PrintName("InitThisFieldActivateSint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateUint8:
+  Text.Op = PrintName("InitThisFieldActivateUint8");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateSint16:
+  Text.Op = PrintName("InitThisFieldActivateSint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateUint16:
+  Text.Op = PrintName("InitThisFieldActivateUint16");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateSint32:
+  Text.Op = PrintName("InitThisFieldActivateSint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateUint32:
+  Text.Op = PrintName("InitThisFieldActivateUint32");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateSint64:
+  Text.Op = PrintName("InitThisFieldActivateSint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateUint64:
+  Text.Op = PrintName("InitThisFieldActivateUint64");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateIntAP:
+  Text.Op = PrintName("InitThisFieldActivateIntAP");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateIntAPS:
+  Text.Op = PrintName("InitThisFieldActivateIntAPS");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateBool:
+  Text.Op = PrintName("InitThisFieldActivateBool");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateFixedPoint:
+  Text.Op = PrintName("InitThisFieldActivateFixedPoint");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivatePtr:
+  Text.Op = PrintName("InitThisFieldActivatePtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateMemberPtr:
+  Text.Op = PrintName("InitThisFieldActivateMemberPtr");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_InitThisFieldActivateFloat:
+  Text.Op = PrintName("InitThisFieldActivateFloat");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitInitThisFieldActivateSint8( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateUint8( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateSint16( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateUint16( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateSint32( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateUint32( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateSint64( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateUint64( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateIntAP( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateIntAPS( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateBool( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateFixedPoint( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivatePtr( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateMemberPtr( uint32_t , const SourceInfo &);
+bool emitInitThisFieldActivateFloat( uint32_t , const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitInitThisFieldActivate(PrimType, uint32_t, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitInitThisFieldActivate(PrimType T0,  uint32_t A0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitInitThisFieldActivateSint8(A0, I);
+  case PT_Uint8:
+    return emitInitThisFieldActivateUint8(A0, I);
+  case PT_Sint16:
+    return emitInitThisFieldActivateSint16(A0, I);
+  case PT_Uint16:
+    return emitInitThisFieldActivateUint16(A0, I);
+  case PT_Sint32:
+    return emitInitThisFieldActivateSint32(A0, I);
+  case PT_Uint32:
+    return emitInitThisFieldActivateUint32(A0, I);
+  case PT_Sint64:
+    return emitInitThisFieldActivateSint64(A0, I);
+  case PT_Uint64:
+    return emitInitThisFieldActivateUint64(A0, I);
+  case PT_IntAP:
+    return emitInitThisFieldActivateIntAP(A0, I);
+  case PT_IntAPS:
+    return emitInitThisFieldActivateIntAPS(A0, I);
+  case PT_Bool:
+    return emitInitThisFieldActivateBool(A0, I);
+  case PT_FixedPoint:
+    return emitInitThisFieldActivateFixedPoint(A0, I);
+  case PT_Ptr:
+    return emitInitThisFieldActivatePtr(A0, I);
+  case PT_MemberPtr:
+    return emitInitThisFieldActivateMemberPtr(A0, I);
+  case PT_Float:
+    return emitInitThisFieldActivateFloat(A0, I);
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitInitThisFieldActivateSint8( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateSint8, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateUint8( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateUint8, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateSint16( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateSint16, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateUint16( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateUint16, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateSint32( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateSint32, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateUint32( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateUint32, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateSint64( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateSint64, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateUint64( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateUint64, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateIntAP( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateIntAP, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateIntAPS( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateIntAPS, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateBool( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateBool, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateFixedPoint( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateFixedPoint, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivatePtr( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivatePtr, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateMemberPtr( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateMemberPtr, A0, L);
+}
+bool ByteCodeEmitter::emitInitThisFieldActivateFloat( uint32_t A0, const SourceInfo &L) {
+  return emitOp<uint32_t>(OP_InitThisFieldActivateFloat, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitInitThisFieldActivateSint8( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Sint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateUint8( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Uint8>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateSint16( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Sint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateUint16( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Uint16>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateSint32( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Sint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateUint32( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Uint32>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateSint64( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Sint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateUint64( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Uint64>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateIntAP( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_IntAP>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateIntAPS( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_IntAPS>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateBool( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Bool>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateFixedPoint( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_FixedPoint>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivatePtr( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Ptr>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateMemberPtr( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_MemberPtr>(S, OpPC, A0);
+}
+bool EvalEmitter::emitInitThisFieldActivateFloat( uint32_t A0, const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return InitThisFieldActivate<PT_Float>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -25648,36 +27214,6 @@ bool emitJt( int32_t , const SourceInfo &);
 #ifdef GET_LINK_IMPL
 bool ByteCodeEmitter::emitJt( int32_t A0, const SourceInfo &L) {
   return emitOp<int32_t>(OP_Jt, A0, L);
-}
-#endif
-#ifdef GET_OPCODE_NAMES
-OP_Kill,
-#endif
-#ifdef GET_INTERP
-case OP_Kill: {
-  if (!Kill(S, OpPC))
-    return false;
-  continue;
-}
-#endif
-#ifdef GET_DISASM
-case OP_Kill:
-  Text.Op = PrintName("Kill");
-  break;
-#endif
-#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitKill(const SourceInfo &);
-#endif
-#ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitKill(const SourceInfo &L) {
-  return emitOp<>(OP_Kill, L);
-}
-#endif
-#ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitKill(const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Kill(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -36328,6 +37864,36 @@ bool EvalEmitter::emitSizelessVectorElementSize(const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_StartLifetime,
+#endif
+#ifdef GET_INTERP
+case OP_StartLifetime: {
+  if (!StartLifetime(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_StartLifetime:
+  Text.Op = PrintName("StartLifetime");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitStartLifetime(const SourceInfo &);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitStartLifetime(const SourceInfo &L) {
+  return emitOp<>(OP_StartLifetime, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitStartLifetime(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StartLifetime(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_StartSpeculation,
 #endif
 #ifdef GET_INTERP
@@ -36686,6 +38252,662 @@ bool EvalEmitter::emitStoreFloat(const SourceInfo &L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_StoreActivateSint8,
+OP_StoreActivateUint8,
+OP_StoreActivateSint16,
+OP_StoreActivateUint16,
+OP_StoreActivateSint32,
+OP_StoreActivateUint32,
+OP_StoreActivateSint64,
+OP_StoreActivateUint64,
+OP_StoreActivateIntAP,
+OP_StoreActivateIntAPS,
+OP_StoreActivateBool,
+OP_StoreActivateFixedPoint,
+OP_StoreActivatePtr,
+OP_StoreActivateMemberPtr,
+OP_StoreActivateFloat,
+#endif
+#ifdef GET_INTERP
+case OP_StoreActivateSint8: {
+  if (!StoreActivate<PT_Sint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateUint8: {
+  if (!StoreActivate<PT_Uint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateSint16: {
+  if (!StoreActivate<PT_Sint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateUint16: {
+  if (!StoreActivate<PT_Uint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateSint32: {
+  if (!StoreActivate<PT_Sint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateUint32: {
+  if (!StoreActivate<PT_Uint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateSint64: {
+  if (!StoreActivate<PT_Sint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateUint64: {
+  if (!StoreActivate<PT_Uint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateIntAP: {
+  if (!StoreActivate<PT_IntAP>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateIntAPS: {
+  if (!StoreActivate<PT_IntAPS>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateBool: {
+  if (!StoreActivate<PT_Bool>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateFixedPoint: {
+  if (!StoreActivate<PT_FixedPoint>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePtr: {
+  if (!StoreActivate<PT_Ptr>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateMemberPtr: {
+  if (!StoreActivate<PT_MemberPtr>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivateFloat: {
+  if (!StoreActivate<PT_Float>(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_StoreActivateSint8:
+  Text.Op = PrintName("StoreActivateSint8");
+  break;
+case OP_StoreActivateUint8:
+  Text.Op = PrintName("StoreActivateUint8");
+  break;
+case OP_StoreActivateSint16:
+  Text.Op = PrintName("StoreActivateSint16");
+  break;
+case OP_StoreActivateUint16:
+  Text.Op = PrintName("StoreActivateUint16");
+  break;
+case OP_StoreActivateSint32:
+  Text.Op = PrintName("StoreActivateSint32");
+  break;
+case OP_StoreActivateUint32:
+  Text.Op = PrintName("StoreActivateUint32");
+  break;
+case OP_StoreActivateSint64:
+  Text.Op = PrintName("StoreActivateSint64");
+  break;
+case OP_StoreActivateUint64:
+  Text.Op = PrintName("StoreActivateUint64");
+  break;
+case OP_StoreActivateIntAP:
+  Text.Op = PrintName("StoreActivateIntAP");
+  break;
+case OP_StoreActivateIntAPS:
+  Text.Op = PrintName("StoreActivateIntAPS");
+  break;
+case OP_StoreActivateBool:
+  Text.Op = PrintName("StoreActivateBool");
+  break;
+case OP_StoreActivateFixedPoint:
+  Text.Op = PrintName("StoreActivateFixedPoint");
+  break;
+case OP_StoreActivatePtr:
+  Text.Op = PrintName("StoreActivatePtr");
+  break;
+case OP_StoreActivateMemberPtr:
+  Text.Op = PrintName("StoreActivateMemberPtr");
+  break;
+case OP_StoreActivateFloat:
+  Text.Op = PrintName("StoreActivateFloat");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitStoreActivateSint8(const SourceInfo &);
+bool emitStoreActivateUint8(const SourceInfo &);
+bool emitStoreActivateSint16(const SourceInfo &);
+bool emitStoreActivateUint16(const SourceInfo &);
+bool emitStoreActivateSint32(const SourceInfo &);
+bool emitStoreActivateUint32(const SourceInfo &);
+bool emitStoreActivateSint64(const SourceInfo &);
+bool emitStoreActivateUint64(const SourceInfo &);
+bool emitStoreActivateIntAP(const SourceInfo &);
+bool emitStoreActivateIntAPS(const SourceInfo &);
+bool emitStoreActivateBool(const SourceInfo &);
+bool emitStoreActivateFixedPoint(const SourceInfo &);
+bool emitStoreActivatePtr(const SourceInfo &);
+bool emitStoreActivateMemberPtr(const SourceInfo &);
+bool emitStoreActivateFloat(const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitStoreActivate(PrimType, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitStoreActivate(PrimType T0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitStoreActivateSint8(I);
+  case PT_Uint8:
+    return emitStoreActivateUint8(I);
+  case PT_Sint16:
+    return emitStoreActivateSint16(I);
+  case PT_Uint16:
+    return emitStoreActivateUint16(I);
+  case PT_Sint32:
+    return emitStoreActivateSint32(I);
+  case PT_Uint32:
+    return emitStoreActivateUint32(I);
+  case PT_Sint64:
+    return emitStoreActivateSint64(I);
+  case PT_Uint64:
+    return emitStoreActivateUint64(I);
+  case PT_IntAP:
+    return emitStoreActivateIntAP(I);
+  case PT_IntAPS:
+    return emitStoreActivateIntAPS(I);
+  case PT_Bool:
+    return emitStoreActivateBool(I);
+  case PT_FixedPoint:
+    return emitStoreActivateFixedPoint(I);
+  case PT_Ptr:
+    return emitStoreActivatePtr(I);
+  case PT_MemberPtr:
+    return emitStoreActivateMemberPtr(I);
+  case PT_Float:
+    return emitStoreActivateFloat(I);
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitStoreActivateSint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateSint8, L);
+}
+bool ByteCodeEmitter::emitStoreActivateUint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateUint8, L);
+}
+bool ByteCodeEmitter::emitStoreActivateSint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateSint16, L);
+}
+bool ByteCodeEmitter::emitStoreActivateUint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateUint16, L);
+}
+bool ByteCodeEmitter::emitStoreActivateSint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateSint32, L);
+}
+bool ByteCodeEmitter::emitStoreActivateUint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateUint32, L);
+}
+bool ByteCodeEmitter::emitStoreActivateSint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateSint64, L);
+}
+bool ByteCodeEmitter::emitStoreActivateUint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateUint64, L);
+}
+bool ByteCodeEmitter::emitStoreActivateIntAP(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateIntAP, L);
+}
+bool ByteCodeEmitter::emitStoreActivateIntAPS(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateIntAPS, L);
+}
+bool ByteCodeEmitter::emitStoreActivateBool(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateBool, L);
+}
+bool ByteCodeEmitter::emitStoreActivateFixedPoint(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateFixedPoint, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePtr(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePtr, L);
+}
+bool ByteCodeEmitter::emitStoreActivateMemberPtr(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateMemberPtr, L);
+}
+bool ByteCodeEmitter::emitStoreActivateFloat(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivateFloat, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitStoreActivateSint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Sint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateUint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Uint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateSint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Sint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateUint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Uint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateSint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Sint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateUint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Uint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateSint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Sint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateUint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Uint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateIntAP(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_IntAP>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateIntAPS(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_IntAPS>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateBool(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Bool>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateFixedPoint(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_FixedPoint>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePtr(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Ptr>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateMemberPtr(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_MemberPtr>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivateFloat(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivate<PT_Float>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_StoreActivatePopSint8,
+OP_StoreActivatePopUint8,
+OP_StoreActivatePopSint16,
+OP_StoreActivatePopUint16,
+OP_StoreActivatePopSint32,
+OP_StoreActivatePopUint32,
+OP_StoreActivatePopSint64,
+OP_StoreActivatePopUint64,
+OP_StoreActivatePopIntAP,
+OP_StoreActivatePopIntAPS,
+OP_StoreActivatePopBool,
+OP_StoreActivatePopFixedPoint,
+OP_StoreActivatePopPtr,
+OP_StoreActivatePopMemberPtr,
+OP_StoreActivatePopFloat,
+#endif
+#ifdef GET_INTERP
+case OP_StoreActivatePopSint8: {
+  if (!StoreActivatePop<PT_Sint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopUint8: {
+  if (!StoreActivatePop<PT_Uint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopSint16: {
+  if (!StoreActivatePop<PT_Sint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopUint16: {
+  if (!StoreActivatePop<PT_Uint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopSint32: {
+  if (!StoreActivatePop<PT_Sint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopUint32: {
+  if (!StoreActivatePop<PT_Uint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopSint64: {
+  if (!StoreActivatePop<PT_Sint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopUint64: {
+  if (!StoreActivatePop<PT_Uint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopIntAP: {
+  if (!StoreActivatePop<PT_IntAP>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopIntAPS: {
+  if (!StoreActivatePop<PT_IntAPS>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopBool: {
+  if (!StoreActivatePop<PT_Bool>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopFixedPoint: {
+  if (!StoreActivatePop<PT_FixedPoint>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopPtr: {
+  if (!StoreActivatePop<PT_Ptr>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopMemberPtr: {
+  if (!StoreActivatePop<PT_MemberPtr>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreActivatePopFloat: {
+  if (!StoreActivatePop<PT_Float>(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_StoreActivatePopSint8:
+  Text.Op = PrintName("StoreActivatePopSint8");
+  break;
+case OP_StoreActivatePopUint8:
+  Text.Op = PrintName("StoreActivatePopUint8");
+  break;
+case OP_StoreActivatePopSint16:
+  Text.Op = PrintName("StoreActivatePopSint16");
+  break;
+case OP_StoreActivatePopUint16:
+  Text.Op = PrintName("StoreActivatePopUint16");
+  break;
+case OP_StoreActivatePopSint32:
+  Text.Op = PrintName("StoreActivatePopSint32");
+  break;
+case OP_StoreActivatePopUint32:
+  Text.Op = PrintName("StoreActivatePopUint32");
+  break;
+case OP_StoreActivatePopSint64:
+  Text.Op = PrintName("StoreActivatePopSint64");
+  break;
+case OP_StoreActivatePopUint64:
+  Text.Op = PrintName("StoreActivatePopUint64");
+  break;
+case OP_StoreActivatePopIntAP:
+  Text.Op = PrintName("StoreActivatePopIntAP");
+  break;
+case OP_StoreActivatePopIntAPS:
+  Text.Op = PrintName("StoreActivatePopIntAPS");
+  break;
+case OP_StoreActivatePopBool:
+  Text.Op = PrintName("StoreActivatePopBool");
+  break;
+case OP_StoreActivatePopFixedPoint:
+  Text.Op = PrintName("StoreActivatePopFixedPoint");
+  break;
+case OP_StoreActivatePopPtr:
+  Text.Op = PrintName("StoreActivatePopPtr");
+  break;
+case OP_StoreActivatePopMemberPtr:
+  Text.Op = PrintName("StoreActivatePopMemberPtr");
+  break;
+case OP_StoreActivatePopFloat:
+  Text.Op = PrintName("StoreActivatePopFloat");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitStoreActivatePopSint8(const SourceInfo &);
+bool emitStoreActivatePopUint8(const SourceInfo &);
+bool emitStoreActivatePopSint16(const SourceInfo &);
+bool emitStoreActivatePopUint16(const SourceInfo &);
+bool emitStoreActivatePopSint32(const SourceInfo &);
+bool emitStoreActivatePopUint32(const SourceInfo &);
+bool emitStoreActivatePopSint64(const SourceInfo &);
+bool emitStoreActivatePopUint64(const SourceInfo &);
+bool emitStoreActivatePopIntAP(const SourceInfo &);
+bool emitStoreActivatePopIntAPS(const SourceInfo &);
+bool emitStoreActivatePopBool(const SourceInfo &);
+bool emitStoreActivatePopFixedPoint(const SourceInfo &);
+bool emitStoreActivatePopPtr(const SourceInfo &);
+bool emitStoreActivatePopMemberPtr(const SourceInfo &);
+bool emitStoreActivatePopFloat(const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitStoreActivatePop(PrimType, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitStoreActivatePop(PrimType T0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitStoreActivatePopSint8(I);
+  case PT_Uint8:
+    return emitStoreActivatePopUint8(I);
+  case PT_Sint16:
+    return emitStoreActivatePopSint16(I);
+  case PT_Uint16:
+    return emitStoreActivatePopUint16(I);
+  case PT_Sint32:
+    return emitStoreActivatePopSint32(I);
+  case PT_Uint32:
+    return emitStoreActivatePopUint32(I);
+  case PT_Sint64:
+    return emitStoreActivatePopSint64(I);
+  case PT_Uint64:
+    return emitStoreActivatePopUint64(I);
+  case PT_IntAP:
+    return emitStoreActivatePopIntAP(I);
+  case PT_IntAPS:
+    return emitStoreActivatePopIntAPS(I);
+  case PT_Bool:
+    return emitStoreActivatePopBool(I);
+  case PT_FixedPoint:
+    return emitStoreActivatePopFixedPoint(I);
+  case PT_Ptr:
+    return emitStoreActivatePopPtr(I);
+  case PT_MemberPtr:
+    return emitStoreActivatePopMemberPtr(I);
+  case PT_Float:
+    return emitStoreActivatePopFloat(I);
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitStoreActivatePopSint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopSint8, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopUint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopUint8, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopSint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopSint16, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopUint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopUint16, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopSint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopSint32, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopUint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopUint32, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopSint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopSint64, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopUint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopUint64, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopIntAP(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopIntAP, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopIntAPS(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopIntAPS, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopBool(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopBool, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopFixedPoint(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopFixedPoint, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopPtr(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopPtr, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopMemberPtr(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopMemberPtr, L);
+}
+bool ByteCodeEmitter::emitStoreActivatePopFloat(const SourceInfo &L) {
+  return emitOp<>(OP_StoreActivatePopFloat, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitStoreActivatePopSint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Sint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopUint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Uint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopSint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Sint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopUint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Uint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopSint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Sint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopUint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Uint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopSint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Sint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopUint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Uint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopIntAP(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_IntAP>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopIntAPS(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_IntAPS>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopBool(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Bool>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopFixedPoint(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_FixedPoint>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopPtr(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Ptr>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopMemberPtr(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_MemberPtr>(S, OpPC);
+}
+bool EvalEmitter::emitStoreActivatePopFloat(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreActivatePop<PT_Float>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_StoreBitFieldSint8,
 OP_StoreBitFieldUint8,
 OP_StoreBitFieldSint16,
@@ -36952,6 +39174,544 @@ bool EvalEmitter::emitStoreBitFieldFixedPoint(const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return StoreBitField<PT_FixedPoint>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_StoreBitFieldActivateSint8,
+OP_StoreBitFieldActivateUint8,
+OP_StoreBitFieldActivateSint16,
+OP_StoreBitFieldActivateUint16,
+OP_StoreBitFieldActivateSint32,
+OP_StoreBitFieldActivateUint32,
+OP_StoreBitFieldActivateSint64,
+OP_StoreBitFieldActivateUint64,
+OP_StoreBitFieldActivateIntAP,
+OP_StoreBitFieldActivateIntAPS,
+OP_StoreBitFieldActivateBool,
+OP_StoreBitFieldActivateFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_StoreBitFieldActivateSint8: {
+  if (!StoreBitFieldActivate<PT_Sint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateUint8: {
+  if (!StoreBitFieldActivate<PT_Uint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateSint16: {
+  if (!StoreBitFieldActivate<PT_Sint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateUint16: {
+  if (!StoreBitFieldActivate<PT_Uint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateSint32: {
+  if (!StoreBitFieldActivate<PT_Sint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateUint32: {
+  if (!StoreBitFieldActivate<PT_Uint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateSint64: {
+  if (!StoreBitFieldActivate<PT_Sint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateUint64: {
+  if (!StoreBitFieldActivate<PT_Uint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateIntAP: {
+  if (!StoreBitFieldActivate<PT_IntAP>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateIntAPS: {
+  if (!StoreBitFieldActivate<PT_IntAPS>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateBool: {
+  if (!StoreBitFieldActivate<PT_Bool>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivateFixedPoint: {
+  if (!StoreBitFieldActivate<PT_FixedPoint>(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_StoreBitFieldActivateSint8:
+  Text.Op = PrintName("StoreBitFieldActivateSint8");
+  break;
+case OP_StoreBitFieldActivateUint8:
+  Text.Op = PrintName("StoreBitFieldActivateUint8");
+  break;
+case OP_StoreBitFieldActivateSint16:
+  Text.Op = PrintName("StoreBitFieldActivateSint16");
+  break;
+case OP_StoreBitFieldActivateUint16:
+  Text.Op = PrintName("StoreBitFieldActivateUint16");
+  break;
+case OP_StoreBitFieldActivateSint32:
+  Text.Op = PrintName("StoreBitFieldActivateSint32");
+  break;
+case OP_StoreBitFieldActivateUint32:
+  Text.Op = PrintName("StoreBitFieldActivateUint32");
+  break;
+case OP_StoreBitFieldActivateSint64:
+  Text.Op = PrintName("StoreBitFieldActivateSint64");
+  break;
+case OP_StoreBitFieldActivateUint64:
+  Text.Op = PrintName("StoreBitFieldActivateUint64");
+  break;
+case OP_StoreBitFieldActivateIntAP:
+  Text.Op = PrintName("StoreBitFieldActivateIntAP");
+  break;
+case OP_StoreBitFieldActivateIntAPS:
+  Text.Op = PrintName("StoreBitFieldActivateIntAPS");
+  break;
+case OP_StoreBitFieldActivateBool:
+  Text.Op = PrintName("StoreBitFieldActivateBool");
+  break;
+case OP_StoreBitFieldActivateFixedPoint:
+  Text.Op = PrintName("StoreBitFieldActivateFixedPoint");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitStoreBitFieldActivateSint8(const SourceInfo &);
+bool emitStoreBitFieldActivateUint8(const SourceInfo &);
+bool emitStoreBitFieldActivateSint16(const SourceInfo &);
+bool emitStoreBitFieldActivateUint16(const SourceInfo &);
+bool emitStoreBitFieldActivateSint32(const SourceInfo &);
+bool emitStoreBitFieldActivateUint32(const SourceInfo &);
+bool emitStoreBitFieldActivateSint64(const SourceInfo &);
+bool emitStoreBitFieldActivateUint64(const SourceInfo &);
+bool emitStoreBitFieldActivateIntAP(const SourceInfo &);
+bool emitStoreBitFieldActivateIntAPS(const SourceInfo &);
+bool emitStoreBitFieldActivateBool(const SourceInfo &);
+bool emitStoreBitFieldActivateFixedPoint(const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitStoreBitFieldActivate(PrimType, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitStoreBitFieldActivate(PrimType T0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitStoreBitFieldActivateSint8(I);
+  case PT_Uint8:
+    return emitStoreBitFieldActivateUint8(I);
+  case PT_Sint16:
+    return emitStoreBitFieldActivateSint16(I);
+  case PT_Uint16:
+    return emitStoreBitFieldActivateUint16(I);
+  case PT_Sint32:
+    return emitStoreBitFieldActivateSint32(I);
+  case PT_Uint32:
+    return emitStoreBitFieldActivateUint32(I);
+  case PT_Sint64:
+    return emitStoreBitFieldActivateSint64(I);
+  case PT_Uint64:
+    return emitStoreBitFieldActivateUint64(I);
+  case PT_IntAP:
+    return emitStoreBitFieldActivateIntAP(I);
+  case PT_IntAPS:
+    return emitStoreBitFieldActivateIntAPS(I);
+  case PT_Bool:
+    return emitStoreBitFieldActivateBool(I);
+  case PT_FixedPoint:
+    return emitStoreBitFieldActivateFixedPoint(I);
+  default: llvm_unreachable("invalid type: emitStoreBitFieldActivate");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitStoreBitFieldActivateSint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateSint8, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateUint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateUint8, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateSint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateSint16, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateUint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateUint16, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateSint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateSint32, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateUint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateUint32, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateSint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateSint64, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateUint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateUint64, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateIntAP(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateIntAP, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateIntAPS(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateIntAPS, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateBool(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateBool, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivateFixedPoint(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivateFixedPoint, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitStoreBitFieldActivateSint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Sint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateUint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Uint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateSint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Sint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateUint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Uint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateSint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Sint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateUint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Uint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateSint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Sint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateUint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Uint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateIntAP(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_IntAP>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateIntAPS(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_IntAPS>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateBool(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_Bool>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivateFixedPoint(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivate<PT_FixedPoint>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_StoreBitFieldActivatePopSint8,
+OP_StoreBitFieldActivatePopUint8,
+OP_StoreBitFieldActivatePopSint16,
+OP_StoreBitFieldActivatePopUint16,
+OP_StoreBitFieldActivatePopSint32,
+OP_StoreBitFieldActivatePopUint32,
+OP_StoreBitFieldActivatePopSint64,
+OP_StoreBitFieldActivatePopUint64,
+OP_StoreBitFieldActivatePopIntAP,
+OP_StoreBitFieldActivatePopIntAPS,
+OP_StoreBitFieldActivatePopBool,
+OP_StoreBitFieldActivatePopFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_StoreBitFieldActivatePopSint8: {
+  if (!StoreBitFieldActivatePop<PT_Sint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopUint8: {
+  if (!StoreBitFieldActivatePop<PT_Uint8>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopSint16: {
+  if (!StoreBitFieldActivatePop<PT_Sint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopUint16: {
+  if (!StoreBitFieldActivatePop<PT_Uint16>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopSint32: {
+  if (!StoreBitFieldActivatePop<PT_Sint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopUint32: {
+  if (!StoreBitFieldActivatePop<PT_Uint32>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopSint64: {
+  if (!StoreBitFieldActivatePop<PT_Sint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopUint64: {
+  if (!StoreBitFieldActivatePop<PT_Uint64>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopIntAP: {
+  if (!StoreBitFieldActivatePop<PT_IntAP>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopIntAPS: {
+  if (!StoreBitFieldActivatePop<PT_IntAPS>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopBool: {
+  if (!StoreBitFieldActivatePop<PT_Bool>(S, OpPC))
+    return false;
+  continue;
+}
+case OP_StoreBitFieldActivatePopFixedPoint: {
+  if (!StoreBitFieldActivatePop<PT_FixedPoint>(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_StoreBitFieldActivatePopSint8:
+  Text.Op = PrintName("StoreBitFieldActivatePopSint8");
+  break;
+case OP_StoreBitFieldActivatePopUint8:
+  Text.Op = PrintName("StoreBitFieldActivatePopUint8");
+  break;
+case OP_StoreBitFieldActivatePopSint16:
+  Text.Op = PrintName("StoreBitFieldActivatePopSint16");
+  break;
+case OP_StoreBitFieldActivatePopUint16:
+  Text.Op = PrintName("StoreBitFieldActivatePopUint16");
+  break;
+case OP_StoreBitFieldActivatePopSint32:
+  Text.Op = PrintName("StoreBitFieldActivatePopSint32");
+  break;
+case OP_StoreBitFieldActivatePopUint32:
+  Text.Op = PrintName("StoreBitFieldActivatePopUint32");
+  break;
+case OP_StoreBitFieldActivatePopSint64:
+  Text.Op = PrintName("StoreBitFieldActivatePopSint64");
+  break;
+case OP_StoreBitFieldActivatePopUint64:
+  Text.Op = PrintName("StoreBitFieldActivatePopUint64");
+  break;
+case OP_StoreBitFieldActivatePopIntAP:
+  Text.Op = PrintName("StoreBitFieldActivatePopIntAP");
+  break;
+case OP_StoreBitFieldActivatePopIntAPS:
+  Text.Op = PrintName("StoreBitFieldActivatePopIntAPS");
+  break;
+case OP_StoreBitFieldActivatePopBool:
+  Text.Op = PrintName("StoreBitFieldActivatePopBool");
+  break;
+case OP_StoreBitFieldActivatePopFixedPoint:
+  Text.Op = PrintName("StoreBitFieldActivatePopFixedPoint");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitStoreBitFieldActivatePopSint8(const SourceInfo &);
+bool emitStoreBitFieldActivatePopUint8(const SourceInfo &);
+bool emitStoreBitFieldActivatePopSint16(const SourceInfo &);
+bool emitStoreBitFieldActivatePopUint16(const SourceInfo &);
+bool emitStoreBitFieldActivatePopSint32(const SourceInfo &);
+bool emitStoreBitFieldActivatePopUint32(const SourceInfo &);
+bool emitStoreBitFieldActivatePopSint64(const SourceInfo &);
+bool emitStoreBitFieldActivatePopUint64(const SourceInfo &);
+bool emitStoreBitFieldActivatePopIntAP(const SourceInfo &);
+bool emitStoreBitFieldActivatePopIntAPS(const SourceInfo &);
+bool emitStoreBitFieldActivatePopBool(const SourceInfo &);
+bool emitStoreBitFieldActivatePopFixedPoint(const SourceInfo &);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitStoreBitFieldActivatePop(PrimType, const SourceInfo &I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitStoreBitFieldActivatePop(PrimType T0, const SourceInfo &I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitStoreBitFieldActivatePopSint8(I);
+  case PT_Uint8:
+    return emitStoreBitFieldActivatePopUint8(I);
+  case PT_Sint16:
+    return emitStoreBitFieldActivatePopSint16(I);
+  case PT_Uint16:
+    return emitStoreBitFieldActivatePopUint16(I);
+  case PT_Sint32:
+    return emitStoreBitFieldActivatePopSint32(I);
+  case PT_Uint32:
+    return emitStoreBitFieldActivatePopUint32(I);
+  case PT_Sint64:
+    return emitStoreBitFieldActivatePopSint64(I);
+  case PT_Uint64:
+    return emitStoreBitFieldActivatePopUint64(I);
+  case PT_IntAP:
+    return emitStoreBitFieldActivatePopIntAP(I);
+  case PT_IntAPS:
+    return emitStoreBitFieldActivatePopIntAPS(I);
+  case PT_Bool:
+    return emitStoreBitFieldActivatePopBool(I);
+  case PT_FixedPoint:
+    return emitStoreBitFieldActivatePopFixedPoint(I);
+  default: llvm_unreachable("invalid type: emitStoreBitFieldActivatePop");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopSint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopSint8, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopUint8(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopUint8, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopSint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopSint16, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopUint16(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopUint16, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopSint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopSint32, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopUint32(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopUint32, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopSint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopSint64, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopUint64(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopUint64, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopIntAP(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopIntAP, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopIntAPS(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopIntAPS, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopBool(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopBool, L);
+}
+bool ByteCodeEmitter::emitStoreBitFieldActivatePopFixedPoint(const SourceInfo &L) {
+  return emitOp<>(OP_StoreBitFieldActivatePopFixedPoint, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitStoreBitFieldActivatePopSint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Sint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopUint8(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Uint8>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopSint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Sint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopUint16(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Uint16>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopSint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Sint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopUint32(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Uint32>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopSint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Sint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopUint64(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Uint64>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopIntAP(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_IntAP>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopIntAPS(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_IntAPS>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopBool(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_Bool>(S, OpPC);
+}
+bool EvalEmitter::emitStoreBitFieldActivatePopFixedPoint(const SourceInfo &L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return StoreBitFieldActivatePop<PT_FixedPoint>(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -38711,69 +41471,5 @@ bool EvalEmitter::emitZeroIntAPS( uint32_t A0, const SourceInfo &L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return ZeroIntAPS(S, OpPC, A0);
-}
-#endif
-#ifdef GET_OPCODE_NAMES
-OP_ConstIntAP,
-#endif
-#ifdef GET_INTERP
-case OP_ConstIntAP: {
-  const auto &V0 = ReadArg<IntegralAP<false>>(S, PC);
-  if (!Const<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
-}
-#endif
-#ifdef GET_DISASM
-case OP_ConstIntAP:
-  Text.Op = PrintName("ConstIntAP");
-  Text.Args.push_back(printArg<IntegralAP<false>>(P, PC));
-  break;
-#endif
-#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitConstIntAP(const IntegralAP<false> &, const SourceInfo &);
-#endif
-#ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitConstIntAP(const IntegralAP<false> &A0, const SourceInfo &L) {
-  return emitOp<IntegralAP<false>>(OP_ConstIntAP, A0, L);
-}
-#endif
-#ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitConstIntAP(const IntegralAP<false> &A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Const<PT_IntAP>(S, OpPC, A0);
-}
-#endif
-#ifdef GET_OPCODE_NAMES
-OP_ConstIntAPS,
-#endif
-#ifdef GET_INTERP
-case OP_ConstIntAPS: {
-  const auto &V0 = ReadArg<IntegralAP<true>>(S, PC);
-  if (!Const<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
-}
-#endif
-#ifdef GET_DISASM
-case OP_ConstIntAPS:
-  Text.Op = PrintName("ConstIntAPS");
-  Text.Args.push_back(printArg<IntegralAP<true>>(P, PC));
-  break;
-#endif
-#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitConstIntAPS(const IntegralAP<true> &, const SourceInfo &);
-#endif
-#ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitConstIntAPS(const IntegralAP<true> &A0, const SourceInfo &L) {
-  return emitOp<IntegralAP<true>>(OP_ConstIntAPS, A0, L);
-}
-#endif
-#ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitConstIntAPS(const IntegralAP<true> &A0, const SourceInfo &L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return Const<PT_IntAPS>(S, OpPC, A0);
 }
 #endif

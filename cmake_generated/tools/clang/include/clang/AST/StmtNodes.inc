@@ -56,12 +56,6 @@ UNARYOPERATOR(UnaryOperator, Expr)
 UNARYEXPRORTYPETRAITEXPR(UnaryExprOrTypeTraitExpr, Expr)
 #undef UNARYEXPRORTYPETRAITEXPR
 
-#ifndef TYPOEXPR
-#  define TYPOEXPR(Type, Base) EXPR(Type, Base)
-#endif
-TYPOEXPR(TypoExpr, Expr)
-#undef TYPOEXPR
-
 #ifndef TYPETRAITEXPR
 #  define TYPETRAITEXPR(Type, Base) EXPR(Type, Base)
 #endif

@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum DXIntrinsics : unsigned {
 // Enum values for intrinsics.
-    dx_all = 3925,                                    // llvm.dx.all
+    dx_all = 4015,                                    // llvm.dx.all
     dx_any,                                    // llvm.dx.any
     dx_asdouble,                               // llvm.dx.asdouble
     dx_cross,                                  // llvm.dx.cross
@@ -40,6 +40,7 @@ enum DXIntrinsics : unsigned {
     dx_resource_casthandle,                    // llvm.dx.resource.casthandle
     dx_resource_getpointer,                    // llvm.dx.resource.getpointer
     dx_resource_handlefrombinding,             // llvm.dx.resource.handlefrombinding
+    dx_resource_handlefromimplicitbinding,     // llvm.dx.resource.handlefromimplicitbinding
     dx_resource_load_cbufferrow_2,             // llvm.dx.resource.load.cbufferrow.2
     dx_resource_load_cbufferrow_4,             // llvm.dx.resource.load.cbufferrow.4
     dx_resource_load_cbufferrow_8,             // llvm.dx.resource.load.cbufferrow.8
@@ -63,6 +64,7 @@ enum DXIntrinsics : unsigned {
     dx_wave_active_countbits,                  // llvm.dx.wave.active.countbits
     dx_wave_all,                               // llvm.dx.wave.all
     dx_wave_any,                               // llvm.dx.wave.any
+    dx_wave_get_lane_count,                    // llvm.dx.wave.get.lane.count
     dx_wave_getlaneindex,                      // llvm.dx.wave.getlaneindex
     dx_wave_is_first_lane,                     // llvm.dx.wave.is.first.lane
     dx_wave_readlane,                          // llvm.dx.wave.readlane
