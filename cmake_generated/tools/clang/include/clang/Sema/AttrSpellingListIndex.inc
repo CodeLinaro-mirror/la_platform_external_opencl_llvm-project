@@ -37,15 +37,6 @@
       return 1;
     break;
   }
-  case AT_AMDGPUKernelCall: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
-    break;
-  }
   case AT_AMDGPUMaxNumWorkGroups: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -81,6 +72,14 @@
       return 1;
     if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
       return 2;
+    break;
+  }
+  case AT_ARMInterruptSaveFP: {
+    return 0;
+    break;
+  }
+  case AT_ARMSaveFP: {
+    return 0;
     break;
   }
   case AT_AVRSignal: {
@@ -512,6 +511,15 @@
     break;
   }
   case AT_CFICanonicalJumpTable: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
+    break;
+  }
+  case AT_CFIUncheckedCallee: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
@@ -963,6 +971,37 @@
       return 2;
     break;
   }
+  case AT_DeviceKernel: {
+    if (Name == "device_kernel" && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (Name == "device_kernel" && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (Name == "device_kernel" && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
+    if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 3;
+    if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 4;
+    if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 5;
+    if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 6;
+    if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 7;
+    if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 8;
+    if (Name == "amdgpu_kernel" && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 9;
+    if (Name == "amdgpu_kernel" && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 10;
+    if (Name == "amdgpu_kernel" && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 11;
+    if (Name.size() == 8 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 12;
+    if (Name.size() == 6 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 13;
+    break;
+  }
   case AT_DiagnoseAsBuiltin: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1260,7 +1299,19 @@
     return 0;
     break;
   }
+  case AT_HLSLSV_Position: {
+    return 0;
+    break;
+  }
   case AT_HLSLShader: {
+    return 0;
+    break;
+  }
+  case AT_HLSLVkConstantId: {
+    return 0;
+    break;
+  }
+  case AT_HLSLVkExtBuiltinInput: {
     return 0;
     break;
   }
@@ -1643,15 +1694,6 @@
       return 2;
     break;
   }
-  case AT_NVPTXKernel: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
-    break;
-  }
   case AT_Naked: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1982,6 +2024,15 @@
     break;
   }
   case AT_NonNull: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 2;
+    break;
+  }
+  case AT_NonString: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
@@ -2379,13 +2430,6 @@
     return 0;
     break;
   }
-  case AT_OpenCLKernel: {
-    if (Name.size() == 8 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (Name.size() == 6 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 1;
-    break;
-  }
   case AT_OpenCLLocalAddressSpace: {
     if (Name.size() == 7 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -2672,6 +2716,15 @@
       return 2;
     break;
   }
+  case AT_ReentrantCapability: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
+    break;
+  }
   case AT_RegCall: {
     if (Name.size() == 7 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -2795,17 +2848,12 @@
       return 2;
     break;
   }
-  case AT_SPtr: {
+  case AT_RootSignature: {
     return 0;
     break;
   }
-  case AT_SYCLKernel: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
+  case AT_SPtr: {
+    return 0;
     break;
   }
   case AT_SYCLKernelEntryPoint: {

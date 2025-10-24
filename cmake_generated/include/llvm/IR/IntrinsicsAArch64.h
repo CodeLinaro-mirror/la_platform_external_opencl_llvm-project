@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum AARCH64Intrinsics : unsigned {
 // Enum values for intrinsics.
-    aarch64_addg = 497,                              // llvm.aarch64.addg
+    aarch64_addg = 507,                              // llvm.aarch64.addg
     aarch64_break,                             // llvm.aarch64.break
     aarch64_chkfeat,                           // llvm.aarch64.chkfeat
     aarch64_clrex,                             // llvm.aarch64.clrex
@@ -385,6 +385,14 @@ enum AARCH64Intrinsics : unsigned {
     aarch64_sme_fp8_fmlall_single_za32_vg4x1,  // llvm.aarch64.sme.fp8.fmlall.single.za32.vg4x1
     aarch64_sme_fp8_fmlall_single_za32_vg4x2,  // llvm.aarch64.sme.fp8.fmlall.single.za32.vg4x2
     aarch64_sme_fp8_fmlall_single_za32_vg4x4,  // llvm.aarch64.sme.fp8.fmlall.single.za32.vg4x4
+    aarch64_sme_fp8_fmop4a_za16_1x1,           // llvm.aarch64.sme.fp8.fmop4a.za16.1x1
+    aarch64_sme_fp8_fmop4a_za16_1x2,           // llvm.aarch64.sme.fp8.fmop4a.za16.1x2
+    aarch64_sme_fp8_fmop4a_za16_2x1,           // llvm.aarch64.sme.fp8.fmop4a.za16.2x1
+    aarch64_sme_fp8_fmop4a_za16_2x2,           // llvm.aarch64.sme.fp8.fmop4a.za16.2x2
+    aarch64_sme_fp8_fmop4a_za32_1x1,           // llvm.aarch64.sme.fp8.fmop4a.za32.1x1
+    aarch64_sme_fp8_fmop4a_za32_1x2,           // llvm.aarch64.sme.fp8.fmop4a.za32.1x2
+    aarch64_sme_fp8_fmop4a_za32_2x1,           // llvm.aarch64.sme.fp8.fmop4a.za32.2x1
+    aarch64_sme_fp8_fmop4a_za32_2x2,           // llvm.aarch64.sme.fp8.fmop4a.za32.2x2
     aarch64_sme_fp8_fmopa_za16,                // llvm.aarch64.sme.fp8.fmopa.za16
     aarch64_sme_fp8_fmopa_za32,                // llvm.aarch64.sme.fp8.fmopa.za32
     aarch64_sme_fp8_fvdot_lane_za16_vg1x2,     // llvm.aarch64.sme.fp8.fvdot.lane.za16.vg1x2

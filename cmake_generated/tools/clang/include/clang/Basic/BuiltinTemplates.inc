@@ -6,6 +6,14 @@
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
 
+#ifndef HLSLBuiltinTemplate
+#define HLSLBuiltinTemplate(NAME) BuiltinTemplate(NAME)
+#endif
+
+#ifndef CPlusPlusBuiltinTemplate
+#define CPlusPlusBuiltinTemplate(NAME) BuiltinTemplate(NAME)
+#endif
+
 #if defined(CREATE_BUILTIN_TEMPLATE_PARAMETER_LIST)
 case BTK__builtin_common_type: {
  auto *Parm1 = TemplateTypeParmDecl::Create(C, DC, SourceLocation(), SourceLocation(), 1, 0, /*Id=*/nullptr, /*Typename=*/false, true);
@@ -19,6 +27,16 @@ case BTK__builtin_common_type: {
  auto *TPL8 = TemplateParameterList::Create(C, SourceLocation(), SourceLocation(), {Parm0, Parm3, Parm6, Parm7}, SourceLocation(), nullptr);
 
   return TPL8;
+  }
+case BTK__hlsl_spirv_type: {
+TypeSourceInfo *Uint32TInfo = C.getTrivialTypeSourceInfo(C.UnsignedIntTy);
+ auto *Parm0 = NonTypeTemplateParmDecl::Create(C, DC, SourceLocation(), SourceLocation(), 0, 0, /*Id=*/nullptr, Uint32TInfo->getType(), /*ParameterPack=*/false, Uint32TInfo);
+ auto *Parm1 = NonTypeTemplateParmDecl::Create(C, DC, SourceLocation(), SourceLocation(), 0, 1, /*Id=*/nullptr, Uint32TInfo->getType(), /*ParameterPack=*/false, Uint32TInfo);
+ auto *Parm2 = NonTypeTemplateParmDecl::Create(C, DC, SourceLocation(), SourceLocation(), 0, 2, /*Id=*/nullptr, Uint32TInfo->getType(), /*ParameterPack=*/false, Uint32TInfo);
+ auto *Parm3 = TemplateTypeParmDecl::Create(C, DC, SourceLocation(), SourceLocation(), 0, 3, /*Id=*/nullptr, /*Typename=*/false, true);
+ auto *TPL4 = TemplateParameterList::Create(C, SourceLocation(), SourceLocation(), {Parm0, Parm1, Parm2, Parm3}, SourceLocation(), nullptr);
+
+  return TPL4;
   }
 case BTK__make_integer_seq: {
  auto *Parm1 = TemplateTypeParmDecl::Create(C, DC, SourceLocation(), SourceLocation(), 1, 0, /*Id=*/nullptr, /*Typename=*/false, false);
@@ -43,8 +61,11 @@ TypeSourceInfo *SizeTInfo = C.getTrivialTypeSourceInfo(C.getSizeType());
   }
 #undef CREATE_BUILTIN_TEMPLATE_PARAMETER_LIST
 #else
-BuiltinTemplate(__builtin_common_type)
-BuiltinTemplate(__make_integer_seq)
-BuiltinTemplate(__type_pack_element)
+CPlusPlusBuiltinTemplate(__builtin_common_type)
+HLSLBuiltinTemplate(__hlsl_spirv_type)
+CPlusPlusBuiltinTemplate(__make_integer_seq)
+CPlusPlusBuiltinTemplate(__type_pack_element)
 #undef BuiltinTemplate
 #endif
+#undef HLSLBuiltinTemplate
+#undef CPlusPlusBuiltinTemplate

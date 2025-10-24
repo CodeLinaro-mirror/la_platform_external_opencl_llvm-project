@@ -220,6 +220,13 @@ struct WriteDispatcher<FunctionEffect> {
   }
 };
 template <>
+struct WriteDispatcher<SpirvOperand> {
+  template <class BasicWriter, class... Args>
+  static void write(BasicWriter &W, Args &&... args) {
+    return W.writeHLSLSpirvOperand(std::forward<Args>(args)...);
+  }
+};
+template <>
 struct WriteDispatcher<IdentifierInfo*> {
   template <class BasicWriter, class... Args>
   static void write(BasicWriter &W, Args &&... args) {
@@ -273,6 +280,20 @@ struct WriteDispatcher<const NamespaceAliasDecl*> {
   template <class BasicWriter, class... Args>
   static void write(BasicWriter &W, Args &&... args) {
     return W.writeNamespaceAliasDeclRef(std::forward<Args>(args)...);
+  }
+};
+template <>
+struct WriteDispatcher<NamespaceBaseDecl*> {
+  template <class BasicWriter, class... Args>
+  static void write(BasicWriter &W, Args &&... args) {
+    return W.writeNamespaceBaseDeclRef(std::forward<Args>(args)...);
+  }
+};
+template <>
+struct WriteDispatcher<const NamespaceBaseDecl*> {
+  template <class BasicWriter, class... Args>
+  static void write(BasicWriter &W, Args &&... args) {
+    return W.writeNamespaceBaseDeclRef(std::forward<Args>(args)...);
   }
 };
 template <>
@@ -658,6 +679,18 @@ struct PackOptionalValue<NamespaceAliasDecl*> {
 template <>
 struct PackOptionalValue<const NamespaceAliasDecl*> {
   static const NamespaceAliasDecl* pack(std::optional<const NamespaceAliasDecl*> value) {
+    return value.value_or(nullptr);
+  }
+};
+template <>
+struct PackOptionalValue<NamespaceBaseDecl*> {
+  static NamespaceBaseDecl* pack(std::optional<NamespaceBaseDecl*> value) {
+    return value.value_or(nullptr);
+  }
+};
+template <>
+struct PackOptionalValue<const NamespaceBaseDecl*> {
+  static const NamespaceBaseDecl* pack(std::optional<const NamespaceBaseDecl*> value) {
     return value.value_or(nullptr);
   }
 };
@@ -1145,6 +1178,9 @@ public:
     asImpl().writeDeclRef(value);
   }
   void writeNamespaceAliasDeclRef(const NamespaceAliasDecl* value) {
+    asImpl().writeDeclRef(value);
+  }
+  void writeNamespaceBaseDeclRef(const NamespaceBaseDecl* value) {
     asImpl().writeDeclRef(value);
   }
   void writeNamespaceDeclRef(const NamespaceDecl* value) {
