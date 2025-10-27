@@ -519,6 +519,15 @@
       return 2;
     break;
   }
+  case AT_CFISalt: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
+    break;
+  }
   case AT_CFIUncheckedCallee: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1243,6 +1252,10 @@
     return 0;
     break;
   }
+  case AT_HLSLIsCounter: {
+    return 0;
+    break;
+  }
   case AT_HLSLLoopHint: {
     if (Name.size() == 6 && getSyntax() == AttributeCommonInfo::AS_Microsoft && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1304,6 +1317,14 @@
     break;
   }
   case AT_HLSLShader: {
+    return 0;
+    break;
+  }
+  case AT_HLSLUnparsedSemantic: {
+    return 0;
+    break;
+  }
+  case AT_HLSLVkBinding: {
     return 0;
     break;
   }
@@ -1898,7 +1919,7 @@
       return 4;
     break;
   }
-  case AT_NoSanitizeSpecific: {
+  case AT_NoSanitizeAddress: {
     if (Name.size() == 26 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
     if (Name.size() == 26 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
@@ -1911,18 +1932,24 @@
       return 4;
     if (Name.size() == 19 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
       return 5;
-    if (Name == "no_sanitize_thread" && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 6;
-    if (Name == "no_sanitize_thread" && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
-      return 7;
-    if (Name == "no_sanitize_thread" && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
-      return 8;
-    if (Name == "no_sanitize_memory" && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 9;
-    if (Name == "no_sanitize_memory" && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 10;
-    if (Name == "no_sanitize_memory" && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 11;
+    break;
+  }
+  case AT_NoSanitizeMemory: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
+    break;
+  }
+  case AT_NoSanitizeThread: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 2;
     break;
   }
   case AT_NoSpecializations: {
@@ -2856,13 +2883,12 @@
     return 0;
     break;
   }
+  case AT_SYCLExternal: {
+    return 0;
+    break;
+  }
   case AT_SYCLKernelEntryPoint: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
+    return 0;
     break;
   }
   case AT_SYCLSpecialClass: {

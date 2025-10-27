@@ -49,6 +49,9 @@
     BI__builtin_riscv_ctz_64,
     BI__builtin_riscv_nds_fcvt_bf16_s,
     BI__builtin_riscv_nds_fcvt_s_bf16,
+    BI__builtin_riscv_mips_ehb,
+    BI__builtin_riscv_mips_ihb,
+    BI__builtin_riscv_mips_pause,
     BI__builtin_riscv_ntl_load,
     BI__builtin_riscv_ntl_store,
     BI__builtin_riscv_orc_b_32,
@@ -163,6 +166,11 @@ static constexpr char BuiltinStringsStorage[] =
   "xandesbfhcvt\0"
   "__builtin_riscv_nds_fcvt_s_bf16\0"
   "fy\0"
+  "__builtin_riscv_mips_ehb\0"
+  "v\0"
+  "xmipsexectl\0"
+  "__builtin_riscv_mips_ihb\0"
+  "__builtin_riscv_mips_pause\0"
   "__builtin_riscv_ntl_load\0"
   "v.\0"
   "t\0"
@@ -171,7 +179,6 @@ static constexpr char BuiltinStringsStorage[] =
   "__builtin_riscv_orc_b_32\0"
   "__builtin_riscv_orc_b_64\0"
   "__builtin_riscv_pause\0"
-  "v\0"
   "n\0"
   "zihintpause\0"
   "__builtin_riscv_sha256sig0\0"
@@ -258,35 +265,38 @@ BuiltinStrings = BuiltinStringsStorage;
     Builtin::Info{Builtin::Info::StrOffsets{1273 /* __builtin_riscv_ctz_64 */, 1221 /* UiUWi */, 36 /* nc */, 1296 /* zbb,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
     Builtin::Info{Builtin::Info::StrOffsets{1306 /* __builtin_riscv_nds_fcvt_bf16_s */, 1338 /* yf */, 36 /* nc */, 1341 /* xandesbfhcvt */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
     Builtin::Info{Builtin::Info::StrOffsets{1354 /* __builtin_riscv_nds_fcvt_s_bf16 */, 1386 /* fy */, 36 /* nc */, 1341 /* xandesbfhcvt */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1389 /* __builtin_riscv_ntl_load */, 1414 /* v. */, 1417 /* t */, 1419 /* zihintntl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1429 /* __builtin_riscv_ntl_store */, 1414 /* v. */, 1417 /* t */, 1419 /* zihintntl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1455 /* __builtin_riscv_orc_b_32 */, 643 /* UiUi */, 36 /* nc */, 1269 /* zbb */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1480 /* __builtin_riscv_orc_b_64 */, 292 /* UWiUWi */, 36 /* nc */, 1296 /* zbb,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1505 /* __builtin_riscv_pause */, 1527 /* v */, 1529 /* n */, 1531 /* zihintpause */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1543 /* __builtin_riscv_sha256sig0 */, 643 /* UiUi */, 36 /* nc */, 1570 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1575 /* __builtin_riscv_sha256sig1 */, 643 /* UiUi */, 36 /* nc */, 1570 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1602 /* __builtin_riscv_sha256sum0 */, 643 /* UiUi */, 36 /* nc */, 1570 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1629 /* __builtin_riscv_sha256sum1 */, 643 /* UiUi */, 36 /* nc */, 1570 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1656 /* __builtin_riscv_sha512sig0 */, 292 /* UWiUWi */, 36 /* nc */, 1683 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1694 /* __builtin_riscv_sha512sig0h */, 575 /* UiUiUi */, 36 /* nc */, 1722 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1733 /* __builtin_riscv_sha512sig0l */, 575 /* UiUiUi */, 36 /* nc */, 1722 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1761 /* __builtin_riscv_sha512sig1 */, 292 /* UWiUWi */, 36 /* nc */, 1683 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1788 /* __builtin_riscv_sha512sig1h */, 575 /* UiUiUi */, 36 /* nc */, 1722 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1816 /* __builtin_riscv_sha512sig1l */, 575 /* UiUiUi */, 36 /* nc */, 1722 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1844 /* __builtin_riscv_sha512sum0 */, 292 /* UWiUWi */, 36 /* nc */, 1683 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1871 /* __builtin_riscv_sha512sum0r */, 575 /* UiUiUi */, 36 /* nc */, 1722 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1899 /* __builtin_riscv_sha512sum1 */, 292 /* UWiUWi */, 36 /* nc */, 1683 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1926 /* __builtin_riscv_sha512sum1r */, 575 /* UiUiUi */, 36 /* nc */, 1722 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1954 /* __builtin_riscv_sm3p0 */, 643 /* UiUi */, 36 /* nc */, 1976 /* zksh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{1981 /* __builtin_riscv_sm3p1 */, 643 /* UiUi */, 36 /* nc */, 1976 /* zksh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2003 /* __builtin_riscv_sm4ed */, 26 /* UiUiUiIUi */, 36 /* nc */, 2025 /* zksed */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2031 /* __builtin_riscv_sm4ks */, 26 /* UiUiUiIUi */, 36 /* nc */, 2025 /* zksed */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2053 /* __builtin_riscv_unzip_32 */, 643 /* UiUi */, 36 /* nc */, 2078 /* zbkb,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2089 /* __builtin_riscv_xperm4_32 */, 575 /* UiUiUi */, 36 /* nc */, 2115 /* zbkx,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2126 /* __builtin_riscv_xperm4_64 */, 162 /* UWiUWiUWi */, 36 /* nc */, 2152 /* zbkx,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2163 /* __builtin_riscv_xperm8_32 */, 575 /* UiUiUi */, 36 /* nc */, 2115 /* zbkx,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2189 /* __builtin_riscv_xperm8_64 */, 162 /* UWiUWiUWi */, 36 /* nc */, 2152 /* zbkx,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
-    Builtin::Info{Builtin::Info::StrOffsets{2215 /* __builtin_riscv_zip_32 */, 643 /* UiUi */, 36 /* nc */, 2078 /* zbkb,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1389 /* __builtin_riscv_mips_ehb */, 1414 /* v */, 36 /* nc */, 1416 /* xmipsexectl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1428 /* __builtin_riscv_mips_ihb */, 1414 /* v */, 36 /* nc */, 1416 /* xmipsexectl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1453 /* __builtin_riscv_mips_pause */, 1414 /* v */, 36 /* nc */, 1416 /* xmipsexectl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1480 /* __builtin_riscv_ntl_load */, 1505 /* v. */, 1508 /* t */, 1510 /* zihintntl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1520 /* __builtin_riscv_ntl_store */, 1505 /* v. */, 1508 /* t */, 1510 /* zihintntl */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1546 /* __builtin_riscv_orc_b_32 */, 643 /* UiUi */, 36 /* nc */, 1269 /* zbb */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1571 /* __builtin_riscv_orc_b_64 */, 292 /* UWiUWi */, 36 /* nc */, 1296 /* zbb,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1596 /* __builtin_riscv_pause */, 1414 /* v */, 1618 /* n */, 1620 /* zihintpause */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1632 /* __builtin_riscv_sha256sig0 */, 643 /* UiUi */, 36 /* nc */, 1659 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1664 /* __builtin_riscv_sha256sig1 */, 643 /* UiUi */, 36 /* nc */, 1659 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1691 /* __builtin_riscv_sha256sum0 */, 643 /* UiUi */, 36 /* nc */, 1659 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1718 /* __builtin_riscv_sha256sum1 */, 643 /* UiUi */, 36 /* nc */, 1659 /* zknh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1745 /* __builtin_riscv_sha512sig0 */, 292 /* UWiUWi */, 36 /* nc */, 1772 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1783 /* __builtin_riscv_sha512sig0h */, 575 /* UiUiUi */, 36 /* nc */, 1811 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1822 /* __builtin_riscv_sha512sig0l */, 575 /* UiUiUi */, 36 /* nc */, 1811 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1850 /* __builtin_riscv_sha512sig1 */, 292 /* UWiUWi */, 36 /* nc */, 1772 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1877 /* __builtin_riscv_sha512sig1h */, 575 /* UiUiUi */, 36 /* nc */, 1811 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1905 /* __builtin_riscv_sha512sig1l */, 575 /* UiUiUi */, 36 /* nc */, 1811 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1933 /* __builtin_riscv_sha512sum0 */, 292 /* UWiUWi */, 36 /* nc */, 1772 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1960 /* __builtin_riscv_sha512sum0r */, 575 /* UiUiUi */, 36 /* nc */, 1811 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1988 /* __builtin_riscv_sha512sum1 */, 292 /* UWiUWi */, 36 /* nc */, 1772 /* zknh,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2015 /* __builtin_riscv_sha512sum1r */, 575 /* UiUiUi */, 36 /* nc */, 1811 /* zknh,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2043 /* __builtin_riscv_sm3p0 */, 643 /* UiUi */, 36 /* nc */, 2065 /* zksh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2070 /* __builtin_riscv_sm3p1 */, 643 /* UiUi */, 36 /* nc */, 2065 /* zksh */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2092 /* __builtin_riscv_sm4ed */, 26 /* UiUiUiIUi */, 36 /* nc */, 2114 /* zksed */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2120 /* __builtin_riscv_sm4ks */, 26 /* UiUiUiIUi */, 36 /* nc */, 2114 /* zksed */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2142 /* __builtin_riscv_unzip_32 */, 643 /* UiUi */, 36 /* nc */, 2167 /* zbkb,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2178 /* __builtin_riscv_xperm4_32 */, 575 /* UiUiUi */, 36 /* nc */, 2204 /* zbkx,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2215 /* __builtin_riscv_xperm4_64 */, 162 /* UWiUWiUWi */, 36 /* nc */, 2241 /* zbkx,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2252 /* __builtin_riscv_xperm8_32 */, 575 /* UiUiUi */, 36 /* nc */, 2204 /* zbkx,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2278 /* __builtin_riscv_xperm8_64 */, 162 /* UWiUWiUWi */, 36 /* nc */, 2241 /* zbkx,64bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{2304 /* __builtin_riscv_zip_32 */, 643 /* UiUi */, 36 /* nc */, 2167 /* zbkb,32bit */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
 
 #endif // GET_BUILTIN_INFOS
 

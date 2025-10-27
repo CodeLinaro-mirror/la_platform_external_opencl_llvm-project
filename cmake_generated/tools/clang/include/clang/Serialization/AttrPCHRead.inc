@@ -614,8 +614,7 @@
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     std::string label= Record.readString();
-    bool isLiteralLabel = Record.readInt();
-    New = new (Context) AsmLabelAttr(Context, Info, label, isLiteralLabel);
+    New = new (Context) AsmLabelAttr(Context, Info, label);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -843,6 +842,15 @@
     bool isPackExpansion = Record.readInt();
     New = new (Context) CFICanonicalJumpTableAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::CFISalt: {
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    std::string salt= Record.readString();
+    New = new (Context) CFISaltAttr(Context, Info, salt);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -1220,7 +1228,7 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    int priority = Record.readInt();
+    Expr * priority = Record.readExpr();
     New = new (Context) ConstructorAttr(Context, Info, priority);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
@@ -1418,7 +1426,7 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    int priority = Record.readInt();
+    Expr * priority = Record.readExpr();
     New = new (Context) DestructorAttr(Context, Info, priority);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
@@ -1758,6 +1766,14 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::HLSLIsCounter: {
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) HLSLIsCounterAttr(Context, Info);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::HLSLLoopHint: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
@@ -1896,6 +1912,30 @@
     bool isPackExpansion = Record.readInt();
     llvm::Triple::EnvironmentType type(static_cast<llvm::Triple::EnvironmentType>(Record.readInt()));
     New = new (Context) HLSLShaderAttr(Context, Info, type);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::HLSLUnparsedSemantic: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    int index = Record.readInt();
+    bool explicitIndex = Record.readInt();
+    New = new (Context) HLSLUnparsedSemanticAttr(Context, Info, index, explicitIndex);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::HLSLVkBinding: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    int binding = Record.readInt();
+    int set = Record.readInt();
+    New = new (Context) HLSLVkBindingAttr(Context, Info, binding, set);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -2935,6 +2975,16 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::OMPGroupPrivateDecl: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) OMPGroupPrivateDeclAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::OMPReferencedVar: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
@@ -3910,6 +3960,16 @@
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     New = new (Context) SPtrAttr(Context, Info);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::SYCLExternal: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) SYCLExternalAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;

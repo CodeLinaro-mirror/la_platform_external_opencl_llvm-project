@@ -146,4 +146,7 @@
    coverage bugs, and to 0 otherwise. */
 #define LLVM_ENABLE_DEBUGLOC_TRACKING_ORIGIN 0
 
+/* Define to 1 to enable LLVM OnDisk Content Addressable Storage */
+#define LLVM_ENABLE_ONDISK_CAS 0
+
 #endif
