@@ -519,7 +519,7 @@ public:
                                   std::optional<unsigned> Flags = std::nullopt);
 
   /// Build and insert an instruction with appropriate flags for addressing some
-  /// offset of an object, i.e.: \p Res = nuw G_PTR_ADD \p Op0, \p Op1
+  /// offset of an object, i.e.: \p Res = nuw inbounds G_PTR_ADD \p Op0, \p Op1
   /// The value of \p Op0 must be a pointer into or just after an object, adding
   /// the value of \p Op1 to it must yield to a pointer into or just after the
   /// same object.
@@ -556,7 +556,7 @@ public:
 
   /// Materialize and insert an instruction with appropriate flags for
   /// addressing some offset of an object, i.e.:
-  ///   \p Res = nuw G_PTR_ADD \p Op0, (G_CONSTANT \p Value)
+  ///   \p Res = nuw inbounds G_PTR_ADD \p Op0, (G_CONSTANT \p Value)
   /// The value of \p Op0 must be a pointer into or just after an object, adding
   /// \p Value to it must yield to a pointer into or just after the same object.
   ///
@@ -2184,6 +2184,13 @@ public:
     return buildInstr(TargetOpcode::G_FSINCOS, {Sin, Cos}, {Src}, Flags);
   }
 
+  /// Build and insert \p Fract, \p Int = G_FMODF \p Src
+  MachineInstrBuilder buildModf(const DstOp &Fract, const DstOp &Int,
+                                const SrcOp &Src,
+                                std::optional<unsigned> Flags = std::nullopt) {
+    return buildInstr(TargetOpcode::G_FMODF, {Fract, Int}, {Src}, Flags);
+  }
+
   /// Build and insert \p Res = G_FCOPYSIGN \p Op0, \p Op1
   MachineInstrBuilder buildFCopysign(const DstOp &Dst, const SrcOp &Src0,
                                      const SrcOp &Src1) {
@@ -2461,6 +2468,11 @@ public:
   /// Build and insert \p Dst = G_GET_ROUNDING
   MachineInstrBuilder buildGetRounding(const DstOp &Dst) {
     return buildInstr(TargetOpcode::G_GET_ROUNDING, {Dst}, {});
+  }
+
+  /// Build and insert G_SET_ROUNDING
+  MachineInstrBuilder buildSetRounding(const SrcOp &Src) {
+    return buildInstr(TargetOpcode::G_SET_ROUNDING, {}, {Src});
   }
 
   virtual MachineInstrBuilder

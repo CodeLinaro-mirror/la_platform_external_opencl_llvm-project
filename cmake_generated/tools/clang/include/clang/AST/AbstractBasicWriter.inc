@@ -311,14 +311,14 @@ struct WriteDispatcher<const NamespaceDecl*> {
   }
 };
 template <>
-struct WriteDispatcher<NestedNameSpecifier *> {
+struct WriteDispatcher<NestedNameSpecifier> {
   template <class BasicWriter, class... Args>
   static void write(BasicWriter &W, Args &&... args) {
     return W.writeNestedNameSpecifier(std::forward<Args>(args)...);
   }
 };
 template <>
-struct WriteDispatcher<NestedNameSpecifier::SpecifierKind> {
+struct WriteDispatcher<NestedNameSpecifier::Kind> {
   template <class BasicWriter, class... Args>
   static void write(BasicWriter &W, Args &&... args) {
     return W.writeNestedNameSpecifierKind(std::forward<Args>(args)...);
@@ -1186,7 +1186,7 @@ public:
   void writeNamespaceDeclRef(const NamespaceDecl* value) {
     asImpl().writeDeclRef(value);
   }
-  void writeNestedNameSpecifierKind(NestedNameSpecifier::SpecifierKind value) {
+  void writeNestedNameSpecifierKind(NestedNameSpecifier::Kind value) {
     asImpl().writeEnum(value);
   }
   void writeObjCProtocolDeclRef(const ObjCProtocolDecl* value) {
@@ -1337,7 +1337,7 @@ public:
     
     auto qtn = node.getAsQualifiedTemplateName();
   
-    NestedNameSpecifier * qualifier = ( qtn->getQualifier() );
+    NestedNameSpecifier qualifier = ( qtn->getQualifier() );
     subW.find("qualifier").writeNestedNameSpecifier(qualifier);
     bool hasTemplateKeyword = ( qtn->hasTemplateKeyword() );
     subW.find("hasTemplateKeyword").writeBool(hasTemplateKeyword);
@@ -1351,7 +1351,7 @@ public:
     auto dtn = node.getAsDependentTemplateName();
     auto name = dtn->getName();
   
-    NestedNameSpecifier * qualifier = ( dtn->getQualifier() );
+    NestedNameSpecifier qualifier = ( dtn->getQualifier() );
     subW.find("qualifier").writeNestedNameSpecifier(qualifier);
     std::optional<const IdentifierInfo*> identifier = ( makeOptionalFromPointer(name.getIdentifier()) );
     subW.find("identifier").writeOptional(identifier);

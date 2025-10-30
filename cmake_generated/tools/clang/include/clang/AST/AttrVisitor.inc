@@ -285,6 +285,10 @@
   bool VisitCFICanonicalJumpTableAttr(CFICanonicalJumpTableAttr *A) {
     return true; 
   }
+  bool TraverseCFISaltAttr(CFISaltAttr *A);
+  bool VisitCFISaltAttr(CFISaltAttr *A) {
+    return true; 
+  }
   bool TraverseCFIUncheckedCalleeAttr(CFIUncheckedCalleeAttr *A);
   bool VisitCFIUncheckedCalleeAttr(CFIUncheckedCalleeAttr *A) {
     return true; 
@@ -629,6 +633,10 @@
   bool VisitHLSLGroupSharedAddressSpaceAttr(HLSLGroupSharedAddressSpaceAttr *A) {
     return true; 
   }
+  bool TraverseHLSLIsCounterAttr(HLSLIsCounterAttr *A);
+  bool VisitHLSLIsCounterAttr(HLSLIsCounterAttr *A) {
+    return true; 
+  }
   bool TraverseHLSLLoopHintAttr(HLSLLoopHintAttr *A);
   bool VisitHLSLLoopHintAttr(HLSLLoopHintAttr *A) {
     return true; 
@@ -683,6 +691,14 @@
   }
   bool TraverseHLSLShaderAttr(HLSLShaderAttr *A);
   bool VisitHLSLShaderAttr(HLSLShaderAttr *A) {
+    return true; 
+  }
+  bool TraverseHLSLUnparsedSemanticAttr(HLSLUnparsedSemanticAttr *A);
+  bool VisitHLSLUnparsedSemanticAttr(HLSLUnparsedSemanticAttr *A) {
+    return true; 
+  }
+  bool TraverseHLSLVkBindingAttr(HLSLVkBindingAttr *A);
+  bool VisitHLSLVkBindingAttr(HLSLVkBindingAttr *A) {
     return true; 
   }
   bool TraverseHLSLVkConstantIdAttr(HLSLVkConstantIdAttr *A);
@@ -1055,6 +1071,10 @@
   }
   bool TraverseOMPDeclareVariantAttr(OMPDeclareVariantAttr *A);
   bool VisitOMPDeclareVariantAttr(OMPDeclareVariantAttr *A) {
+    return true; 
+  }
+  bool TraverseOMPGroupPrivateDeclAttr(OMPGroupPrivateDeclAttr *A);
+  bool VisitOMPGroupPrivateDeclAttr(OMPGroupPrivateDeclAttr *A) {
     return true; 
   }
   bool TraverseOMPReferencedVarAttr(OMPReferencedVarAttr *A);
@@ -1439,6 +1459,10 @@
   }
   bool TraverseSPtrAttr(SPtrAttr *A);
   bool VisitSPtrAttr(SPtrAttr *A) {
+    return true; 
+  }
+  bool TraverseSYCLExternalAttr(SYCLExternalAttr *A);
+  bool VisitSYCLExternalAttr(SYCLExternalAttr *A) {
     return true; 
   }
   bool TraverseSYCLKernelEntryPointAttr(SYCLKernelEntryPointAttr *A);
@@ -2529,6 +2553,15 @@ bool VISITORCLASS<Derived>::TraverseCFICanonicalJumpTableAttr(CFICanonicalJumpTa
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseCFISaltAttr(CFISaltAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitCFISaltAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseCFIUncheckedCalleeAttr(CFIUncheckedCalleeAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -2859,6 +2892,8 @@ bool VISITORCLASS<Derived>::TraverseConstructorAttr(ConstructorAttr *A) {
     return false;
   if (!getDerived().VisitConstructorAttr(A))
     return false;
+  if (!getDerived().TraverseStmt(A->getPriority()))
+    return false;
   return true;
 }
 
@@ -3033,6 +3068,8 @@ bool VISITORCLASS<Derived>::TraverseDestructorAttr(DestructorAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitDestructorAttr(A))
+    return false;
+  if (!getDerived().TraverseStmt(A->getPriority()))
     return false;
   return true;
 }
@@ -3330,6 +3367,15 @@ bool VISITORCLASS<Derived>::TraverseHLSLGroupSharedAddressSpaceAttr(HLSLGroupSha
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLIsCounterAttr(HLSLIsCounterAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLIsCounterAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseHLSLLoopHintAttr(HLSLLoopHintAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -3451,6 +3497,24 @@ bool VISITORCLASS<Derived>::TraverseHLSLShaderAttr(HLSLShaderAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitHLSLShaderAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLUnparsedSemanticAttr(HLSLUnparsedSemanticAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLUnparsedSemanticAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLVkBindingAttr(HLSLVkBindingAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLVkBindingAttr(A))
     return false;
   return true;
 }
@@ -4394,6 +4458,15 @@ bool VISITORCLASS<Derived>::TraverseOMPDeclareVariantAttr(OMPDeclareVariantAttr 
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseOMPGroupPrivateDeclAttr(OMPGroupPrivateDeclAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitOMPGroupPrivateDeclAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseOMPReferencedVarAttr(OMPReferencedVarAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -5309,6 +5382,15 @@ bool VISITORCLASS<Derived>::TraverseSPtrAttr(SPtrAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitSPtrAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseSYCLExternalAttr(SYCLExternalAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitSYCLExternalAttr(A))
     return false;
   return true;
 }
@@ -6259,6 +6341,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseCFGuardAttr(cast<CFGuardAttr>(A));
     case attr::CFICanonicalJumpTable:
       return getDerived().TraverseCFICanonicalJumpTableAttr(cast<CFICanonicalJumpTableAttr>(A));
+    case attr::CFISalt:
+      return getDerived().TraverseCFISaltAttr(cast<CFISaltAttr>(A));
     case attr::CFIUncheckedCallee:
       return getDerived().TraverseCFIUncheckedCalleeAttr(cast<CFIUncheckedCalleeAttr>(A));
     case attr::CFReturnsNotRetained:
@@ -6431,6 +6515,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseHLSLControlFlowHintAttr(cast<HLSLControlFlowHintAttr>(A));
     case attr::HLSLGroupSharedAddressSpace:
       return getDerived().TraverseHLSLGroupSharedAddressSpaceAttr(cast<HLSLGroupSharedAddressSpaceAttr>(A));
+    case attr::HLSLIsCounter:
+      return getDerived().TraverseHLSLIsCounterAttr(cast<HLSLIsCounterAttr>(A));
     case attr::HLSLLoopHint:
       return getDerived().TraverseHLSLLoopHintAttr(cast<HLSLLoopHintAttr>(A));
     case attr::HLSLNumThreads:
@@ -6459,6 +6545,10 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseHLSLSV_PositionAttr(cast<HLSLSV_PositionAttr>(A));
     case attr::HLSLShader:
       return getDerived().TraverseHLSLShaderAttr(cast<HLSLShaderAttr>(A));
+    case attr::HLSLUnparsedSemantic:
+      return getDerived().TraverseHLSLUnparsedSemanticAttr(cast<HLSLUnparsedSemanticAttr>(A));
+    case attr::HLSLVkBinding:
+      return getDerived().TraverseHLSLVkBindingAttr(cast<HLSLVkBindingAttr>(A));
     case attr::HLSLVkConstantId:
       return getDerived().TraverseHLSLVkConstantIdAttr(cast<HLSLVkConstantIdAttr>(A));
     case attr::HLSLVkExtBuiltinInput:
@@ -6645,6 +6735,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseOMPDeclareTargetDeclAttr(cast<OMPDeclareTargetDeclAttr>(A));
     case attr::OMPDeclareVariant:
       return getDerived().TraverseOMPDeclareVariantAttr(cast<OMPDeclareVariantAttr>(A));
+    case attr::OMPGroupPrivateDecl:
+      return getDerived().TraverseOMPGroupPrivateDeclAttr(cast<OMPGroupPrivateDeclAttr>(A));
     case attr::OMPReferencedVar:
       return getDerived().TraverseOMPReferencedVarAttr(cast<OMPReferencedVarAttr>(A));
     case attr::OMPThreadPrivateDecl:
@@ -6837,6 +6929,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseRootSignatureAttr(cast<RootSignatureAttr>(A));
     case attr::SPtr:
       return getDerived().TraverseSPtrAttr(cast<SPtrAttr>(A));
+    case attr::SYCLExternal:
+      return getDerived().TraverseSYCLExternalAttr(cast<SYCLExternalAttr>(A));
     case attr::SYCLKernelEntryPoint:
       return getDerived().TraverseSYCLKernelEntryPointAttr(cast<SYCLKernelEntryPointAttr>(A));
     case attr::SYCLSpecialClass:
