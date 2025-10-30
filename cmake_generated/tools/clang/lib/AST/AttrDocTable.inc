@@ -356,6 +356,21 @@ An example of how to use ``alloc_size``
     assert(__builtin_object_size(a, 0) == 100);
   }
 
+When ``-Walloc-size`` is enabled, this attribute allows the compiler to
+diagnose cases when the allocated memory is insufficient for the size of the
+type the returned pointer is cast to.
+
+.. code-block:: c
+
+  void *my_malloc(int a) __attribute__((alloc_size(1)));
+  void consumer_func(int *);
+
+  int main() {
+    int *ptr = my_malloc(sizeof(int)); // no warning
+    int *w = my_malloc(1); // warning: allocation of insufficient size '1' for type 'int' with size '4'
+    consumer_func(my_malloc(1)); // warning: allocation of insufficient size '1' for type 'int' with size '4'
+  }
+
 .. Note:: This attribute works differently in clang than it does in GCC.
   Specifically, clang will only trace ``const`` pointers (as above); we give up
   on pointers that are not marked as ``const``. In the vast majority of cases,
@@ -1249,6 +1264,92 @@ only call one function.
 static const char AttrDoc_CFICanonicalJumpTable[] = R"reST(Use ``__attribute__((cfi_canonical_jump_table))`` on a function declaration to
 make the function's CFI jump table canonical. See :ref:`the CFI documentation
 <cfi-canonical-jump-tables>` for more details.)reST";
+
+static const char AttrDoc_CFISalt[] = R"reST(The ``cfi_salt`` attribute specifies a string literal that is used as a salt
+for Control-Flow Integrity (CFI) checks to distinguish between functions with
+the same type signature. This attribute can be applied to function declarations,
+function definitions, and function pointer typedefs.
+
+The attribute prevents function pointers from being replaced with pointers to
+functions that have a compatible type, which can be a CFI bypass vector.
+
+**Syntax:**
+
+* GNU-style: ``__attribute__((cfi_salt("<salt_string>")))``
+* C++11-style: ``[[clang::cfi_salt("<salt_string>")]]``
+
+**Usage:**
+
+The attribute takes a single string literal argument that serves as the salt.
+Functions or function types with different salt values will have different CFI
+hashes, even if they have identical type signatures.
+
+**Motivation:**
+
+In large codebases like the Linux kernel, there are often hundreds of functions
+with identical type signatures that are called indirectly:
+
+.. code-block::
+
+  1662 functions with void (*)(void)
+  1179 functions with int (*)(void)
+   ...
+
+By salting the CFI hashes, you can make CFI more robust by ensuring that
+functions intended for different purposes have distinct CFI identities.
+
+**Type Compatibility:**
+
+* Functions with different salt values are considered to have incompatible types
+* Function pointers with different salt values cannot be assigned to each other
+* All declarations of the same function must use the same salt value
+
+**Example:**
+
+.. code-block:: c
+
+  // Header file - define convenience macros
+  #define __cfi_salt(s) __attribute__((cfi_salt(s)))
+
+  // Typedef for regular function pointers
+  typedef int (*fptr_t)(void);
+
+  // Typedef for salted function pointers
+  typedef int (*fptr_salted_t)(void) __cfi_salt("pepper");
+
+  struct widget_ops {
+    fptr_t init;          // Regular CFI
+    fptr_salted_t exec;   // Salted CFI
+    fptr_t cleanup;       // Regular CFI
+  };
+
+  // Function implementations
+  static int widget_init(void) { return 0; }
+  static int widget_exec(void) __cfi_salt("pepper") { return 1; }
+  static int widget_cleanup(void) { return 0; }
+
+  static struct widget_ops ops = {
+    .init = widget_init,      // OK - compatible types
+    .exec = widget_exec,      // OK - both use "pepper" salt
+    .cleanup = widget_cleanup // OK - compatible types
+  };
+
+  // Using C++11 attribute syntax
+  void secure_callback(void) [[clang::cfi_salt("secure")]];
+
+  // This would cause a compilation error:
+  // fptr_t bad_ptr = widget_exec;  // Error: incompatible types
+
+**Notes:**
+
+* The salt string can contain non-NULL ASCII characters, including spaces and
+  quotes
+* This attribute only applies to function types; using it on non-function
+  types will generate a warning
+* All declarations and definitions of the same function must use identical
+  salt values
+* The attribute affects type compatibility during compilation and CFI hash
+  generation during code generation)reST";
 
 static const char AttrDoc_CFIUncheckedCallee[] = R"reST(``cfi_unchecked_callee`` is a function type attribute which prevents the compiler from instrumenting
 `Control Flow Integrity <https://clang.llvm.org/docs/ControlFlowIntegrity.html>`_ checks on indirect
@@ -3478,6 +3579,8 @@ Here's an example to declare a groupshared variable.
 
 The full documentation is available here: https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-variable-syntax#group-shared)reST";
 
+static const char AttrDoc_HLSLIsCounter[] = R"reST()reST";
+
 static const char AttrDoc_HLSLLoopHint[] = R"reST(The ``[loop]`` directive allows loop optimization hints to be
 specified for the subsequent loop. The directive allows unrolling to
 be disabled and is not compatible with [unroll(x)].
@@ -3622,6 +3725,29 @@ by shader target with the ``-T`` option like ``-Tps_6_1``. When compiling to a
 library target like ``lib_6_3``, the shader type attribute can help the
 compiler to identify the shader type. It is mostly used by Raytracing shaders
 where shaders must be compiled into a library and linked at runtime.)reST";
+
+static const char AttrDoc_HLSLUnparsedSemantic[] = R"reST()reST";
+
+static const char AttrDoc_HLSLVkBinding[] = R"reST(The ``[[vk::binding]]`` attribute allows you to explicitly specify the descriptor
+set and binding for a resource when targeting SPIR-V. This is particularly
+useful when you need different bindings for SPIR-V and DXIL, as the ``register``
+attribute can be used for DXIL-specific bindings.
+
+The attribute takes two integer arguments: the binding and the descriptor set.
+The descriptor set is optional and defaults to 0 if not provided.
+
+.. code-block:: c++
+
+  // A structured buffer with binding 23 in descriptor set 102.
+  [[vk::binding(23, 102)]] StructuredBuffer<float> Buf;
+
+  // A structured buffer with binding 14 in descriptor set 0.
+  [[vk::binding(14)]] StructuredBuffer<float> Buf2;
+
+  // A cbuffer with binding 1 in descriptor set 2.
+  [[vk::binding(1, 2)]] cbuffer MyCBuffer {
+    float4x4 worldViewProj;
+  };)reST";
 
 static const char AttrDoc_HLSLVkConstantId[] = R"reST(The ``vk::constant_id`` attribute specifies the id for a SPIR-V specialization
 constant. The attribute applies to const global scalar variables. The variable must be initialized with a C++11 constexpr.
@@ -5068,6 +5194,7 @@ instrumentations should not be applied.
 
 The attribute takes a list of string literals with the following accepted
 values:
+
 * all values accepted by ``-fno-sanitize=``;
 * ``coverage``, to disable SanitizerCoverage instrumentation.
 
@@ -5430,6 +5557,8 @@ declarations with the same name. The template parameters for the base functions
 are used to instantiate the specialization. If ``bind_to_declaration`` is given,
 apply the same variant rules to function declarations. This allows the user to
 override declarations with only a function declaration.)reST";
+
+static const char AttrDoc_OMPGroupPrivateDecl[] = R"reST()reST";
 
 static const char AttrDoc_OMPReferencedVar[] = R"reST()reST";
 
@@ -6528,7 +6657,7 @@ if omitted.``Section`` defaults  to the ``-fpatchable-function-entry`` section n
 set, or to ``__patchable_function_entries`` otherwise.
 
 This attribute is only supported on
-aarch64/aarch64-be/loongarch32/loongarch64/riscv32/riscv64/i386/x86-64/ppc/ppc64 targets.
+aarch64/aarch64-be/loongarch32/loongarch64/riscv32/riscv64/i386/x86-64/ppc/ppc64/ppc64le targets.
 For ppc/ppc64 targets, AIX is still not supported.)reST";
 
 static const char AttrDoc_Pcs[] = R"reST(On ARM targets, this attribute can be used to select calling conventions
@@ -6799,9 +6928,12 @@ the backend to generate appropriate function entry/exit code so that it can be
 used directly as an interrupt service routine.
 
 Permissible values for this parameter are ``machine``, ``supervisor``,
-``qci-nest``, ``qci-nonest``, ``SiFive-CLIC-preemptible``, and
+``rnmi``, ``qci-nest``, ``qci-nonest``, ``SiFive-CLIC-preemptible``, and
 ``SiFive-CLIC-stack-swap``. If there is no parameter, then it defaults to
 ``machine``.
+
+The ``rnmi`` value is used for resumable non-maskable interrupts. It requires the
+standard Smrnmi extension.
 
 The ``qci-nest`` and ``qci-nonest`` values require Qualcomm's Xqciint extension
 and are used for Machine-mode Interrupts and Machine-mode Non-maskable
@@ -7017,6 +7149,40 @@ https://learn.microsoft.com/en-us/windows/win32/direct3d12/root-signatures)reST"
 
 static const char AttrDoc_SPtr[] = R"reST(The ``__sptr`` qualifier specifies that a 32-bit pointer should be sign
 extended when converted to a 64-bit pointer.)reST";
+
+static const char AttrDoc_SYCLExternal[] = R"reST(The ``sycl_external`` attribute indicates that a function defined in another
+translation unit may be called by a device function defined in the current
+translation unit or, if defined in the current translation unit, the function
+may be called by device functions defined in other translation units.
+The attribute is intended for use in the implementation of the ``SYCL_EXTERNAL``
+macro as specified in section 5.10.1, "SYCL functions and member functions
+linkage", of the SYCL 2020 specification.
+
+The attribute only appertains to functions and only those that meet the
+following requirements:
+
+* Has external linkage
+* Is not explicitly defined as deleted (the function may be an explicitly
+  defaulted function that is defined as deleted)
+
+The attribute shall be present on the first declaration of a function and
+may optionally be present on subsequent declarations.
+
+When compiling for a SYCL device target that does not support the generic
+address space, the function shall not specify a raw pointer or reference type
+as the return type or as a parameter type.
+See section 5.10, "SYCL offline linking", of the SYCL 2020 specification.
+The following examples demonstrate the use of this attribute:
+
+.. code-block:: c++
+
+  [[clang::sycl_external]] void Foo(); // Ok.
+
+  [[clang::sycl_external]] void Bar() { /* ... */ } // Ok.
+
+  [[clang::sycl_external]] extern void Baz(); // Ok.
+
+  [[clang::sycl_external]] static void Quux() { /* ... */ } // error:  Quux() has internal linkage.)reST";
 
 static const char AttrDoc_SYCLKernelEntryPoint[] = R"reST(The ``sycl_kernel_entry_point`` attribute facilitates the generation of an
 offload kernel entry point, sometimes called a SYCL kernel caller function,

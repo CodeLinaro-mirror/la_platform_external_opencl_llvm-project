@@ -1850,8 +1850,6 @@ class CLANG_ABI AsmLabelAttr : public InheritableAttr {
 unsigned labelLength;
 char *label;
 
-bool isLiteralLabel;
-
 public:
   enum Spelling {
     Keyword_asm = 0,
@@ -1860,20 +1858,12 @@ public:
   };
 
   // Factory methods
-  static AsmLabelAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Label, bool IsLiteralLabel, const AttributeCommonInfo &CommonInfo);
-  static AsmLabelAttr *Create(ASTContext &Ctx, llvm::StringRef Label, bool IsLiteralLabel, const AttributeCommonInfo &CommonInfo);
-  static AsmLabelAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Label, bool IsLiteralLabel, SourceRange Range = {}, Spelling S = Keyword_asm);
-  static AsmLabelAttr *Create(ASTContext &Ctx, llvm::StringRef Label, bool IsLiteralLabel, SourceRange Range = {}, Spelling S = Keyword_asm);
   static AsmLabelAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Label, const AttributeCommonInfo &CommonInfo);
   static AsmLabelAttr *Create(ASTContext &Ctx, llvm::StringRef Label, const AttributeCommonInfo &CommonInfo);
   static AsmLabelAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Label, SourceRange Range = {}, Spelling S = Keyword_asm);
   static AsmLabelAttr *Create(ASTContext &Ctx, llvm::StringRef Label, SourceRange Range = {}, Spelling S = Keyword_asm);
 
   // Constructors
-  AsmLabelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , llvm::StringRef Label
-              , bool IsLiteralLabel
-             );
   AsmLabelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
               , llvm::StringRef Label
              );
@@ -1895,13 +1885,9 @@ public:
       std::memcpy(this->label, S.data(), labelLength);
   }
 
-  bool getIsLiteralLabel() const {
-    return isLiteralLabel;
-  }
-
 
 bool isEquivalent(AsmLabelAttr *Other) const {
-  return getLabel() == Other->getLabel() && getIsLiteralLabel() == Other->getIsLiteralLabel();
+  return getLabel() == Other->getLabel();
 }
 
 
@@ -2307,6 +2293,7 @@ static llvm::Triple::EnvironmentType getEnvironmentType(llvm::StringRef Environm
              .Case("callable", llvm::Triple::Callable)
              .Case("mesh", llvm::Triple::Mesh)
              .Case("amplification", llvm::Triple::Amplification)
+             .Case("rootsignature", llvm::Triple::RootSignature)
              .Case("library", llvm::Triple::Library)
              .Default(llvm::Triple::UnknownEnvironment);
 }
@@ -2860,6 +2847,52 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFICanonicalJumpTable; }
+};
+
+class CLANG_ABI CFISaltAttr : public TypeAttr {
+unsigned saltLength;
+char *salt;
+
+public:
+  enum Spelling {
+    GNU_cfi_salt = 0,
+    CXX11_clang_cfi_salt = 1,
+    C23_clang_cfi_salt = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static CFISaltAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Salt, const AttributeCommonInfo &CommonInfo);
+  static CFISaltAttr *Create(ASTContext &Ctx, llvm::StringRef Salt, const AttributeCommonInfo &CommonInfo);
+  static CFISaltAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Salt, SourceRange Range = {}, Spelling S = GNU_cfi_salt);
+  static CFISaltAttr *Create(ASTContext &Ctx, llvm::StringRef Salt, SourceRange Range = {}, Spelling S = GNU_cfi_salt);
+
+  // Constructors
+  CFISaltAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , llvm::StringRef Salt
+             );
+
+  CFISaltAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  llvm::StringRef getSalt() const {
+    return llvm::StringRef(salt, saltLength);
+  }
+  unsigned getSaltLength() const {
+    return saltLength;
+  }
+  void setSalt(ASTContext &C, llvm::StringRef S) {
+    saltLength = S.size();
+    this->salt = new (C, 1) char [saltLength];
+    if (!S.empty())
+      std::memcpy(this->salt, S.data(), saltLength);
+  }
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::CFISalt; }
 };
 
 class CLANG_ABI CFIUncheckedCalleeAttr : public TypeAttr {
@@ -4001,7 +4034,7 @@ public:
 };
 
 class CLANG_ABI ConstructorAttr : public InheritableAttr {
-int priority;
+Expr * priority;
 
 public:
   enum Spelling {
@@ -4013,14 +4046,14 @@ public:
   };
 
   // Factory methods
-  static ConstructorAttr *CreateImplicit(ASTContext &Ctx, int Priority, const AttributeCommonInfo &CommonInfo);
-  static ConstructorAttr *Create(ASTContext &Ctx, int Priority, const AttributeCommonInfo &CommonInfo);
-  static ConstructorAttr *CreateImplicit(ASTContext &Ctx, int Priority, SourceRange Range = {}, Spelling S = GNU_constructor);
-  static ConstructorAttr *Create(ASTContext &Ctx, int Priority, SourceRange Range = {}, Spelling S = GNU_constructor);
+  static ConstructorAttr *CreateImplicit(ASTContext &Ctx, Expr * Priority, const AttributeCommonInfo &CommonInfo);
+  static ConstructorAttr *Create(ASTContext &Ctx, Expr * Priority, const AttributeCommonInfo &CommonInfo);
+  static ConstructorAttr *CreateImplicit(ASTContext &Ctx, Expr * Priority, SourceRange Range = {}, Spelling S = GNU_constructor);
+  static ConstructorAttr *Create(ASTContext &Ctx, Expr * Priority, SourceRange Range = {}, Spelling S = GNU_constructor);
 
   // Constructors
   ConstructorAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , int Priority
+              , Expr * Priority
              );
   ConstructorAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              );
@@ -4029,13 +4062,13 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  int getPriority() const {
+  Expr * getPriority() const {
     return priority;
   }
 
-  static const int DefaultPriority = 65535;
 
-
+    static constexpr unsigned DefaultPriority = 65535;
+  
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Constructor; }
 };
@@ -4642,7 +4675,7 @@ public:
 };
 
 class CLANG_ABI DestructorAttr : public InheritableAttr {
-int priority;
+Expr * priority;
 
 public:
   enum Spelling {
@@ -4654,14 +4687,14 @@ public:
   };
 
   // Factory methods
-  static DestructorAttr *CreateImplicit(ASTContext &Ctx, int Priority, const AttributeCommonInfo &CommonInfo);
-  static DestructorAttr *Create(ASTContext &Ctx, int Priority, const AttributeCommonInfo &CommonInfo);
-  static DestructorAttr *CreateImplicit(ASTContext &Ctx, int Priority, SourceRange Range = {}, Spelling S = GNU_destructor);
-  static DestructorAttr *Create(ASTContext &Ctx, int Priority, SourceRange Range = {}, Spelling S = GNU_destructor);
+  static DestructorAttr *CreateImplicit(ASTContext &Ctx, Expr * Priority, const AttributeCommonInfo &CommonInfo);
+  static DestructorAttr *Create(ASTContext &Ctx, Expr * Priority, const AttributeCommonInfo &CommonInfo);
+  static DestructorAttr *CreateImplicit(ASTContext &Ctx, Expr * Priority, SourceRange Range = {}, Spelling S = GNU_destructor);
+  static DestructorAttr *Create(ASTContext &Ctx, Expr * Priority, SourceRange Range = {}, Spelling S = GNU_destructor);
 
   // Constructors
   DestructorAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , int Priority
+              , Expr * Priority
              );
   DestructorAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              );
@@ -4670,13 +4703,13 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  int getPriority() const {
+  Expr * getPriority() const {
     return priority;
   }
 
-  static const int DefaultPriority = 65535;
 
-
+    static constexpr unsigned int DefaultPriority = 65535;
+  
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Destructor; }
 };
@@ -5940,6 +5973,27 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLGroupSharedAddressSpace; }
 };
 
+class CLANG_ABI HLSLIsCounterAttr : public TypeAttr {
+public:
+  // Factory methods
+  static HLSLIsCounterAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static HLSLIsCounterAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static HLSLIsCounterAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLIsCounterAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  HLSLIsCounterAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  HLSLIsCounterAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLIsCounter; }
+};
+
 class CLANG_ABI HLSLLoopHintAttr : public StmtAttr {
 unsigned directive;
 
@@ -6237,6 +6291,7 @@ public:
         return SpaceNumber;
       }
       void setImplicitBindingOrderID(uint32_t Value) {
+        assert(!hasImplicitBindingOrderID() && "attribute already has implicit binding order id");
         ImplicitBindingOrderID = Value;
       }
       bool hasImplicitBindingOrderID() const {
@@ -6282,7 +6337,7 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLResourceClass; }
 };
 
-class CLANG_ABI HLSLSV_DispatchThreadIDAttr : public HLSLAnnotationAttr {
+class CLANG_ABI HLSLSV_DispatchThreadIDAttr : public HLSLSemanticAttr {
 public:
   // Factory methods
   static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
@@ -6303,7 +6358,7 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_DispatchThreadID; }
 };
 
-class CLANG_ABI HLSLSV_GroupIDAttr : public HLSLAnnotationAttr {
+class CLANG_ABI HLSLSV_GroupIDAttr : public HLSLSemanticAttr {
 public:
   // Factory methods
   static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
@@ -6324,7 +6379,7 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupID; }
 };
 
-class CLANG_ABI HLSLSV_GroupIndexAttr : public HLSLAnnotationAttr {
+class CLANG_ABI HLSLSV_GroupIndexAttr : public HLSLSemanticAttr {
 public:
   // Factory methods
   static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
@@ -6345,7 +6400,7 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupIndex; }
 };
 
-class CLANG_ABI HLSLSV_GroupThreadIDAttr : public HLSLAnnotationAttr {
+class CLANG_ABI HLSLSV_GroupThreadIDAttr : public HLSLSemanticAttr {
 public:
   // Factory methods
   static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
@@ -6366,7 +6421,7 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupThreadID; }
 };
 
-class CLANG_ABI HLSLSV_PositionAttr : public HLSLAnnotationAttr {
+class CLANG_ABI HLSLSV_PositionAttr : public HLSLSemanticAttr {
 public:
   // Factory methods
   static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
@@ -6420,6 +6475,85 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLShader; }
+};
+
+class CLANG_ABI HLSLUnparsedSemanticAttr : public HLSLAnnotationAttr {
+int index;
+
+bool explicitIndex;
+
+public:
+  // Factory methods
+  static HLSLUnparsedSemanticAttr *CreateImplicit(ASTContext &Ctx, int Index, bool ExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLUnparsedSemanticAttr *Create(ASTContext &Ctx, int Index, bool ExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLUnparsedSemanticAttr *CreateImplicit(ASTContext &Ctx, int Index, bool ExplicitIndex, SourceRange Range = {});
+  static HLSLUnparsedSemanticAttr *Create(ASTContext &Ctx, int Index, bool ExplicitIndex, SourceRange Range = {});
+
+  // Constructors
+  HLSLUnparsedSemanticAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Index
+              , bool ExplicitIndex
+             );
+  HLSLUnparsedSemanticAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  HLSLUnparsedSemanticAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  int getIndex() const {
+    return index;
+  }
+
+  static const int DefaultIndex = 0;
+
+  bool getExplicitIndex() const {
+    return explicitIndex;
+  }
+
+  static const bool DefaultExplicitIndex = false;
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLUnparsedSemantic; }
+};
+
+class CLANG_ABI HLSLVkBindingAttr : public InheritableAttr {
+int binding;
+
+int set;
+
+public:
+  // Factory methods
+  static HLSLVkBindingAttr *CreateImplicit(ASTContext &Ctx, int Binding, int Set, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkBindingAttr *Create(ASTContext &Ctx, int Binding, int Set, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkBindingAttr *CreateImplicit(ASTContext &Ctx, int Binding, int Set, SourceRange Range = {});
+  static HLSLVkBindingAttr *Create(ASTContext &Ctx, int Binding, int Set, SourceRange Range = {});
+
+  // Constructors
+  HLSLVkBindingAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Binding
+              , int Set
+             );
+  HLSLVkBindingAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Binding
+             );
+
+  HLSLVkBindingAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  int getBinding() const {
+    return binding;
+  }
+
+  int getSet() const {
+    return set;
+  }
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkBinding; }
 };
 
 class CLANG_ABI HLSLVkConstantIdAttr : public InheritableAttr {
@@ -9705,6 +9839,27 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPDeclareVariant; }
 };
 
+class CLANG_ABI OMPGroupPrivateDeclAttr : public InheritableAttr {
+public:
+  // Factory methods
+  static OMPGroupPrivateDeclAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static OMPGroupPrivateDeclAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static OMPGroupPrivateDeclAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static OMPGroupPrivateDeclAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  OMPGroupPrivateDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  OMPGroupPrivateDeclAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::OMPGroupPrivateDecl; }
+};
+
 class CLANG_ABI OMPReferencedVarAttr : public Attr {
 Expr * ref;
 
@@ -12163,6 +12318,7 @@ public:
   enum InterruptType {
     supervisor,
     machine,
+    rnmi,
     qcinest,
     qcinonest,
     SiFiveCLICPreemptible,
@@ -12920,29 +13076,42 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::SPtr; }
 };
 
+class CLANG_ABI SYCLExternalAttr : public InheritableAttr {
+public:
+  // Factory methods
+  static SYCLExternalAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static SYCLExternalAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static SYCLExternalAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static SYCLExternalAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  SYCLExternalAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  SYCLExternalAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::SYCLExternal; }
+};
+
 class CLANG_ABI SYCLKernelEntryPointAttr : public InheritableAttr {
 TypeSourceInfo * kernelName;
 
 bool invalid;
 
 public:
-  enum Spelling {
-    GNU_sycl_kernel_entry_point = 0,
-    CXX11_clang_sycl_kernel_entry_point = 1,
-    C23_clang_sycl_kernel_entry_point = 2,
-  SpellingNotCalculated = 15
-
-  };
-
   // Factory methods
   static SYCLKernelEntryPointAttr *CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, const AttributeCommonInfo &CommonInfo);
   static SYCLKernelEntryPointAttr *Create(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, const AttributeCommonInfo &CommonInfo);
-  static SYCLKernelEntryPointAttr *CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, SourceRange Range = {}, Spelling S = GNU_sycl_kernel_entry_point);
-  static SYCLKernelEntryPointAttr *Create(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, SourceRange Range = {}, Spelling S = GNU_sycl_kernel_entry_point);
+  static SYCLKernelEntryPointAttr *CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, SourceRange Range = {});
+  static SYCLKernelEntryPointAttr *Create(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, SourceRange Range = {});
   static SYCLKernelEntryPointAttr *CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, const AttributeCommonInfo &CommonInfo);
   static SYCLKernelEntryPointAttr *Create(ASTContext &Ctx, TypeSourceInfo * KernelName, const AttributeCommonInfo &CommonInfo);
-  static SYCLKernelEntryPointAttr *CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, SourceRange Range = {}, Spelling S = GNU_sycl_kernel_entry_point);
-  static SYCLKernelEntryPointAttr *Create(ASTContext &Ctx, TypeSourceInfo * KernelName, SourceRange Range = {}, Spelling S = GNU_sycl_kernel_entry_point);
+  static SYCLKernelEntryPointAttr *CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, SourceRange Range = {});
+  static SYCLKernelEntryPointAttr *Create(ASTContext &Ctx, TypeSourceInfo * KernelName, SourceRange Range = {});
 
   // Constructors
   SYCLKernelEntryPointAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
