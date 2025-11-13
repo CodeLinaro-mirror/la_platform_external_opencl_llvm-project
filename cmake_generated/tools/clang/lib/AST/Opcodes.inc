@@ -10756,6 +10756,323 @@ bool EvalEmitter::emitDecFixedPoint( bool A0, SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_DecBitfieldSint8,
+OP_DecBitfieldUint8,
+OP_DecBitfieldSint16,
+OP_DecBitfieldUint16,
+OP_DecBitfieldSint32,
+OP_DecBitfieldUint32,
+OP_DecBitfieldSint64,
+OP_DecBitfieldUint64,
+OP_DecBitfieldIntAP,
+OP_DecBitfieldIntAPS,
+OP_DecBitfieldBool,
+OP_DecBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_DecBitfieldSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecBitfieldFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_DecBitfieldSint8:
+  Text.Op = PrintName("DecBitfieldSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldUint8:
+  Text.Op = PrintName("DecBitfieldUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldSint16:
+  Text.Op = PrintName("DecBitfieldSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldUint16:
+  Text.Op = PrintName("DecBitfieldUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldSint32:
+  Text.Op = PrintName("DecBitfieldSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldUint32:
+  Text.Op = PrintName("DecBitfieldUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldSint64:
+  Text.Op = PrintName("DecBitfieldSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldUint64:
+  Text.Op = PrintName("DecBitfieldUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldIntAP:
+  Text.Op = PrintName("DecBitfieldIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldIntAPS:
+  Text.Op = PrintName("DecBitfieldIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldBool:
+  Text.Op = PrintName("DecBitfieldBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecBitfieldFixedPoint:
+  Text.Op = PrintName("DecBitfieldFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitDecBitfieldSint8( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldUint8( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldSint16( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldUint16( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldSint32( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldUint32( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldSint64( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldUint64( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldIntAP( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldIntAPS( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldBool( bool ,  uint32_t , SourceInfo);
+bool emitDecBitfieldFixedPoint( bool ,  uint32_t , SourceInfo);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitDecBitfield(PrimType, bool, uint32_t, SourceInfo I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitDecBitfield(PrimType T0,  bool A0,  uint32_t A1, SourceInfo I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitDecBitfieldSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitDecBitfieldUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitDecBitfieldSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitDecBitfieldUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitDecBitfieldSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitDecBitfieldUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitDecBitfieldSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitDecBitfieldUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitDecBitfieldIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitDecBitfieldIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitDecBitfieldBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitDecBitfieldFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitDecBitfield");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitDecBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecBitfieldFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitDecBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecBitfield<PT_FixedPoint>(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_DecPopSint8,
 OP_DecPopUint8,
 OP_DecPopSint16,
@@ -11046,6 +11363,323 @@ bool EvalEmitter::emitDecPopFixedPoint( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return DecPop<PT_FixedPoint>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_DecPopBitfieldSint8,
+OP_DecPopBitfieldUint8,
+OP_DecPopBitfieldSint16,
+OP_DecPopBitfieldUint16,
+OP_DecPopBitfieldSint32,
+OP_DecPopBitfieldUint32,
+OP_DecPopBitfieldSint64,
+OP_DecPopBitfieldUint64,
+OP_DecPopBitfieldIntAP,
+OP_DecPopBitfieldIntAPS,
+OP_DecPopBitfieldBool,
+OP_DecPopBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_DecPopBitfieldSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_DecPopBitfieldFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!DecPopBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_DecPopBitfieldSint8:
+  Text.Op = PrintName("DecPopBitfieldSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldUint8:
+  Text.Op = PrintName("DecPopBitfieldUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldSint16:
+  Text.Op = PrintName("DecPopBitfieldSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldUint16:
+  Text.Op = PrintName("DecPopBitfieldUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldSint32:
+  Text.Op = PrintName("DecPopBitfieldSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldUint32:
+  Text.Op = PrintName("DecPopBitfieldUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldSint64:
+  Text.Op = PrintName("DecPopBitfieldSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldUint64:
+  Text.Op = PrintName("DecPopBitfieldUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldIntAP:
+  Text.Op = PrintName("DecPopBitfieldIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldIntAPS:
+  Text.Op = PrintName("DecPopBitfieldIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldBool:
+  Text.Op = PrintName("DecPopBitfieldBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_DecPopBitfieldFixedPoint:
+  Text.Op = PrintName("DecPopBitfieldFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitDecPopBitfieldSint8( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldUint8( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldSint16( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldUint16( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldSint32( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldUint32( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldSint64( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldUint64( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldIntAP( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldIntAPS( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldBool( bool ,  uint32_t , SourceInfo);
+bool emitDecPopBitfieldFixedPoint( bool ,  uint32_t , SourceInfo);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitDecPopBitfield(PrimType, bool, uint32_t, SourceInfo I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitDecPopBitfield(PrimType T0,  bool A0,  uint32_t A1, SourceInfo I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitDecPopBitfieldSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitDecPopBitfieldUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitDecPopBitfieldSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitDecPopBitfieldUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitDecPopBitfieldSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitDecPopBitfieldUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitDecPopBitfieldSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitDecPopBitfieldUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitDecPopBitfieldIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitDecPopBitfieldIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitDecPopBitfieldBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitDecPopBitfieldFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitDecPopBitfield");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitDecPopBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitDecPopBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_DecPopBitfieldFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitDecPopBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitDecPopBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return DecPopBitfield<PT_FixedPoint>(S, OpPC, A0, A1);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -21802,6 +22436,323 @@ bool EvalEmitter::emitIncFixedPoint( bool A0, SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_IncBitfieldSint8,
+OP_IncBitfieldUint8,
+OP_IncBitfieldSint16,
+OP_IncBitfieldUint16,
+OP_IncBitfieldSint32,
+OP_IncBitfieldUint32,
+OP_IncBitfieldSint64,
+OP_IncBitfieldUint64,
+OP_IncBitfieldIntAP,
+OP_IncBitfieldIntAPS,
+OP_IncBitfieldBool,
+OP_IncBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_IncBitfieldSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncBitfieldFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_IncBitfieldSint8:
+  Text.Op = PrintName("IncBitfieldSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldUint8:
+  Text.Op = PrintName("IncBitfieldUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldSint16:
+  Text.Op = PrintName("IncBitfieldSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldUint16:
+  Text.Op = PrintName("IncBitfieldUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldSint32:
+  Text.Op = PrintName("IncBitfieldSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldUint32:
+  Text.Op = PrintName("IncBitfieldUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldSint64:
+  Text.Op = PrintName("IncBitfieldSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldUint64:
+  Text.Op = PrintName("IncBitfieldUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldIntAP:
+  Text.Op = PrintName("IncBitfieldIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldIntAPS:
+  Text.Op = PrintName("IncBitfieldIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldBool:
+  Text.Op = PrintName("IncBitfieldBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncBitfieldFixedPoint:
+  Text.Op = PrintName("IncBitfieldFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitIncBitfieldSint8( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldUint8( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldSint16( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldUint16( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldSint32( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldUint32( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldSint64( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldUint64( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldIntAP( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldIntAPS( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldBool( bool ,  uint32_t , SourceInfo);
+bool emitIncBitfieldFixedPoint( bool ,  uint32_t , SourceInfo);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitIncBitfield(PrimType, bool, uint32_t, SourceInfo I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitIncBitfield(PrimType T0,  bool A0,  uint32_t A1, SourceInfo I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitIncBitfieldSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitIncBitfieldUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitIncBitfieldSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitIncBitfieldUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitIncBitfieldSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitIncBitfieldUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitIncBitfieldSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitIncBitfieldUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitIncBitfieldIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitIncBitfieldIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitIncBitfieldBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitIncBitfieldFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitIncBitfield");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitIncBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncBitfieldFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitIncBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncBitfield<PT_FixedPoint>(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_IncPopSint8,
 OP_IncPopUint8,
 OP_IncPopSint16,
@@ -22092,6 +23043,323 @@ bool EvalEmitter::emitIncPopFixedPoint( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return IncPop<PT_FixedPoint>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_IncPopBitfieldSint8,
+OP_IncPopBitfieldUint8,
+OP_IncPopBitfieldSint16,
+OP_IncPopBitfieldUint16,
+OP_IncPopBitfieldSint32,
+OP_IncPopBitfieldUint32,
+OP_IncPopBitfieldSint64,
+OP_IncPopBitfieldUint64,
+OP_IncPopBitfieldIntAP,
+OP_IncPopBitfieldIntAPS,
+OP_IncPopBitfieldBool,
+OP_IncPopBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_IncPopBitfieldSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_IncPopBitfieldFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!IncPopBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_IncPopBitfieldSint8:
+  Text.Op = PrintName("IncPopBitfieldSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldUint8:
+  Text.Op = PrintName("IncPopBitfieldUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldSint16:
+  Text.Op = PrintName("IncPopBitfieldSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldUint16:
+  Text.Op = PrintName("IncPopBitfieldUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldSint32:
+  Text.Op = PrintName("IncPopBitfieldSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldUint32:
+  Text.Op = PrintName("IncPopBitfieldUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldSint64:
+  Text.Op = PrintName("IncPopBitfieldSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldUint64:
+  Text.Op = PrintName("IncPopBitfieldUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldIntAP:
+  Text.Op = PrintName("IncPopBitfieldIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldIntAPS:
+  Text.Op = PrintName("IncPopBitfieldIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldBool:
+  Text.Op = PrintName("IncPopBitfieldBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_IncPopBitfieldFixedPoint:
+  Text.Op = PrintName("IncPopBitfieldFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitIncPopBitfieldSint8( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldUint8( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldSint16( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldUint16( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldSint32( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldUint32( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldSint64( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldUint64( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldIntAP( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldIntAPS( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldBool( bool ,  uint32_t , SourceInfo);
+bool emitIncPopBitfieldFixedPoint( bool ,  uint32_t , SourceInfo);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitIncPopBitfield(PrimType, bool, uint32_t, SourceInfo I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitIncPopBitfield(PrimType T0,  bool A0,  uint32_t A1, SourceInfo I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitIncPopBitfieldSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitIncPopBitfieldUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitIncPopBitfieldSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitIncPopBitfieldUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitIncPopBitfieldSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitIncPopBitfieldUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitIncPopBitfieldSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitIncPopBitfieldUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitIncPopBitfieldIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitIncPopBitfieldIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitIncPopBitfieldBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitIncPopBitfieldFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitIncPopBitfield");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitIncPopBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitIncPopBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_IncPopBitfieldFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitIncPopBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitIncPopBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return IncPopBitfield<PT_FixedPoint>(S, OpPC, A0, A1);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -30885,6 +32153,323 @@ bool EvalEmitter::emitPreDecFixedPoint( bool A0, SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_PreDecBitfieldSint8,
+OP_PreDecBitfieldUint8,
+OP_PreDecBitfieldSint16,
+OP_PreDecBitfieldUint16,
+OP_PreDecBitfieldSint32,
+OP_PreDecBitfieldUint32,
+OP_PreDecBitfieldSint64,
+OP_PreDecBitfieldUint64,
+OP_PreDecBitfieldIntAP,
+OP_PreDecBitfieldIntAPS,
+OP_PreDecBitfieldBool,
+OP_PreDecBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_PreDecBitfieldSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreDecBitfieldFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreDecBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PreDecBitfieldSint8:
+  Text.Op = PrintName("PreDecBitfieldSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldUint8:
+  Text.Op = PrintName("PreDecBitfieldUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldSint16:
+  Text.Op = PrintName("PreDecBitfieldSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldUint16:
+  Text.Op = PrintName("PreDecBitfieldUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldSint32:
+  Text.Op = PrintName("PreDecBitfieldSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldUint32:
+  Text.Op = PrintName("PreDecBitfieldUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldSint64:
+  Text.Op = PrintName("PreDecBitfieldSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldUint64:
+  Text.Op = PrintName("PreDecBitfieldUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldIntAP:
+  Text.Op = PrintName("PreDecBitfieldIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldIntAPS:
+  Text.Op = PrintName("PreDecBitfieldIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldBool:
+  Text.Op = PrintName("PreDecBitfieldBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreDecBitfieldFixedPoint:
+  Text.Op = PrintName("PreDecBitfieldFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPreDecBitfieldSint8( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldUint8( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldSint16( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldUint16( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldSint32( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldUint32( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldSint64( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldUint64( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldIntAP( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldIntAPS( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldBool( bool ,  uint32_t , SourceInfo);
+bool emitPreDecBitfieldFixedPoint( bool ,  uint32_t , SourceInfo);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitPreDecBitfield(PrimType, bool, uint32_t, SourceInfo I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitPreDecBitfield(PrimType T0,  bool A0,  uint32_t A1, SourceInfo I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitPreDecBitfieldSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitPreDecBitfieldUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitPreDecBitfieldSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitPreDecBitfieldUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitPreDecBitfieldSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitPreDecBitfieldUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitPreDecBitfieldSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitPreDecBitfieldUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitPreDecBitfieldIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitPreDecBitfieldIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitPreDecBitfieldBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitPreDecBitfieldFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitPreDecBitfield");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPreDecBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreDecBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreDecBitfieldFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPreDecBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreDecBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreDecBitfield<PT_FixedPoint>(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_PreIncSint8,
 OP_PreIncUint8,
 OP_PreIncSint16,
@@ -31175,6 +32760,323 @@ bool EvalEmitter::emitPreIncFixedPoint( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return PreInc<PT_FixedPoint>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_PreIncBitfieldSint8,
+OP_PreIncBitfieldUint8,
+OP_PreIncBitfieldSint16,
+OP_PreIncBitfieldUint16,
+OP_PreIncBitfieldSint32,
+OP_PreIncBitfieldUint32,
+OP_PreIncBitfieldSint64,
+OP_PreIncBitfieldUint64,
+OP_PreIncBitfieldIntAP,
+OP_PreIncBitfieldIntAPS,
+OP_PreIncBitfieldBool,
+OP_PreIncBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERP
+case OP_PreIncBitfieldSint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Sint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldUint8: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Uint8>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldSint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Sint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldUint16: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Uint16>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldSint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Sint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldUint32: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Uint32>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldSint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Sint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldUint64: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Uint64>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldIntAP: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_IntAP>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldIntAPS: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldBool: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_Bool>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+case OP_PreIncBitfieldFixedPoint: {
+  const auto V0 = ReadArg<bool>(S, PC);
+  const auto V1 = ReadArg<uint32_t>(S, PC);
+  if (!PreIncBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PreIncBitfieldSint8:
+  Text.Op = PrintName("PreIncBitfieldSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldUint8:
+  Text.Op = PrintName("PreIncBitfieldUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldSint16:
+  Text.Op = PrintName("PreIncBitfieldSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldUint16:
+  Text.Op = PrintName("PreIncBitfieldUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldSint32:
+  Text.Op = PrintName("PreIncBitfieldSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldUint32:
+  Text.Op = PrintName("PreIncBitfieldUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldSint64:
+  Text.Op = PrintName("PreIncBitfieldSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldUint64:
+  Text.Op = PrintName("PreIncBitfieldUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldIntAP:
+  Text.Op = PrintName("PreIncBitfieldIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldIntAPS:
+  Text.Op = PrintName("PreIncBitfieldIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldBool:
+  Text.Op = PrintName("PreIncBitfieldBool");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+case OP_PreIncBitfieldFixedPoint:
+  Text.Op = PrintName("PreIncBitfieldFixedPoint");
+  Text.Args.push_back(printArg<bool>(P, PC));
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPreIncBitfieldSint8( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldUint8( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldSint16( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldUint16( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldSint32( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldUint32( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldSint64( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldUint64( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldIntAP( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldIntAPS( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldBool( bool ,  uint32_t , SourceInfo);
+bool emitPreIncBitfieldFixedPoint( bool ,  uint32_t , SourceInfo);
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+[[nodiscard]] bool emitPreIncBitfield(PrimType, bool, uint32_t, SourceInfo I);
+#endif
+#if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
+bool
+#if defined(GET_EVAL_IMPL)
+EvalEmitter
+#else
+ByteCodeEmitter
+#endif
+::emitPreIncBitfield(PrimType T0,  bool A0,  uint32_t A1, SourceInfo I) {
+  switch (T0) {
+  case PT_Sint8:
+    return emitPreIncBitfieldSint8(A0, A1, I);
+  case PT_Uint8:
+    return emitPreIncBitfieldUint8(A0, A1, I);
+  case PT_Sint16:
+    return emitPreIncBitfieldSint16(A0, A1, I);
+  case PT_Uint16:
+    return emitPreIncBitfieldUint16(A0, A1, I);
+  case PT_Sint32:
+    return emitPreIncBitfieldSint32(A0, A1, I);
+  case PT_Uint32:
+    return emitPreIncBitfieldUint32(A0, A1, I);
+  case PT_Sint64:
+    return emitPreIncBitfieldSint64(A0, A1, I);
+  case PT_Uint64:
+    return emitPreIncBitfieldUint64(A0, A1, I);
+  case PT_IntAP:
+    return emitPreIncBitfieldIntAP(A0, A1, I);
+  case PT_IntAPS:
+    return emitPreIncBitfieldIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitPreIncBitfieldBool(A0, A1, I);
+  case PT_FixedPoint:
+    return emitPreIncBitfieldFixedPoint(A0, A1, I);
+  default: llvm_unreachable("invalid type: emitPreIncBitfield");
+  }
+  llvm_unreachable("invalid enum value");
+}
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPreIncBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldSint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldUint8, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldSint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldUint16, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldSint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldUint32, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldSint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldUint64, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldIntAP, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldBool, A0, A1, L);
+}
+bool ByteCodeEmitter::emitPreIncBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  return emitOp<bool, uint32_t>(OP_PreIncBitfieldFixedPoint, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPreIncBitfieldSint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Sint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldUint8( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Uint8>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldSint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Sint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldUint16( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Uint16>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldSint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Sint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldUint32( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Uint32>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldSint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Sint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldUint64( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Uint64>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldIntAP( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_IntAP>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldIntAPS( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_IntAPS>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldBool( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_Bool>(S, OpPC, A0, A1);
+}
+bool EvalEmitter::emitPreIncBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PreIncBitfield<PT_FixedPoint>(S, OpPC, A0, A1);
 }
 #endif
 #ifdef GET_OPCODE_NAMES

@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum HEXAGONIntrinsics : unsigned {
 // Enum values for intrinsics.
-    hexagon_A2_abs = 4181,                            // llvm.hexagon.A2.abs (IntrinsicsHexagonDep.td:1063)
+    hexagon_A2_abs = 4193,                            // llvm.hexagon.A2.abs (IntrinsicsHexagonDep.td:1063)
     hexagon_A2_absp,                           // llvm.hexagon.A2.absp (IntrinsicsHexagonDep.td:1066)
     hexagon_A2_abssat,                         // llvm.hexagon.A2.abssat (IntrinsicsHexagonDep.td:1069)
     hexagon_A2_add,                            // llvm.hexagon.A2.add (IntrinsicsHexagonDep.td:1072)
@@ -1438,6 +1438,8 @@ enum HEXAGONIntrinsics : unsigned {
     hexagon_V6_vfneg_hf_128B,                  // llvm.hexagon.V6.vfneg.hf.128B (IntrinsicsHexagonDep.td:6371)
     hexagon_V6_vfneg_sf,                       // llvm.hexagon.V6.vfneg.sf (IntrinsicsHexagonDep.td:6374)
     hexagon_V6_vfneg_sf_128B,                  // llvm.hexagon.V6.vfneg.sf.128B (IntrinsicsHexagonDep.td:6377)
+    hexagon_V6_vgather_vscattermh,             // llvm.hexagon.V6.vgather.vscattermh (IntrinsicsHexagon.td:457)
+    hexagon_V6_vgather_vscattermh_128B,        // llvm.hexagon.V6.vgather.vscattermh.128B (IntrinsicsHexagon.td:460)
     hexagon_V6_vgathermh,                      // llvm.hexagon.V6.vgathermh (IntrinsicsHexagonDep.td:5950)
     hexagon_V6_vgathermh_128B,                 // llvm.hexagon.V6.vgathermh.128B (IntrinsicsHexagonDep.td:5953)
     hexagon_V6_vgathermhq,                     // llvm.hexagon.V6.vgathermhq (IntrinsicsHexagonDep.td:5956)
@@ -1926,6 +1928,8 @@ enum HEXAGONIntrinsics : unsigned {
     hexagon_V6_vsub_hf_f8_128B,                // llvm.hexagon.V6.vsub.hf.f8.128B (IntrinsicsHexagonDep.td:6833)
     hexagon_V6_vsub_hf_hf,                     // llvm.hexagon.V6.vsub.hf.hf (IntrinsicsHexagonDep.td:6536)
     hexagon_V6_vsub_hf_hf_128B,                // llvm.hexagon.V6.vsub.hf.hf.128B (IntrinsicsHexagonDep.td:6539)
+    hexagon_V6_vsub_hf_mix,                    // llvm.hexagon.V6.vsub.hf.mix (IntrinsicsHexagonDep.td:6838)
+    hexagon_V6_vsub_hf_mix_128B,               // llvm.hexagon.V6.vsub.hf.mix.128B (IntrinsicsHexagonDep.td:6841)
     hexagon_V6_vsub_qf16,                      // llvm.hexagon.V6.vsub.qf16 (IntrinsicsHexagonDep.td:6542)
     hexagon_V6_vsub_qf16_128B,                 // llvm.hexagon.V6.vsub.qf16.128B (IntrinsicsHexagonDep.td:6545)
     hexagon_V6_vsub_qf16_mix,                  // llvm.hexagon.V6.vsub.qf16.mix (IntrinsicsHexagonDep.td:6548)
@@ -1940,6 +1944,8 @@ enum HEXAGONIntrinsics : unsigned {
     hexagon_V6_vsub_sf_bf_128B,                // llvm.hexagon.V6.vsub.sf.bf.128B (IntrinsicsHexagonDep.td:6705)
     hexagon_V6_vsub_sf_hf,                     // llvm.hexagon.V6.vsub.sf.hf (IntrinsicsHexagonDep.td:6572)
     hexagon_V6_vsub_sf_hf_128B,                // llvm.hexagon.V6.vsub.sf.hf.128B (IntrinsicsHexagonDep.td:6575)
+    hexagon_V6_vsub_sf_mix,                    // llvm.hexagon.V6.vsub.sf.mix (IntrinsicsHexagonDep.td:6844)
+    hexagon_V6_vsub_sf_mix_128B,               // llvm.hexagon.V6.vsub.sf.mix.128B (IntrinsicsHexagonDep.td:6847)
     hexagon_V6_vsub_sf_sf,                     // llvm.hexagon.V6.vsub.sf.sf (IntrinsicsHexagonDep.td:6578)
     hexagon_V6_vsub_sf_sf_128B,                // llvm.hexagon.V6.vsub.sf.sf.128B (IntrinsicsHexagonDep.td:6581)
     hexagon_V6_vsubb,                          // llvm.hexagon.V6.vsubb (IntrinsicsHexagonDep.td:5358)

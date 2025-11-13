@@ -84,6 +84,32 @@
   BI__builtin_rvv_sf_vfnrclip_xu_f_qf_tum,
   BI__builtin_rvv_sf_vfnrclip_xu_f_qf_tumu,
   BI__builtin_rvv_sf_vfnrclip_xu_f_qf_mu,
+  BI__builtin_rvv_sf_vlte8,
+  BI__builtin_rvv_sf_vtmv_v_t,
+  BI__builtin_rvv_sf_vtzero_t,
+  BI__builtin_rvv_sf_vtdiscard,
+  BI__builtin_rvv_sf_vtmv_t_v,
+  BI__builtin_rvv_sf_vlte16,
+  BI__builtin_rvv_sf_vlte32,
+  BI__builtin_rvv_sf_vlte64,
+  BI__builtin_rvv_sf_vste8,
+  BI__builtin_rvv_sf_vste16,
+  BI__builtin_rvv_sf_vste32,
+  BI__builtin_rvv_sf_vste64,
+  BI__builtin_rvv_sf_mm_u_u_w4,
+  BI__builtin_rvv_sf_mm_s_u_w4,
+  BI__builtin_rvv_sf_mm_u_s_w4,
+  BI__builtin_rvv_sf_mm_s_s_w4,
+  BI__builtin_rvv_sf_mm_f_f_w2,
+  BI__builtin_rvv_sf_mm_f_f_w1,
+  BI__builtin_rvv_sf_mm_e5m2_e5m2_w4,
+  BI__builtin_rvv_sf_mm_e5m2_e4m3_w4,
+  BI__builtin_rvv_sf_mm_e4m3_e5m2_w4,
+  BI__builtin_rvv_sf_mm_e4m3_e4m3_w4,
+  BI__builtin_rvv_sf_vsettk,
+  BI__builtin_rvv_sf_vsettm,
+  BI__builtin_rvv_sf_vsettn,
+  BI__builtin_rvv_sf_vsettnt,
 #endif // GET_RISCVV_BUILTIN_ENUMERATORS
 
 // RISCV Vector builtin enumerators
@@ -181,6 +207,32 @@ static constexpr char BuiltinStringsStorage[] =
   "sf_vfnrclip_xu_f_qf_tum\0"
   "sf_vfnrclip_xu_f_qf_tumu\0"
   "sf_vfnrclip_xu_f_qf_mu\0"
+  "sf_vlte8\0"
+  "sf_vtmv_v_t\0"
+  "sf_vtzero_t\0"
+  "sf_vtdiscard\0"
+  "sf_vtmv_t_v\0"
+  "sf_vlte16\0"
+  "sf_vlte32\0"
+  "sf_vlte64\0"
+  "sf_vste8\0"
+  "sf_vste16\0"
+  "sf_vste32\0"
+  "sf_vste64\0"
+  "sf_mm_u_u_w4\0"
+  "sf_mm_s_u_w4\0"
+  "sf_mm_u_s_w4\0"
+  "sf_mm_s_s_w4\0"
+  "sf_mm_f_f_w2\0"
+  "sf_mm_f_f_w1\0"
+  "sf_mm_e5m2_e5m2_w4\0"
+  "sf_mm_e5m2_e4m3_w4\0"
+  "sf_mm_e4m3_e5m2_w4\0"
+  "sf_mm_e4m3_e4m3_w4\0"
+  "sf_vsettk\0"
+  "sf_vsettm\0"
+  "sf_vsettn\0"
+  "sf_vsettnt\0"
   ;
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -276,5 +328,31 @@ BuiltinStrings = BuiltinStringsStorage;
     Builtin::Info{Builtin::Info::StrOffsets{1383 /* sf_vfnrclip_xu_f_qf_tum */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
     Builtin::Info{Builtin::Info::StrOffsets{1407 /* sf_vfnrclip_xu_f_qf_tumu */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
     Builtin::Info{Builtin::Info::StrOffsets{1432 /* sf_vfnrclip_xu_f_qf_mu */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1455 /* sf_vlte8 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1464 /* sf_vtmv_v_t */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1476 /* sf_vtzero_t */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1488 /* sf_vtdiscard */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1501 /* sf_vtmv_t_v */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1513 /* sf_vlte16 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1523 /* sf_vlte32 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1533 /* sf_vlte64 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1543 /* sf_vste8 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1552 /* sf_vste16 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1562 /* sf_vste32 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1572 /* sf_vste64 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1582 /* sf_mm_u_u_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1595 /* sf_mm_s_u_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1608 /* sf_mm_u_s_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1621 /* sf_mm_s_s_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1634 /* sf_mm_f_f_w2 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1647 /* sf_mm_f_f_w1 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1660 /* sf_mm_e5m2_e5m2_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1679 /* sf_mm_e5m2_e4m3_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1698 /* sf_mm_e4m3_e5m2_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1717 /* sf_mm_e4m3_e4m3_w4 */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1736 /* sf_vsettk */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1746 /* sf_vsettm */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1756 /* sf_vsettn */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
+    Builtin::Info{Builtin::Info::StrOffsets{1766 /* sf_vsettnt */, 0, 1 /* n */, 3 /* zve32x */}, HeaderDesc::NO_HEADER, ALL_LANGUAGES},
 #endif // GET_RISCVV_BUILTIN_INFOS
 

@@ -313,6 +313,10 @@
   bool VisitCPUSpecificAttr(CPUSpecificAttr *A) {
     return true; 
   }
+  bool TraverseCUDAClusterDimsAttr(CUDAClusterDimsAttr *A);
+  bool VisitCUDAClusterDimsAttr(CUDAClusterDimsAttr *A) {
+    return true; 
+  }
   bool TraverseCUDAConstantAttr(CUDAConstantAttr *A);
   bool VisitCUDAConstantAttr(CUDAConstantAttr *A) {
     return true; 
@@ -347,6 +351,10 @@
   }
   bool TraverseCUDALaunchBoundsAttr(CUDALaunchBoundsAttr *A);
   bool VisitCUDALaunchBoundsAttr(CUDALaunchBoundsAttr *A) {
+    return true; 
+  }
+  bool TraverseCUDANoClusterAttr(CUDANoClusterAttr *A);
+  bool VisitCUDANoClusterAttr(CUDANoClusterAttr *A) {
     return true; 
   }
   bool TraverseCUDASharedAttr(CUDASharedAttr *A);
@@ -1463,6 +1471,10 @@
   }
   bool TraverseSYCLExternalAttr(SYCLExternalAttr *A);
   bool VisitSYCLExternalAttr(SYCLExternalAttr *A) {
+    return true; 
+  }
+  bool TraverseSYCLKernelAttr(SYCLKernelAttr *A);
+  bool VisitSYCLKernelAttr(SYCLKernelAttr *A) {
     return true; 
   }
   bool TraverseSYCLKernelEntryPointAttr(SYCLKernelEntryPointAttr *A);
@@ -2616,6 +2628,21 @@ bool VISITORCLASS<Derived>::TraverseCPUSpecificAttr(CPUSpecificAttr *A) {
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseCUDAClusterDimsAttr(CUDAClusterDimsAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitCUDAClusterDimsAttr(A))
+    return false;
+  if (!getDerived().TraverseStmt(A->getX()))
+    return false;
+  if (!getDerived().TraverseStmt(A->getY()))
+    return false;
+  if (!getDerived().TraverseStmt(A->getZ()))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseCUDAConstantAttr(CUDAConstantAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -2698,6 +2725,15 @@ bool VISITORCLASS<Derived>::TraverseCUDALaunchBoundsAttr(CUDALaunchBoundsAttr *A
   if (!getDerived().TraverseStmt(A->getMinBlocks()))
     return false;
   if (!getDerived().TraverseStmt(A->getMaxBlocks()))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseCUDANoClusterAttr(CUDANoClusterAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitCUDANoClusterAttr(A))
     return false;
   return true;
 }
@@ -5396,6 +5432,15 @@ bool VISITORCLASS<Derived>::TraverseSYCLExternalAttr(SYCLExternalAttr *A) {
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseSYCLKernelAttr(SYCLKernelAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitSYCLKernelAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseSYCLKernelEntryPointAttr(SYCLKernelEntryPointAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -6355,6 +6400,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseCPUDispatchAttr(cast<CPUDispatchAttr>(A));
     case attr::CPUSpecific:
       return getDerived().TraverseCPUSpecificAttr(cast<CPUSpecificAttr>(A));
+    case attr::CUDAClusterDims:
+      return getDerived().TraverseCUDAClusterDimsAttr(cast<CUDAClusterDimsAttr>(A));
     case attr::CUDAConstant:
       return getDerived().TraverseCUDAConstantAttr(cast<CUDAConstantAttr>(A));
     case attr::CUDADevice:
@@ -6373,6 +6420,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseCUDAInvalidTargetAttr(cast<CUDAInvalidTargetAttr>(A));
     case attr::CUDALaunchBounds:
       return getDerived().TraverseCUDALaunchBoundsAttr(cast<CUDALaunchBoundsAttr>(A));
+    case attr::CUDANoCluster:
+      return getDerived().TraverseCUDANoClusterAttr(cast<CUDANoClusterAttr>(A));
     case attr::CUDAShared:
       return getDerived().TraverseCUDASharedAttr(cast<CUDASharedAttr>(A));
     case attr::CXX11NoReturn:
@@ -6931,6 +6980,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseSPtrAttr(cast<SPtrAttr>(A));
     case attr::SYCLExternal:
       return getDerived().TraverseSYCLExternalAttr(cast<SYCLExternalAttr>(A));
+    case attr::SYCLKernel:
+      return getDerived().TraverseSYCLKernelAttr(cast<SYCLKernelAttr>(A));
     case attr::SYCLKernelEntryPoint:
       return getDerived().TraverseSYCLKernelEntryPointAttr(cast<SYCLKernelEntryPointAttr>(A));
     case attr::SYCLSpecialClass:

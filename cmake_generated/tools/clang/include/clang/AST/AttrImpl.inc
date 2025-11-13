@@ -9220,6 +9220,117 @@ const char *CPUSpecificAttr::getSpelling() const {
 }
 
 
+// CUDAClusterDimsAttr implementation
+
+CUDAClusterDimsAttr *CUDAClusterDimsAttr::CreateImplicit(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) CUDAClusterDimsAttr(Ctx, CommonInfo, X, Y, Z);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+CUDAClusterDimsAttr *CUDAClusterDimsAttr::Create(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) CUDAClusterDimsAttr(Ctx, CommonInfo, X, Y, Z);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+CUDAClusterDimsAttr *CUDAClusterDimsAttr::CreateImplicit(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return CreateImplicit(Ctx, X, Y, Z, I);
+}
+
+CUDAClusterDimsAttr *CUDAClusterDimsAttr::Create(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return Create(Ctx, X, Y, Z, I);
+}
+
+CUDAClusterDimsAttr::CUDAClusterDimsAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , Expr * X
+              , Expr * Y
+              , Expr * Z
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::CUDAClusterDims, /*IsLateParsed=*/false, false)
+              , x(X)
+              , y(Y)
+              , z(Z)
+  {
+}
+
+CUDAClusterDimsAttr::CUDAClusterDimsAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , Expr * X
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::CUDAClusterDims, /*IsLateParsed=*/false, false)
+              , x(X)
+              , y()
+              , z()
+  {
+}
+
+
+
+
+
+
+
+CUDAClusterDimsAttr *CUDAClusterDimsAttr::clone(ASTContext &C) const {
+  auto *A = new (C) CUDAClusterDimsAttr(C, *this, x, y, z);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void CUDAClusterDimsAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((cluster_dims";
+    if (!getZ())
+      ++TrailingOmittedArgs;
+    if (!getY())
+      ++TrailingOmittedArgs;
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getX()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    if (!(!getY())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getY()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    }
+    if (!(!getZ())) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "";
+    getZ()->printPretty(OS, nullptr, Policy);
+    OS << "";
+    }
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+}
+}
+
+const char *CUDAClusterDimsAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "cluster_dims";
+  }
+}
+
+
 // CUDAConstantAttr implementation
 
 CUDAConstantAttr *CUDAConstantAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -10083,6 +10194,73 @@ const char *CUDALaunchBoundsAttr::getSpelling() const {
     return "launch_bounds";
   case 1:
     return "__launch_bounds__";
+  }
+}
+
+
+// CUDANoClusterAttr implementation
+
+CUDANoClusterAttr *CUDANoClusterAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) CUDANoClusterAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+CUDANoClusterAttr *CUDANoClusterAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) CUDANoClusterAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+CUDANoClusterAttr *CUDANoClusterAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return CreateImplicit(Ctx, I);
+}
+
+CUDANoClusterAttr *CUDANoClusterAttr::Create(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return Create(Ctx, I);
+}
+
+CUDANoClusterAttr::CUDANoClusterAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::CUDANoCluster, /*IsLateParsed=*/false, false)
+  {
+}
+
+CUDANoClusterAttr *CUDANoClusterAttr::clone(ASTContext &C) const {
+  auto *A = new (C) CUDANoClusterAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void CUDANoClusterAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((no_cluster";
+    OS << "))";
+    break;
+  }
+}
+}
+
+const char *CUDANoClusterAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "no_cluster";
   }
 }
 
@@ -14533,12 +14711,6 @@ DeviceKernelAttr *DeviceKernelAttr::CreateImplicit(ASTContext &Ctx, SourceRange 
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_device_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case C23_clang_device_kernel:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_device_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case GNU_sycl_kernel:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_sycl_kernel:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_sycl_kernel:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case GNU_nvptx_kernel:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_nvptx_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_nvptx_kernel:
@@ -14570,12 +14742,6 @@ DeviceKernelAttr *DeviceKernelAttr::Create(ASTContext &Ctx, SourceRange Range, S
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_device_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case C23_clang_device_kernel:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_device_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case GNU_sycl_kernel:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_sycl_kernel:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_sycl_kernel:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case GNU_nvptx_kernel:
       return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_nvptx_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
     case CXX11_clang_nvptx_kernel:
@@ -14610,17 +14776,14 @@ DeviceKernelAttr::Spelling DeviceKernelAttr::getSemanticSpelling() const {
     case 0: return GNU_device_kernel;
     case 1: return CXX11_clang_device_kernel;
     case 2: return C23_clang_device_kernel;
-    case 3: return GNU_sycl_kernel;
-    case 4: return CXX11_clang_sycl_kernel;
-    case 5: return C23_clang_sycl_kernel;
-    case 6: return GNU_nvptx_kernel;
-    case 7: return CXX11_clang_nvptx_kernel;
-    case 8: return C23_clang_nvptx_kernel;
-    case 9: return GNU_amdgpu_kernel;
-    case 10: return CXX11_clang_amdgpu_kernel;
-    case 11: return C23_clang_amdgpu_kernel;
-    case 12: return Keyword_kernel;
-    case 13: return Keyword_kernel;
+    case 3: return GNU_nvptx_kernel;
+    case 4: return CXX11_clang_nvptx_kernel;
+    case 5: return C23_clang_nvptx_kernel;
+    case 6: return GNU_amdgpu_kernel;
+    case 7: return CXX11_clang_amdgpu_kernel;
+    case 8: return C23_clang_amdgpu_kernel;
+    case 9: return Keyword_kernel;
+    case 10: return Keyword_kernel;
   }
 }
 DeviceKernelAttr *DeviceKernelAttr::clone(ASTContext &C) const {
@@ -14654,56 +14817,41 @@ void DeviceKernelAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy
     break;
   }
   case 3 : {
-    OS << "__attribute__((sycl_kernel";
-    OS << "))";
-    break;
-  }
-  case 4 : {
-    OS << "[[clang::sycl_kernel";
-    OS << "]]";
-    break;
-  }
-  case 5 : {
-    OS << "[[clang::sycl_kernel";
-    OS << "]]";
-    break;
-  }
-  case 6 : {
     OS << "__attribute__((nvptx_kernel";
     OS << "))";
     break;
   }
-  case 7 : {
+  case 4 : {
     OS << "[[clang::nvptx_kernel";
     OS << "]]";
     break;
   }
-  case 8 : {
+  case 5 : {
     OS << "[[clang::nvptx_kernel";
     OS << "]]";
     break;
   }
-  case 9 : {
+  case 6 : {
     OS << "__attribute__((amdgpu_kernel";
     OS << "))";
     break;
   }
-  case 10 : {
+  case 7 : {
     OS << "[[clang::amdgpu_kernel";
     OS << "]]";
     break;
   }
-  case 11 : {
+  case 8 : {
     OS << "[[clang::amdgpu_kernel";
     OS << "]]";
     break;
   }
-  case 12 : {
+  case 9 : {
     OS << "__kernel";
     OS << "";
     break;
   }
-  case 13 : {
+  case 10 : {
     OS << "kernel";
     OS << "";
     break;
@@ -14723,26 +14871,20 @@ const char *DeviceKernelAttr::getSpelling() const {
   case 2:
     return "device_kernel";
   case 3:
-    return "sycl_kernel";
+    return "nvptx_kernel";
   case 4:
-    return "sycl_kernel";
+    return "nvptx_kernel";
   case 5:
-    return "sycl_kernel";
+    return "nvptx_kernel";
   case 6:
-    return "nvptx_kernel";
+    return "amdgpu_kernel";
   case 7:
-    return "nvptx_kernel";
+    return "amdgpu_kernel";
   case 8:
-    return "nvptx_kernel";
+    return "amdgpu_kernel";
   case 9:
-    return "amdgpu_kernel";
-  case 10:
-    return "amdgpu_kernel";
-  case 11:
-    return "amdgpu_kernel";
-  case 12:
     return "__kernel";
-  case 13:
+  case 10:
     return "kernel";
   }
 }
@@ -19100,39 +19242,54 @@ const char *HLSLResourceClassAttr::getSpelling() const {
 
 // HLSLSV_DispatchThreadIDAttr implementation
 
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_DispatchThreadIDAttr(Ctx, CommonInfo);
+HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_DispatchThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_DispatchThreadIDAttr(Ctx, CommonInfo);
+HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_DispatchThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, I);
+  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::Create(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, I);
+  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
 HLSLSV_DispatchThreadIDAttr::HLSLSV_DispatchThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              )
   : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_DispatchThreadID, /*IsLateParsed=*/false, false, false)
+              , target(Target)
+              , semanticIndex(SemanticIndex)
+              , semanticExplicitIndex(SemanticExplicitIndex)
   {
+  if (SemanticExplicitIndex)
+    setSemanticIndex(SemanticIndex);
+  setTargetDecl(Target);
 }
 
+
+
+
+
+
+
 HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_DispatchThreadIDAttr(C, *this);
+  auto *A = new (C) HLSLSV_DispatchThreadIDAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -19149,39 +19306,54 @@ const char *HLSLSV_DispatchThreadIDAttr::getSpelling() const {
 
 // HLSLSV_GroupIDAttr implementation
 
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIDAttr(Ctx, CommonInfo);
+HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_GroupIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIDAttr(Ctx, CommonInfo);
+HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_GroupIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, I);
+  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::Create(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, I);
+  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
 HLSLSV_GroupIDAttr::HLSLSV_GroupIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              )
   : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_GroupID, /*IsLateParsed=*/false, false, false)
+              , target(Target)
+              , semanticIndex(SemanticIndex)
+              , semanticExplicitIndex(SemanticExplicitIndex)
   {
+  if (SemanticExplicitIndex)
+    setSemanticIndex(SemanticIndex);
+  setTargetDecl(Target);
 }
 
+
+
+
+
+
+
 HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_GroupIDAttr(C, *this);
+  auto *A = new (C) HLSLSV_GroupIDAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -19198,39 +19370,54 @@ const char *HLSLSV_GroupIDAttr::getSpelling() const {
 
 // HLSLSV_GroupIndexAttr implementation
 
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIndexAttr(Ctx, CommonInfo);
+HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_GroupIndexAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIndexAttr(Ctx, CommonInfo);
+HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_GroupIndexAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, I);
+  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::Create(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, I);
+  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
 HLSLSV_GroupIndexAttr::HLSLSV_GroupIndexAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              )
   : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_GroupIndex, /*IsLateParsed=*/false, false, false)
+              , target(Target)
+              , semanticIndex(SemanticIndex)
+              , semanticExplicitIndex(SemanticExplicitIndex)
   {
+  if (SemanticExplicitIndex)
+    setSemanticIndex(SemanticIndex);
+  setTargetDecl(Target);
 }
 
+
+
+
+
+
+
 HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_GroupIndexAttr(C, *this);
+  auto *A = new (C) HLSLSV_GroupIndexAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -19247,39 +19434,54 @@ const char *HLSLSV_GroupIndexAttr::getSpelling() const {
 
 // HLSLSV_GroupThreadIDAttr implementation
 
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupThreadIDAttr(Ctx, CommonInfo);
+HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_GroupThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupThreadIDAttr(Ctx, CommonInfo);
+HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_GroupThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, I);
+  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::Create(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, I);
+  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
 HLSLSV_GroupThreadIDAttr::HLSLSV_GroupThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              )
   : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_GroupThreadID, /*IsLateParsed=*/false, false, false)
+              , target(Target)
+              , semanticIndex(SemanticIndex)
+              , semanticExplicitIndex(SemanticExplicitIndex)
   {
+  if (SemanticExplicitIndex)
+    setSemanticIndex(SemanticIndex);
+  setTargetDecl(Target);
 }
 
+
+
+
+
+
+
 HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_GroupThreadIDAttr(C, *this);
+  auto *A = new (C) HLSLSV_GroupThreadIDAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -19296,39 +19498,54 @@ const char *HLSLSV_GroupThreadIDAttr::getSpelling() const {
 
 // HLSLSV_PositionAttr implementation
 
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_PositionAttr(Ctx, CommonInfo);
+HLSLSV_PositionAttr *HLSLSV_PositionAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_PositionAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_PositionAttr(Ctx, CommonInfo);
+HLSLSV_PositionAttr *HLSLSV_PositionAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLSV_PositionAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_PositionAttr *HLSLSV_PositionAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, I);
+  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::Create(ASTContext &Ctx, SourceRange Range) {
+HLSLSV_PositionAttr *HLSLSV_PositionAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, I);
+  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
 }
 
 HLSLSV_PositionAttr::HLSLSV_PositionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              )
   : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_Position, /*IsLateParsed=*/false, false, true)
+              , target(Target)
+              , semanticIndex(SemanticIndex)
+              , semanticExplicitIndex(SemanticExplicitIndex)
   {
+  if (SemanticExplicitIndex)
+    setSemanticIndex(SemanticIndex);
+  setTargetDecl(Target);
 }
 
+
+
+
+
+
+
 HLSLSV_PositionAttr *HLSLSV_PositionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_PositionAttr(C, *this);
+  auto *A = new (C) HLSLSV_PositionAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -40347,6 +40564,111 @@ const char *SYCLExternalAttr::getSpelling() const {
 }
 
 
+// SYCLKernelAttr implementation
+
+SYCLKernelAttr *SYCLKernelAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) SYCLKernelAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+SYCLKernelAttr *SYCLKernelAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) SYCLKernelAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+SYCLKernelAttr *SYCLKernelAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_sycl_kernel:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_sycl_kernel:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_sycl_kernel:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, I);
+}
+
+SYCLKernelAttr *SYCLKernelAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_sycl_kernel:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_sycl_kernel:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_sycl_kernel:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_sycl_kernel, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, I);
+}
+
+SYCLKernelAttr::SYCLKernelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::SYCLKernel, /*IsLateParsed=*/false, false)
+  {
+}
+
+SYCLKernelAttr *SYCLKernelAttr::clone(ASTContext &C) const {
+  auto *A = new (C) SYCLKernelAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void SYCLKernelAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((sycl_kernel";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[clang::sycl_kernel";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[clang::sycl_kernel";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *SYCLKernelAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "sycl_kernel";
+  case 1:
+    return "sycl_kernel";
+  case 2:
+    return "sycl_kernel";
+  }
+}
+
+
 // SYCLKernelEntryPointAttr implementation
 
 SYCLKernelEntryPointAttr *SYCLKernelEntryPointAttr::CreateImplicit(ASTContext &Ctx, TypeSourceInfo * KernelName, bool Invalid, const AttributeCommonInfo &CommonInfo) {
@@ -49900,6 +50222,8 @@ const char *Attr::getSpelling() const {
     return cast<CPUDispatchAttr>(this)->getSpelling();
   case attr::CPUSpecific:
     return cast<CPUSpecificAttr>(this)->getSpelling();
+  case attr::CUDAClusterDims:
+    return cast<CUDAClusterDimsAttr>(this)->getSpelling();
   case attr::CUDAConstant:
     return cast<CUDAConstantAttr>(this)->getSpelling();
   case attr::CUDADevice:
@@ -49918,6 +50242,8 @@ const char *Attr::getSpelling() const {
     return cast<CUDAInvalidTargetAttr>(this)->getSpelling();
   case attr::CUDALaunchBounds:
     return cast<CUDALaunchBoundsAttr>(this)->getSpelling();
+  case attr::CUDANoCluster:
+    return cast<CUDANoClusterAttr>(this)->getSpelling();
   case attr::CUDAShared:
     return cast<CUDASharedAttr>(this)->getSpelling();
   case attr::CXX11NoReturn:
@@ -50476,6 +50802,8 @@ const char *Attr::getSpelling() const {
     return cast<SPtrAttr>(this)->getSpelling();
   case attr::SYCLExternal:
     return cast<SYCLExternalAttr>(this)->getSpelling();
+  case attr::SYCLKernel:
+    return cast<SYCLKernelAttr>(this)->getSpelling();
   case attr::SYCLKernelEntryPoint:
     return cast<SYCLKernelEntryPointAttr>(this)->getSpelling();
   case attr::SYCLSpecialClass:
@@ -50804,6 +51132,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<CPUDispatchAttr>(this)->clone(C);
   case attr::CPUSpecific:
     return cast<CPUSpecificAttr>(this)->clone(C);
+  case attr::CUDAClusterDims:
+    return cast<CUDAClusterDimsAttr>(this)->clone(C);
   case attr::CUDAConstant:
     return cast<CUDAConstantAttr>(this)->clone(C);
   case attr::CUDADevice:
@@ -50822,6 +51152,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<CUDAInvalidTargetAttr>(this)->clone(C);
   case attr::CUDALaunchBounds:
     return cast<CUDALaunchBoundsAttr>(this)->clone(C);
+  case attr::CUDANoCluster:
+    return cast<CUDANoClusterAttr>(this)->clone(C);
   case attr::CUDAShared:
     return cast<CUDASharedAttr>(this)->clone(C);
   case attr::CXX11NoReturn:
@@ -51380,6 +51712,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<SPtrAttr>(this)->clone(C);
   case attr::SYCLExternal:
     return cast<SYCLExternalAttr>(this)->clone(C);
+  case attr::SYCLKernel:
+    return cast<SYCLKernelAttr>(this)->clone(C);
   case attr::SYCLKernelEntryPoint:
     return cast<SYCLKernelEntryPointAttr>(this)->clone(C);
   case attr::SYCLSpecialClass:
@@ -51708,6 +52042,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<CPUDispatchAttr>(this)->printPretty(OS, Policy);
   case attr::CPUSpecific:
     return cast<CPUSpecificAttr>(this)->printPretty(OS, Policy);
+  case attr::CUDAClusterDims:
+    return cast<CUDAClusterDimsAttr>(this)->printPretty(OS, Policy);
   case attr::CUDAConstant:
     return cast<CUDAConstantAttr>(this)->printPretty(OS, Policy);
   case attr::CUDADevice:
@@ -51726,6 +52062,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<CUDAInvalidTargetAttr>(this)->printPretty(OS, Policy);
   case attr::CUDALaunchBounds:
     return cast<CUDALaunchBoundsAttr>(this)->printPretty(OS, Policy);
+  case attr::CUDANoCluster:
+    return cast<CUDANoClusterAttr>(this)->printPretty(OS, Policy);
   case attr::CUDAShared:
     return cast<CUDASharedAttr>(this)->printPretty(OS, Policy);
   case attr::CXX11NoReturn:
@@ -52284,6 +52622,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<SPtrAttr>(this)->printPretty(OS, Policy);
   case attr::SYCLExternal:
     return cast<SYCLExternalAttr>(this)->printPretty(OS, Policy);
+  case attr::SYCLKernel:
+    return cast<SYCLKernelAttr>(this)->printPretty(OS, Policy);
   case attr::SYCLKernelEntryPoint:
     return cast<SYCLKernelEntryPointAttr>(this)->printPretty(OS, Policy);
   case attr::SYCLSpecialClass:

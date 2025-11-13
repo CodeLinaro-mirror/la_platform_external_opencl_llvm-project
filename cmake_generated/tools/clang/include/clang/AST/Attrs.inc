@@ -3101,6 +3101,51 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::CPUSpecific; }
 };
 
+class CLANG_ABI CUDAClusterDimsAttr : public InheritableAttr {
+Expr * x;
+
+Expr * y;
+
+Expr * z;
+
+public:
+  // Factory methods
+  static CUDAClusterDimsAttr *CreateImplicit(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, const AttributeCommonInfo &CommonInfo);
+  static CUDAClusterDimsAttr *Create(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, const AttributeCommonInfo &CommonInfo);
+  static CUDAClusterDimsAttr *CreateImplicit(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, SourceRange Range = {});
+  static CUDAClusterDimsAttr *Create(ASTContext &Ctx, Expr * X, Expr * Y, Expr * Z, SourceRange Range = {});
+
+  // Constructors
+  CUDAClusterDimsAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , Expr * X
+              , Expr * Y
+              , Expr * Z
+             );
+  CUDAClusterDimsAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , Expr * X
+             );
+
+  CUDAClusterDimsAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  Expr * getX() const {
+    return x;
+  }
+
+  Expr * getY() const {
+    return y;
+  }
+
+  Expr * getZ() const {
+    return z;
+  }
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::CUDAClusterDims; }
+};
+
 class CLANG_ABI CUDAConstantAttr : public InheritableAttr {
 public:
   enum Spelling {
@@ -3368,6 +3413,27 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDALaunchBounds; }
+};
+
+class CLANG_ABI CUDANoClusterAttr : public InheritableAttr {
+public:
+  // Factory methods
+  static CUDANoClusterAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static CUDANoClusterAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static CUDANoClusterAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static CUDANoClusterAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  CUDANoClusterAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  CUDANoClusterAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::CUDANoCluster; }
 };
 
 class CLANG_ABI CUDASharedAttr : public InheritableAttr {
@@ -4720,16 +4786,13 @@ public:
     GNU_device_kernel = 0,
     CXX11_clang_device_kernel = 1,
     C23_clang_device_kernel = 2,
-    GNU_sycl_kernel = 3,
-    CXX11_clang_sycl_kernel = 4,
-    C23_clang_sycl_kernel = 5,
-    GNU_nvptx_kernel = 6,
-    CXX11_clang_nvptx_kernel = 7,
-    C23_clang_nvptx_kernel = 8,
-    GNU_amdgpu_kernel = 9,
-    CXX11_clang_amdgpu_kernel = 10,
-    C23_clang_amdgpu_kernel = 11,
-    Keyword_kernel = 12,
+    GNU_nvptx_kernel = 3,
+    CXX11_clang_nvptx_kernel = 4,
+    C23_clang_nvptx_kernel = 5,
+    GNU_amdgpu_kernel = 6,
+    CXX11_clang_amdgpu_kernel = 7,
+    C23_clang_amdgpu_kernel = 8,
+    Keyword_kernel = 9,
   SpellingNotCalculated = 15
 
   };
@@ -4767,15 +4830,6 @@ public:
     static inline bool isNVPTXSpelling(const AttributeCommonInfo* A) {
       if(!A) return false;
       return isNVPTXSpelling(*A);
-    }
-    static inline bool isSYCLSpelling(const AttributeCommonInfo& A) {
-      return A.getAttributeSpellingListIndex() == GNU_sycl_kernel ||
-             A.getAttributeSpellingListIndex() == CXX11_clang_sycl_kernel ||
-             A.getAttributeSpellingListIndex() == C23_clang_sycl_kernel;
-    }
-    static inline bool isSYCLSpelling(const AttributeCommonInfo* A) {
-      if(!A) return false;
-      return isSYCLSpelling(*A);
     }
     static inline bool isOpenCLSpelling(const AttributeCommonInfo& A) {
     // Tablegen trips underscores from spellings to build the spelling
@@ -6269,6 +6323,7 @@ public:
       std::optional<unsigned> SlotNumber;
       unsigned SpaceNumber;
       std::optional<unsigned> ImplicitBindingOrderID;
+      std::optional<unsigned> ImplicitCounterBindingOrderID;
 
   public:
       void setBinding(RegisterType RT, std::optional<unsigned> SlotNum, unsigned SpaceNum) {
@@ -6300,6 +6355,17 @@ public:
       uint32_t getImplicitBindingOrderID() const {
         assert(hasImplicitBindingOrderID() && "attribute does not have implicit binding order id");
         return ImplicitBindingOrderID.value();
+      }
+      void setImplicitCounterBindingOrderID(uint32_t Value) {
+        assert(!hasImplicitCounterBindingOrderID() && "attribute already has implicit counter binding order id");
+        ImplicitCounterBindingOrderID = Value;
+      }
+      bool hasImplicitCounterBindingOrderID() const {
+        return ImplicitCounterBindingOrderID.has_value();
+      }
+      uint32_t getImplicitCounterBindingOrderID() const {
+        assert(hasImplicitCounterBindingOrderID() && "attribute does not have implicit counter binding order id");
+        return ImplicitCounterBindingOrderID.value();
       }
   
 
@@ -6338,105 +6404,210 @@ public:
 };
 
 class CLANG_ABI HLSLSV_DispatchThreadIDAttr : public HLSLSemanticAttr {
+NamedDecl * target;
+
+int semanticIndex;
+
+bool semanticExplicitIndex;
+
 public:
   // Factory methods
-  static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_DispatchThreadIDAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static HLSLSV_DispatchThreadIDAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_DispatchThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
+  static HLSLSV_DispatchThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
 
   // Constructors
   HLSLSV_DispatchThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              );
 
   HLSLSV_DispatchThreadIDAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  NamedDecl * getTarget() const {
+    return target;
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool getSemanticExplicitIndex() const {
+    return semanticExplicitIndex;
+  }
+
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_DispatchThreadID; }
 };
 
 class CLANG_ABI HLSLSV_GroupIDAttr : public HLSLSemanticAttr {
+NamedDecl * target;
+
+int semanticIndex;
+
+bool semanticExplicitIndex;
+
 public:
   // Factory methods
-  static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIDAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static HLSLSV_GroupIDAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_GroupIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
+  static HLSLSV_GroupIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
 
   // Constructors
   HLSLSV_GroupIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              );
 
   HLSLSV_GroupIDAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  NamedDecl * getTarget() const {
+    return target;
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool getSemanticExplicitIndex() const {
+    return semanticExplicitIndex;
+  }
+
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupID; }
 };
 
 class CLANG_ABI HLSLSV_GroupIndexAttr : public HLSLSemanticAttr {
+NamedDecl * target;
+
+int semanticIndex;
+
+bool semanticExplicitIndex;
+
 public:
   // Factory methods
-  static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIndexAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static HLSLSV_GroupIndexAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_GroupIndexAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
+  static HLSLSV_GroupIndexAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
 
   // Constructors
   HLSLSV_GroupIndexAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              );
 
   HLSLSV_GroupIndexAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  NamedDecl * getTarget() const {
+    return target;
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool getSemanticExplicitIndex() const {
+    return semanticExplicitIndex;
+  }
+
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupIndex; }
 };
 
 class CLANG_ABI HLSLSV_GroupThreadIDAttr : public HLSLSemanticAttr {
+NamedDecl * target;
+
+int semanticIndex;
+
+bool semanticExplicitIndex;
+
 public:
   // Factory methods
-  static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupThreadIDAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static HLSLSV_GroupThreadIDAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_GroupThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
+  static HLSLSV_GroupThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
 
   // Constructors
   HLSLSV_GroupThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              );
 
   HLSLSV_GroupThreadIDAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  NamedDecl * getTarget() const {
+    return target;
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool getSemanticExplicitIndex() const {
+    return semanticExplicitIndex;
+  }
+
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupThreadID; }
 };
 
 class CLANG_ABI HLSLSV_PositionAttr : public HLSLSemanticAttr {
+NamedDecl * target;
+
+int semanticIndex;
+
+bool semanticExplicitIndex;
+
 public:
   // Factory methods
-  static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_PositionAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static HLSLSV_PositionAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_PositionAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
+  static HLSLSV_PositionAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
 
   // Constructors
   HLSLSV_PositionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , NamedDecl * Target
+              , int SemanticIndex
+              , bool SemanticExplicitIndex
              );
 
   HLSLSV_PositionAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  NamedDecl * getTarget() const {
+    return target;
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool getSemanticExplicitIndex() const {
+    return semanticExplicitIndex;
+  }
+
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_Position; }
@@ -13095,6 +13266,35 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SYCLExternal; }
+};
+
+class CLANG_ABI SYCLKernelAttr : public InheritableAttr {
+public:
+  enum Spelling {
+    GNU_sycl_kernel = 0,
+    CXX11_clang_sycl_kernel = 1,
+    C23_clang_sycl_kernel = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static SYCLKernelAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static SYCLKernelAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static SYCLKernelAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_sycl_kernel);
+  static SYCLKernelAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_sycl_kernel);
+
+  // Constructors
+  SYCLKernelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  SYCLKernelAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::SYCLKernel; }
 };
 
 class CLANG_ABI SYCLKernelEntryPointAttr : public InheritableAttr {

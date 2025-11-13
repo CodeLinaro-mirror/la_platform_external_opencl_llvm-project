@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum PPCIntrinsics : unsigned {
 // Enum values for intrinsics.
-    ppc_addex = 10750,                                 // llvm.ppc.addex (IntrinsicsPowerPC.td:2062)
+    ppc_addex = 10832,                                 // llvm.ppc.addex (IntrinsicsPowerPC.td:2062)
     ppc_addf128_round_to_odd,                  // llvm.ppc.addf128.round.to.odd (IntrinsicsPowerPC.td:119)
     ppc_addg6s,                                // llvm.ppc.addg6s (IntrinsicsPowerPC.td:676)
     ppc_addg6sd,                               // llvm.ppc.addg6sd (IntrinsicsPowerPC.td:670)

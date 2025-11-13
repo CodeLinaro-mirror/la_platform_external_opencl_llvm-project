@@ -1646,6 +1646,19 @@ if the executing processor doesn't satisfy the features required in the CPU
 name. The behavior of a program executing on a processor that doesn't satisfy
 any option of a multiversioned function is undefined.)reST";
 
+static const char AttrDoc_CUDAClusterDims[] = R"reST(In CUDA/HIP programming, the ``cluster_dims`` attribute, conventionally exposed as the
+``__cluster_dims__`` macro, can be applied to a kernel function to set the dimensions of a
+thread block cluster, which is an optional level of hierarchy and made up of thread blocks.
+``__cluster_dims__`` defines the cluster size as ``(X, Y, Z)``, where each value is the number
+of thread blocks in that dimension. The ``cluster_dims`` and `no_cluster`` attributes are
+mutually exclusive.
+
+.. code::
+
+  __global__ __cluster_dims__(2, 1, 1) void kernel(...) {
+    ...
+  })reST";
+
 static const char AttrDoc_CUDAConstant[] = R"reST(No documentation.)reST";
 
 static const char AttrDoc_CUDADevice[] = R"reST(No documentation.)reST";
@@ -1674,6 +1687,21 @@ static const char AttrDoc_CUDAHost[] = R"reST(No documentation.)reST";
 static const char AttrDoc_CUDAInvalidTarget[] = R"reST()reST";
 
 static const char AttrDoc_CUDALaunchBounds[] = R"reST(No documentation.)reST";
+
+static const char AttrDoc_CUDANoCluster[] = R"reST(In CUDA/HIP programming, a kernel function can still be launched with the cluster feature enabled
+at runtime, even without being annotated with ``__cluster_dims__``. The LLVM/Clang-exclusive
+``no_cluster`` attribute, conventionally exposed as the ``__no_cluster__`` macro, can be applied to
+a kernel function to explicitly indicate that the cluster feature will not be enabled either at
+compile time or at kernel launch time. This allows the compiler to apply certain optimizations
+without assuming that clustering could be enabled at runtime. It is undefined behavior to launch a
+kernel annotated with ``__no_cluster__`` if the cluster feature is enabled at runtime.
+The ``cluster_dims`` and ``no_cluster`` attributes are mutually exclusive.
+
+.. code::
+
+  __global__ __no_cluster__ void kernel(...) {
+    ...
+  })reST";
 
 static const char AttrDoc_CUDAShared[] = R"reST(No documentation.)reST";
 
@@ -2614,76 +2642,11 @@ attribute, they default to the value ``65535``.)reST";
 
 static const char AttrDoc_DeviceKernel[] = R"reST(These attributes specify that the function represents a kernel for device offloading.
 The specific semantics depend on the offloading language, target, and attribute spelling.
-The ``sycl_kernel`` attribute specifies that a function template will be used
-to outline device code and to generate an OpenCL kernel.
-Here is a code example of the SYCL program, which demonstrates the compiler's
-outlining job:
+Here is a code example using the attribute to mark a function as a kernel:
 
 .. code-block:: c++
 
-  int foo(int x) { return ++x; }
-
-  using namespace cl::sycl;
-  queue Q;
-  buffer<int, 1> a(range<1>{1024});
-  Q.submit([&](handler& cgh) {
-    auto A = a.get_access<access::mode::write>(cgh);
-    cgh.parallel_for<init_a>(range<1>{1024}, [=](id<1> index) {
-      A[index] = index[0] + foo(42);
-    });
-  }
-
-A C++ function object passed to the ``parallel_for`` is called a "SYCL kernel".
-A SYCL kernel defines the entry point to the "device part" of the code. The
-compiler will emit all symbols accessible from a "kernel". In this code
-example, the compiler will emit "foo" function. More details about the
-compilation of functions for the device part can be found in the SYCL 1.2.1
-specification Section 6.4.
-To show to the compiler entry point to the "device part" of the code, the SYCL
-runtime can use the ``sycl_kernel`` attribute in the following way:
-
-.. code-block:: c++
-
-  namespace cl {
-  namespace sycl {
-  class handler {
-    template <typename KernelName, typename KernelType/*, ...*/>
-    __attribute__((sycl_kernel)) void sycl_kernel_function(KernelType KernelFuncObj) {
-      // ...
-      KernelFuncObj();
-    }
-
-    template <typename KernelName, typename KernelType, int Dims>
-    void parallel_for(range<Dims> NumWorkItems, KernelType KernelFunc) {
-  #ifdef __SYCL_DEVICE_ONLY__
-      sycl_kernel_function<KernelName, KernelType, Dims>(KernelFunc);
-  #else
-      // Host implementation
-  #endif
-    }
-  };
-  } // namespace sycl
-  } // namespace cl
-
-The compiler will also generate an OpenCL kernel using the function marked with
-the ``sycl_kernel`` attribute.
-Here is the list of SYCL device compiler expectations with regard to the
-function marked with the ``sycl_kernel`` attribute:
-
-- The function must be a template with at least two type template parameters.
-  The compiler generates an OpenCL kernel and uses the first template parameter
-  as a unique name for the generated OpenCL kernel. The host application uses
-  this unique name to invoke the OpenCL kernel generated for the SYCL kernel
-  specialized by this name and second template parameter ``KernelType`` (which
-  might be an unnamed function object type).
-- The function must have at least one parameter. The first parameter is
-  required to be a function object type (named or unnamed i.e. lambda). The
-  compiler uses function object type fields to generate OpenCL kernel
-  parameters.
-- The function must return void. The compiler reuses the body of marked functions to
-  generate the OpenCL kernel body, and the OpenCL kernel must return ``void``.
-
-The SYCL kernel in the previous code sample meets these expectations.)reST";
+  [[clang::device_kernel]] int foo(int x) { return ++x; })reST";
 
 static const char AttrDoc_DiagnoseAsBuiltin[] = R"reST(The ``diagnose_as_builtin`` attribute indicates that Fortify diagnostics are to
 be applied to the declared function as if it were the function specified by the
@@ -7183,6 +7146,77 @@ The following examples demonstrate the use of this attribute:
   [[clang::sycl_external]] extern void Baz(); // Ok.
 
   [[clang::sycl_external]] static void Quux() { /* ... */ } // error:  Quux() has internal linkage.)reST";
+
+static const char AttrDoc_SYCLKernel[] = R"reST(The ``sycl_kernel`` attribute specifies that a function template will be used
+to outline device code and to generate an OpenCL kernel.
+Here is a code example of the SYCL program, which demonstrates the compiler's
+outlining job:
+
+.. code-block:: c++
+
+  int foo(int x) { return ++x; }
+
+  using namespace cl::sycl;
+  queue Q;
+  buffer<int, 1> a(range<1>{1024});
+  Q.submit([&](handler& cgh) {
+    auto A = a.get_access<access::mode::write>(cgh);
+    cgh.parallel_for<init_a>(range<1>{1024}, [=](id<1> index) {
+      A[index] = index[0] + foo(42);
+    });
+  }
+
+A C++ function object passed to the ``parallel_for`` is called a "SYCL kernel".
+A SYCL kernel defines the entry point to the "device part" of the code. The
+compiler will emit all symbols accessible from a "kernel". In this code
+example, the compiler will emit "foo" function. More details about the
+compilation of functions for the device part can be found in the SYCL 1.2.1
+specification Section 6.4.
+To show to the compiler entry point to the "device part" of the code, the SYCL
+runtime can use the ``sycl_kernel`` attribute in the following way:
+
+.. code-block:: c++
+
+  namespace cl {
+  namespace sycl {
+  class handler {
+    template <typename KernelName, typename KernelType/*, ...*/>
+    __attribute__((sycl_kernel)) void sycl_kernel_function(KernelType KernelFuncObj) {
+      // ...
+      KernelFuncObj();
+    }
+
+    template <typename KernelName, typename KernelType, int Dims>
+    void parallel_for(range<Dims> NumWorkItems, KernelType KernelFunc) {
+  #ifdef __SYCL_DEVICE_ONLY__
+      sycl_kernel_function<KernelName, KernelType, Dims>(KernelFunc);
+  #else
+      // Host implementation
+  #endif
+    }
+  };
+  } // namespace sycl
+  } // namespace cl
+
+The compiler will also generate an OpenCL kernel using the function marked with
+the ``sycl_kernel`` attribute.
+Here is the list of SYCL device compiler expectations with regard to the
+function marked with the ``sycl_kernel`` attribute:
+
+- The function must be a template with at least two type template parameters.
+  The compiler generates an OpenCL kernel and uses the first template parameter
+  as a unique name for the generated OpenCL kernel. The host application uses
+  this unique name to invoke the OpenCL kernel generated for the SYCL kernel
+  specialized by this name and second template parameter ``KernelType`` (which
+  might be an unnamed function object type).
+- The function must have at least one parameter. The first parameter is
+  required to be a function object type (named or unnamed i.e. lambda). The
+  compiler uses function object type fields to generate OpenCL kernel
+  parameters.
+- The function must return void. The compiler reuses the body of marked functions to
+  generate the OpenCL kernel body, and the OpenCL kernel must return ``void``.
+
+The SYCL kernel in the previous code sample meets these expectations.)reST";
 
 static const char AttrDoc_SYCLKernelEntryPoint[] = R"reST(The ``sycl_kernel_entry_point`` attribute facilitates the generation of an
 offload kernel entry point, sometimes called a SYCL kernel caller function,

@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum R600Intrinsics : unsigned {
 // Enum values for intrinsics.
-    r600_cube = 11432,                                 // llvm.r600.cube (IntrinsicsAMDGPU.td:97)
+    r600_cube = 11514,                                 // llvm.r600.cube (IntrinsicsAMDGPU.td:97)
     r600_ddx,                                  // llvm.r600.ddx (IntrinsicsAMDGPU.td:145)
     r600_ddy,                                  // llvm.r600.ddy (IntrinsicsAMDGPU.td:146)
     r600_dot4,                                 // llvm.r600.dot4 (IntrinsicsAMDGPU.td:148)
