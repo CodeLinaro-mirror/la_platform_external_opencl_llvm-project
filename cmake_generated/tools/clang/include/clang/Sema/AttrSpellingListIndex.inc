@@ -586,6 +586,10 @@
       return 3;
     break;
   }
+  case AT_CUDAClusterDims: {
+    return 0;
+    break;
+  }
   case AT_CUDAConstant: {
     if (Name.size() == 8 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -644,6 +648,10 @@
       return 0;
     if (Name.size() == 17 && getSyntax() == AttributeCommonInfo::AS_Declspec && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 1;
+    break;
+  }
+  case AT_CUDANoCluster: {
+    return 0;
     break;
   }
   case AT_CUDAShared: {
@@ -987,28 +995,22 @@
       return 1;
     if (Name == "device_kernel" && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 2;
-    if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 3;
-    if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 4;
-    if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 5;
     if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 6;
+      return 3;
     if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 7;
+      return 4;
     if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 8;
+      return 5;
     if (Name == "amdgpu_kernel" && getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 9;
+      return 6;
     if (Name == "amdgpu_kernel" && getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 10;
+      return 7;
     if (Name == "amdgpu_kernel" && getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 11;
+      return 8;
     if (Name.size() == 8 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 12;
+      return 9;
     if (Name.size() == 6 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 13;
+      return 10;
     break;
   }
   case AT_DiagnoseAsBuiltin: {
@@ -2885,6 +2887,15 @@
   }
   case AT_SYCLExternal: {
     return 0;
+    break;
+  }
+  case AT_SYCLKernel: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
     break;
   }
   case AT_SYCLKernelEntryPoint: {

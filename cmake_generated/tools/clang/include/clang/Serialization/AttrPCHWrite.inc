@@ -630,6 +630,16 @@ Record.push_back(static_cast<uint64_t>(SA->getGuard()));
       Record.AddIdentifierRef(Val);
     break;
   }
+  case attr::CUDAClusterDims: {
+    const auto *SA = cast<CUDAClusterDimsAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    Record.AddStmt(SA->getX());
+    Record.AddStmt(SA->getY());
+    Record.AddStmt(SA->getZ());
+    break;
+  }
   case attr::CUDAConstant: {
     const auto *SA = cast<CUDAConstantAttr>(A);
     Record.push_back(SA->isInherited());
@@ -694,6 +704,13 @@ Record.push_back(static_cast<uint64_t>(SA->getGuard()));
     Record.AddStmt(SA->getMaxThreads());
     Record.AddStmt(SA->getMinBlocks());
     Record.AddStmt(SA->getMaxBlocks());
+    break;
+  }
+  case attr::CUDANoCluster: {
+    const auto *SA = cast<CUDANoClusterAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
     break;
   }
   case attr::CUDAShared: {
@@ -1301,6 +1318,9 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.AddDeclRef(SA->getTarget());
+    Record.push_back(SA->getSemanticIndex());
+    Record.push_back(SA->getSemanticExplicitIndex());
     break;
   }
   case attr::HLSLSV_GroupID: {
@@ -1308,6 +1328,9 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.AddDeclRef(SA->getTarget());
+    Record.push_back(SA->getSemanticIndex());
+    Record.push_back(SA->getSemanticExplicitIndex());
     break;
   }
   case attr::HLSLSV_GroupIndex: {
@@ -1315,6 +1338,9 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.AddDeclRef(SA->getTarget());
+    Record.push_back(SA->getSemanticIndex());
+    Record.push_back(SA->getSemanticExplicitIndex());
     break;
   }
   case attr::HLSLSV_GroupThreadID: {
@@ -1322,6 +1348,9 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.AddDeclRef(SA->getTarget());
+    Record.push_back(SA->getSemanticIndex());
+    Record.push_back(SA->getSemanticExplicitIndex());
     break;
   }
   case attr::HLSLSV_Position: {
@@ -1329,6 +1358,9 @@ Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
+    Record.AddDeclRef(SA->getTarget());
+    Record.push_back(SA->getSemanticIndex());
+    Record.push_back(SA->getSemanticExplicitIndex());
     break;
   }
   case attr::HLSLShader: {
@@ -2771,6 +2803,13 @@ Record.push_back(static_cast<uint64_t>(SA->getState()));
   }
   case attr::SYCLExternal: {
     const auto *SA = cast<SYCLExternalAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->isPackExpansion());
+    break;
+  }
+  case attr::SYCLKernel: {
+    const auto *SA = cast<SYCLKernelAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());

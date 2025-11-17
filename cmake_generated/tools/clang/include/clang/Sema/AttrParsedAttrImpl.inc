@@ -3432,6 +3432,68 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoCPUSpecific Instance;
 };
 const ParsedAttrInfoCPUSpecific ParsedAttrInfoCPUSpecific::Instance;
+static constexpr ParsedAttrInfo::Spelling CUDAClusterDimsSpellings[] = {
+  {AttributeCommonInfo::AS_GNU, "cluster_dims"},
+};
+static constexpr const char *CUDAClusterDimsArgNames[] = {
+"X","Y","Z",};
+struct ParsedAttrInfoCUDAClusterDims final : public ParsedAttrInfo {
+  constexpr ParsedAttrInfoCUDAClusterDims() : ParsedAttrInfo(
+    /*AttrKind=*/ParsedAttr::AT_CUDAClusterDims,
+    /*NumArgs=*/1,
+    /*OptArgs=*/2,
+    /*NumArgMembers=*/3,
+    /*HasCustomParsing=*/0,
+    /*AcceptsExprPack=*/0,
+    /*IsTargetSpecific=*/0,
+    /*IsType=*/0,
+    /*IsStmt=*/0,
+    /*IsKnownToGCC=*/0,
+    /*IsSupportedByPragmaAttribute=*/1,
+    /*Spellings=*/CUDAClusterDimsSpellings,
+    /*ArgNames=*/CUDAClusterDimsArgNames) {}
+bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
+  if (!isa<ObjCMethodDecl>(D) && !isFunctionLike(D)) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << Attr.isRegularKeywordAttribute() << "Objective-C methods, functions, and function pointers";
+    return false;
+  }
+  return true;
+}
+
+bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
+  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
+    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
+  return false;
+}
+
+  using ParsedAttrInfo::diagMutualExclusion;
+
+  bool diagMutualExclusion(Sema &S, const ParsedAttr &AL, const Decl *D) const override {
+    if (const auto *A = D->getAttr<CUDANoClusterAttr>()) {
+      S.Diag(AL.getLoc(), diag::err_attributes_are_not_compatible) << AL << A << (AL.isRegularKeywordAttribute() || A->isRegularKeywordAttribute());
+      S.Diag(A->getLocation(), diag::note_conflicting_attribute);      
+return false;
+    }
+    return true;
+  }
+
+bool acceptsLangOpts(const LangOptions &LangOpts) const override {
+  return LangOpts.CUDA;
+}
+
+void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_hasType_functionType, /*IsSupported=*/true));
+}
+
+bool isParamExpr(size_t N) const override {
+  return (N == 0) || (N == 1) || (N == 2) || false;
+}
+
+static const ParsedAttrInfoCUDAClusterDims Instance;
+};
+const ParsedAttrInfoCUDAClusterDims ParsedAttrInfoCUDAClusterDims::Instance;
 static constexpr ParsedAttrInfo::Spelling CUDAConstantSpellings[] = {
   {AttributeCommonInfo::AS_GNU, "constant"},
   {AttributeCommonInfo::AS_Declspec, "__constant__"},
@@ -3960,6 +4022,66 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoCUDALaunchBounds Instance;
 };
 const ParsedAttrInfoCUDALaunchBounds ParsedAttrInfoCUDALaunchBounds::Instance;
+static constexpr ParsedAttrInfo::Spelling CUDANoClusterSpellings[] = {
+  {AttributeCommonInfo::AS_GNU, "no_cluster"},
+};
+struct ParsedAttrInfoCUDANoCluster final : public ParsedAttrInfo {
+  constexpr ParsedAttrInfoCUDANoCluster() : ParsedAttrInfo(
+    /*AttrKind=*/ParsedAttr::AT_CUDANoCluster,
+    /*NumArgs=*/0,
+    /*OptArgs=*/0,
+    /*NumArgMembers=*/0,
+    /*HasCustomParsing=*/0,
+    /*AcceptsExprPack=*/0,
+    /*IsTargetSpecific=*/0,
+    /*IsType=*/0,
+    /*IsStmt=*/0,
+    /*IsKnownToGCC=*/0,
+    /*IsSupportedByPragmaAttribute=*/1,
+    /*Spellings=*/CUDANoClusterSpellings,
+    /*ArgNames=*/{}) {}
+bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
+  if (!isa<ObjCMethodDecl>(D) && !isFunctionLike(D)) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << Attr.isRegularKeywordAttribute() << "Objective-C methods, functions, and function pointers";
+    return false;
+  }
+  return true;
+}
+
+bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
+  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
+    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
+  return false;
+}
+
+  using ParsedAttrInfo::diagMutualExclusion;
+
+  bool diagMutualExclusion(Sema &S, const ParsedAttr &AL, const Decl *D) const override {
+    if (const auto *A = D->getAttr<CUDAClusterDimsAttr>()) {
+      S.Diag(AL.getLoc(), diag::err_attributes_are_not_compatible) << AL << A << (AL.isRegularKeywordAttribute() || A->isRegularKeywordAttribute());
+      S.Diag(A->getLocation(), diag::note_conflicting_attribute);      
+return false;
+    }
+    return true;
+  }
+
+bool acceptsLangOpts(const LangOptions &LangOpts) const override {
+  return LangOpts.CUDA;
+}
+
+void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
+  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_hasType_functionType, /*IsSupported=*/true));
+}
+
+bool isParamExpr(size_t N) const override {
+  return false;
+}
+
+static const ParsedAttrInfoCUDANoCluster Instance;
+};
+const ParsedAttrInfoCUDANoCluster ParsedAttrInfoCUDANoCluster::Instance;
 static constexpr ParsedAttrInfo::Spelling CUDASharedSpellings[] = {
   {AttributeCommonInfo::AS_GNU, "shared"},
   {AttributeCommonInfo::AS_Declspec, "__shared__"},
@@ -5960,9 +6082,6 @@ static constexpr ParsedAttrInfo::Spelling DeviceKernelSpellings[] = {
   {AttributeCommonInfo::AS_GNU, "device_kernel"},
   {AttributeCommonInfo::AS_CXX11, "clang::device_kernel"},
   {AttributeCommonInfo::AS_C23, "clang::device_kernel"},
-  {AttributeCommonInfo::AS_GNU, "sycl_kernel"},
-  {AttributeCommonInfo::AS_CXX11, "clang::sycl_kernel"},
-  {AttributeCommonInfo::AS_C23, "clang::sycl_kernel"},
   {AttributeCommonInfo::AS_GNU, "nvptx_kernel"},
   {AttributeCommonInfo::AS_CXX11, "clang::nvptx_kernel"},
   {AttributeCommonInfo::AS_C23, "clang::nvptx_kernel"},
@@ -5981,7 +6100,7 @@ struct ParsedAttrInfoDeviceKernel final : public ParsedAttrInfo {
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
     /*IsTargetSpecific=*/0,
-    /*IsType=*/1,
+    /*IsType=*/0,
     /*IsStmt=*/0,
     /*IsKnownToGCC=*/0,
     /*IsSupportedByPragmaAttribute=*/0,
@@ -5992,16 +6111,13 @@ unsigned spellingIndexToSemanticSpelling(const ParsedAttr &Attr) const override 
     GNU_device_kernel = 0,
     CXX11_clang_device_kernel = 1,
     C23_clang_device_kernel = 2,
-    GNU_sycl_kernel = 3,
-    CXX11_clang_sycl_kernel = 4,
-    C23_clang_sycl_kernel = 5,
-    GNU_nvptx_kernel = 6,
-    CXX11_clang_nvptx_kernel = 7,
-    C23_clang_nvptx_kernel = 8,
-    GNU_amdgpu_kernel = 9,
-    CXX11_clang_amdgpu_kernel = 10,
-    C23_clang_amdgpu_kernel = 11,
-    Keyword_kernel = 12,
+    GNU_nvptx_kernel = 3,
+    CXX11_clang_nvptx_kernel = 4,
+    C23_clang_nvptx_kernel = 5,
+    GNU_amdgpu_kernel = 6,
+    CXX11_clang_amdgpu_kernel = 7,
+    C23_clang_amdgpu_kernel = 8,
+    Keyword_kernel = 9,
   SpellingNotCalculated = 15
 
   };
@@ -6012,17 +6128,14 @@ unsigned spellingIndexToSemanticSpelling(const ParsedAttr &Attr) const override 
     case 0: return GNU_device_kernel;
     case 1: return CXX11_clang_device_kernel;
     case 2: return C23_clang_device_kernel;
-    case 3: return GNU_sycl_kernel;
-    case 4: return CXX11_clang_sycl_kernel;
-    case 5: return C23_clang_sycl_kernel;
-    case 6: return GNU_nvptx_kernel;
-    case 7: return CXX11_clang_nvptx_kernel;
-    case 8: return C23_clang_nvptx_kernel;
-    case 9: return GNU_amdgpu_kernel;
-    case 10: return CXX11_clang_amdgpu_kernel;
-    case 11: return C23_clang_amdgpu_kernel;
-    case 12: return Keyword_kernel;
-    case 13: return Keyword_kernel;
+    case 3: return GNU_nvptx_kernel;
+    case 4: return CXX11_clang_nvptx_kernel;
+    case 5: return C23_clang_nvptx_kernel;
+    case 6: return GNU_amdgpu_kernel;
+    case 7: return CXX11_clang_amdgpu_kernel;
+    case 8: return C23_clang_amdgpu_kernel;
+    case 9: return Keyword_kernel;
+    case 10: return Keyword_kernel;
   }
 }
 
@@ -7807,12 +7920,14 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLResourceClass Instance;
 };
 const ParsedAttrInfoHLSLResourceClass ParsedAttrInfoHLSLResourceClass::Instance;
+static constexpr const char *HLSLSV_DispatchThreadIDArgNames[] = {
+"Target","SemanticIndex","SemanticExplicitIndex",};
 struct ParsedAttrInfoHLSLSV_DispatchThreadID final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoHLSLSV_DispatchThreadID() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_HLSLSV_DispatchThreadID,
-    /*NumArgs=*/0,
+    /*NumArgs=*/3,
     /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
+    /*NumArgMembers=*/3,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
     /*IsTargetSpecific=*/0,
@@ -7821,7 +7936,7 @@ struct ParsedAttrInfoHLSLSV_DispatchThreadID final : public ParsedAttrInfo {
     /*IsKnownToGCC=*/0,
     /*IsSupportedByPragmaAttribute=*/0,
     /*Spellings=*/{},
-    /*ArgNames=*/{}) {}
+    /*ArgNames=*/HLSLSV_DispatchThreadIDArgNames) {}
 bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
   if (!isa<ParmVarDecl>(D) && !isa<FieldDecl>(D) && !isa<FunctionDecl>(D)) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -7848,12 +7963,14 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLSV_DispatchThreadID Instance;
 };
 const ParsedAttrInfoHLSLSV_DispatchThreadID ParsedAttrInfoHLSLSV_DispatchThreadID::Instance;
+static constexpr const char *HLSLSV_GroupIDArgNames[] = {
+"Target","SemanticIndex","SemanticExplicitIndex",};
 struct ParsedAttrInfoHLSLSV_GroupID final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoHLSLSV_GroupID() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_HLSLSV_GroupID,
-    /*NumArgs=*/0,
+    /*NumArgs=*/3,
     /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
+    /*NumArgMembers=*/3,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
     /*IsTargetSpecific=*/0,
@@ -7862,7 +7979,7 @@ struct ParsedAttrInfoHLSLSV_GroupID final : public ParsedAttrInfo {
     /*IsKnownToGCC=*/0,
     /*IsSupportedByPragmaAttribute=*/0,
     /*Spellings=*/{},
-    /*ArgNames=*/{}) {}
+    /*ArgNames=*/HLSLSV_GroupIDArgNames) {}
 bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
   if (!isa<ParmVarDecl>(D) && !isa<FieldDecl>(D) && !isa<FunctionDecl>(D)) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -7889,12 +8006,14 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLSV_GroupID Instance;
 };
 const ParsedAttrInfoHLSLSV_GroupID ParsedAttrInfoHLSLSV_GroupID::Instance;
+static constexpr const char *HLSLSV_GroupIndexArgNames[] = {
+"Target","SemanticIndex","SemanticExplicitIndex",};
 struct ParsedAttrInfoHLSLSV_GroupIndex final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoHLSLSV_GroupIndex() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_HLSLSV_GroupIndex,
-    /*NumArgs=*/0,
+    /*NumArgs=*/3,
     /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
+    /*NumArgMembers=*/3,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
     /*IsTargetSpecific=*/0,
@@ -7903,7 +8022,7 @@ struct ParsedAttrInfoHLSLSV_GroupIndex final : public ParsedAttrInfo {
     /*IsKnownToGCC=*/0,
     /*IsSupportedByPragmaAttribute=*/0,
     /*Spellings=*/{},
-    /*ArgNames=*/{}) {}
+    /*ArgNames=*/HLSLSV_GroupIndexArgNames) {}
 bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
   if (!isa<ParmVarDecl>(D) && !isa<FieldDecl>(D) && !isa<FunctionDecl>(D)) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -7930,12 +8049,14 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLSV_GroupIndex Instance;
 };
 const ParsedAttrInfoHLSLSV_GroupIndex ParsedAttrInfoHLSLSV_GroupIndex::Instance;
+static constexpr const char *HLSLSV_GroupThreadIDArgNames[] = {
+"Target","SemanticIndex","SemanticExplicitIndex",};
 struct ParsedAttrInfoHLSLSV_GroupThreadID final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoHLSLSV_GroupThreadID() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_HLSLSV_GroupThreadID,
-    /*NumArgs=*/0,
+    /*NumArgs=*/3,
     /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
+    /*NumArgMembers=*/3,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
     /*IsTargetSpecific=*/0,
@@ -7944,7 +8065,7 @@ struct ParsedAttrInfoHLSLSV_GroupThreadID final : public ParsedAttrInfo {
     /*IsKnownToGCC=*/0,
     /*IsSupportedByPragmaAttribute=*/0,
     /*Spellings=*/{},
-    /*ArgNames=*/{}) {}
+    /*ArgNames=*/HLSLSV_GroupThreadIDArgNames) {}
 bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
   if (!isa<ParmVarDecl>(D) && !isa<FieldDecl>(D) && !isa<FunctionDecl>(D)) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -7971,12 +8092,14 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLSV_GroupThreadID Instance;
 };
 const ParsedAttrInfoHLSLSV_GroupThreadID ParsedAttrInfoHLSLSV_GroupThreadID::Instance;
+static constexpr const char *HLSLSV_PositionArgNames[] = {
+"Target","SemanticIndex","SemanticExplicitIndex",};
 struct ParsedAttrInfoHLSLSV_Position final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoHLSLSV_Position() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_HLSLSV_Position,
-    /*NumArgs=*/0,
+    /*NumArgs=*/3,
     /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
+    /*NumArgMembers=*/3,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
     /*IsTargetSpecific=*/0,
@@ -7985,7 +8108,7 @@ struct ParsedAttrInfoHLSLSV_Position final : public ParsedAttrInfo {
     /*IsKnownToGCC=*/0,
     /*IsSupportedByPragmaAttribute=*/0,
     /*Spellings=*/{},
-    /*ArgNames=*/{}) {}
+    /*ArgNames=*/HLSLSV_PositionArgNames) {}
 bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
   if (!isa<ParmVarDecl>(D) && !isa<FieldDecl>(D) && !isa<FunctionDecl>(D)) {
     S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
@@ -16562,6 +16685,52 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoSYCLExternal Instance;
 };
 const ParsedAttrInfoSYCLExternal ParsedAttrInfoSYCLExternal::Instance;
+static constexpr ParsedAttrInfo::Spelling SYCLKernelSpellings[] = {
+  {AttributeCommonInfo::AS_GNU, "sycl_kernel"},
+  {AttributeCommonInfo::AS_CXX11, "clang::sycl_kernel"},
+  {AttributeCommonInfo::AS_C23, "clang::sycl_kernel"},
+};
+struct ParsedAttrInfoSYCLKernel final : public ParsedAttrInfo {
+  constexpr ParsedAttrInfoSYCLKernel() : ParsedAttrInfo(
+    /*AttrKind=*/ParsedAttr::AT_SYCLKernel,
+    /*NumArgs=*/0,
+    /*OptArgs=*/0,
+    /*NumArgMembers=*/0,
+    /*HasCustomParsing=*/0,
+    /*AcceptsExprPack=*/0,
+    /*IsTargetSpecific=*/0,
+    /*IsType=*/0,
+    /*IsStmt=*/0,
+    /*IsKnownToGCC=*/0,
+    /*IsSupportedByPragmaAttribute=*/0,
+    /*Spellings=*/SYCLKernelSpellings,
+    /*ArgNames=*/{}) {}
+bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
+  if (!isFunctionTmpl(D)) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
+      << Attr << Attr.isRegularKeywordAttribute() << "function templates";
+    return false;
+  }
+  return true;
+}
+
+bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
+  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
+    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
+  return false;
+}
+
+bool acceptsLangOpts(const LangOptions &LangOpts) const override {
+  return LangOpts.SYCLIsDevice;
+}
+
+bool isParamExpr(size_t N) const override {
+  return false;
+}
+
+static const ParsedAttrInfoSYCLKernel Instance;
+};
+const ParsedAttrInfoSYCLKernel ParsedAttrInfoSYCLKernel::Instance;
 static constexpr ParsedAttrInfo::Spelling SYCLKernelEntryPointSpellings[] = {
   {AttributeCommonInfo::AS_CXX11, "clang::sycl_kernel_entry_point"},
 };
@@ -20155,6 +20324,7 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoCFUnknownTransfer::Instance,
 &ParsedAttrInfoCPUDispatch::Instance,
 &ParsedAttrInfoCPUSpecific::Instance,
+&ParsedAttrInfoCUDAClusterDims::Instance,
 &ParsedAttrInfoCUDAConstant::Instance,
 &ParsedAttrInfoCUDADevice::Instance,
 &ParsedAttrInfoCUDADeviceBuiltinSurfaceType::Instance,
@@ -20164,6 +20334,7 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoCUDAHost::Instance,
 &ParsedAttrInfoCUDAInvalidTarget::Instance,
 &ParsedAttrInfoCUDALaunchBounds::Instance,
+&ParsedAttrInfoCUDANoCluster::Instance,
 &ParsedAttrInfoCUDAShared::Instance,
 &ParsedAttrInfoCXX11NoReturn::Instance,
 &ParsedAttrInfoCXXAssume::Instance,
@@ -20431,6 +20602,7 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoRootSignature::Instance,
 &ParsedAttrInfoSPtr::Instance,
 &ParsedAttrInfoSYCLExternal::Instance,
+&ParsedAttrInfoSYCLKernel::Instance,
 &ParsedAttrInfoSYCLKernelEntryPoint::Instance,
 &ParsedAttrInfoSYCLSpecialClass::Instance,
 &ParsedAttrInfoScopedLockable::Instance,
@@ -20706,6 +20878,14 @@ static bool DiagnoseMutualExclusions(Sema &S, const NamedDecl *D, const Attr *A)
     }
     return true;
   }
+  if (const auto *Second = dyn_cast<CUDAClusterDimsAttr>(A)) {
+    if (const auto *First = D->getAttr<CUDANoClusterAttr>()) {
+      S.Diag(First->getLocation(), diag::err_attributes_are_not_compatible) << First << Second << (First->isRegularKeywordAttribute() || Second->isRegularKeywordAttribute());
+      S.Diag(Second->getLocation(), diag::note_conflicting_attribute);
+      return false;
+    }
+    return true;
+  }
   if (const auto *Second = dyn_cast<CUDAConstantAttr>(A)) {
     if (const auto *First = D->getAttr<CUDASharedAttr>()) {
       S.Diag(First->getLocation(), diag::err_attributes_are_not_compatible) << First << Second << (First->isRegularKeywordAttribute() || Second->isRegularKeywordAttribute());
@@ -20758,6 +20938,14 @@ static bool DiagnoseMutualExclusions(Sema &S, const NamedDecl *D, const Attr *A)
   }
   if (const auto *Second = dyn_cast<CUDAHostAttr>(A)) {
     if (const auto *First = D->getAttr<CUDAGlobalAttr>()) {
+      S.Diag(First->getLocation(), diag::err_attributes_are_not_compatible) << First << Second << (First->isRegularKeywordAttribute() || Second->isRegularKeywordAttribute());
+      S.Diag(Second->getLocation(), diag::note_conflicting_attribute);
+      return false;
+    }
+    return true;
+  }
+  if (const auto *Second = dyn_cast<CUDANoClusterAttr>(A)) {
+    if (const auto *First = D->getAttr<CUDAClusterDimsAttr>()) {
       S.Diag(First->getLocation(), diag::err_attributes_are_not_compatible) << First << Second << (First->isRegularKeywordAttribute() || Second->isRegularKeywordAttribute());
       S.Diag(Second->getLocation(), diag::note_conflicting_attribute);
       return false;

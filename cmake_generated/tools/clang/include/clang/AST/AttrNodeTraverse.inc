@@ -79,6 +79,12 @@
     Visit(SA->getAlignment());
     Visit(SA->getOffset());
   }
+  void VisitCUDAClusterDimsAttr(const CUDAClusterDimsAttr *A) {
+    const auto *SA = cast<CUDAClusterDimsAttr>(A); (void)SA;
+    Visit(SA->getX());
+    Visit(SA->getY());
+    Visit(SA->getZ());
+  }
   void VisitCUDALaunchBoundsAttr(const CUDALaunchBoundsAttr *A) {
     const auto *SA = cast<CUDALaunchBoundsAttr>(A); (void)SA;
     Visit(SA->getMaxThreads());
