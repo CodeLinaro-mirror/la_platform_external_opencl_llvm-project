@@ -475,6 +475,41 @@
       break;
     }
   }
+  void VisitHLSLSV_DispatchThreadIDAttr(const HLSLSV_DispatchThreadIDAttr *A) {
+    const auto *SA = cast<HLSLSV_DispatchThreadIDAttr>(A); (void)SA;
+    OS << " ";
+    dumpBareDeclRef(SA->getTarget());
+    OS << " " << SA->getSemanticIndex();
+    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
+  }
+  void VisitHLSLSV_GroupIDAttr(const HLSLSV_GroupIDAttr *A) {
+    const auto *SA = cast<HLSLSV_GroupIDAttr>(A); (void)SA;
+    OS << " ";
+    dumpBareDeclRef(SA->getTarget());
+    OS << " " << SA->getSemanticIndex();
+    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
+  }
+  void VisitHLSLSV_GroupIndexAttr(const HLSLSV_GroupIndexAttr *A) {
+    const auto *SA = cast<HLSLSV_GroupIndexAttr>(A); (void)SA;
+    OS << " ";
+    dumpBareDeclRef(SA->getTarget());
+    OS << " " << SA->getSemanticIndex();
+    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
+  }
+  void VisitHLSLSV_GroupThreadIDAttr(const HLSLSV_GroupThreadIDAttr *A) {
+    const auto *SA = cast<HLSLSV_GroupThreadIDAttr>(A); (void)SA;
+    OS << " ";
+    dumpBareDeclRef(SA->getTarget());
+    OS << " " << SA->getSemanticIndex();
+    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
+  }
+  void VisitHLSLSV_PositionAttr(const HLSLSV_PositionAttr *A) {
+    const auto *SA = cast<HLSLSV_PositionAttr>(A); (void)SA;
+    OS << " ";
+    dumpBareDeclRef(SA->getTarget());
+    OS << " " << SA->getSemanticIndex();
+    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
+  }
   void VisitHLSLShaderAttr(const HLSLShaderAttr *A) {
     const auto *SA = cast<HLSLShaderAttr>(A); (void)SA;
     switch(SA->getType()) {

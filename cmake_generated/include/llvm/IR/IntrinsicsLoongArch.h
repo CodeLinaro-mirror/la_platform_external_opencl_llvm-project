@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum LOONGARCHIntrinsics : unsigned {
 // Enum values for intrinsics.
-    loongarch_asrtgt_d = 6232,                        // llvm.loongarch.asrtgt.d (IntrinsicsLoongArch.td:124)
+    loongarch_asrtgt_d = 6250,                        // llvm.loongarch.asrtgt.d (IntrinsicsLoongArch.td:124)
     loongarch_asrtle_d,                        // llvm.loongarch.asrtle.d (IntrinsicsLoongArch.td:123)
     loongarch_break,                           // llvm.loongarch.break (IntrinsicsLoongArch.td:64)
     loongarch_cacop_d,                         // llvm.loongarch.cacop.d (IntrinsicsLoongArch.td:65)

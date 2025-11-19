@@ -330,6 +330,7 @@ enum class Clause {
   OMPC_destroy,
   OMPC_detach,
   OMPC_device,
+  OMPC_device_safesync,
   OMPC_device_type,
   OMPC_dist_schedule,
   OMPC_doacross,
@@ -411,6 +412,7 @@ enum class Clause {
   OMPC_thread_limit,
   OMPC_threadprivate,
   OMPC_threads,
+  OMPC_threadset,
   OMPC_to,
   OMPC_transparent,
   OMPC_unified_address,
@@ -429,7 +431,7 @@ enum class Clause {
   Last_ = OMPC_write,
 };
 
-static constexpr std::size_t Clause_enumSize = 123;
+static constexpr std::size_t Clause_enumSize = 125;
 
 constexpr auto OMPC_absent = Clause::OMPC_absent;
 constexpr auto OMPC_acq_rel = Clause::OMPC_acq_rel;
@@ -458,6 +460,7 @@ constexpr auto OMPC_depobj = Clause::OMPC_depobj;
 constexpr auto OMPC_destroy = Clause::OMPC_destroy;
 constexpr auto OMPC_detach = Clause::OMPC_detach;
 constexpr auto OMPC_device = Clause::OMPC_device;
+constexpr auto OMPC_device_safesync = Clause::OMPC_device_safesync;
 constexpr auto OMPC_device_type = Clause::OMPC_device_type;
 constexpr auto OMPC_dist_schedule = Clause::OMPC_dist_schedule;
 constexpr auto OMPC_doacross = Clause::OMPC_doacross;
@@ -539,6 +542,7 @@ constexpr auto OMPC_task_reduction = Clause::OMPC_task_reduction;
 constexpr auto OMPC_thread_limit = Clause::OMPC_thread_limit;
 constexpr auto OMPC_threadprivate = Clause::OMPC_threadprivate;
 constexpr auto OMPC_threads = Clause::OMPC_threads;
+constexpr auto OMPC_threadset = Clause::OMPC_threadset;
 constexpr auto OMPC_to = Clause::OMPC_to;
 constexpr auto OMPC_transparent = Clause::OMPC_transparent;
 constexpr auto OMPC_unified_address = Clause::OMPC_unified_address;
@@ -719,4 +723,5 @@ template <> struct enum_iteration_traits<omp::Clause> {
   static constexpr bool is_iterable = true;
 };
 } // namespace llvm
+
 #endif // LLVM_OpenMP_INC

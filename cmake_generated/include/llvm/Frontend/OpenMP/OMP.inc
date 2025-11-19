@@ -1487,6 +1487,7 @@ static OmpClauseSet allowedClauses_OMPD_requires {
 static OmpClauseSet allowedOnceClauses_OMPD_requires {
   Clause::OMPC_unified_address,
   Clause::OMPC_unified_shared_memory,
+  Clause::OMPC_device_safesync,
   Clause::OMPC_atomic_default_mem_order,
   Clause::OMPC_dynamic_allocators,
   Clause::OMPC_self_maps,
@@ -2363,6 +2364,7 @@ static OmpClauseSet allowedOnceClauses_OMPD_task {
   Clause::OMPC_final,
   Clause::OMPC_if,
   Clause::OMPC_priority,
+  Clause::OMPC_threadset,
   Clause::OMPC_replayable,
   Clause::OMPC_transparent,
 };
@@ -2410,6 +2412,7 @@ static OmpClauseSet allowedOnceClauses_OMPD_taskloop {
   Clause::OMPC_final,
   Clause::OMPC_if,
   Clause::OMPC_priority,
+  Clause::OMPC_threadset,
   Clause::OMPC_replayable,
   Clause::OMPC_transparent,
 };
@@ -4124,11 +4127,12 @@ EMPTY_CLASS(Depobj);
 WRAPPER_CLASS(Destroy, std::optional<OmpDestroyClause>);
 WRAPPER_CLASS(Detach, OmpDetachClause);
 WRAPPER_CLASS(Device, OmpDeviceClause);
+WRAPPER_CLASS(DeviceSafesync, std::optional<OmpDeviceSafesyncClause>);
 WRAPPER_CLASS(DeviceType, OmpDeviceTypeClause);
 WRAPPER_CLASS(DistSchedule, std::optional<ScalarIntExpr>);
 WRAPPER_CLASS(Doacross, OmpDoacrossClause);
 WRAPPER_CLASS(DynGroupprivate, OmpDynGroupprivateClause);
-EMPTY_CLASS(DynamicAllocators);
+WRAPPER_CLASS(DynamicAllocators, std::optional<OmpDynamicAllocatorsClause>);
 WRAPPER_CLASS(Enter, OmpEnterClause);
 WRAPPER_CLASS(Exclusive, OmpObjectList);
 WRAPPER_CLASS(Fail, OmpFailClause);
@@ -4191,10 +4195,10 @@ WRAPPER_CLASS(Reduction, OmpReductionClause);
 EMPTY_CLASS(Relaxed);
 EMPTY_CLASS(Release);
 WRAPPER_CLASS(Replayable, std::optional<OmpReplayableClause>);
-EMPTY_CLASS(ReverseOffload);
+WRAPPER_CLASS(ReverseOffload, std::optional<OmpReverseOffloadClause>);
 WRAPPER_CLASS(Safelen, ScalarIntConstantExpr);
 WRAPPER_CLASS(Schedule, OmpScheduleClause);
-EMPTY_CLASS(SelfMaps);
+WRAPPER_CLASS(SelfMaps, std::optional<OmpSelfMapsClause>);
 EMPTY_CLASS(SeqCst);
 WRAPPER_CLASS(Severity, OmpSeverityClause);
 WRAPPER_CLASS(Shared, OmpObjectList);
@@ -4205,10 +4209,11 @@ WRAPPER_CLASS(TaskReduction, OmpTaskReductionClause);
 WRAPPER_CLASS(ThreadLimit, ScalarIntExpr);
 EMPTY_CLASS(Threadprivate);
 EMPTY_CLASS(Threads);
+WRAPPER_CLASS(Threadset, OmpThreadsetClause);
 WRAPPER_CLASS(To, OmpToClause);
 WRAPPER_CLASS(Transparent, std::optional<OmpTransparentClause>);
-EMPTY_CLASS(UnifiedAddress);
-EMPTY_CLASS(UnifiedSharedMemory);
+WRAPPER_CLASS(UnifiedAddress, std::optional<OmpUnifiedAddressClause>);
+WRAPPER_CLASS(UnifiedSharedMemory, std::optional<OmpUnifiedSharedMemoryClause>);
 WRAPPER_CLASS(Uniform, std::list<Name>);
 EMPTY_CLASS(Unknown);
 EMPTY_CLASS(Untied);
@@ -4253,6 +4258,7 @@ Absent
 , Destroy
 , Detach
 , Device
+, DeviceSafesync
 , DeviceType
 , DistSchedule
 , Doacross
@@ -4334,6 +4340,7 @@ Absent
 , ThreadLimit
 , Threadprivate
 , Threads
+, Threadset
 , To
 , Transparent
 , UnifiedAddress
@@ -4382,6 +4389,7 @@ NODE(OmpClause, Depobj)
 NODE(OmpClause, Destroy)
 NODE(OmpClause, Detach)
 NODE(OmpClause, Device)
+NODE(OmpClause, DeviceSafesync)
 NODE(OmpClause, DeviceType)
 NODE(OmpClause, DistSchedule)
 NODE(OmpClause, Doacross)
@@ -4463,6 +4471,7 @@ NODE(OmpClause, TaskReduction)
 NODE(OmpClause, ThreadLimit)
 NODE(OmpClause, Threadprivate)
 NODE(OmpClause, Threads)
+NODE(OmpClause, Threadset)
 NODE(OmpClause, To)
 NODE(OmpClause, Transparent)
 NODE(OmpClause, UnifiedAddress)
@@ -4613,6 +4622,10 @@ void Unparse(const OmpClause::Device &x) {
   Walk(x.v);
   Put(")");
 }
+void Unparse(const OmpClause::DeviceSafesync &x) {
+  Word("DEVICE_SAFESYNC");
+  Walk("(", x.v, ")");
+}
 void Unparse(const OmpClause::DeviceType &x) {
   Word("DEVICE_TYPE");
   Put("(");
@@ -4635,7 +4648,10 @@ void Unparse(const OmpClause::DynGroupprivate &x) {
   Walk(x.v);
   Put(")");
 }
-void Before(const OmpClause::DynamicAllocators &) { Word("DYNAMIC_ALLOCATORS"); }
+void Unparse(const OmpClause::DynamicAllocators &x) {
+  Word("DYNAMIC_ALLOCATORS");
+  Walk("(", x.v, ")");
+}
 void Unparse(const OmpClause::Enter &x) {
   Word("ENTER");
   Put("(");
@@ -4908,7 +4924,10 @@ void Unparse(const OmpClause::Replayable &x) {
   Word("REPLAYABLE");
   Walk("(", x.v, ")");
 }
-void Before(const OmpClause::ReverseOffload &) { Word("REVERSE_OFFLOAD"); }
+void Unparse(const OmpClause::ReverseOffload &x) {
+  Word("REVERSE_OFFLOAD");
+  Walk("(", x.v, ")");
+}
 void Unparse(const OmpClause::Safelen &x) {
   Word("SAFELEN");
   Put("(");
@@ -4921,7 +4940,10 @@ void Unparse(const OmpClause::Schedule &x) {
   Walk(x.v);
   Put(")");
 }
-void Before(const OmpClause::SelfMaps &) { Word("SELF_MAPS"); }
+void Unparse(const OmpClause::SelfMaps &x) {
+  Word("SELF_MAPS");
+  Walk("(", x.v, ")");
+}
 void Before(const OmpClause::SeqCst &) { Word("SEQ_CST"); }
 void Unparse(const OmpClause::Severity &x) {
   Word("SEVERITY");
@@ -4962,6 +4984,12 @@ void Unparse(const OmpClause::ThreadLimit &x) {
 }
 void Before(const OmpClause::Threadprivate &) { Word("THREADPRIVATE"); }
 void Before(const OmpClause::Threads &) { Word("THREADS"); }
+void Unparse(const OmpClause::Threadset &x) {
+  Word("THREADSET");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Unparse(const OmpClause::To &x) {
   Word("TO");
   Put("(");
@@ -4972,8 +5000,14 @@ void Unparse(const OmpClause::Transparent &x) {
   Word("TRANSPARENT");
   Walk("(", x.v, ")");
 }
-void Before(const OmpClause::UnifiedAddress &) { Word("UNIFIED_ADDRESS"); }
-void Before(const OmpClause::UnifiedSharedMemory &) { Word("UNIFIED_SHARED_MEMORY"); }
+void Unparse(const OmpClause::UnifiedAddress &x) {
+  Word("UNIFIED_ADDRESS");
+  Walk("(", x.v, ")");
+}
+void Unparse(const OmpClause::UnifiedSharedMemory &x) {
+  Word("UNIFIED_SHARED_MEMORY");
+  Walk("(", x.v, ")");
+}
 void Unparse(const OmpClause::Uniform &x) {
   Word("UNIFORM");
   Put("(");
@@ -5046,6 +5080,7 @@ void Enter(const parser::OmpClause::Depobj &);
 void Enter(const parser::OmpClause::Destroy &);
 void Enter(const parser::OmpClause::Detach &);
 void Enter(const parser::OmpClause::Device &);
+void Enter(const parser::OmpClause::DeviceSafesync &);
 void Enter(const parser::OmpClause::DeviceType &);
 void Enter(const parser::OmpClause::DistSchedule &);
 void Enter(const parser::OmpClause::Doacross &);
@@ -5127,6 +5162,7 @@ void Enter(const parser::OmpClause::TaskReduction &);
 void Enter(const parser::OmpClause::ThreadLimit &);
 void Enter(const parser::OmpClause::Threadprivate &);
 void Enter(const parser::OmpClause::Threads &);
+void Enter(const parser::OmpClause::Threadset &);
 void Enter(const parser::OmpClause::To &);
 void Enter(const parser::OmpClause::Transparent &);
 void Enter(const parser::OmpClause::UnifiedAddress &);
@@ -5202,6 +5238,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Detach>)
   return llvm::omp::Clause::OMPC_detach;
 if constexpr (std::is_same_v<A, parser::OmpClause::Device>)
   return llvm::omp::Clause::OMPC_device;
+if constexpr (std::is_same_v<A, parser::OmpClause::DeviceSafesync>)
+  return llvm::omp::Clause::OMPC_device_safesync;
 if constexpr (std::is_same_v<A, parser::OmpClause::DeviceType>)
   return llvm::omp::Clause::OMPC_device_type;
 if constexpr (std::is_same_v<A, parser::OmpClause::DistSchedule>)
@@ -5364,6 +5402,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Threadprivate>)
   return llvm::omp::Clause::OMPC_threadprivate;
 if constexpr (std::is_same_v<A, parser::OmpClause::Threads>)
   return llvm::omp::Clause::OMPC_threads;
+if constexpr (std::is_same_v<A, parser::OmpClause::Threadset>)
+  return llvm::omp::Clause::OMPC_threadset;
 if constexpr (std::is_same_v<A, parser::OmpClause::To>)
   return llvm::omp::Clause::OMPC_to;
 if constexpr (std::is_same_v<A, parser::OmpClause::Transparent>)
@@ -5413,10 +5453,11 @@ TYPE_PARSER(
   "untied" >> construct<OmpClause>(construct<OmpClause::Untied>()) ||
   "unknown" >> construct<OmpClause>(construct<OmpClause::Unknown>()) ||
   "uniform" >> construct<OmpClause>(construct<OmpClause::Uniform>(parenthesized(nonemptyList(name)))) ||
-  "unified_shared_memory" >> construct<OmpClause>(construct<OmpClause::UnifiedSharedMemory>()) ||
-  "unified_address" >> construct<OmpClause>(construct<OmpClause::UnifiedAddress>()) ||
+  "unified_shared_memory" >> construct<OmpClause>(construct<OmpClause::UnifiedSharedMemory>(maybe(parenthesized(Parser<OmpUnifiedSharedMemoryClause>{})))) ||
+  "unified_address" >> construct<OmpClause>(construct<OmpClause::UnifiedAddress>(maybe(parenthesized(Parser<OmpUnifiedAddressClause>{})))) ||
   "transparent" >> construct<OmpClause>(construct<OmpClause::Transparent>(maybe(parenthesized(Parser<OmpTransparentClause>{})))) ||
   "to" >> construct<OmpClause>(construct<OmpClause::To>(parenthesized(Parser<OmpToClause>{}))) ||
+  "threadset" >> construct<OmpClause>(construct<OmpClause::Threadset>(parenthesized(Parser<OmpThreadsetClause>{}))) ||
   "threads" >> construct<OmpClause>(construct<OmpClause::Threads>()) ||
   "threadprivate" >> construct<OmpClause>(construct<OmpClause::Threadprivate>()) ||
   "thread_limit" >> construct<OmpClause>(construct<OmpClause::ThreadLimit>(parenthesized(scalarIntExpr))) ||
@@ -5427,10 +5468,10 @@ TYPE_PARSER(
   "shared" >> construct<OmpClause>(construct<OmpClause::Shared>(parenthesized(Parser<OmpObjectList>{}))) ||
   "severity" >> construct<OmpClause>(construct<OmpClause::Severity>(parenthesized(Parser<OmpSeverityClause>{}))) ||
   "seq_cst" >> construct<OmpClause>(construct<OmpClause::SeqCst>()) ||
-  "self_maps" >> construct<OmpClause>(construct<OmpClause::SelfMaps>()) ||
+  "self_maps" >> construct<OmpClause>(construct<OmpClause::SelfMaps>(maybe(parenthesized(Parser<OmpSelfMapsClause>{})))) ||
   "schedule" >> construct<OmpClause>(construct<OmpClause::Schedule>(parenthesized(Parser<OmpScheduleClause>{}))) ||
   "safelen" >> construct<OmpClause>(construct<OmpClause::Safelen>(parenthesized(scalarIntConstantExpr))) ||
-  "reverse_offload" >> construct<OmpClause>(construct<OmpClause::ReverseOffload>()) ||
+  "reverse_offload" >> construct<OmpClause>(construct<OmpClause::ReverseOffload>(maybe(parenthesized(Parser<OmpReverseOffloadClause>{})))) ||
   "replayable" >> construct<OmpClause>(construct<OmpClause::Replayable>(maybe(parenthesized(Parser<OmpReplayableClause>{})))) ||
   "release" >> construct<OmpClause>(construct<OmpClause::Release>()) ||
   "relaxed" >> construct<OmpClause>(construct<OmpClause::Relaxed>()) ||
@@ -5493,11 +5534,12 @@ TYPE_PARSER(
   "fail" >> construct<OmpClause>(construct<OmpClause::Fail>(parenthesized(Parser<OmpFailClause>{}))) ||
   "exclusive" >> construct<OmpClause>(construct<OmpClause::Exclusive>(parenthesized(Parser<OmpObjectList>{}))) ||
   "enter" >> construct<OmpClause>(construct<OmpClause::Enter>(parenthesized(Parser<OmpEnterClause>{}))) ||
-  "dynamic_allocators" >> construct<OmpClause>(construct<OmpClause::DynamicAllocators>()) ||
+  "dynamic_allocators" >> construct<OmpClause>(construct<OmpClause::DynamicAllocators>(maybe(parenthesized(Parser<OmpDynamicAllocatorsClause>{})))) ||
   "dyn_groupprivate" >> construct<OmpClause>(construct<OmpClause::DynGroupprivate>(parenthesized(Parser<OmpDynGroupprivateClause>{}))) ||
   "doacross" >> construct<OmpClause>(construct<OmpClause::Doacross>(parenthesized(Parser<OmpDoacrossClause>{}))) ||
   "dist_schedule" >> construct<OmpClause>(construct<OmpClause::DistSchedule>(maybe(parenthesized(scalarIntExpr)))) ||
   "device_type" >> construct<OmpClause>(construct<OmpClause::DeviceType>(parenthesized(Parser<OmpDeviceTypeClause>{}))) ||
+  "device_safesync" >> construct<OmpClause>(construct<OmpClause::DeviceSafesync>(maybe(parenthesized(Parser<OmpDeviceSafesyncClause>{})))) ||
   "device" >> construct<OmpClause>(construct<OmpClause::Device>(parenthesized(Parser<OmpDeviceClause>{}))) ||
   "detach" >> construct<OmpClause>(construct<OmpClause::Detach>(parenthesized(Parser<OmpDetachClause>{}))) ||
   "destroy" >> construct<OmpClause>(construct<OmpClause::Destroy>(maybe(parenthesized(Parser<OmpDestroyClause>{})))) ||
@@ -5582,6 +5624,7 @@ __IMPLICIT_CLAUSE_CLASS(depobj, "depobj", OMPDepobjClause)
 __CLAUSE(destroy, OMPDestroyClause)
 __CLAUSE(detach, OMPDetachClause)
 __CLAUSE(device, OMPDeviceClause)
+__CLAUSE_NO_CLASS(device_safesync)
 __CLAUSE_NO_CLASS(device_type)
 __CLAUSE(dist_schedule, OMPDistScheduleClause)
 __CLAUSE(doacross, OMPDoacrossClause)
@@ -5663,6 +5706,7 @@ __CLAUSE(task_reduction, OMPTaskReductionClause)
 __CLAUSE(thread_limit, OMPThreadLimitClause)
 __IMPLICIT_CLAUSE_NO_CLASS(threadprivate, "threadprivate")
 __CLAUSE(threads, OMPThreadsClause)
+__CLAUSE(threadset, OMPThreadsetClause)
 __CLAUSE(to, OMPToClause)
 __CLAUSE_NO_CLASS(transparent)
 __CLAUSE(unified_address, OMPUnifiedAddressClause)
@@ -6188,6 +6232,7 @@ std::pair<llvm::omp::Clause, llvm::directive::VersionRange> llvm::omp::getOpenMP
     .Case("destroy", {OMPC_destroy, All})
     .Case("detach", {OMPC_detach, All})
     .Case("device", {OMPC_device, All})
+    .Case("device_safesync", {OMPC_device_safesync, All})
     .Case("device_type", {OMPC_device_type, All})
     .Case("dist_schedule", {OMPC_dist_schedule, All})
     .Case("doacross", {OMPC_doacross, All})
@@ -6269,6 +6314,7 @@ std::pair<llvm::omp::Clause, llvm::directive::VersionRange> llvm::omp::getOpenMP
     .Case("thread_limit", {OMPC_thread_limit, All})
     .Case("threadprivate", {OMPC_unknown, All})
     .Case("threads", {OMPC_threads, All})
+    .Case("threadset", {OMPC_threadset, All})
     .Case("to", {OMPC_to, All})
     .Case("transparent", {OMPC_transparent, All})
     .Case("unified_address", {OMPC_unified_address, All})
@@ -6343,6 +6389,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "detach";
     case OMPC_device:
       return "device";
+    case OMPC_device_safesync:
+      return "device_safesync";
     case OMPC_device_type:
       return "device_type";
     case OMPC_dist_schedule:
@@ -6505,6 +6553,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "threadprivate";
     case OMPC_threads:
       return "threads";
+    case OMPC_threadset:
+      return "threadset";
     case OMPC_to:
       return "to";
     case OMPC_transparent:
@@ -8268,6 +8318,8 @@ bool llvm::omp::isAllowedClauseForDirective(llvm::omp::Directive D, llvm::omp::C
           return 1 <= Version && 2147483647 >= Version;
         case OMPC_unified_shared_memory:
           return 1 <= Version && 2147483647 >= Version;
+        case OMPC_device_safesync:
+          return 60 <= Version && 2147483647 >= Version;
         case OMPC_atomic_default_mem_order:
           return 1 <= Version && 2147483647 >= Version;
         case OMPC_dynamic_allocators:
@@ -9398,6 +9450,8 @@ bool llvm::omp::isAllowedClauseForDirective(llvm::omp::Directive D, llvm::omp::C
           return 1 <= Version && 2147483647 >= Version;
         case OMPC_priority:
           return 1 <= Version && 2147483647 >= Version;
+        case OMPC_threadset:
+          return 60 <= Version && 2147483647 >= Version;
         case OMPC_replayable:
           return 60 <= Version && 2147483647 >= Version;
         case OMPC_transparent:
@@ -9448,6 +9502,8 @@ bool llvm::omp::isAllowedClauseForDirective(llvm::omp::Directive D, llvm::omp::C
           return 1 <= Version && 2147483647 >= Version;
         case OMPC_priority:
           return 1 <= Version && 2147483647 >= Version;
+        case OMPC_threadset:
+          return 60 <= Version && 2147483647 >= Version;
         case OMPC_replayable:
           return 60 <= Version && 2147483647 >= Version;
         case OMPC_transparent:

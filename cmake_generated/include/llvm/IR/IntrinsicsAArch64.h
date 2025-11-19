@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum AARCH64Intrinsics : unsigned {
 // Enum values for intrinsics.
-    aarch64_addg = 511,                              // llvm.aarch64.addg (IntrinsicsAArch64.td:891)
+    aarch64_addg = 512,                              // llvm.aarch64.addg (IntrinsicsAArch64.td:891)
     aarch64_break,                             // llvm.aarch64.break (IntrinsicsAArch64.td:66)
     aarch64_chkfeat,                           // llvm.aarch64.chkfeat (IntrinsicsAArch64.td:98)
     aarch64_clrex,                             // llvm.aarch64.clrex (IntrinsicsAArch64.td:35)

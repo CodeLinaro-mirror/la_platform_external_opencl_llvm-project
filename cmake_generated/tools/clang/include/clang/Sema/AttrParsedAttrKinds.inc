@@ -564,7 +564,7 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
       return AttributeCommonInfo::AT_VecReturn;	 // "vecreturn"
     }
     break;
-  case 10:	 // 22 strings to match.
+  case 10:	 // 23 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 3 strings to match.
@@ -658,18 +658,22 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
         return AttributeCommonInfo::AT_GuardedBy;	 // "guarded_by"
       }
       break;
-    case 'n':	 // 3 strings to match.
+    case 'n':	 // 4 strings to match.
       if (Name[1] != 'o')
         break;
       switch (Name[2]) {
       default: break;
-      case '_':	 // 2 strings to match.
+      case '_':	 // 3 strings to match.
         switch (Name[3]) {
         default: break;
         case 'b':	 // 1 string to match.
           if (memcmp(Name.data()+4, "uiltin", 6) != 0)
             break;
           return AttributeCommonInfo::AT_NoBuiltin;	 // "no_builtin"
+        case 'c':	 // 1 string to match.
+          if (memcmp(Name.data()+4, "luster", 6) != 0)
+            break;
+          return AttributeCommonInfo::AT_CUDANoCluster;	 // "no_cluster"
         case 'd':	 // 1 string to match.
           if (memcmp(Name.data()+4, "estroy", 6) != 0)
             break;
@@ -879,7 +883,7 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
       case 'y':	 // 1 string to match.
         if (memcmp(Name.data()+2, "cl_kernel", 9) != 0)
           break;
-        return AttributeCommonInfo::AT_DeviceKernel;	 // "sycl_kernel"
+        return AttributeCommonInfo::AT_SYCLKernel;	 // "sycl_kernel"
       }
       break;
     case 't':	 // 1 string to match.
@@ -909,7 +913,7 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
       break;
     }
     break;
-  case 12:	 // 15 strings to match.
+  case 12:	 // 16 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 1 string to match.
@@ -940,9 +944,13 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
         break;
       }
       break;
-    case 'c':	 // 3 strings to match.
+    case 'c':	 // 4 strings to match.
       switch (Name[1]) {
       default: break;
+      case 'l':	 // 1 string to match.
+        if (memcmp(Name.data()+2, "uster_dims", 10) != 0)
+          break;
+        return AttributeCommonInfo::AT_CUDAClusterDims;	 // "cluster_dims"
       case 'o':	 // 1 string to match.
         if (memcmp(Name.data()+2, "ro_wrapper", 10) != 0)
           break;
@@ -3644,7 +3652,7 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
           case 'y':	 // 1 string to match.
             if (memcmp(Name.data()+9, "cl_kernel", 9) != 0)
               break;
-            return AttributeCommonInfo::AT_DeviceKernel;	 // "clang::sycl_kernel"
+            return AttributeCommonInfo::AT_SYCLKernel;	 // "clang::sycl_kernel"
           }
           break;
         case 't':	 // 1 string to match.
@@ -5878,7 +5886,7 @@ static AttributeCommonInfo::Kind getAttrKind(StringRef Name, AttributeCommonInfo
         case 'y':	 // 1 string to match.
           if (memcmp(Name.data()+9, "cl_kernel", 9) != 0)
             break;
-          return AttributeCommonInfo::AT_DeviceKernel;	 // "clang::sycl_kernel"
+          return AttributeCommonInfo::AT_SYCLKernel;	 // "clang::sycl_kernel"
         }
         break;
       case 'u':	 // 1 string to match.

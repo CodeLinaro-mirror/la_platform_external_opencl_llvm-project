@@ -11,14 +11,14 @@ third_party {
   }
   last_upgrade_date {
     year: 2025
-    month: 10
-    day: 20
+    month: 11
+    day: 13
   }
   homepage: "https://llvm.org/"
   identifier {
     type: "Git"
     value: "https://github.com/llvm/llvm-project"
-    version: "891f002026df122b36813b9e1819769c94327503"
+    version: "42a8ff877d47131ecb1280a1cc7e5e3c3bca6952"
     primary_source: true
   }
 }

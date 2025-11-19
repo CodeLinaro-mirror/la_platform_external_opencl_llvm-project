@@ -251,4 +251,5 @@ template <> struct enum_iteration_traits<acc::Clause> {
   static constexpr bool is_iterable = true;
 };
 } // namespace llvm
+
 #endif // LLVM_OpenACC_INC

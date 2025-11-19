@@ -187,6 +187,13 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
+    srcs: ["llvm/lib/DebugInfo/DWARF/LowLevel/*.cpp"],
+    local_include_dirs: ["llvm/lib/DebugInfo/DWARF/LowLevel"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libLLVMIRReader_a",
     srcs: ["llvm/lib/IRReader/IRReader.cpp"],
     local_include_dirs: ["llvm/lib/IRReader"],
@@ -242,13 +249,6 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMDebugInfoGSYM_a",
     srcs: ["llvm/lib/DebugInfo/GSYM/*.cpp"],
     local_include_dirs: ["llvm/lib/DebugInfo/GSYM"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
-    srcs: ["llvm/lib/DebugInfo/DWARF/LowLevel/*.cpp"],
-    local_include_dirs: ["llvm/lib/DebugInfo/DWARF/LowLevel"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -365,6 +365,17 @@ cc_library_static {
         "clang/lib/AST",
         "cmake_generated/tools/clang/include",
         "cmake_generated/tools/clang/lib/AST",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
+    srcs: ["clang/lib/Analysis/LifetimeSafety/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Analysis/LifetimeSafety",
+        "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
@@ -823,6 +834,7 @@ cc_binary {
         "llvm-project_lib_libclangAPINotes_a",
         "llvm-project_lib_libclangASTMatchers_a",
         "llvm-project_lib_libclangAST_a",
+        "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
         "llvm-project_lib_libclangAnalysis_a",
         "llvm-project_lib_libclangBasic_a",
         "llvm-project_lib_libclangCodeGen_a",
@@ -1116,6 +1128,7 @@ cc_defaults {
         "llvm-project_lib_libclangAPINotes_a",
         "llvm-project_lib_libclangASTMatchers_a",
         "llvm-project_lib_libclangAST_a",
+        "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
         "llvm-project_lib_libclangAnalysis_a",
         "llvm-project_lib_libclangBasic_a",
         "llvm-project_lib_libclangCodeGen_a",
