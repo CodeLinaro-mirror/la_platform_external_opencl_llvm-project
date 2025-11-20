@@ -593,7 +593,7 @@ public:
     NestedNameSpecifier Qualifier = ( node->getQualifier() );
     W.find("Qualifier").writeNestedNameSpecifier(Qualifier);
     }
-    const TagDecl* TD = ( node->getOriginalDecl() );
+    const TagDecl* TD = ( node->getDecl() );
     W.find("TD").writeTagDeclRef(TD);
   }
 
@@ -608,7 +608,7 @@ public:
     NestedNameSpecifier Qualifier = ( node->getQualifier() );
     W.find("Qualifier").writeNestedNameSpecifier(Qualifier);
     }
-    const TagDecl* TD = ( node->getOriginalDecl() );
+    const TagDecl* TD = ( node->getDecl() );
     W.find("TD").writeTagDeclRef(TD);
   }
 
@@ -625,7 +625,7 @@ public:
     NestedNameSpecifier Qualifier = ( node->getQualifier() );
     W.find("Qualifier").writeNestedNameSpecifier(Qualifier);
     }
-    const TagDecl* TD = ( node->getOriginalDecl() );
+    const TagDecl* TD = ( node->getDecl() );
     W.find("TD").writeTagDeclRef(TD);
   }
 
