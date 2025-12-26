@@ -241,16 +241,16 @@ struct ReadDispatcher<NamespaceDecl*> {
   }
 };
 template <>
-struct ReadDispatcher<NestedNameSpecifier *> {
+struct ReadDispatcher<NestedNameSpecifier> {
   template <class BasicReader, class... Args>
-  static NestedNameSpecifier * read(BasicReader &R, Args &&... args) {
+  static NestedNameSpecifier read(BasicReader &R, Args &&... args) {
     return R.readNestedNameSpecifier(std::forward<Args>(args)...);
   }
 };
 template <>
-struct ReadDispatcher<NestedNameSpecifier::SpecifierKind> {
+struct ReadDispatcher<NestedNameSpecifier::Kind> {
   template <class BasicReader, class... Args>
-  static NestedNameSpecifier::SpecifierKind read(BasicReader &R, Args &&... args) {
+  static NestedNameSpecifier::Kind read(BasicReader &R, Args &&... args) {
     return R.readNestedNameSpecifierKind(std::forward<Args>(args)...);
   }
 };
@@ -947,8 +947,8 @@ public:
   NamespaceDecl* readNamespaceDeclRef() {
     return cast_or_null<NamespaceDecl>(asImpl().readDeclRef());
   }
-  NestedNameSpecifier::SpecifierKind readNestedNameSpecifierKind() {
-    return asImpl().template readEnum<NestedNameSpecifier::SpecifierKind>();
+  NestedNameSpecifier::Kind readNestedNameSpecifierKind() {
+    return asImpl().template readEnum<NestedNameSpecifier::Kind>();
   }
   ObjCProtocolDecl* readObjCProtocolDeclRef() {
     return cast_or_null<ObjCProtocolDecl>(asImpl().readDeclRef());
@@ -1108,7 +1108,7 @@ public:
     }
 
     case TemplateName::QualifiedTemplate: {
-    NestedNameSpecifier * qualifier = subR.find("qualifier").readNestedNameSpecifier();
+    NestedNameSpecifier qualifier = subR.find("qualifier").readNestedNameSpecifier();
     bool hasTemplateKeyword = subR.find("hasTemplateKeyword").readBool();
     TemplateName underlyingTemplateName = subR.find("underlyingTemplateName").readTemplateName();
     
@@ -1118,7 +1118,7 @@ public:
     }
 
     case TemplateName::DependentTemplate: {
-    NestedNameSpecifier * qualifier = subR.find("qualifier").readNestedNameSpecifier();
+    NestedNameSpecifier qualifier = subR.find("qualifier").readNestedNameSpecifier();
     std::optional<IdentifierInfo*> identifier = subR.find("identifier").template readOptional<IdentifierInfo*>();
     std::optional<OverloadedOperatorKind> operatorKind;
     if ( !identifier ) {

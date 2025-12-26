@@ -256,10 +256,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_x_f_qf_tu:
   PolicyAttrs = 2;
   SegInstSEW = 0;
 IsMasked = false;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -310,10 +306,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_x_f_qf:
   PolicyAttrs = 3;
   SegInstSEW = 0;
 IsMasked = false;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -364,10 +356,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_x_f_qf_tum:
   PolicyAttrs = 2;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -418,10 +406,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_x_f_qf_m:
   PolicyAttrs = 3;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -472,10 +456,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_x_f_qf_tumu:
   PolicyAttrs = 0;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -526,10 +506,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_x_f_qf_mu:
   PolicyAttrs = 1;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -580,10 +556,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_xu_f_qf_tu:
   PolicyAttrs = 2;
   SegInstSEW = 0;
 IsMasked = false;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -634,10 +606,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_xu_f_qf:
   PolicyAttrs = 3;
   SegInstSEW = 0;
 IsMasked = false;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -688,10 +656,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_xu_f_qf_tum:
   PolicyAttrs = 2;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -742,10 +706,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_xu_f_qf_m:
   PolicyAttrs = 3;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -796,10 +756,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_xu_f_qf_tumu:
   PolicyAttrs = 0;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic
@@ -850,10 +806,6 @@ case RISCVVector::BI__builtin_rvv_sf_vfnrclip_xu_f_qf_mu:
   PolicyAttrs = 1;
   SegInstSEW = 0;
 IsMasked = true;
-if (SegInstSEW == (unsigned)-1) {
-  auto PointeeType = E->getArg(4294967295      )->getType()->getPointeeType();
-  SegInstSEW =       llvm::Log2_64(getContext().getTypeSize(PointeeType));
-}
 
   {
     // LLVM intrinsic

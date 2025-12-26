@@ -36,7 +36,7 @@
 
 /* Define to 1 if you have the declaration of `arc4random', and to 0 if you
    don't. */
-#define HAVE_DECL_ARC4RANDOM 1
+//#define HAVE_DECL_ARC4RANDOM 1
 
 /* Define to 1 if you have the declaration of `FE_ALL_EXCEPT', and to 0 if you
    don't. */
@@ -123,7 +123,7 @@
 #define HAVE_MALLINFO 1
 
 /* Define to 1 if you have the `mallinfo2' function. */
-#define HAVE_MALLINFO2 1
+//#define HAVE_MALLINFO2 1
 
 /* Define to 1 if you have the <malloc/malloc.h> header file. */
 /* #undef HAVE_MALLOC_MALLOC_H */

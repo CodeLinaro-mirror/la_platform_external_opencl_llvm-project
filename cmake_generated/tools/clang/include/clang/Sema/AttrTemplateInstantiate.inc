@@ -337,6 +337,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<CFICanonicalJumpTableAttr>(At);
       return A->clone(C);
     }
+    case attr::CFISalt: {
+      const auto *A = cast<CFISaltAttr>(At);
+      return A->clone(C);
+    }
     case attr::CFIUncheckedCallee: {
       const auto *A = cast<CFIUncheckedCalleeAttr>(At);
       return A->clone(C);
@@ -479,7 +483,15 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::Constructor: {
       const auto *A = cast<ConstructorAttr>(At);
-      return A->clone(C);
+      Expr * tempInstPriority;
+      {
+        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
+        ExprResult Result = S.SubstExpr(A->getPriority(), TemplateArgs);
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstPriority = Result.get();
+      }
+      return new (C) ConstructorAttr(C, *A, tempInstPriority);
     }
     case attr::Consumable: {
       const auto *A = cast<ConsumableAttr>(At);
@@ -555,7 +567,15 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::Destructor: {
       const auto *A = cast<DestructorAttr>(At);
-      return A->clone(C);
+      Expr * tempInstPriority;
+      {
+        EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
+        ExprResult Result = S.SubstExpr(A->getPriority(), TemplateArgs);
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstPriority = Result.get();
+      }
+      return new (C) DestructorAttr(C, *A, tempInstPriority);
     }
     case attr::DeviceKernel: {
       const auto *A = cast<DeviceKernelAttr>(At);
@@ -705,6 +725,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<HLSLGroupSharedAddressSpaceAttr>(At);
       return A->clone(C);
     }
+    case attr::HLSLIsCounter: {
+      const auto *A = cast<HLSLIsCounterAttr>(At);
+      return A->clone(C);
+    }
     case attr::HLSLLoopHint: {
       const auto *A = cast<HLSLLoopHintAttr>(At);
       return A->clone(C);
@@ -759,6 +783,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::HLSLShader: {
       const auto *A = cast<HLSLShaderAttr>(At);
+      return A->clone(C);
+    }
+    case attr::HLSLUnparsedSemantic: {
+      const auto *A = cast<HLSLUnparsedSemanticAttr>(At);
+      return A->clone(C);
+    }
+    case attr::HLSLVkBinding: {
+      const auto *A = cast<HLSLVkBindingAttr>(At);
       return A->clone(C);
     }
     case attr::HLSLVkConstantId: {
@@ -1151,6 +1183,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::OMPDeclareVariant: {
       const auto *A = cast<OMPDeclareVariantAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OMPGroupPrivateDecl: {
+      const auto *A = cast<OMPGroupPrivateDeclAttr>(At);
       return A->clone(C);
     }
     case attr::OMPReferencedVar: {
@@ -1571,6 +1607,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::SPtr: {
       const auto *A = cast<SPtrAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SYCLExternal: {
+      const auto *A = cast<SYCLExternalAttr>(At);
       return A->clone(C);
     }
     case attr::SYCLKernelEntryPoint: {
@@ -2152,6 +2192,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::CFICanonicalJumpTable: {
       return nullptr;
     }
+    case attr::CFISalt: {
+      return nullptr;
+    }
     case attr::CFIUncheckedCallee: {
       return nullptr;
     }
@@ -2414,6 +2457,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::HLSLGroupSharedAddressSpace: {
       return nullptr;
     }
+    case attr::HLSLIsCounter: {
+      return nullptr;
+    }
     case attr::HLSLLoopHint: {
       return nullptr;
     }
@@ -2454,6 +2500,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::HLSLShader: {
+      return nullptr;
+    }
+    case attr::HLSLUnparsedSemantic: {
+      return nullptr;
+    }
+    case attr::HLSLVkBinding: {
       return nullptr;
     }
     case attr::HLSLVkConstantId: {
@@ -2734,6 +2786,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::OMPDeclareVariant: {
+      return nullptr;
+    }
+    case attr::OMPGroupPrivateDecl: {
       return nullptr;
     }
     case attr::OMPReferencedVar: {
@@ -3027,6 +3082,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::SPtr: {
+      return nullptr;
+    }
+    case attr::SYCLExternal: {
       return nullptr;
     }
     case attr::SYCLKernelEntryPoint: {

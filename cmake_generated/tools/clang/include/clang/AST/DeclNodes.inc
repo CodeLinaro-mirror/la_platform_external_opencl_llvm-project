@@ -120,6 +120,12 @@ OMPTHREADPRIVATE(OMPThreadPrivate, Decl)
 OMPREQUIRES(OMPRequires, Decl)
 #undef OMPREQUIRES
 
+#ifndef OMPGROUPPRIVATE
+#  define OMPGROUPPRIVATE(Type, Base) DECL(Type, Base)
+#endif
+OMPGROUPPRIVATE(OMPGroupPrivate, Decl)
+#undef OMPGROUPPRIVATE
+
 #ifndef OMPALLOCATE
 #  define OMPALLOCATE(Type, Base) DECL(Type, Base)
 #endif

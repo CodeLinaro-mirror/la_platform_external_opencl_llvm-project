@@ -119,6 +119,7 @@
 .Case("btf_type_tag", 1)
 .Case("callable_when", 4294967295)
 .Case("capability", 1)
+.Case("cfi_salt", 1)
 .Case("code_seg", 1)
 .Case("deprecated", 3)
 .Case("diagnose_if", 14)
