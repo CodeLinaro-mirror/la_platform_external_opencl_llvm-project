@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum WASMIntrinsics : unsigned {
 // Enum values for intrinsics.
-    wasm_alltrue = 13832,                              // llvm.wasm.alltrue (IntrinsicsWebAssembly.td:221)
+    wasm_alltrue = 13945,                              // llvm.wasm.alltrue (IntrinsicsWebAssembly.td:221)
     wasm_anytrue,                              // llvm.wasm.anytrue (IntrinsicsWebAssembly.td:217)
     wasm_avgr_unsigned,                        // llvm.wasm.avgr.unsigned (IntrinsicsWebAssembly.td:209)
     wasm_bitmask,                              // llvm.wasm.bitmask (IntrinsicsWebAssembly.td:225)

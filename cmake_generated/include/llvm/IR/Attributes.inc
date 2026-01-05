@@ -124,7 +124,6 @@ ATTRIBUTE_STRBOOL(NoJumpTables,no-jump-tables)
 ATTRIBUTE_STRBOOL(NoNansFPMath,no-nans-fp-math)
 ATTRIBUTE_STRBOOL(NoSignedZerosFPMath,no-signed-zeros-fp-math)
 ATTRIBUTE_STRBOOL(ProfileSampleAccurate,profile-sample-accurate)
-ATTRIBUTE_STRBOOL(UnsafeFPMath,unsafe-fp-math)
 ATTRIBUTE_STRBOOL(UseSampleProfile,use-sample-profile)
 #undef ATTRIBUTE_STRBOOL
 
@@ -287,7 +286,6 @@ static inline void mergeFnAttrs(Function &Caller,
   setAND<NoInfsFPMathAttr>(Caller, Callee);
   setAND<NoNansFPMathAttr>(Caller, Callee);
   setAND<NoSignedZerosFPMathAttr>(Caller, Callee);
-  setAND<UnsafeFPMathAttr>(Caller, Callee);
   setOR<NoImplicitFloatAttr>(Caller, Callee);
   setOR<NoJumpTablesAttr>(Caller, Callee);
   setOR<ProfileSampleAccurateAttr>(Caller, Callee);

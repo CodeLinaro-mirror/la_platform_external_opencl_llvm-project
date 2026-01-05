@@ -8,6 +8,8 @@
 \*===----------------------------------------------------------------------===*/
 
 #ifdef GET_RUNTIME_LIBCALL_ENUM
+#undef GET_RUNTIME_LIBCALL_ENUM
+
 namespace llvm {
 namespace RTLIB {
 enum Libcall : unsigned short {
@@ -1246,66 +1248,66 @@ enum LibcallImpl : unsigned short {
   impl_arm64ec___unordtf2 = 403, // #__unordtf2
   impl_arm64ec_acos = 404, // #acos
   impl_arm64ec_acosf = 405, // #acosf
-  impl_arm64ec_acos_f128 = 406, // #acosl
+  impl_arm64ec_acosl_f128 = 406, // #acosl
   impl_arm64ec_asin = 407, // #asin
   impl_arm64ec_asinf = 408, // #asinf
-  impl_arm64ec_asin_f128 = 409, // #asinl
+  impl_arm64ec_asinl_f128 = 409, // #asinl
   impl_arm64ec_atan = 410, // #atan
   impl_arm64ec_atan2 = 411, // #atan2
   impl_arm64ec_atan2f = 412, // #atan2f
-  impl_arm64ec_atan2_f128 = 413, // #atan2l
+  impl_arm64ec_atan2l_f128 = 413, // #atan2l
   impl_arm64ec_atanf = 414, // #atanf
-  impl_arm64ec_atan_f128 = 415, // #atanl
+  impl_arm64ec_atanl_f128 = 415, // #atanl
   impl_arm64ec_calloc = 416, // #calloc
   impl_arm64ec_cbrt = 417, // #cbrt
   impl_arm64ec_cbrtf = 418, // #cbrtf
-  impl_arm64ec_cbrt_f128 = 419, // #cbrtl
+  impl_arm64ec_cbrtl_f128 = 419, // #cbrtl
   impl_arm64ec_ceil = 420, // #ceil
   impl_arm64ec_ceilf = 421, // #ceilf
-  impl_arm64ec_ceil_f128 = 422, // #ceill
+  impl_arm64ec_ceill_f128 = 422, // #ceill
   impl_arm64ec_copysign = 423, // #copysign
   impl_arm64ec_copysignf = 424, // #copysignf
-  impl_arm64ec_copysign_f128 = 425, // #copysignl
+  impl_arm64ec_copysignl_f128 = 425, // #copysignl
   impl_arm64ec_cos = 426, // #cos
   impl_arm64ec_cosf = 427, // #cosf
   impl_arm64ec_cosh = 428, // #cosh
   impl_arm64ec_coshf = 429, // #coshf
-  impl_arm64ec_cosh_f128 = 430, // #coshl
-  impl_arm64ec_cos_f128 = 431, // #cosl
+  impl_arm64ec_coshl_f128 = 430, // #coshl
+  impl_arm64ec_cosl_f128 = 431, // #cosl
   impl_arm64ec_exp = 432, // #exp
   impl_arm64ec_exp2 = 433, // #exp2
   impl_arm64ec_exp2f = 434, // #exp2f
-  impl_arm64ec_exp2_f128 = 435, // #exp2l
+  impl_arm64ec_exp2l_f128 = 435, // #exp2l
   impl_arm64ec_expf = 436, // #expf
-  impl_arm64ec_exp_f128 = 437, // #expl
+  impl_arm64ec_expl_f128 = 437, // #expl
   impl_arm64ec_fegetenv = 438, // #fegetenv
   impl_arm64ec_fegetmode = 439, // #fegetmode
   impl_arm64ec_fesetenv = 440, // #fesetenv
   impl_arm64ec_fesetmode = 441, // #fesetmode
   impl_arm64ec_floor = 442, // #floor
   impl_arm64ec_floorf = 443, // #floorf
-  impl_arm64ec_floor_f128 = 444, // #floorl
+  impl_arm64ec_floorl_f128 = 444, // #floorl
   impl_arm64ec_fma = 445, // #fma
   impl_arm64ec_fmaf = 446, // #fmaf
-  impl_arm64ec_fma_f128 = 447, // #fmal
+  impl_arm64ec_fmal_f128 = 447, // #fmal
   impl_arm64ec_fmax = 448, // #fmax
   impl_arm64ec_fmaxf = 449, // #fmaxf
   impl_arm64ec_fmaximum = 450, // #fmaximum
   impl_arm64ec_fmaximum_num = 451, // #fmaximum_num
   impl_arm64ec_fmaximum_numf = 452, // #fmaximum_numf
-  impl_arm64ec_fmaximum_num_f128 = 453, // #fmaximum_numl
+  impl_arm64ec_fmaximum_numl_f128 = 453, // #fmaximum_numl
   impl_arm64ec_fmaximumf = 454, // #fmaximumf
-  impl_arm64ec_fmaximum_f128 = 455, // #fmaximuml
-  impl_arm64ec_fmax_f128 = 456, // #fmaxl
+  impl_arm64ec_fmaximuml_f128 = 455, // #fmaximuml
+  impl_arm64ec_fmaxl_f128 = 456, // #fmaxl
   impl_arm64ec_fmin = 457, // #fmin
   impl_arm64ec_fminf = 458, // #fminf
   impl_arm64ec_fminimum = 459, // #fminimum
   impl_arm64ec_fminimum_num = 460, // #fminimum_num
   impl_arm64ec_fminimum_numf = 461, // #fminimum_numf
-  impl_arm64ec_fminimum_num_f128 = 462, // #fminimum_numl
+  impl_arm64ec_fminimum_numl_f128 = 462, // #fminimum_numl
   impl_arm64ec_fminimumf = 463, // #fminimumf
-  impl_arm64ec_fminimum_f128 = 464, // #fminimuml
-  impl_arm64ec_fmin_f128 = 465, // #fminl
+  impl_arm64ec_fminimuml_f128 = 464, // #fminimuml
+  impl_arm64ec_fminl_f128 = 465, // #fminl
   impl_arm64ec_fmod = 466, // #fmod
   impl_arm64ec_fmodf = 467, // #fmodf
   impl_arm64ec_fmodl_f128 = 468, // #fmodl
@@ -1313,67 +1315,67 @@ enum LibcallImpl : unsigned short {
   impl_arm64ec_ldexp = 470, // #ldexp
   impl_arm64ec_llrint = 471, // #llrint
   impl_arm64ec_llrintf = 472, // #llrintf
-  impl_arm64ec_llrint_f128 = 473, // #llrintl
+  impl_arm64ec_llrintl_f128 = 473, // #llrintl
   impl_arm64ec_llround = 474, // #llround
   impl_arm64ec_llroundf = 475, // #llroundf
-  impl_arm64ec_llround_f128 = 476, // #llroundl
+  impl_arm64ec_llroundl_f128 = 476, // #llroundl
   impl_arm64ec_log = 477, // #log
   impl_arm64ec_log10 = 478, // #log10
   impl_arm64ec_log10f = 479, // #log10f
-  impl_arm64ec_log10_f128 = 480, // #log10l
+  impl_arm64ec_log10l_f128 = 480, // #log10l
   impl_arm64ec_log2 = 481, // #log2
   impl_arm64ec_log2f = 482, // #log2f
-  impl_arm64ec_log2_f128 = 483, // #log2l
+  impl_arm64ec_log2l_f128 = 483, // #log2l
   impl_arm64ec_logf = 484, // #logf
-  impl_arm64ec_log_f128 = 485, // #logl
+  impl_arm64ec_logl_f128 = 485, // #logl
   impl_arm64ec_lrint = 486, // #lrint
   impl_arm64ec_lrintf = 487, // #lrintf
-  impl_arm64ec_lrint_f128 = 488, // #lrintl
+  impl_arm64ec_lrintl_f128 = 488, // #lrintl
   impl_arm64ec_lround = 489, // #lround
   impl_arm64ec_lroundf = 490, // #lroundf
-  impl_arm64ec_lround_f128 = 491, // #lroundl
+  impl_arm64ec_lroundl_f128 = 491, // #lroundl
   impl_arm64ec_memcpy = 492, // #memcpy
   impl_arm64ec_memmove = 493, // #memmove
   impl_arm64ec_memset = 494, // #memset
   impl_arm64ec_modf = 495, // #modf
   impl_arm64ec_modff = 496, // #modff
-  impl_arm64ec_modf_f128 = 497, // #modfl
+  impl_arm64ec_modfl_f128 = 497, // #modfl
   impl_arm64ec_nearbyint = 498, // #nearbyint
   impl_arm64ec_nearbyintf = 499, // #nearbyintf
-  impl_arm64ec_nearbyint_f128 = 500, // #nearbyintl
+  impl_arm64ec_nearbyintl_f128 = 500, // #nearbyintl
   impl_arm64ec_pow = 501, // #pow
   impl_arm64ec_powf = 502, // #powf
-  impl_arm64ec_pow_f128 = 503, // #powl
+  impl_arm64ec_powl_f128 = 503, // #powl
   impl_arm64ec_rint = 504, // #rint
   impl_arm64ec_rintf = 505, // #rintf
-  impl_arm64ec_rint_f128 = 506, // #rintl
+  impl_arm64ec_rintl_f128 = 506, // #rintl
   impl_arm64ec_round = 507, // #round
   impl_arm64ec_roundeven = 508, // #roundeven
   impl_arm64ec_roundevenf = 509, // #roundevenf
-  impl_arm64ec_roundeven_f128 = 510, // #roundevenl
+  impl_arm64ec_roundevenl_f128 = 510, // #roundevenl
   impl_arm64ec_roundf = 511, // #roundf
-  impl_arm64ec_round_f128 = 512, // #roundl
+  impl_arm64ec_roundl_f128 = 512, // #roundl
   impl_arm64ec_sin = 513, // #sin
   impl_arm64ec_sincospi = 514, // #sincospi
   impl_arm64ec_sincospif = 515, // #sincospif
-  impl_arm64ec_sincospi_f128 = 516, // #sincospil
+  impl_arm64ec_sincospil_f128 = 516, // #sincospil
   impl_arm64ec_sinf = 517, // #sinf
   impl_arm64ec_sinh = 518, // #sinh
   impl_arm64ec_sinhf = 519, // #sinhf
-  impl_arm64ec_sinh_f128 = 520, // #sinhl
-  impl_arm64ec_sin_f128 = 521, // #sinl
+  impl_arm64ec_sinhl_f128 = 520, // #sinhl
+  impl_arm64ec_sinl_f128 = 521, // #sinl
   impl_arm64ec_sqrt = 522, // #sqrt
   impl_arm64ec_sqrtf = 523, // #sqrtf
-  impl_arm64ec_sqrt_f128 = 524, // #sqrtl
+  impl_arm64ec_sqrtl_f128 = 524, // #sqrtl
   impl_arm64ec_tan = 525, // #tan
   impl_arm64ec_tanf = 526, // #tanf
   impl_arm64ec_tanh = 527, // #tanh
   impl_arm64ec_tanhf = 528, // #tanhf
-  impl_arm64ec_tanh_f128 = 529, // #tanhl
-  impl_arm64ec_tan_f128 = 530, // #tanl
+  impl_arm64ec_tanhl_f128 = 529, // #tanhl
+  impl_arm64ec_tanl_f128 = 530, // #tanl
   impl_arm64ec_trunc = 531, // #trunc
   impl_arm64ec_truncf = 532, // #truncf
-  impl_arm64ec_trunc_f128 = 533, // #truncl
+  impl_arm64ec_truncl_f128 = 533, // #truncl
   impl_sparc_div = 534, // .div
   impl_sparc_rem = 535, // .rem
   impl_sparc_udiv = 536, // .udiv
@@ -2284,47 +2286,47 @@ enum LibcallImpl : unsigned short {
   impl_acos = 1441, // acos
   impl_acosf = 1442, // acosf
   impl_acosf128 = 1443, // acosf128
-  impl_acos_f128 = 1444, // acosl
-  impl_acos_f80 = 1445, // acosl
-  impl_acos_ppcf128 = 1446, // acosl
+  impl_acosl_f128 = 1444, // acosl
+  impl_acosl_f80 = 1445, // acosl
+  impl_acosl_ppcf128 = 1446, // acosl
   impl_asin = 1447, // asin
   impl_asinf = 1448, // asinf
   impl_asinf128 = 1449, // asinf128
-  impl_asin_f128 = 1450, // asinl
-  impl_asin_f80 = 1451, // asinl
-  impl_asin_ppcf128 = 1452, // asinl
+  impl_asinl_f128 = 1450, // asinl
+  impl_asinl_f80 = 1451, // asinl
+  impl_asinl_ppcf128 = 1452, // asinl
   impl_atan = 1453, // atan
   impl_atan2 = 1454, // atan2
   impl_atan2f = 1455, // atan2f
   impl_atan2f128 = 1456, // atan2f128
-  impl_atan2_f128 = 1457, // atan2l
-  impl_atan2_f80 = 1458, // atan2l
-  impl_atan2_ppcf128 = 1459, // atan2l
+  impl_atan2l_f128 = 1457, // atan2l
+  impl_atan2l_f80 = 1458, // atan2l
+  impl_atan2l_ppcf128 = 1459, // atan2l
   impl_atanf = 1460, // atanf
   impl_atanf128 = 1461, // atanf128
-  impl_atan_f128 = 1462, // atanl
-  impl_atan_f80 = 1463, // atanl
-  impl_atan_ppcf128 = 1464, // atanl
+  impl_atanl_f128 = 1462, // atanl
+  impl_atanl_f80 = 1463, // atanl
+  impl_atanl_ppcf128 = 1464, // atanl
   impl_bzero = 1465, // bzero
   impl_calloc = 1466, // calloc
   impl_cbrt = 1467, // cbrt
   impl_cbrtf = 1468, // cbrtf
   impl_cbrtf128 = 1469, // cbrtf128
-  impl_cbrt_f128 = 1470, // cbrtl
-  impl_cbrt_f80 = 1471, // cbrtl
-  impl_cbrt_ppcf128 = 1472, // cbrtl
+  impl_cbrtl_f128 = 1470, // cbrtl
+  impl_cbrtl_f80 = 1471, // cbrtl
+  impl_cbrtl_ppcf128 = 1472, // cbrtl
   impl_ceil = 1473, // ceil
   impl_ceilf = 1474, // ceilf
   impl_ceilf128 = 1475, // ceilf128
-  impl_ceil_f128 = 1476, // ceill
-  impl_ceil_f80 = 1477, // ceill
-  impl_ceil_ppcf128 = 1478, // ceill
+  impl_ceill_f128 = 1476, // ceill
+  impl_ceill_f80 = 1477, // ceill
+  impl_ceill_ppcf128 = 1478, // ceill
   impl_copysign = 1479, // copysign
   impl_copysignf = 1480, // copysignf
   impl_copysignf128 = 1481, // copysignf128
-  impl_copysign_f128 = 1482, // copysignl
-  impl_copysign_f80 = 1483, // copysignl
-  impl_copysign_ppcf128 = 1484, // copysignl
+  impl_copysignl_f128 = 1482, // copysignl
+  impl_copysignl_f80 = 1483, // copysignl
+  impl_copysignl_ppcf128 = 1484, // copysignl
   impl_avr_cos = 1485, // cos
   impl_cos = 1486, // cos
   impl_cosf = 1487, // cosf
@@ -2332,12 +2334,12 @@ enum LibcallImpl : unsigned short {
   impl_cosh = 1489, // cosh
   impl_coshf = 1490, // coshf
   impl_coshf128 = 1491, // coshf128
-  impl_cosh_f128 = 1492, // coshl
-  impl_cosh_f80 = 1493, // coshl
-  impl_cosh_ppcf128 = 1494, // coshl
-  impl_cos_f128 = 1495, // cosl
-  impl_cos_f80 = 1496, // cosl
-  impl_cos_ppcf128 = 1497, // cosl
+  impl_coshl_f128 = 1492, // coshl
+  impl_coshl_f80 = 1493, // coshl
+  impl_coshl_ppcf128 = 1494, // coshl
+  impl_cosl_f128 = 1495, // cosl
+  impl_cosl_f80 = 1496, // cosl
+  impl_cosl_ppcf128 = 1497, // cosl
   impl_emscripten_return_address = 1498, // emscripten_return_address
   impl_exp = 1499, // exp
   impl_exp10 = 1500, // exp10
@@ -2349,14 +2351,14 @@ enum LibcallImpl : unsigned short {
   impl_exp2 = 1506, // exp2
   impl_exp2f = 1507, // exp2f
   impl_exp2f128 = 1508, // exp2f128
-  impl_exp2_f128 = 1509, // exp2l
-  impl_exp2_f80 = 1510, // exp2l
-  impl_exp2_ppcf128 = 1511, // exp2l
+  impl_exp2l_f128 = 1509, // exp2l
+  impl_exp2l_f80 = 1510, // exp2l
+  impl_exp2l_ppcf128 = 1511, // exp2l
   impl_expf = 1512, // expf
   impl_expf128 = 1513, // expf128
-  impl_exp_f128 = 1514, // expl
-  impl_exp_f80 = 1515, // expl
-  impl_exp_ppcf128 = 1516, // expl
+  impl_expl_f128 = 1514, // expl
+  impl_expl_f80 = 1515, // expl
+  impl_expl_ppcf128 = 1516, // expl
   impl_fegetenv = 1517, // fegetenv
   impl_fegetmode = 1518, // fegetmode
   impl_fesetenv = 1519, // fesetenv
@@ -2364,15 +2366,15 @@ enum LibcallImpl : unsigned short {
   impl_floor = 1521, // floor
   impl_floorf = 1522, // floorf
   impl_floorf128 = 1523, // floorf128
-  impl_floor_f128 = 1524, // floorl
-  impl_floor_f80 = 1525, // floorl
-  impl_floor_ppcf128 = 1526, // floorl
+  impl_floorl_f128 = 1524, // floorl
+  impl_floorl_f80 = 1525, // floorl
+  impl_floorl_ppcf128 = 1526, // floorl
   impl_fma = 1527, // fma
   impl_fmaf = 1528, // fmaf
   impl_fmaf128 = 1529, // fmaf128
-  impl_fma_f128 = 1530, // fmal
-  impl_fma_f80 = 1531, // fmal
-  impl_fma_ppcf128 = 1532, // fmal
+  impl_fmal_f128 = 1530, // fmal
+  impl_fmal_f80 = 1531, // fmal
+  impl_fmal_ppcf128 = 1532, // fmal
   impl_fmax = 1533, // fmax
   impl_fmaxf = 1534, // fmaxf
   impl_fmaxf128 = 1535, // fmaxf128
@@ -2380,17 +2382,17 @@ enum LibcallImpl : unsigned short {
   impl_fmaximum_num = 1537, // fmaximum_num
   impl_fmaximum_numf = 1538, // fmaximum_numf
   impl_fmaximum_numf128 = 1539, // fmaximum_numf128
-  impl_fmaximum_num_f128 = 1540, // fmaximum_numl
-  impl_fmaximum_num_f80 = 1541, // fmaximum_numl
-  impl_fmaximum_num_ppcf128 = 1542, // fmaximum_numl
+  impl_fmaximum_numl_f128 = 1540, // fmaximum_numl
+  impl_fmaximum_numl_f80 = 1541, // fmaximum_numl
+  impl_fmaximum_numl_ppcf128 = 1542, // fmaximum_numl
   impl_fmaximumf = 1543, // fmaximumf
   impl_fmaximumf128 = 1544, // fmaximumf128
-  impl_fmaximum_f128 = 1545, // fmaximuml
-  impl_fmaximum_f80 = 1546, // fmaximuml
-  impl_fmaximum_ppcf128 = 1547, // fmaximuml
-  impl_fmax_f128 = 1548, // fmaxl
-  impl_fmax_f80 = 1549, // fmaxl
-  impl_fmax_ppcf128 = 1550, // fmaxl
+  impl_fmaximuml_f128 = 1545, // fmaximuml
+  impl_fmaximuml_f80 = 1546, // fmaximuml
+  impl_fmaximuml_ppcf128 = 1547, // fmaximuml
+  impl_fmaxl_f128 = 1548, // fmaxl
+  impl_fmaxl_f80 = 1549, // fmaxl
+  impl_fmaxl_ppcf128 = 1550, // fmaxl
   impl_fmin = 1551, // fmin
   impl_fminf = 1552, // fminf
   impl_fminf128 = 1553, // fminf128
@@ -2398,17 +2400,17 @@ enum LibcallImpl : unsigned short {
   impl_fminimum_num = 1555, // fminimum_num
   impl_fminimum_numf = 1556, // fminimum_numf
   impl_fminimum_numf128 = 1557, // fminimum_numf128
-  impl_fminimum_num_f128 = 1558, // fminimum_numl
-  impl_fminimum_num_f80 = 1559, // fminimum_numl
-  impl_fminimum_num_ppcf128 = 1560, // fminimum_numl
+  impl_fminimum_numl_f128 = 1558, // fminimum_numl
+  impl_fminimum_numl_f80 = 1559, // fminimum_numl
+  impl_fminimum_numl_ppcf128 = 1560, // fminimum_numl
   impl_fminimumf = 1561, // fminimumf
   impl_fminimumf128 = 1562, // fminimumf128
-  impl_fminimum_f128 = 1563, // fminimuml
-  impl_fminimum_f80 = 1564, // fminimuml
-  impl_fminimum_ppcf128 = 1565, // fminimuml
-  impl_fmin_f128 = 1566, // fminl
-  impl_fmin_f80 = 1567, // fminl
-  impl_fmin_ppcf128 = 1568, // fminl
+  impl_fminimuml_f128 = 1563, // fminimuml
+  impl_fminimuml_f80 = 1564, // fminimuml
+  impl_fminimuml_ppcf128 = 1565, // fminimuml
+  impl_fminl_f128 = 1566, // fminl
+  impl_fminl_f80 = 1567, // fminl
+  impl_fminl_ppcf128 = 1568, // fminl
   impl_fmod = 1569, // fmod
   impl_fmodf = 1570, // fmodf
   impl_fmodf128 = 1571, // fmodf128
@@ -2418,73 +2420,73 @@ enum LibcallImpl : unsigned short {
   impl_frexp = 1575, // frexp
   impl_frexpf = 1576, // frexpf
   impl_frexpf128 = 1577, // frexpf128
-  impl_frexp_f128 = 1578, // frexpl
-  impl_frexp_f80 = 1579, // frexpl
-  impl_frexp_ppcf128 = 1580, // frexpl
+  impl_frexpl_f128 = 1578, // frexpl
+  impl_frexpl_f80 = 1579, // frexpl
+  impl_frexpl_ppcf128 = 1580, // frexpl
   impl_hexagon_memcpy_forward_vp4cp4n2 = 1581, // hexagon_memcpy_forward_vp4cp4n2
   impl_ldexp = 1582, // ldexp
   impl_ldexpf = 1583, // ldexpf
   impl_ldexpf128 = 1584, // ldexpf128
-  impl_ldexp_f128 = 1585, // ldexpl
-  impl_ldexp_f80 = 1586, // ldexpl
-  impl_ldexp_ppcf128 = 1587, // ldexpl
+  impl_ldexpl_f128 = 1585, // ldexpl
+  impl_ldexpl_f80 = 1586, // ldexpl
+  impl_ldexpl_ppcf128 = 1587, // ldexpl
   impl_llrint = 1588, // llrint
   impl_llrintf = 1589, // llrintf
   impl_llrintf128 = 1590, // llrintf128
-  impl_llrint_f128 = 1591, // llrintl
-  impl_llrint_f80 = 1592, // llrintl
-  impl_llrint_ppcf128 = 1593, // llrintl
+  impl_llrintl_f128 = 1591, // llrintl
+  impl_llrintl_f80 = 1592, // llrintl
+  impl_llrintl_ppcf128 = 1593, // llrintl
   impl_llround = 1594, // llround
   impl_llroundf = 1595, // llroundf
   impl_llroundf128 = 1596, // llroundf128
-  impl_llround_f128 = 1597, // llroundl
-  impl_llround_f80 = 1598, // llroundl
-  impl_llround_ppcf128 = 1599, // llroundl
+  impl_llroundl_f128 = 1597, // llroundl
+  impl_llroundl_f80 = 1598, // llroundl
+  impl_llroundl_ppcf128 = 1599, // llroundl
   impl_log = 1600, // log
   impl_log10 = 1601, // log10
   impl_log10f = 1602, // log10f
   impl_log10f128 = 1603, // log10f128
-  impl_log10_f128 = 1604, // log10l
-  impl_log10_f80 = 1605, // log10l
-  impl_log10_ppcf128 = 1606, // log10l
+  impl_log10l_f128 = 1604, // log10l
+  impl_log10l_f80 = 1605, // log10l
+  impl_log10l_ppcf128 = 1606, // log10l
   impl_log2 = 1607, // log2
   impl_log2f = 1608, // log2f
   impl_log2f128 = 1609, // log2f128
-  impl_log2_f128 = 1610, // log2l
-  impl_log2_f80 = 1611, // log2l
-  impl_log2_ppcf128 = 1612, // log2l
+  impl_log2l_f128 = 1610, // log2l
+  impl_log2l_f80 = 1611, // log2l
+  impl_log2l_ppcf128 = 1612, // log2l
   impl_logf = 1613, // logf
   impl_logf128 = 1614, // logf128
-  impl_log_f128 = 1615, // logl
-  impl_log_f80 = 1616, // logl
-  impl_log_ppcf128 = 1617, // logl
+  impl_logl_f128 = 1615, // logl
+  impl_logl_f80 = 1616, // logl
+  impl_logl_ppcf128 = 1617, // logl
   impl_lrint = 1618, // lrint
   impl_lrintf = 1619, // lrintf
   impl_lrintf128 = 1620, // lrintf128
-  impl_lrint_f128 = 1621, // lrintl
-  impl_lrint_f80 = 1622, // lrintl
-  impl_lrint_ppcf128 = 1623, // lrintl
+  impl_lrintl_f128 = 1621, // lrintl
+  impl_lrintl_f80 = 1622, // lrintl
+  impl_lrintl_ppcf128 = 1623, // lrintl
   impl_lround = 1624, // lround
   impl_lroundf = 1625, // lroundf
   impl_lroundf128 = 1626, // lroundf128
-  impl_lround_f128 = 1627, // lroundl
-  impl_lround_f80 = 1628, // lroundl
-  impl_lround_ppcf128 = 1629, // lroundl
+  impl_lroundl_f128 = 1627, // lroundl
+  impl_lroundl_f80 = 1628, // lroundl
+  impl_lroundl_ppcf128 = 1629, // lroundl
   impl_memcpy = 1630, // memcpy
   impl_memmove = 1631, // memmove
   impl_memset = 1632, // memset
   impl_modf = 1633, // modf
   impl_modff = 1634, // modff
   impl_modff128 = 1635, // modff128
-  impl_modf_f128 = 1636, // modfl
-  impl_modf_f80 = 1637, // modfl
-  impl_modf_ppcf128 = 1638, // modfl
+  impl_modfl_f128 = 1636, // modfl
+  impl_modfl_f80 = 1637, // modfl
+  impl_modfl_ppcf128 = 1638, // modfl
   impl_nearbyint = 1639, // nearbyint
   impl_nearbyintf = 1640, // nearbyintf
   impl_nearbyintf128 = 1641, // nearbyintf128
-  impl_nearbyint_f128 = 1642, // nearbyintl
-  impl_nearbyint_f80 = 1643, // nearbyintl
-  impl_nearbyint_ppcf128 = 1644, // nearbyintl
+  impl_nearbyintl_f128 = 1642, // nearbyintl
+  impl_nearbyintl_f80 = 1643, // nearbyintl
+  impl_nearbyintl_ppcf128 = 1644, // nearbyintl
   impl_objc_autorelease = 1645, // objc_autorelease
   impl_objc_autoreleasePoolPop = 1646, // objc_autoreleasePoolPop
   impl_objc_autoreleasePoolPush = 1647, // objc_autoreleasePoolPush
@@ -2514,82 +2516,85 @@ enum LibcallImpl : unsigned short {
   impl_pow = 1671, // pow
   impl_powf = 1672, // powf
   impl_powf128 = 1673, // powf128
-  impl_pow_f128 = 1674, // powl
-  impl_pow_f80 = 1675, // powl
-  impl_pow_ppcf128 = 1676, // powl
+  impl_powl_f128 = 1674, // powl
+  impl_powl_f80 = 1675, // powl
+  impl_powl_ppcf128 = 1676, // powl
   impl_rint = 1677, // rint
   impl_rintf = 1678, // rintf
   impl_rintf128 = 1679, // rintf128
-  impl_rint_f128 = 1680, // rintl
-  impl_rint_f80 = 1681, // rintl
-  impl_rint_ppcf128 = 1682, // rintl
+  impl_rintl_f128 = 1680, // rintl
+  impl_rintl_f80 = 1681, // rintl
+  impl_rintl_ppcf128 = 1682, // rintl
   impl_round = 1683, // round
   impl_roundeven = 1684, // roundeven
   impl_roundevenf = 1685, // roundevenf
   impl_roundevenf128 = 1686, // roundevenf128
-  impl_roundeven_f128 = 1687, // roundevenl
-  impl_roundeven_f80 = 1688, // roundevenl
-  impl_roundeven_ppcf128 = 1689, // roundevenl
+  impl_roundevenl_f128 = 1687, // roundevenl
+  impl_roundevenl_f80 = 1688, // roundevenl
+  impl_roundevenl_ppcf128 = 1689, // roundevenl
   impl_roundf = 1690, // roundf
   impl_roundf128 = 1691, // roundf128
-  impl_round_f128 = 1692, // roundl
-  impl_round_f80 = 1693, // roundl
-  impl_round_ppcf128 = 1694, // roundl
+  impl_roundl_f128 = 1692, // roundl
+  impl_roundl_f80 = 1693, // roundl
+  impl_roundl_ppcf128 = 1694, // roundl
   impl_avr_sin = 1695, // sin
   impl_sin = 1696, // sin
   impl_sincos = 1697, // sincos
   impl_sincosf = 1698, // sincosf
   impl_sincosf128 = 1699, // sincosf128
-  impl_sincos_f128 = 1700, // sincosl
-  impl_sincos_f80 = 1701, // sincosl
-  impl_sincos_ppcf128 = 1702, // sincosl
+  impl_sincosl_f128 = 1700, // sincosl
+  impl_sincosl_f80 = 1701, // sincosl
+  impl_sincosl_ppcf128 = 1702, // sincosl
   impl_sincospi = 1703, // sincospi
   impl_sincospif = 1704, // sincospif
-  impl_sincospi_f128 = 1705, // sincospil
-  impl_sincospi_f80 = 1706, // sincospil
-  impl_sincospi_ppcf128 = 1707, // sincospil
+  impl_sincospil_f128 = 1705, // sincospil
+  impl_sincospil_f80 = 1706, // sincospil
+  impl_sincospil_ppcf128 = 1707, // sincospil
   impl_sinf = 1708, // sinf
   impl_sinf128 = 1709, // sinf128
   impl_sinh = 1710, // sinh
   impl_sinhf = 1711, // sinhf
   impl_sinhf128 = 1712, // sinhf128
-  impl_sinh_f128 = 1713, // sinhl
-  impl_sinh_f80 = 1714, // sinhl
-  impl_sinh_ppcf128 = 1715, // sinhl
-  impl_sin_f128 = 1716, // sinl
-  impl_sin_f80 = 1717, // sinl
-  impl_sin_ppcf128 = 1718, // sinl
+  impl_sinhl_f128 = 1713, // sinhl
+  impl_sinhl_f80 = 1714, // sinhl
+  impl_sinhl_ppcf128 = 1715, // sinhl
+  impl_sinl_f128 = 1716, // sinl
+  impl_sinl_f80 = 1717, // sinl
+  impl_sinl_ppcf128 = 1718, // sinl
   impl_sqrt = 1719, // sqrt
   impl_sqrtf = 1720, // sqrtf
   impl_sqrtf128 = 1721, // sqrtf128
-  impl_sqrt_f128 = 1722, // sqrtl
-  impl_sqrt_f80 = 1723, // sqrtl
-  impl_sqrt_ppcf128 = 1724, // sqrtl
+  impl_sqrtl_f128 = 1722, // sqrtl
+  impl_sqrtl_f80 = 1723, // sqrtl
+  impl_sqrtl_ppcf128 = 1724, // sqrtl
   impl_tan = 1725, // tan
   impl_tanf = 1726, // tanf
   impl_tanf128 = 1727, // tanf128
   impl_tanh = 1728, // tanh
   impl_tanhf = 1729, // tanhf
   impl_tanhf128 = 1730, // tanhf128
-  impl_tanh_f128 = 1731, // tanhl
-  impl_tanh_f80 = 1732, // tanhl
-  impl_tanh_ppcf128 = 1733, // tanhl
-  impl_tan_f128 = 1734, // tanl
-  impl_tan_f80 = 1735, // tanl
-  impl_tan_ppcf128 = 1736, // tanl
+  impl_tanhl_f128 = 1731, // tanhl
+  impl_tanhl_f80 = 1732, // tanhl
+  impl_tanhl_ppcf128 = 1733, // tanhl
+  impl_tanl_f128 = 1734, // tanl
+  impl_tanl_f80 = 1735, // tanl
+  impl_tanl_ppcf128 = 1736, // tanl
   impl_trunc = 1737, // trunc
   impl_truncf = 1738, // truncf
   impl_truncf128 = 1739, // truncf128
-  impl_trunc_f128 = 1740, // truncl
-  impl_trunc_f80 = 1741, // truncl
-  impl_trunc_ppcf128 = 1742, // truncl
+  impl_truncl_f128 = 1740, // truncl
+  impl_truncl_f80 = 1741, // truncl
+  impl_truncl_ppcf128 = 1742, // truncl
 };
 constexpr size_t NumLibcallImpls = 1743;
 } // End namespace RTLIB
 } // End namespace llvm
-#endif
+
+#endif // GET_RUNTIME_LIBCALL_ENUM
 
 #ifdef GET_INIT_RUNTIME_LIBCALL_NAMES
+#undef GET_INIT_RUNTIME_LIBCALL_NAMES
+
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
@@ -8121,66 +8126,66 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::UO_F128, // RTLIB::impl_arm64ec___unordtf2
   RTLIB::ACOS_F64, // RTLIB::impl_arm64ec_acos
   RTLIB::ACOS_F32, // RTLIB::impl_arm64ec_acosf
-  RTLIB::ACOS_F128, // RTLIB::impl_arm64ec_acos_f128
+  RTLIB::ACOS_F128, // RTLIB::impl_arm64ec_acosl_f128
   RTLIB::ASIN_F64, // RTLIB::impl_arm64ec_asin
   RTLIB::ASIN_F32, // RTLIB::impl_arm64ec_asinf
-  RTLIB::ASIN_F128, // RTLIB::impl_arm64ec_asin_f128
+  RTLIB::ASIN_F128, // RTLIB::impl_arm64ec_asinl_f128
   RTLIB::ATAN_F64, // RTLIB::impl_arm64ec_atan
   RTLIB::ATAN2_F64, // RTLIB::impl_arm64ec_atan2
   RTLIB::ATAN2_F32, // RTLIB::impl_arm64ec_atan2f
-  RTLIB::ATAN2_F128, // RTLIB::impl_arm64ec_atan2_f128
+  RTLIB::ATAN2_F128, // RTLIB::impl_arm64ec_atan2l_f128
   RTLIB::ATAN_F32, // RTLIB::impl_arm64ec_atanf
-  RTLIB::ATAN_F128, // RTLIB::impl_arm64ec_atan_f128
+  RTLIB::ATAN_F128, // RTLIB::impl_arm64ec_atanl_f128
   RTLIB::CALLOC, // RTLIB::impl_arm64ec_calloc
   RTLIB::CBRT_F64, // RTLIB::impl_arm64ec_cbrt
   RTLIB::CBRT_F32, // RTLIB::impl_arm64ec_cbrtf
-  RTLIB::CBRT_F128, // RTLIB::impl_arm64ec_cbrt_f128
+  RTLIB::CBRT_F128, // RTLIB::impl_arm64ec_cbrtl_f128
   RTLIB::CEIL_F64, // RTLIB::impl_arm64ec_ceil
   RTLIB::CEIL_F32, // RTLIB::impl_arm64ec_ceilf
-  RTLIB::CEIL_F128, // RTLIB::impl_arm64ec_ceil_f128
+  RTLIB::CEIL_F128, // RTLIB::impl_arm64ec_ceill_f128
   RTLIB::COPYSIGN_F64, // RTLIB::impl_arm64ec_copysign
   RTLIB::COPYSIGN_F32, // RTLIB::impl_arm64ec_copysignf
-  RTLIB::COPYSIGN_F128, // RTLIB::impl_arm64ec_copysign_f128
+  RTLIB::COPYSIGN_F128, // RTLIB::impl_arm64ec_copysignl_f128
   RTLIB::COS_F64, // RTLIB::impl_arm64ec_cos
   RTLIB::COS_F32, // RTLIB::impl_arm64ec_cosf
   RTLIB::COSH_F64, // RTLIB::impl_arm64ec_cosh
   RTLIB::COSH_F32, // RTLIB::impl_arm64ec_coshf
-  RTLIB::COSH_F128, // RTLIB::impl_arm64ec_cosh_f128
-  RTLIB::COS_F128, // RTLIB::impl_arm64ec_cos_f128
+  RTLIB::COSH_F128, // RTLIB::impl_arm64ec_coshl_f128
+  RTLIB::COS_F128, // RTLIB::impl_arm64ec_cosl_f128
   RTLIB::EXP_F64, // RTLIB::impl_arm64ec_exp
   RTLIB::EXP2_F64, // RTLIB::impl_arm64ec_exp2
   RTLIB::EXP2_F32, // RTLIB::impl_arm64ec_exp2f
-  RTLIB::EXP2_F128, // RTLIB::impl_arm64ec_exp2_f128
+  RTLIB::EXP2_F128, // RTLIB::impl_arm64ec_exp2l_f128
   RTLIB::EXP_F32, // RTLIB::impl_arm64ec_expf
-  RTLIB::EXP_F128, // RTLIB::impl_arm64ec_exp_f128
+  RTLIB::EXP_F128, // RTLIB::impl_arm64ec_expl_f128
   RTLIB::FEGETENV, // RTLIB::impl_arm64ec_fegetenv
   RTLIB::FEGETMODE, // RTLIB::impl_arm64ec_fegetmode
   RTLIB::FESETENV, // RTLIB::impl_arm64ec_fesetenv
   RTLIB::FESETMODE, // RTLIB::impl_arm64ec_fesetmode
   RTLIB::FLOOR_F64, // RTLIB::impl_arm64ec_floor
   RTLIB::FLOOR_F32, // RTLIB::impl_arm64ec_floorf
-  RTLIB::FLOOR_F128, // RTLIB::impl_arm64ec_floor_f128
+  RTLIB::FLOOR_F128, // RTLIB::impl_arm64ec_floorl_f128
   RTLIB::FMA_F64, // RTLIB::impl_arm64ec_fma
   RTLIB::FMA_F32, // RTLIB::impl_arm64ec_fmaf
-  RTLIB::FMA_F128, // RTLIB::impl_arm64ec_fma_f128
+  RTLIB::FMA_F128, // RTLIB::impl_arm64ec_fmal_f128
   RTLIB::FMAX_F64, // RTLIB::impl_arm64ec_fmax
   RTLIB::FMAX_F32, // RTLIB::impl_arm64ec_fmaxf
   RTLIB::FMAXIMUM_F64, // RTLIB::impl_arm64ec_fmaximum
   RTLIB::FMAXIMUM_NUM_F64, // RTLIB::impl_arm64ec_fmaximum_num
   RTLIB::FMAXIMUM_NUM_F32, // RTLIB::impl_arm64ec_fmaximum_numf
-  RTLIB::FMAXIMUM_NUM_F128, // RTLIB::impl_arm64ec_fmaximum_num_f128
+  RTLIB::FMAXIMUM_NUM_F128, // RTLIB::impl_arm64ec_fmaximum_numl_f128
   RTLIB::FMAXIMUM_F32, // RTLIB::impl_arm64ec_fmaximumf
-  RTLIB::FMAXIMUM_F128, // RTLIB::impl_arm64ec_fmaximum_f128
-  RTLIB::FMAX_F128, // RTLIB::impl_arm64ec_fmax_f128
+  RTLIB::FMAXIMUM_F128, // RTLIB::impl_arm64ec_fmaximuml_f128
+  RTLIB::FMAX_F128, // RTLIB::impl_arm64ec_fmaxl_f128
   RTLIB::FMIN_F64, // RTLIB::impl_arm64ec_fmin
   RTLIB::FMIN_F32, // RTLIB::impl_arm64ec_fminf
   RTLIB::FMINIMUM_F64, // RTLIB::impl_arm64ec_fminimum
   RTLIB::FMINIMUM_NUM_F64, // RTLIB::impl_arm64ec_fminimum_num
   RTLIB::FMINIMUM_NUM_F32, // RTLIB::impl_arm64ec_fminimum_numf
-  RTLIB::FMINIMUM_NUM_F128, // RTLIB::impl_arm64ec_fminimum_num_f128
+  RTLIB::FMINIMUM_NUM_F128, // RTLIB::impl_arm64ec_fminimum_numl_f128
   RTLIB::FMINIMUM_F32, // RTLIB::impl_arm64ec_fminimumf
-  RTLIB::FMINIMUM_F128, // RTLIB::impl_arm64ec_fminimum_f128
-  RTLIB::FMIN_F128, // RTLIB::impl_arm64ec_fmin_f128
+  RTLIB::FMINIMUM_F128, // RTLIB::impl_arm64ec_fminimuml_f128
+  RTLIB::FMIN_F128, // RTLIB::impl_arm64ec_fminl_f128
   RTLIB::REM_F64, // RTLIB::impl_arm64ec_fmod
   RTLIB::REM_F32, // RTLIB::impl_arm64ec_fmodf
   RTLIB::REM_F128, // RTLIB::impl_arm64ec_fmodl_f128
@@ -8188,67 +8193,67 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::LDEXP_F64, // RTLIB::impl_arm64ec_ldexp
   RTLIB::LLRINT_F64, // RTLIB::impl_arm64ec_llrint
   RTLIB::LLRINT_F32, // RTLIB::impl_arm64ec_llrintf
-  RTLIB::LLRINT_F128, // RTLIB::impl_arm64ec_llrint_f128
+  RTLIB::LLRINT_F128, // RTLIB::impl_arm64ec_llrintl_f128
   RTLIB::LLROUND_F64, // RTLIB::impl_arm64ec_llround
   RTLIB::LLROUND_F32, // RTLIB::impl_arm64ec_llroundf
-  RTLIB::LLROUND_F128, // RTLIB::impl_arm64ec_llround_f128
+  RTLIB::LLROUND_F128, // RTLIB::impl_arm64ec_llroundl_f128
   RTLIB::LOG_F64, // RTLIB::impl_arm64ec_log
   RTLIB::LOG10_F64, // RTLIB::impl_arm64ec_log10
   RTLIB::LOG10_F32, // RTLIB::impl_arm64ec_log10f
-  RTLIB::LOG10_F128, // RTLIB::impl_arm64ec_log10_f128
+  RTLIB::LOG10_F128, // RTLIB::impl_arm64ec_log10l_f128
   RTLIB::LOG2_F64, // RTLIB::impl_arm64ec_log2
   RTLIB::LOG2_F32, // RTLIB::impl_arm64ec_log2f
-  RTLIB::LOG2_F128, // RTLIB::impl_arm64ec_log2_f128
+  RTLIB::LOG2_F128, // RTLIB::impl_arm64ec_log2l_f128
   RTLIB::LOG_F32, // RTLIB::impl_arm64ec_logf
-  RTLIB::LOG_F128, // RTLIB::impl_arm64ec_log_f128
+  RTLIB::LOG_F128, // RTLIB::impl_arm64ec_logl_f128
   RTLIB::LRINT_F64, // RTLIB::impl_arm64ec_lrint
   RTLIB::LRINT_F32, // RTLIB::impl_arm64ec_lrintf
-  RTLIB::LRINT_F128, // RTLIB::impl_arm64ec_lrint_f128
+  RTLIB::LRINT_F128, // RTLIB::impl_arm64ec_lrintl_f128
   RTLIB::LROUND_F64, // RTLIB::impl_arm64ec_lround
   RTLIB::LROUND_F32, // RTLIB::impl_arm64ec_lroundf
-  RTLIB::LROUND_F128, // RTLIB::impl_arm64ec_lround_f128
+  RTLIB::LROUND_F128, // RTLIB::impl_arm64ec_lroundl_f128
   RTLIB::MEMCPY, // RTLIB::impl_arm64ec_memcpy
   RTLIB::MEMMOVE, // RTLIB::impl_arm64ec_memmove
   RTLIB::MEMSET, // RTLIB::impl_arm64ec_memset
   RTLIB::MODF_F64, // RTLIB::impl_arm64ec_modf
   RTLIB::MODF_F32, // RTLIB::impl_arm64ec_modff
-  RTLIB::MODF_F128, // RTLIB::impl_arm64ec_modf_f128
+  RTLIB::MODF_F128, // RTLIB::impl_arm64ec_modfl_f128
   RTLIB::NEARBYINT_F64, // RTLIB::impl_arm64ec_nearbyint
   RTLIB::NEARBYINT_F32, // RTLIB::impl_arm64ec_nearbyintf
-  RTLIB::NEARBYINT_F128, // RTLIB::impl_arm64ec_nearbyint_f128
+  RTLIB::NEARBYINT_F128, // RTLIB::impl_arm64ec_nearbyintl_f128
   RTLIB::POW_F64, // RTLIB::impl_arm64ec_pow
   RTLIB::POW_F32, // RTLIB::impl_arm64ec_powf
-  RTLIB::POW_F128, // RTLIB::impl_arm64ec_pow_f128
+  RTLIB::POW_F128, // RTLIB::impl_arm64ec_powl_f128
   RTLIB::RINT_F64, // RTLIB::impl_arm64ec_rint
   RTLIB::RINT_F32, // RTLIB::impl_arm64ec_rintf
-  RTLIB::RINT_F128, // RTLIB::impl_arm64ec_rint_f128
+  RTLIB::RINT_F128, // RTLIB::impl_arm64ec_rintl_f128
   RTLIB::ROUND_F64, // RTLIB::impl_arm64ec_round
   RTLIB::ROUNDEVEN_F64, // RTLIB::impl_arm64ec_roundeven
   RTLIB::ROUNDEVEN_F32, // RTLIB::impl_arm64ec_roundevenf
-  RTLIB::ROUNDEVEN_F128, // RTLIB::impl_arm64ec_roundeven_f128
+  RTLIB::ROUNDEVEN_F128, // RTLIB::impl_arm64ec_roundevenl_f128
   RTLIB::ROUND_F32, // RTLIB::impl_arm64ec_roundf
-  RTLIB::ROUND_F128, // RTLIB::impl_arm64ec_round_f128
+  RTLIB::ROUND_F128, // RTLIB::impl_arm64ec_roundl_f128
   RTLIB::SIN_F64, // RTLIB::impl_arm64ec_sin
   RTLIB::SINCOSPI_F64, // RTLIB::impl_arm64ec_sincospi
   RTLIB::SINCOSPI_F32, // RTLIB::impl_arm64ec_sincospif
-  RTLIB::SINCOSPI_F128, // RTLIB::impl_arm64ec_sincospi_f128
+  RTLIB::SINCOSPI_F128, // RTLIB::impl_arm64ec_sincospil_f128
   RTLIB::SIN_F32, // RTLIB::impl_arm64ec_sinf
   RTLIB::SINH_F64, // RTLIB::impl_arm64ec_sinh
   RTLIB::SINH_F32, // RTLIB::impl_arm64ec_sinhf
-  RTLIB::SINH_F128, // RTLIB::impl_arm64ec_sinh_f128
-  RTLIB::SIN_F128, // RTLIB::impl_arm64ec_sin_f128
+  RTLIB::SINH_F128, // RTLIB::impl_arm64ec_sinhl_f128
+  RTLIB::SIN_F128, // RTLIB::impl_arm64ec_sinl_f128
   RTLIB::SQRT_F64, // RTLIB::impl_arm64ec_sqrt
   RTLIB::SQRT_F32, // RTLIB::impl_arm64ec_sqrtf
-  RTLIB::SQRT_F128, // RTLIB::impl_arm64ec_sqrt_f128
+  RTLIB::SQRT_F128, // RTLIB::impl_arm64ec_sqrtl_f128
   RTLIB::TAN_F64, // RTLIB::impl_arm64ec_tan
   RTLIB::TAN_F32, // RTLIB::impl_arm64ec_tanf
   RTLIB::TANH_F64, // RTLIB::impl_arm64ec_tanh
   RTLIB::TANH_F32, // RTLIB::impl_arm64ec_tanhf
-  RTLIB::TANH_F128, // RTLIB::impl_arm64ec_tanh_f128
-  RTLIB::TAN_F128, // RTLIB::impl_arm64ec_tan_f128
+  RTLIB::TANH_F128, // RTLIB::impl_arm64ec_tanhl_f128
+  RTLIB::TAN_F128, // RTLIB::impl_arm64ec_tanl_f128
   RTLIB::TRUNC_F64, // RTLIB::impl_arm64ec_trunc
   RTLIB::TRUNC_F32, // RTLIB::impl_arm64ec_truncf
-  RTLIB::TRUNC_F128, // RTLIB::impl_arm64ec_trunc_f128
+  RTLIB::TRUNC_F128, // RTLIB::impl_arm64ec_truncl_f128
   RTLIB::SDIV_I32, // RTLIB::impl_sparc_div
   RTLIB::SREM_I32, // RTLIB::impl_sparc_rem
   RTLIB::UDIV_I32, // RTLIB::impl_sparc_udiv
@@ -9159,47 +9164,47 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::ACOS_F64, // RTLIB::impl_acos
   RTLIB::ACOS_F32, // RTLIB::impl_acosf
   RTLIB::ACOS_F128, // RTLIB::impl_acosf128
-  RTLIB::ACOS_F128, // RTLIB::impl_acos_f128
-  RTLIB::ACOS_F80, // RTLIB::impl_acos_f80
-  RTLIB::ACOS_PPCF128, // RTLIB::impl_acos_ppcf128
+  RTLIB::ACOS_F128, // RTLIB::impl_acosl_f128
+  RTLIB::ACOS_F80, // RTLIB::impl_acosl_f80
+  RTLIB::ACOS_PPCF128, // RTLIB::impl_acosl_ppcf128
   RTLIB::ASIN_F64, // RTLIB::impl_asin
   RTLIB::ASIN_F32, // RTLIB::impl_asinf
   RTLIB::ASIN_F128, // RTLIB::impl_asinf128
-  RTLIB::ASIN_F128, // RTLIB::impl_asin_f128
-  RTLIB::ASIN_F80, // RTLIB::impl_asin_f80
-  RTLIB::ASIN_PPCF128, // RTLIB::impl_asin_ppcf128
+  RTLIB::ASIN_F128, // RTLIB::impl_asinl_f128
+  RTLIB::ASIN_F80, // RTLIB::impl_asinl_f80
+  RTLIB::ASIN_PPCF128, // RTLIB::impl_asinl_ppcf128
   RTLIB::ATAN_F64, // RTLIB::impl_atan
   RTLIB::ATAN2_F64, // RTLIB::impl_atan2
   RTLIB::ATAN2_F32, // RTLIB::impl_atan2f
   RTLIB::ATAN2_F128, // RTLIB::impl_atan2f128
-  RTLIB::ATAN2_F128, // RTLIB::impl_atan2_f128
-  RTLIB::ATAN2_F80, // RTLIB::impl_atan2_f80
-  RTLIB::ATAN2_PPCF128, // RTLIB::impl_atan2_ppcf128
+  RTLIB::ATAN2_F128, // RTLIB::impl_atan2l_f128
+  RTLIB::ATAN2_F80, // RTLIB::impl_atan2l_f80
+  RTLIB::ATAN2_PPCF128, // RTLIB::impl_atan2l_ppcf128
   RTLIB::ATAN_F32, // RTLIB::impl_atanf
   RTLIB::ATAN_F128, // RTLIB::impl_atanf128
-  RTLIB::ATAN_F128, // RTLIB::impl_atan_f128
-  RTLIB::ATAN_F80, // RTLIB::impl_atan_f80
-  RTLIB::ATAN_PPCF128, // RTLIB::impl_atan_ppcf128
+  RTLIB::ATAN_F128, // RTLIB::impl_atanl_f128
+  RTLIB::ATAN_F80, // RTLIB::impl_atanl_f80
+  RTLIB::ATAN_PPCF128, // RTLIB::impl_atanl_ppcf128
   RTLIB::BZERO, // RTLIB::impl_bzero
   RTLIB::CALLOC, // RTLIB::impl_calloc
   RTLIB::CBRT_F64, // RTLIB::impl_cbrt
   RTLIB::CBRT_F32, // RTLIB::impl_cbrtf
   RTLIB::CBRT_F128, // RTLIB::impl_cbrtf128
-  RTLIB::CBRT_F128, // RTLIB::impl_cbrt_f128
-  RTLIB::CBRT_F80, // RTLIB::impl_cbrt_f80
-  RTLIB::CBRT_PPCF128, // RTLIB::impl_cbrt_ppcf128
+  RTLIB::CBRT_F128, // RTLIB::impl_cbrtl_f128
+  RTLIB::CBRT_F80, // RTLIB::impl_cbrtl_f80
+  RTLIB::CBRT_PPCF128, // RTLIB::impl_cbrtl_ppcf128
   RTLIB::CEIL_F64, // RTLIB::impl_ceil
   RTLIB::CEIL_F32, // RTLIB::impl_ceilf
   RTLIB::CEIL_F128, // RTLIB::impl_ceilf128
-  RTLIB::CEIL_F128, // RTLIB::impl_ceil_f128
-  RTLIB::CEIL_F80, // RTLIB::impl_ceil_f80
-  RTLIB::CEIL_PPCF128, // RTLIB::impl_ceil_ppcf128
+  RTLIB::CEIL_F128, // RTLIB::impl_ceill_f128
+  RTLIB::CEIL_F80, // RTLIB::impl_ceill_f80
+  RTLIB::CEIL_PPCF128, // RTLIB::impl_ceill_ppcf128
   RTLIB::COPYSIGN_F64, // RTLIB::impl_copysign
   RTLIB::COPYSIGN_F32, // RTLIB::impl_copysignf
   RTLIB::COPYSIGN_F128, // RTLIB::impl_copysignf128
-  RTLIB::COPYSIGN_F128, // RTLIB::impl_copysign_f128
-  RTLIB::COPYSIGN_F80, // RTLIB::impl_copysign_f80
-  RTLIB::COPYSIGN_PPCF128, // RTLIB::impl_copysign_ppcf128
+  RTLIB::COPYSIGN_F128, // RTLIB::impl_copysignl_f128
+  RTLIB::COPYSIGN_F80, // RTLIB::impl_copysignl_f80
+  RTLIB::COPYSIGN_PPCF128, // RTLIB::impl_copysignl_ppcf128
   RTLIB::COS_F32, // RTLIB::impl_avr_cos
   RTLIB::COS_F64, // RTLIB::impl_cos
   RTLIB::COS_F32, // RTLIB::impl_cosf
@@ -9207,12 +9212,12 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::COSH_F64, // RTLIB::impl_cosh
   RTLIB::COSH_F32, // RTLIB::impl_coshf
   RTLIB::COSH_F128, // RTLIB::impl_coshf128
-  RTLIB::COSH_F128, // RTLIB::impl_cosh_f128
-  RTLIB::COSH_F80, // RTLIB::impl_cosh_f80
-  RTLIB::COSH_PPCF128, // RTLIB::impl_cosh_ppcf128
-  RTLIB::COS_F128, // RTLIB::impl_cos_f128
-  RTLIB::COS_F80, // RTLIB::impl_cos_f80
-  RTLIB::COS_PPCF128, // RTLIB::impl_cos_ppcf128
+  RTLIB::COSH_F128, // RTLIB::impl_coshl_f128
+  RTLIB::COSH_F80, // RTLIB::impl_coshl_f80
+  RTLIB::COSH_PPCF128, // RTLIB::impl_coshl_ppcf128
+  RTLIB::COS_F128, // RTLIB::impl_cosl_f128
+  RTLIB::COS_F80, // RTLIB::impl_cosl_f80
+  RTLIB::COS_PPCF128, // RTLIB::impl_cosl_ppcf128
   RTLIB::RETURN_ADDRESS, // RTLIB::impl_emscripten_return_address
   RTLIB::EXP_F64, // RTLIB::impl_exp
   RTLIB::EXP10_F64, // RTLIB::impl_exp10
@@ -9224,14 +9229,14 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::EXP2_F64, // RTLIB::impl_exp2
   RTLIB::EXP2_F32, // RTLIB::impl_exp2f
   RTLIB::EXP2_F128, // RTLIB::impl_exp2f128
-  RTLIB::EXP2_F128, // RTLIB::impl_exp2_f128
-  RTLIB::EXP2_F80, // RTLIB::impl_exp2_f80
-  RTLIB::EXP2_PPCF128, // RTLIB::impl_exp2_ppcf128
+  RTLIB::EXP2_F128, // RTLIB::impl_exp2l_f128
+  RTLIB::EXP2_F80, // RTLIB::impl_exp2l_f80
+  RTLIB::EXP2_PPCF128, // RTLIB::impl_exp2l_ppcf128
   RTLIB::EXP_F32, // RTLIB::impl_expf
   RTLIB::EXP_F128, // RTLIB::impl_expf128
-  RTLIB::EXP_F128, // RTLIB::impl_exp_f128
-  RTLIB::EXP_F80, // RTLIB::impl_exp_f80
-  RTLIB::EXP_PPCF128, // RTLIB::impl_exp_ppcf128
+  RTLIB::EXP_F128, // RTLIB::impl_expl_f128
+  RTLIB::EXP_F80, // RTLIB::impl_expl_f80
+  RTLIB::EXP_PPCF128, // RTLIB::impl_expl_ppcf128
   RTLIB::FEGETENV, // RTLIB::impl_fegetenv
   RTLIB::FEGETMODE, // RTLIB::impl_fegetmode
   RTLIB::FESETENV, // RTLIB::impl_fesetenv
@@ -9239,15 +9244,15 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::FLOOR_F64, // RTLIB::impl_floor
   RTLIB::FLOOR_F32, // RTLIB::impl_floorf
   RTLIB::FLOOR_F128, // RTLIB::impl_floorf128
-  RTLIB::FLOOR_F128, // RTLIB::impl_floor_f128
-  RTLIB::FLOOR_F80, // RTLIB::impl_floor_f80
-  RTLIB::FLOOR_PPCF128, // RTLIB::impl_floor_ppcf128
+  RTLIB::FLOOR_F128, // RTLIB::impl_floorl_f128
+  RTLIB::FLOOR_F80, // RTLIB::impl_floorl_f80
+  RTLIB::FLOOR_PPCF128, // RTLIB::impl_floorl_ppcf128
   RTLIB::FMA_F64, // RTLIB::impl_fma
   RTLIB::FMA_F32, // RTLIB::impl_fmaf
   RTLIB::FMA_F128, // RTLIB::impl_fmaf128
-  RTLIB::FMA_F128, // RTLIB::impl_fma_f128
-  RTLIB::FMA_F80, // RTLIB::impl_fma_f80
-  RTLIB::FMA_PPCF128, // RTLIB::impl_fma_ppcf128
+  RTLIB::FMA_F128, // RTLIB::impl_fmal_f128
+  RTLIB::FMA_F80, // RTLIB::impl_fmal_f80
+  RTLIB::FMA_PPCF128, // RTLIB::impl_fmal_ppcf128
   RTLIB::FMAX_F64, // RTLIB::impl_fmax
   RTLIB::FMAX_F32, // RTLIB::impl_fmaxf
   RTLIB::FMAX_F128, // RTLIB::impl_fmaxf128
@@ -9255,17 +9260,17 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::FMAXIMUM_NUM_F64, // RTLIB::impl_fmaximum_num
   RTLIB::FMAXIMUM_NUM_F32, // RTLIB::impl_fmaximum_numf
   RTLIB::FMAXIMUM_NUM_F128, // RTLIB::impl_fmaximum_numf128
-  RTLIB::FMAXIMUM_NUM_F128, // RTLIB::impl_fmaximum_num_f128
-  RTLIB::FMAXIMUM_NUM_F80, // RTLIB::impl_fmaximum_num_f80
-  RTLIB::FMAXIMUM_NUM_PPCF128, // RTLIB::impl_fmaximum_num_ppcf128
+  RTLIB::FMAXIMUM_NUM_F128, // RTLIB::impl_fmaximum_numl_f128
+  RTLIB::FMAXIMUM_NUM_F80, // RTLIB::impl_fmaximum_numl_f80
+  RTLIB::FMAXIMUM_NUM_PPCF128, // RTLIB::impl_fmaximum_numl_ppcf128
   RTLIB::FMAXIMUM_F32, // RTLIB::impl_fmaximumf
   RTLIB::FMAXIMUM_F128, // RTLIB::impl_fmaximumf128
-  RTLIB::FMAXIMUM_F128, // RTLIB::impl_fmaximum_f128
-  RTLIB::FMAXIMUM_F80, // RTLIB::impl_fmaximum_f80
-  RTLIB::FMAXIMUM_PPCF128, // RTLIB::impl_fmaximum_ppcf128
-  RTLIB::FMAX_F128, // RTLIB::impl_fmax_f128
-  RTLIB::FMAX_F80, // RTLIB::impl_fmax_f80
-  RTLIB::FMAX_PPCF128, // RTLIB::impl_fmax_ppcf128
+  RTLIB::FMAXIMUM_F128, // RTLIB::impl_fmaximuml_f128
+  RTLIB::FMAXIMUM_F80, // RTLIB::impl_fmaximuml_f80
+  RTLIB::FMAXIMUM_PPCF128, // RTLIB::impl_fmaximuml_ppcf128
+  RTLIB::FMAX_F128, // RTLIB::impl_fmaxl_f128
+  RTLIB::FMAX_F80, // RTLIB::impl_fmaxl_f80
+  RTLIB::FMAX_PPCF128, // RTLIB::impl_fmaxl_ppcf128
   RTLIB::FMIN_F64, // RTLIB::impl_fmin
   RTLIB::FMIN_F32, // RTLIB::impl_fminf
   RTLIB::FMIN_F128, // RTLIB::impl_fminf128
@@ -9273,17 +9278,17 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::FMINIMUM_NUM_F64, // RTLIB::impl_fminimum_num
   RTLIB::FMINIMUM_NUM_F32, // RTLIB::impl_fminimum_numf
   RTLIB::FMINIMUM_NUM_F128, // RTLIB::impl_fminimum_numf128
-  RTLIB::FMINIMUM_NUM_F128, // RTLIB::impl_fminimum_num_f128
-  RTLIB::FMINIMUM_NUM_F80, // RTLIB::impl_fminimum_num_f80
-  RTLIB::FMINIMUM_NUM_PPCF128, // RTLIB::impl_fminimum_num_ppcf128
+  RTLIB::FMINIMUM_NUM_F128, // RTLIB::impl_fminimum_numl_f128
+  RTLIB::FMINIMUM_NUM_F80, // RTLIB::impl_fminimum_numl_f80
+  RTLIB::FMINIMUM_NUM_PPCF128, // RTLIB::impl_fminimum_numl_ppcf128
   RTLIB::FMINIMUM_F32, // RTLIB::impl_fminimumf
   RTLIB::FMINIMUM_F128, // RTLIB::impl_fminimumf128
-  RTLIB::FMINIMUM_F128, // RTLIB::impl_fminimum_f128
-  RTLIB::FMINIMUM_F80, // RTLIB::impl_fminimum_f80
-  RTLIB::FMINIMUM_PPCF128, // RTLIB::impl_fminimum_ppcf128
-  RTLIB::FMIN_F128, // RTLIB::impl_fmin_f128
-  RTLIB::FMIN_F80, // RTLIB::impl_fmin_f80
-  RTLIB::FMIN_PPCF128, // RTLIB::impl_fmin_ppcf128
+  RTLIB::FMINIMUM_F128, // RTLIB::impl_fminimuml_f128
+  RTLIB::FMINIMUM_F80, // RTLIB::impl_fminimuml_f80
+  RTLIB::FMINIMUM_PPCF128, // RTLIB::impl_fminimuml_ppcf128
+  RTLIB::FMIN_F128, // RTLIB::impl_fminl_f128
+  RTLIB::FMIN_F80, // RTLIB::impl_fminl_f80
+  RTLIB::FMIN_PPCF128, // RTLIB::impl_fminl_ppcf128
   RTLIB::REM_F64, // RTLIB::impl_fmod
   RTLIB::REM_F32, // RTLIB::impl_fmodf
   RTLIB::REM_F128, // RTLIB::impl_fmodf128
@@ -9293,73 +9298,73 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::FREXP_F64, // RTLIB::impl_frexp
   RTLIB::FREXP_F32, // RTLIB::impl_frexpf
   RTLIB::FREXP_F128, // RTLIB::impl_frexpf128
-  RTLIB::FREXP_F128, // RTLIB::impl_frexp_f128
-  RTLIB::FREXP_F80, // RTLIB::impl_frexp_f80
-  RTLIB::FREXP_PPCF128, // RTLIB::impl_frexp_ppcf128
+  RTLIB::FREXP_F128, // RTLIB::impl_frexpl_f128
+  RTLIB::FREXP_F80, // RTLIB::impl_frexpl_f80
+  RTLIB::FREXP_PPCF128, // RTLIB::impl_frexpl_ppcf128
   RTLIB::HEXAGON_VOLATILE_MEMCPY, // RTLIB::impl_hexagon_memcpy_forward_vp4cp4n2
   RTLIB::LDEXP_F64, // RTLIB::impl_ldexp
   RTLIB::LDEXP_F32, // RTLIB::impl_ldexpf
   RTLIB::LDEXP_F128, // RTLIB::impl_ldexpf128
-  RTLIB::LDEXP_F128, // RTLIB::impl_ldexp_f128
-  RTLIB::LDEXP_F80, // RTLIB::impl_ldexp_f80
-  RTLIB::LDEXP_PPCF128, // RTLIB::impl_ldexp_ppcf128
+  RTLIB::LDEXP_F128, // RTLIB::impl_ldexpl_f128
+  RTLIB::LDEXP_F80, // RTLIB::impl_ldexpl_f80
+  RTLIB::LDEXP_PPCF128, // RTLIB::impl_ldexpl_ppcf128
   RTLIB::LLRINT_F64, // RTLIB::impl_llrint
   RTLIB::LLRINT_F32, // RTLIB::impl_llrintf
   RTLIB::LLRINT_F128, // RTLIB::impl_llrintf128
-  RTLIB::LLRINT_F128, // RTLIB::impl_llrint_f128
-  RTLIB::LLRINT_F80, // RTLIB::impl_llrint_f80
-  RTLIB::LLRINT_PPCF128, // RTLIB::impl_llrint_ppcf128
+  RTLIB::LLRINT_F128, // RTLIB::impl_llrintl_f128
+  RTLIB::LLRINT_F80, // RTLIB::impl_llrintl_f80
+  RTLIB::LLRINT_PPCF128, // RTLIB::impl_llrintl_ppcf128
   RTLIB::LLROUND_F64, // RTLIB::impl_llround
   RTLIB::LLROUND_F32, // RTLIB::impl_llroundf
   RTLIB::LLROUND_F128, // RTLIB::impl_llroundf128
-  RTLIB::LLROUND_F128, // RTLIB::impl_llround_f128
-  RTLIB::LLROUND_F80, // RTLIB::impl_llround_f80
-  RTLIB::LLROUND_PPCF128, // RTLIB::impl_llround_ppcf128
+  RTLIB::LLROUND_F128, // RTLIB::impl_llroundl_f128
+  RTLIB::LLROUND_F80, // RTLIB::impl_llroundl_f80
+  RTLIB::LLROUND_PPCF128, // RTLIB::impl_llroundl_ppcf128
   RTLIB::LOG_F64, // RTLIB::impl_log
   RTLIB::LOG10_F64, // RTLIB::impl_log10
   RTLIB::LOG10_F32, // RTLIB::impl_log10f
   RTLIB::LOG10_F128, // RTLIB::impl_log10f128
-  RTLIB::LOG10_F128, // RTLIB::impl_log10_f128
-  RTLIB::LOG10_F80, // RTLIB::impl_log10_f80
-  RTLIB::LOG10_PPCF128, // RTLIB::impl_log10_ppcf128
+  RTLIB::LOG10_F128, // RTLIB::impl_log10l_f128
+  RTLIB::LOG10_F80, // RTLIB::impl_log10l_f80
+  RTLIB::LOG10_PPCF128, // RTLIB::impl_log10l_ppcf128
   RTLIB::LOG2_F64, // RTLIB::impl_log2
   RTLIB::LOG2_F32, // RTLIB::impl_log2f
   RTLIB::LOG2_F128, // RTLIB::impl_log2f128
-  RTLIB::LOG2_F128, // RTLIB::impl_log2_f128
-  RTLIB::LOG2_F80, // RTLIB::impl_log2_f80
-  RTLIB::LOG2_PPCF128, // RTLIB::impl_log2_ppcf128
+  RTLIB::LOG2_F128, // RTLIB::impl_log2l_f128
+  RTLIB::LOG2_F80, // RTLIB::impl_log2l_f80
+  RTLIB::LOG2_PPCF128, // RTLIB::impl_log2l_ppcf128
   RTLIB::LOG_F32, // RTLIB::impl_logf
   RTLIB::LOG_F128, // RTLIB::impl_logf128
-  RTLIB::LOG_F128, // RTLIB::impl_log_f128
-  RTLIB::LOG_F80, // RTLIB::impl_log_f80
-  RTLIB::LOG_PPCF128, // RTLIB::impl_log_ppcf128
+  RTLIB::LOG_F128, // RTLIB::impl_logl_f128
+  RTLIB::LOG_F80, // RTLIB::impl_logl_f80
+  RTLIB::LOG_PPCF128, // RTLIB::impl_logl_ppcf128
   RTLIB::LRINT_F64, // RTLIB::impl_lrint
   RTLIB::LRINT_F32, // RTLIB::impl_lrintf
   RTLIB::LRINT_F128, // RTLIB::impl_lrintf128
-  RTLIB::LRINT_F128, // RTLIB::impl_lrint_f128
-  RTLIB::LRINT_F80, // RTLIB::impl_lrint_f80
-  RTLIB::LRINT_PPCF128, // RTLIB::impl_lrint_ppcf128
+  RTLIB::LRINT_F128, // RTLIB::impl_lrintl_f128
+  RTLIB::LRINT_F80, // RTLIB::impl_lrintl_f80
+  RTLIB::LRINT_PPCF128, // RTLIB::impl_lrintl_ppcf128
   RTLIB::LROUND_F64, // RTLIB::impl_lround
   RTLIB::LROUND_F32, // RTLIB::impl_lroundf
   RTLIB::LROUND_F128, // RTLIB::impl_lroundf128
-  RTLIB::LROUND_F128, // RTLIB::impl_lround_f128
-  RTLIB::LROUND_F80, // RTLIB::impl_lround_f80
-  RTLIB::LROUND_PPCF128, // RTLIB::impl_lround_ppcf128
+  RTLIB::LROUND_F128, // RTLIB::impl_lroundl_f128
+  RTLIB::LROUND_F80, // RTLIB::impl_lroundl_f80
+  RTLIB::LROUND_PPCF128, // RTLIB::impl_lroundl_ppcf128
   RTLIB::MEMCPY, // RTLIB::impl_memcpy
   RTLIB::MEMMOVE, // RTLIB::impl_memmove
   RTLIB::MEMSET, // RTLIB::impl_memset
   RTLIB::MODF_F64, // RTLIB::impl_modf
   RTLIB::MODF_F32, // RTLIB::impl_modff
   RTLIB::MODF_F128, // RTLIB::impl_modff128
-  RTLIB::MODF_F128, // RTLIB::impl_modf_f128
-  RTLIB::MODF_F80, // RTLIB::impl_modf_f80
-  RTLIB::MODF_PPCF128, // RTLIB::impl_modf_ppcf128
+  RTLIB::MODF_F128, // RTLIB::impl_modfl_f128
+  RTLIB::MODF_F80, // RTLIB::impl_modfl_f80
+  RTLIB::MODF_PPCF128, // RTLIB::impl_modfl_ppcf128
   RTLIB::NEARBYINT_F64, // RTLIB::impl_nearbyint
   RTLIB::NEARBYINT_F32, // RTLIB::impl_nearbyintf
   RTLIB::NEARBYINT_F128, // RTLIB::impl_nearbyintf128
-  RTLIB::NEARBYINT_F128, // RTLIB::impl_nearbyint_f128
-  RTLIB::NEARBYINT_F80, // RTLIB::impl_nearbyint_f80
-  RTLIB::NEARBYINT_PPCF128, // RTLIB::impl_nearbyint_ppcf128
+  RTLIB::NEARBYINT_F128, // RTLIB::impl_nearbyintl_f128
+  RTLIB::NEARBYINT_F80, // RTLIB::impl_nearbyintl_f80
+  RTLIB::NEARBYINT_PPCF128, // RTLIB::impl_nearbyintl_ppcf128
   RTLIB::OBJC_AUTORELEASE, // RTLIB::impl_objc_autorelease
   RTLIB::OBJC_AUTORELEASEPOOLPOP, // RTLIB::impl_objc_autoreleasePoolPop
   RTLIB::OBJC_AUTORELEASEPOOLPUSH, // RTLIB::impl_objc_autoreleasePoolPush
@@ -9389,86 +9394,93 @@ const RTLIB::Libcall llvm::RTLIB::RuntimeLibcallsInfo::ImplToLibcall[RTLIB::NumL
   RTLIB::POW_F64, // RTLIB::impl_pow
   RTLIB::POW_F32, // RTLIB::impl_powf
   RTLIB::POW_F128, // RTLIB::impl_powf128
-  RTLIB::POW_F128, // RTLIB::impl_pow_f128
-  RTLIB::POW_F80, // RTLIB::impl_pow_f80
-  RTLIB::POW_PPCF128, // RTLIB::impl_pow_ppcf128
+  RTLIB::POW_F128, // RTLIB::impl_powl_f128
+  RTLIB::POW_F80, // RTLIB::impl_powl_f80
+  RTLIB::POW_PPCF128, // RTLIB::impl_powl_ppcf128
   RTLIB::RINT_F64, // RTLIB::impl_rint
   RTLIB::RINT_F32, // RTLIB::impl_rintf
   RTLIB::RINT_F128, // RTLIB::impl_rintf128
-  RTLIB::RINT_F128, // RTLIB::impl_rint_f128
-  RTLIB::RINT_F80, // RTLIB::impl_rint_f80
-  RTLIB::RINT_PPCF128, // RTLIB::impl_rint_ppcf128
+  RTLIB::RINT_F128, // RTLIB::impl_rintl_f128
+  RTLIB::RINT_F80, // RTLIB::impl_rintl_f80
+  RTLIB::RINT_PPCF128, // RTLIB::impl_rintl_ppcf128
   RTLIB::ROUND_F64, // RTLIB::impl_round
   RTLIB::ROUNDEVEN_F64, // RTLIB::impl_roundeven
   RTLIB::ROUNDEVEN_F32, // RTLIB::impl_roundevenf
   RTLIB::ROUNDEVEN_F128, // RTLIB::impl_roundevenf128
-  RTLIB::ROUNDEVEN_F128, // RTLIB::impl_roundeven_f128
-  RTLIB::ROUNDEVEN_F80, // RTLIB::impl_roundeven_f80
-  RTLIB::ROUNDEVEN_PPCF128, // RTLIB::impl_roundeven_ppcf128
+  RTLIB::ROUNDEVEN_F128, // RTLIB::impl_roundevenl_f128
+  RTLIB::ROUNDEVEN_F80, // RTLIB::impl_roundevenl_f80
+  RTLIB::ROUNDEVEN_PPCF128, // RTLIB::impl_roundevenl_ppcf128
   RTLIB::ROUND_F32, // RTLIB::impl_roundf
   RTLIB::ROUND_F128, // RTLIB::impl_roundf128
-  RTLIB::ROUND_F128, // RTLIB::impl_round_f128
-  RTLIB::ROUND_F80, // RTLIB::impl_round_f80
-  RTLIB::ROUND_PPCF128, // RTLIB::impl_round_ppcf128
+  RTLIB::ROUND_F128, // RTLIB::impl_roundl_f128
+  RTLIB::ROUND_F80, // RTLIB::impl_roundl_f80
+  RTLIB::ROUND_PPCF128, // RTLIB::impl_roundl_ppcf128
   RTLIB::SIN_F32, // RTLIB::impl_avr_sin
   RTLIB::SIN_F64, // RTLIB::impl_sin
   RTLIB::SINCOS_F64, // RTLIB::impl_sincos
   RTLIB::SINCOS_F32, // RTLIB::impl_sincosf
   RTLIB::SINCOS_F128, // RTLIB::impl_sincosf128
-  RTLIB::SINCOS_F128, // RTLIB::impl_sincos_f128
-  RTLIB::SINCOS_F80, // RTLIB::impl_sincos_f80
-  RTLIB::SINCOS_PPCF128, // RTLIB::impl_sincos_ppcf128
+  RTLIB::SINCOS_F128, // RTLIB::impl_sincosl_f128
+  RTLIB::SINCOS_F80, // RTLIB::impl_sincosl_f80
+  RTLIB::SINCOS_PPCF128, // RTLIB::impl_sincosl_ppcf128
   RTLIB::SINCOSPI_F64, // RTLIB::impl_sincospi
   RTLIB::SINCOSPI_F32, // RTLIB::impl_sincospif
-  RTLIB::SINCOSPI_F128, // RTLIB::impl_sincospi_f128
-  RTLIB::SINCOSPI_F80, // RTLIB::impl_sincospi_f80
-  RTLIB::SINCOSPI_PPCF128, // RTLIB::impl_sincospi_ppcf128
+  RTLIB::SINCOSPI_F128, // RTLIB::impl_sincospil_f128
+  RTLIB::SINCOSPI_F80, // RTLIB::impl_sincospil_f80
+  RTLIB::SINCOSPI_PPCF128, // RTLIB::impl_sincospil_ppcf128
   RTLIB::SIN_F32, // RTLIB::impl_sinf
   RTLIB::SIN_F128, // RTLIB::impl_sinf128
   RTLIB::SINH_F64, // RTLIB::impl_sinh
   RTLIB::SINH_F32, // RTLIB::impl_sinhf
   RTLIB::SINH_F128, // RTLIB::impl_sinhf128
-  RTLIB::SINH_F128, // RTLIB::impl_sinh_f128
-  RTLIB::SINH_F80, // RTLIB::impl_sinh_f80
-  RTLIB::SINH_PPCF128, // RTLIB::impl_sinh_ppcf128
-  RTLIB::SIN_F128, // RTLIB::impl_sin_f128
-  RTLIB::SIN_F80, // RTLIB::impl_sin_f80
-  RTLIB::SIN_PPCF128, // RTLIB::impl_sin_ppcf128
+  RTLIB::SINH_F128, // RTLIB::impl_sinhl_f128
+  RTLIB::SINH_F80, // RTLIB::impl_sinhl_f80
+  RTLIB::SINH_PPCF128, // RTLIB::impl_sinhl_ppcf128
+  RTLIB::SIN_F128, // RTLIB::impl_sinl_f128
+  RTLIB::SIN_F80, // RTLIB::impl_sinl_f80
+  RTLIB::SIN_PPCF128, // RTLIB::impl_sinl_ppcf128
   RTLIB::SQRT_F64, // RTLIB::impl_sqrt
   RTLIB::SQRT_F32, // RTLIB::impl_sqrtf
   RTLIB::SQRT_F128, // RTLIB::impl_sqrtf128
-  RTLIB::SQRT_F128, // RTLIB::impl_sqrt_f128
-  RTLIB::SQRT_F80, // RTLIB::impl_sqrt_f80
-  RTLIB::SQRT_PPCF128, // RTLIB::impl_sqrt_ppcf128
+  RTLIB::SQRT_F128, // RTLIB::impl_sqrtl_f128
+  RTLIB::SQRT_F80, // RTLIB::impl_sqrtl_f80
+  RTLIB::SQRT_PPCF128, // RTLIB::impl_sqrtl_ppcf128
   RTLIB::TAN_F64, // RTLIB::impl_tan
   RTLIB::TAN_F32, // RTLIB::impl_tanf
   RTLIB::TAN_F128, // RTLIB::impl_tanf128
   RTLIB::TANH_F64, // RTLIB::impl_tanh
   RTLIB::TANH_F32, // RTLIB::impl_tanhf
   RTLIB::TANH_F128, // RTLIB::impl_tanhf128
-  RTLIB::TANH_F128, // RTLIB::impl_tanh_f128
-  RTLIB::TANH_F80, // RTLIB::impl_tanh_f80
-  RTLIB::TANH_PPCF128, // RTLIB::impl_tanh_ppcf128
-  RTLIB::TAN_F128, // RTLIB::impl_tan_f128
-  RTLIB::TAN_F80, // RTLIB::impl_tan_f80
-  RTLIB::TAN_PPCF128, // RTLIB::impl_tan_ppcf128
+  RTLIB::TANH_F128, // RTLIB::impl_tanhl_f128
+  RTLIB::TANH_F80, // RTLIB::impl_tanhl_f80
+  RTLIB::TANH_PPCF128, // RTLIB::impl_tanhl_ppcf128
+  RTLIB::TAN_F128, // RTLIB::impl_tanl_f128
+  RTLIB::TAN_F80, // RTLIB::impl_tanl_f80
+  RTLIB::TAN_PPCF128, // RTLIB::impl_tanl_ppcf128
   RTLIB::TRUNC_F64, // RTLIB::impl_trunc
   RTLIB::TRUNC_F32, // RTLIB::impl_truncf
   RTLIB::TRUNC_F128, // RTLIB::impl_truncf128
-  RTLIB::TRUNC_F128, // RTLIB::impl_trunc_f128
-  RTLIB::TRUNC_F80, // RTLIB::impl_trunc_f80
-  RTLIB::TRUNC_PPCF128, // RTLIB::impl_trunc_ppcf128
+  RTLIB::TRUNC_F128, // RTLIB::impl_truncl_f128
+  RTLIB::TRUNC_F80, // RTLIB::impl_truncl_f80
+  RTLIB::TRUNC_PPCF128, // RTLIB::impl_truncl_ppcf128
 };
 
-#endif
+
+#endif // GET_INIT_RUNTIME_LIBCALL_NAMES
 
 #ifdef GET_LOOKUP_LIBCALL_IMPL_NAME_BODY
+#undef GET_LOOKUP_LIBCALL_IMPL_NAME_BODY
+
   size_t Size = Name.size();
   if (Size == 0 || Size > 53)
     return enum_seq(RTLIB::Unsupported, RTLIB::Unsupported);
  return lookupLibcallImplNameImpl(Name);
-#endif
+
+#endif // GET_LOOKUP_LIBCALL_IMPL_NAME_BODY
+
 #ifdef DEFINE_GET_LOOKUP_LIBCALL_IMPL_NAME
+#undef DEFINE_GET_LOOKUP_LIBCALL_IMPL_NAME
+
 static inline uint64_t hash(StringRef Str) {
   return static_cast<uint32_t>(xxh3_64bits(Str));
 }
@@ -21780,9 +21792,12 @@ iota_range<RTLIB::LibcallImpl> RTLIB::RuntimeLibcallsInfo::lookupLibcallImplName
 
   return enum_seq(RTLIB::Unsupported, RTLIB::Unsupported);
 }
-#endif
+
+#endif // DEFINE_GET_LOOKUP_LIBCALL_IMPL_NAME
 
 #ifdef GET_SET_TARGET_RUNTIME_LIBCALL_SETS
+#undef GET_SET_TARGET_RUNTIME_LIBCALL_SETS
+
 void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::Triple &TT, ExceptionHandling ExceptionModel, FloatABI::ABIType FloatABI, EABI EABIVersion, StringRef ABIName) {
   struct LibcallImplPair {
     RTLIB::Libcall Func;
@@ -21790,22 +21805,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   };
 
   if ((TT.isAArch64() && !TT.isWindowsArm64EC())) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0xffffffffe0000000, 0xffffffffffffffff,
+      0x00000000000053, 0xffffffffeefffe00, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000029734, 0x3400000000000000,
+      0xffa90020245f5a6d, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52c0896c596,
+      0x2cb040964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -21863,20 +21889,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -21889,13 +21915,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -21905,28 +21931,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -21971,34 +21997,34 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -22019,7 +22045,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -22030,7 +22056,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -22151,7 +22177,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -22160,13 +22186,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SC_MEMCHR, RTLIB::impl___arm_sc_memchr}, // __arm_sc_memchr
         {RTLIB::SC_MEMCPY, RTLIB::impl___arm_sc_memcpy}, // __arm_sc_memcpy
@@ -22182,10 +22208,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -22201,10 +22227,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -22281,13 +22307,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -22355,10 +22381,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImplCallingConv(Impl, CallingConv::AArch64_SME_ABI_Support_Routines_PreserveMost_From_X0);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -22421,10 +22458,23 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
           {RTLIB::SINCOS_F32, RTLIB::impl_sincosf}, // sincosf
           {RTLIB::SINCOS_F64, RTLIB::impl_sincos}, // sincos
-          {RTLIB::SINCOS_F128, RTLIB::impl_sincos_f128}, // sincosl
+          {RTLIB::SINCOS_F128, RTLIB::impl_sincosl_f128}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -22456,24 +22506,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     }
 
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
-          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
-          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
-      };
-
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
-        setLibcallImpl(Func, Impl);
-      }
-
-    }
-
     if (!TT.isOSWindows() || TT.isOSCygMing()) {
       static const LibcallImplPair LibraryCalls_isNotOSWindowsOrIsCygwinMinGW[] = {
           {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
-          {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+          {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
           {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
-          {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+          {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isNotOSWindowsOrIsCygwinMinGW) {
@@ -22521,6 +22559,17 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isAMDGPU()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     return;
   }
 
@@ -22532,22 +22581,31 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       Entry = DefaultCC;
     }
 
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000040, 0xffffffffecc00000, 0x9a68806218f7ffff, 0x4a02b03c36078496,
+      0x4000001b12253688, 0xd37fffe000000040, 0x3e0000000020634, 0x2000000000000000,
+      0xffa00020245f1865, 0x742fffffffffffff, 0x5c52e596083f4602, 0x6597e52c0896c596,
+      0x2cb040964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
-        {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
-        {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -22605,20 +22663,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -22626,18 +22684,16 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CTPOP_I64, RTLIB::impl___popcountdi2}, // __popcountdi2
         {RTLIB::CTPOP_I128, RTLIB::impl___popcountti2}, // __popcountti2
         {RTLIB::DEOPTIMIZE, RTLIB::impl___llvm_deoptimize}, // __llvm_deoptimize
-        {RTLIB::DIV_F32, RTLIB::impl___divsf3}, // __divsf3
-        {RTLIB::DIV_F64, RTLIB::impl___divdf3}, // __divdf3
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -22647,28 +22703,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
         {RTLIB::FPEXT_F16_F128, RTLIB::impl___extendhftf2}, // __extendhftf2
@@ -22685,11 +22741,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOSINT_F16_I32, RTLIB::impl___fixhfsi}, // __fixhfsi
         {RTLIB::FPTOSINT_F16_I64, RTLIB::impl___fixhfdi}, // __fixhfdi
         {RTLIB::FPTOSINT_F16_I128, RTLIB::impl___fixhfti}, // __fixhfti
-        {RTLIB::FPTOSINT_F32_I32, RTLIB::impl___fixsfsi}, // __fixsfsi
-        {RTLIB::FPTOSINT_F32_I64, RTLIB::impl___fixsfdi}, // __fixsfdi
         {RTLIB::FPTOSINT_F32_I128, RTLIB::impl___fixsfti}, // __fixsfti
-        {RTLIB::FPTOSINT_F64_I32, RTLIB::impl___fixdfsi}, // __fixdfsi
-        {RTLIB::FPTOSINT_F64_I64, RTLIB::impl___fixdfdi}, // __fixdfdi
         {RTLIB::FPTOSINT_F64_I128, RTLIB::impl___fixdfti}, // __fixdfti
         {RTLIB::FPTOSINT_F128_I32, RTLIB::impl___fixtfsi}, // __fixtfsi
         {RTLIB::FPTOSINT_F128_I64, RTLIB::impl___fixtfdi_f128}, // __fixtfdi
@@ -22697,11 +22749,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F16_I32, RTLIB::impl___fixunshfsi}, // __fixunshfsi
         {RTLIB::FPTOUINT_F16_I64, RTLIB::impl___fixunshfdi}, // __fixunshfdi
         {RTLIB::FPTOUINT_F16_I128, RTLIB::impl___fixunshfti}, // __fixunshfti
-        {RTLIB::FPTOUINT_F32_I32, RTLIB::impl___fixunssfsi}, // __fixunssfsi
-        {RTLIB::FPTOUINT_F32_I64, RTLIB::impl___fixunssfdi}, // __fixunssfdi
         {RTLIB::FPTOUINT_F32_I128, RTLIB::impl___fixunssfti}, // __fixunssfti
-        {RTLIB::FPTOUINT_F64_I32, RTLIB::impl___fixunsdfsi}, // __fixunsdfsi
-        {RTLIB::FPTOUINT_F64_I64, RTLIB::impl___fixunsdfdi}, // __fixunsdfdi
         {RTLIB::FPTOUINT_F64_I128, RTLIB::impl___fixunsdfti}, // __fixunsdfti
         {RTLIB::FPTOUINT_F128_I32, RTLIB::impl___fixunstfsi_f128}, // __fixunstfsi
         {RTLIB::FPTOUINT_F128_I64, RTLIB::impl___fixunstfdi_f128}, // __fixunstfdi
@@ -22710,34 +22758,34 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -22758,39 +22806,26 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
-        {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
-        {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
         {RTLIB::MUL_F128, RTLIB::impl___multf3}, // __multf3
         {RTLIB::MUL_I8, RTLIB::impl___mulqi3}, // __mulqi3
         {RTLIB::MUL_I16, RTLIB::impl___mulhi3}, // __mulhi3
         {RTLIB::MUL_I32, RTLIB::impl___mulsi3}, // __mulsi3
-        {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
-        {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
-        {RTLIB::OEQ_F64, RTLIB::impl___eqdf2}, // __eqdf2
         {RTLIB::OEQ_F128, RTLIB::impl___eqtf2}, // __eqtf2
-        {RTLIB::OGE_F32, RTLIB::impl___gesf2}, // __gesf2
-        {RTLIB::OGE_F64, RTLIB::impl___gedf2}, // __gedf2
         {RTLIB::OGE_F128, RTLIB::impl___getf2}, // __getf2
-        {RTLIB::OGT_F32, RTLIB::impl___gtsf2}, // __gtsf2
-        {RTLIB::OGT_F64, RTLIB::impl___gtdf2}, // __gtdf2
         {RTLIB::OGT_F128, RTLIB::impl___gttf2}, // __gttf2
-        {RTLIB::OLE_F32, RTLIB::impl___lesf2}, // __lesf2
-        {RTLIB::OLE_F64, RTLIB::impl___ledf2}, // __ledf2
         {RTLIB::OLE_F128, RTLIB::impl___letf2}, // __letf2
-        {RTLIB::OLT_F32, RTLIB::impl___ltsf2}, // __ltsf2
-        {RTLIB::OLT_F64, RTLIB::impl___ltdf2}, // __ltdf2
         {RTLIB::OLT_F128, RTLIB::impl___lttf2}, // __lttf2
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -22799,36 +22834,30 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
-        {RTLIB::SDIV_I32, RTLIB::impl___divsi3}, // __divsi3
         {RTLIB::SDIV_I64, RTLIB::impl___divdi3}, // __divdi3
         {RTLIB::SDIV_I128, RTLIB::impl___divti3}, // __divti3
         {RTLIB::SHL_I16, RTLIB::impl___ashlhi3}, // __ashlhi3
         {RTLIB::SHL_I32, RTLIB::impl___ashlsi3}, // __ashlsi3
-        {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
-        {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
-        {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
         {RTLIB::SINTTOFP_I32_F128, RTLIB::impl___floatsitf}, // __floatsitf
         {RTLIB::SINTTOFP_I64_BF16, RTLIB::impl___floatdibf}, // __floatdibf
         {RTLIB::SINTTOFP_I64_F16, RTLIB::impl___floatdihf}, // __floatdihf
-        {RTLIB::SINTTOFP_I64_F32, RTLIB::impl___floatdisf}, // __floatdisf
-        {RTLIB::SINTTOFP_I64_F64, RTLIB::impl___floatdidf}, // __floatdidf
         {RTLIB::SINTTOFP_I64_F128, RTLIB::impl___floatditf_f128}, // __floatditf
         {RTLIB::SINTTOFP_I128_F16, RTLIB::impl___floattihf}, // __floattihf
         {RTLIB::SINTTOFP_I128_F32, RTLIB::impl___floattisf}, // __floattisf
@@ -22836,13 +22865,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
-        {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
         {RTLIB::SREM_I8, RTLIB::impl___modqi3}, // __modqi3
         {RTLIB::SREM_I16, RTLIB::impl___modhi3}, // __modhi3
         {RTLIB::SREM_I32, RTLIB::impl___modsi3}, // __modsi3
@@ -22850,9 +22878,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SREM_I128, RTLIB::impl___modti3}, // __modti3
         {RTLIB::SRL_I16, RTLIB::impl___lshrhi3}, // __lshrhi3
         {RTLIB::SRL_I32, RTLIB::impl___lshrsi3}, // __lshrsi3
-        {RTLIB::SRL_I64, RTLIB::impl___lshrdi3}, // __lshrdi3
-        {RTLIB::SUB_F32, RTLIB::impl___subsf3}, // __subsf3
-        {RTLIB::SUB_F64, RTLIB::impl___subdf3}, // __subdf3
         {RTLIB::SUB_F128, RTLIB::impl___subtf3}, // __subtf3
         {RTLIB::SYNC_FETCH_AND_ADD_1, RTLIB::impl___sync_fetch_and_add_1}, // __sync_fetch_and_add_1
         {RTLIB::SYNC_FETCH_AND_ADD_2, RTLIB::impl___sync_fetch_and_add_2}, // __sync_fetch_and_add_2
@@ -22916,36 +22941,27 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
-        {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
         {RTLIB::UDIV_I64, RTLIB::impl___udivdi3}, // __udivdi3
         {RTLIB::UDIV_I128, RTLIB::impl___udivti3}, // __udivti3
         {RTLIB::UINTTOFP_I32_F16, RTLIB::impl___floatunsihf}, // __floatunsihf
-        {RTLIB::UINTTOFP_I32_F32, RTLIB::impl___floatunsisf}, // __floatunsisf
-        {RTLIB::UINTTOFP_I32_F64, RTLIB::impl___floatunsidf}, // __floatunsidf
         {RTLIB::UINTTOFP_I32_F128, RTLIB::impl___floatunsitf}, // __floatunsitf
         {RTLIB::UINTTOFP_I64_BF16, RTLIB::impl___floatundibf}, // __floatundibf
         {RTLIB::UINTTOFP_I64_F16, RTLIB::impl___floatundihf}, // __floatundihf
-        {RTLIB::UINTTOFP_I64_F32, RTLIB::impl___floatundisf}, // __floatundisf
-        {RTLIB::UINTTOFP_I64_F64, RTLIB::impl___floatundidf}, // __floatundidf
         {RTLIB::UINTTOFP_I64_F128, RTLIB::impl___floatunditf_f128}, // __floatunditf
         {RTLIB::UINTTOFP_I128_F16, RTLIB::impl___floatuntihf}, // __floatuntihf
         {RTLIB::UINTTOFP_I128_F32, RTLIB::impl___floatuntisf}, // __floatuntisf
         {RTLIB::UINTTOFP_I128_F64, RTLIB::impl___floatuntidf}, // __floatuntidf
         {RTLIB::UINTTOFP_I128_F128, RTLIB::impl___floatuntitf_f128}, // __floatuntitf
-        {RTLIB::UNE_F32, RTLIB::impl___nesf2}, // __nesf2
-        {RTLIB::UNE_F64, RTLIB::impl___nedf2}, // __nedf2
         {RTLIB::UNE_F128, RTLIB::impl___netf2}, // __netf2
-        {RTLIB::UO_F32, RTLIB::impl___unordsf2}, // __unordsf2
-        {RTLIB::UO_F64, RTLIB::impl___unorddf2}, // __unorddf2
         {RTLIB::UO_F128, RTLIB::impl___unordtf2}, // __unordtf2
         {RTLIB::UREM_I8, RTLIB::impl___umodqi3}, // __umodqi3
         {RTLIB::UREM_I16, RTLIB::impl___umodhi3}, // __umodhi3
@@ -22958,10 +22974,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -22984,12 +23011,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     }
 
     if (!TT.isTargetAEABI() && TT.isOSBinFormatMachO()) {
-      static const LibcallImplPair LibraryCalls_anonymous_34_ARMHalfConvertLibcallCallingConv[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_38_ARMHalfConvertLibcallCallingConv[] = {
           {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
           {RTLIB::FPROUND_F32_F16, RTLIB::impl___truncsfhf2}, // __truncsfhf2
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_34_ARMHalfConvertLibcallCallingConv) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_38_ARMHalfConvertLibcallCallingConv) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, TT.isWatchABI() ? DefaultCC :
     (isAAPCS_ABI(TT, ABIName) ? CallingConv::ARM_AAPCS : CallingConv::ARM_APCS));
@@ -22998,11 +23025,11 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     }
 
     if (!TT.isTargetAEABI()) {
-      static const LibcallImplPair LibraryCalls_anonymous_35_ARMHalfConvertLibcallCallingConv[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_39_ARMHalfConvertLibcallCallingConv[] = {
           {RTLIB::FPROUND_F64_F16, RTLIB::impl___truncdfhf2}, // __truncdfhf2
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_35_ARMHalfConvertLibcallCallingConv) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_39_ARMHalfConvertLibcallCallingConv) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, TT.isWatchABI() ? DefaultCC :
     (isAAPCS_ABI(TT, ABIName) ? CallingConv::ARM_AAPCS : CallingConv::ARM_APCS));
@@ -23012,12 +23039,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     if (!TT.isOSBinFormatMachO() &&
                               !TT.isTargetAEABI()) {
-      static const LibcallImplPair LibraryCalls_anonymous_36_ARMHalfConvertLibcallCallingConv[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_40_ARMHalfConvertLibcallCallingConv[] = {
           {RTLIB::FPEXT_F16_F32, RTLIB::impl___gnu_h2f_ieee}, // __gnu_h2f_ieee
           {RTLIB::FPROUND_F32_F16, RTLIB::impl___gnu_f2h_ieee}, // __gnu_f2h_ieee
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_36_ARMHalfConvertLibcallCallingConv) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_40_ARMHalfConvertLibcallCallingConv) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, TT.isWatchABI() ? DefaultCC :
     (isAAPCS_ABI(TT, ABIName) ? CallingConv::ARM_AAPCS : CallingConv::ARM_APCS));
@@ -23026,14 +23053,14 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     }
 
     if (hasAEABILibcalls(TT)) {
-      static const LibcallImplPair LibraryCalls_anonymous_37_ARM_AAPCS[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_41_ARM_AAPCS[] = {
           {RTLIB::SDIVREM_I32, RTLIB::impl___aeabi_idivmod}, // __aeabi_idivmod
           {RTLIB::SDIVREM_I64, RTLIB::impl___aeabi_ldivmod}, // __aeabi_ldivmod
           {RTLIB::UDIVREM_I32, RTLIB::impl___aeabi_uidivmod}, // __aeabi_uidivmod
           {RTLIB::UDIVREM_I64, RTLIB::impl___aeabi_uldivmod}, // __aeabi_uldivmod
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_37_ARM_AAPCS) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_41_ARM_AAPCS) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, CallingConv::ARM_AAPCS);
       }
@@ -23041,7 +23068,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     }
 
     if (hasAEABILibcalls(TT) && isAAPCS_ABI(TT, ABIName)) {
-      static const LibcallImplPair LibraryCalls_anonymous_38_ARM_AAPCS[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_42_ARM_AAPCS[] = {
           {RTLIB::ADD_F32, RTLIB::impl___aeabi_fadd}, // __aeabi_fadd
           {RTLIB::ADD_F64, RTLIB::impl___aeabi_dadd}, // __aeabi_dadd
           {RTLIB::DIV_F32, RTLIB::impl___aeabi_fdiv}, // __aeabi_fdiv
@@ -23091,7 +23118,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
           {RTLIB::UO_F64, RTLIB::impl___aeabi_dcmpun}, // __aeabi_dcmpun
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_38_ARM_AAPCS) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_42_ARM_AAPCS) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, CallingConv::ARM_AAPCS);
       }
@@ -23101,7 +23128,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     if ((EABIVersion == EABI::EABI4 ||
                              EABIVersion == EABI::EABI5) &&
                              hasAEABILibcalls(TT) && isAAPCS_ABI(TT, ABIName)) {
-      static const LibcallImplPair LibraryCalls_anonymous_39_ARM_AAPCS[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_43_ARM_AAPCS[] = {
           {RTLIB::AEABI_MEMCLR, RTLIB::impl___aeabi_memclr}, // __aeabi_memclr
           {RTLIB::AEABI_MEMCLR4, RTLIB::impl___aeabi_memclr4}, // __aeabi_memclr4
           {RTLIB::AEABI_MEMCLR8, RTLIB::impl___aeabi_memclr8}, // __aeabi_memclr8
@@ -23116,21 +23143,78 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
           {RTLIB::MEMSET, RTLIB::impl___aeabi_memset}, // __aeabi_memset
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_39_ARM_AAPCS) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_43_ARM_AAPCS) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, CallingConv::ARM_AAPCS);
       }
 
     }
 
+    if (
+               (!hasAEABILibcalls(TT) || !isAAPCS_ABI(TT, ABIName)) &&
+               !TT.isOSWindows()
+            ) {
+      static const LibcallImplPair LibraryCalls_anonymous_44[] = {
+          {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
+          {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
+          {RTLIB::DIV_F32, RTLIB::impl___divsf3}, // __divsf3
+          {RTLIB::DIV_F64, RTLIB::impl___divdf3}, // __divdf3
+          {RTLIB::FPTOSINT_F32_I32, RTLIB::impl___fixsfsi}, // __fixsfsi
+          {RTLIB::FPTOSINT_F32_I64, RTLIB::impl___fixsfdi}, // __fixsfdi
+          {RTLIB::FPTOSINT_F64_I32, RTLIB::impl___fixdfsi}, // __fixdfsi
+          {RTLIB::FPTOSINT_F64_I64, RTLIB::impl___fixdfdi}, // __fixdfdi
+          {RTLIB::FPTOUINT_F32_I32, RTLIB::impl___fixunssfsi}, // __fixunssfsi
+          {RTLIB::FPTOUINT_F32_I64, RTLIB::impl___fixunssfdi}, // __fixunssfdi
+          {RTLIB::FPTOUINT_F64_I32, RTLIB::impl___fixunsdfsi}, // __fixunsdfsi
+          {RTLIB::FPTOUINT_F64_I64, RTLIB::impl___fixunsdfdi}, // __fixunsdfdi
+          {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
+          {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
+          {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
+          {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
+          {RTLIB::OEQ_F64, RTLIB::impl___eqdf2}, // __eqdf2
+          {RTLIB::OGE_F32, RTLIB::impl___gesf2}, // __gesf2
+          {RTLIB::OGE_F64, RTLIB::impl___gedf2}, // __gedf2
+          {RTLIB::OGT_F32, RTLIB::impl___gtsf2}, // __gtsf2
+          {RTLIB::OGT_F64, RTLIB::impl___gtdf2}, // __gtdf2
+          {RTLIB::OLE_F32, RTLIB::impl___lesf2}, // __lesf2
+          {RTLIB::OLE_F64, RTLIB::impl___ledf2}, // __ledf2
+          {RTLIB::OLT_F32, RTLIB::impl___ltsf2}, // __ltsf2
+          {RTLIB::OLT_F64, RTLIB::impl___ltdf2}, // __ltdf2
+          {RTLIB::SDIV_I32, RTLIB::impl___divsi3}, // __divsi3
+          {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
+          {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
+          {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
+          {RTLIB::SINTTOFP_I64_F32, RTLIB::impl___floatdisf}, // __floatdisf
+          {RTLIB::SINTTOFP_I64_F64, RTLIB::impl___floatdidf}, // __floatdidf
+          {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
+          {RTLIB::SRL_I64, RTLIB::impl___lshrdi3}, // __lshrdi3
+          {RTLIB::SUB_F32, RTLIB::impl___subsf3}, // __subsf3
+          {RTLIB::SUB_F64, RTLIB::impl___subdf3}, // __subdf3
+          {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
+          {RTLIB::UINTTOFP_I32_F32, RTLIB::impl___floatunsisf}, // __floatunsisf
+          {RTLIB::UINTTOFP_I32_F64, RTLIB::impl___floatunsidf}, // __floatunsidf
+          {RTLIB::UINTTOFP_I64_F32, RTLIB::impl___floatundisf}, // __floatundisf
+          {RTLIB::UINTTOFP_I64_F64, RTLIB::impl___floatundidf}, // __floatundidf
+          {RTLIB::UNE_F32, RTLIB::impl___nesf2}, // __nesf2
+          {RTLIB::UNE_F64, RTLIB::impl___nedf2}, // __nedf2
+          {RTLIB::UO_F32, RTLIB::impl___unordsf2}, // __unordsf2
+          {RTLIB::UO_F64, RTLIB::impl___unorddf2}, // __unorddf2
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_44) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (TT.isOSBinFormatMachO() &&
                                                   (!TT.isiOS() || !TT.isOSVersionLT(5, 0))) {
-      static const LibcallImplPair LibraryCalls_anonymous_40[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_46[] = {
           {RTLIB::SDIVREM_I32, RTLIB::impl___divmodsi4}, // __divmodsi4
           {RTLIB::UDIVREM_I32, RTLIB::impl___udivmodsi4}, // __udivmodsi4
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_40) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_46) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -23177,10 +23261,23 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
           {RTLIB::SINCOS_F32, RTLIB::impl_sincosf}, // sincosf
           {RTLIB::SINCOS_F64, RTLIB::impl_sincos}, // sincos
-          {RTLIB::SINCOS_F128, RTLIB::impl_sincos_f128}, // sincosl
+          {RTLIB::SINCOS_F128, RTLIB::impl_sincosl_f128}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -23198,24 +23295,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     }
 
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
-          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
-          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
-      };
-
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
-        setLibcallImpl(Func, Impl);
-      }
-
-    }
-
     if (!TT.isOSWindows() || TT.isOSCygMing()) {
       static const LibcallImplPair LibraryCalls_isNotOSWindowsOrIsCygwinMinGW[] = {
           {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
-          {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+          {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
           {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
-          {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+          {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isNotOSWindowsOrIsCygwinMinGW) {
@@ -23299,22 +23384,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.getArch() == Triple::avr) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffeee00000, 0x9a68a465caf7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x220000000029734, 0x3400000000000000,
+      0xffa9002026df5a6d, 0x7c3fffffffffffff, 0x5c52e5960a633a02, 0x6597e52c08962596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592c38094b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -23372,19 +23468,19 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_avr_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -23397,13 +23493,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -23413,28 +23509,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -23477,40 +23573,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -23531,7 +23627,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -23542,7 +23638,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -23565,7 +23661,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -23574,13 +23670,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIVREM_I32, RTLIB::impl___divmodsi4}, // __divmodsi4
         {RTLIB::SDIV_I64, RTLIB::impl___divdi3}, // __divdi3
@@ -23590,10 +23686,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -23608,10 +23704,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F64, RTLIB::impl___floattidf}, // __floattidf
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_avr_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -23685,13 +23781,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIVREM_I32, RTLIB::impl___udivmodsi4}, // __udivmodsi4
         {RTLIB::UDIV_I64, RTLIB::impl___udivdi3}, // __udivdi3
         {RTLIB::UDIV_I128, RTLIB::impl___udivti3}, // __udivti3
@@ -23734,10 +23830,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImplCallingConv(Impl, CallingConv::AVR_BUILTIN);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -23763,26 +23870,48 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isDXIL()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     return;
   }
 
   if (TT.getArch() == Triple::hexagon) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000050, 0xffffffffeee00000, 0x9a68a46210f7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe93fffff52, 0x2c0000000029734, 0x3000000000000000,
+      0xffa8182026df5a6d, 0x7c3fffffffffffff, 0x5c52e5960a6d4402, 0x6597e52cb896c596,
+      0x2cb2e5964a5d9297, 0x000597cb2ca597, 0x6492d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___hexagon_adddf3}, // __hexagon_adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -23840,20 +23969,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -23866,7 +23995,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
@@ -23875,7 +24004,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -23892,28 +24021,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -23956,42 +24085,42 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::HEXAGON_MEMCPY_LIKELY_ALIGNED_MIN32BYTES_MULT8BYTES, RTLIB::impl___hexagon_memcpy_likely_aligned_min32bytes_mult8bytes}, // __hexagon_memcpy_likely_aligned_min32bytes_mult8bytes
         {RTLIB::HEXAGON_VOLATILE_MEMCPY, RTLIB::impl_hexagon_memcpy_forward_vp4cp4n2}, // hexagon_memcpy_forward_vp4cp4n2
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -24012,7 +24141,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___hexagon_muldf3}, // __hexagon_muldf3
@@ -24023,7 +24152,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -24046,7 +24175,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -24055,13 +24184,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -24073,10 +24202,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -24092,10 +24221,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl___hexagon_sqrtf}, // __hexagon_sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -24174,13 +24303,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___hexagon_udivsi3}, // __hexagon_udivsi3
@@ -24216,10 +24345,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -24245,7 +24385,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
           {RTLIB::SINCOS_F32, RTLIB::impl_sincosf}, // sincosf
           {RTLIB::SINCOS_F64, RTLIB::impl_sincos}, // sincos
-          {RTLIB::SINCOS_F128, RTLIB::impl_sincos_f128}, // sincosl
+          {RTLIB::SINCOS_F128, RTLIB::impl_sincosl_f128}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
@@ -24263,22 +24403,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       Entry = DefaultCC;
     }
 
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffeee00000, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000029734, 0x3400000000000000,
+      0xffa9182026df5a6d, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52c0896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -24336,20 +24487,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -24362,13 +24513,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -24378,28 +24529,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -24442,40 +24593,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -24496,7 +24647,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -24507,7 +24658,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -24530,7 +24681,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -24539,13 +24690,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -24557,10 +24708,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -24576,10 +24727,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -24658,13 +24809,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -24700,10 +24851,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -24734,22 +24896,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   TT.getArch() == Triple::m68k ||  TT.getArch() == Triple::xtensa ||
   (TT.isSystemZ() && !TT.isOSzOS())
 ) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffeee00000, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000029734, 0x3400000000000000,
+      0xffa9002026df5a6d, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52cb896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -24807,20 +24980,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -24833,7 +25006,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
@@ -24842,7 +25015,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -24852,28 +25025,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -24916,40 +25089,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -24970,7 +25143,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -24981,7 +25154,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -25004,7 +25177,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -25013,13 +25186,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -25031,10 +25204,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -25050,10 +25223,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -25130,13 +25303,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -25172,10 +25345,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -25201,10 +25385,23 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
           {RTLIB::SINCOS_F32, RTLIB::impl_sincosf}, // sincosf
           {RTLIB::SINCOS_F64, RTLIB::impl_sincos}, // sincos
-          {RTLIB::SINCOS_F128, RTLIB::impl_sincos_f128}, // sincosl
+          {RTLIB::SINCOS_F128, RTLIB::impl_sincosl_f128}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -25219,18 +25416,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isArch64Bit) {
-        setLibcallImpl(Func, Impl);
-      }
-
-    }
-
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
-          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
-          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
-      };
-
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -25252,22 +25437,32 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.getArch() == Triple::msp430) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000040, 0xffffffffe6600000, 0x9a68806200f7ffff, 0x4a02b03c3607841e,
+      0x4000001b12253688, 0xd37fffe000000040, 0xfe80000000020334, 0x33ff880fffffffff,
+      0xffa0182026df1a65, 0x7c1fffffffffffff, 0x5c52e5960a694002, 0x6597e52cb896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___mspabi_addf}, // __mspabi_addf
-        {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -25325,20 +25520,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -25347,11 +25542,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CTPOP_I128, RTLIB::impl___popcountti2}, // __popcountti2
         {RTLIB::DEOPTIMIZE, RTLIB::impl___llvm_deoptimize}, // __llvm_deoptimize
         {RTLIB::DIV_F32, RTLIB::impl___mspabi_divf}, // __mspabi_divf
-        {RTLIB::DIV_F64, RTLIB::impl___divdf3}, // __divdf3
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
@@ -25360,7 +25554,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -25370,28 +25564,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -25434,40 +25628,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -25488,10 +25682,9 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mspabi_mpyf}, // __mspabi_mpyf
-        {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
         {RTLIB::MUL_F128, RTLIB::impl___multf3}, // __multf3
         {RTLIB::MUL_I8, RTLIB::impl___mulqi3}, // __mulqi3
         {RTLIB::MUL_I16, RTLIB::impl___mulhi3}, // __mulhi3
@@ -25499,30 +25692,25 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___mspabi_cmpf__oeq}, // __mspabi_cmpf
-        {RTLIB::OEQ_F64, RTLIB::impl___eqdf2}, // __eqdf2
         {RTLIB::OEQ_F128, RTLIB::impl___eqtf2}, // __eqtf2
         {RTLIB::OGE_F32, RTLIB::impl___mspabi_cmpf__oge}, // __mspabi_cmpf
-        {RTLIB::OGE_F64, RTLIB::impl___gedf2}, // __gedf2
         {RTLIB::OGE_F128, RTLIB::impl___getf2}, // __getf2
         {RTLIB::OGT_F32, RTLIB::impl___mspabi_cmpf__ogt}, // __mspabi_cmpf
-        {RTLIB::OGT_F64, RTLIB::impl___gtdf2}, // __gtdf2
         {RTLIB::OGT_F128, RTLIB::impl___gttf2}, // __gttf2
         {RTLIB::OLE_F32, RTLIB::impl___mspabi_cmpf__ole}, // __mspabi_cmpf
-        {RTLIB::OLE_F64, RTLIB::impl___ledf2}, // __ledf2
         {RTLIB::OLE_F128, RTLIB::impl___letf2}, // __letf2
         {RTLIB::OLT_F32, RTLIB::impl___mspabi_cmpf__olt}, // __mspabi_cmpf
-        {RTLIB::OLT_F64, RTLIB::impl___ltdf2}, // __ltdf2
         {RTLIB::OLT_F128, RTLIB::impl___lttf2}, // __lttf2
         {RTLIB::POWI_F32, RTLIB::impl___powisf2}, // __powisf2
         {RTLIB::POWI_F64, RTLIB::impl___powidf2}, // __powidf2
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -25531,28 +25719,27 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___mspabi_divi}, // __mspabi_divi
         {RTLIB::SDIV_I32, RTLIB::impl___mspabi_divli}, // __mspabi_divli
-        {RTLIB::SDIV_I64, RTLIB::impl___divdi3}, // __divdi3
         {RTLIB::SDIV_I128, RTLIB::impl___divti3}, // __divti3
         {RTLIB::SHL_I16, RTLIB::impl___ashlhi3}, // __ashlhi3
         {RTLIB::SHL_I32, RTLIB::impl___mspabi_slll}, // __mspabi_slll
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___mspabi_fltlif}, // __mspabi_fltlif
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___mspabi_fltlid}, // __mspabi_fltlid
@@ -25568,17 +25755,16 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___mspabi_sral}, // __mspabi_sral
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
         {RTLIB::SREM_I8, RTLIB::impl___modqi3}, // __modqi3
         {RTLIB::SREM_I16, RTLIB::impl___mspabi_remi}, // __mspabi_remi
         {RTLIB::SREM_I32, RTLIB::impl___mspabi_remli}, // __mspabi_remli
-        {RTLIB::SREM_I64, RTLIB::impl___moddi3}, // __moddi3
         {RTLIB::SREM_I128, RTLIB::impl___modti3}, // __modti3
         {RTLIB::SRL_I16, RTLIB::impl___lshrhi3}, // __lshrhi3
         {RTLIB::SRL_I32, RTLIB::impl___mspabi_srll}, // __mspabi_srll
@@ -25586,7 +25772,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
         {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
         {RTLIB::SUB_F32, RTLIB::impl___mspabi_subf}, // __mspabi_subf
-        {RTLIB::SUB_F64, RTLIB::impl___subdf3}, // __subdf3
         {RTLIB::SUB_F128, RTLIB::impl___subtf3}, // __subtf3
         {RTLIB::SYNC_FETCH_AND_ADD_1, RTLIB::impl___sync_fetch_and_add_1}, // __sync_fetch_and_add_1
         {RTLIB::SYNC_FETCH_AND_ADD_2, RTLIB::impl___sync_fetch_and_add_2}, // __sync_fetch_and_add_2
@@ -25650,17 +25835,16 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___mspabi_divu}, // __mspabi_divu
         {RTLIB::UDIV_I32, RTLIB::impl___mspabi_divul}, // __mspabi_divul
-        {RTLIB::UDIV_I64, RTLIB::impl___udivdi3}, // __udivdi3
         {RTLIB::UDIV_I128, RTLIB::impl___udivti3}, // __udivti3
         {RTLIB::UINTTOFP_I32_F16, RTLIB::impl___floatunsihf}, // __floatunsihf
         {RTLIB::UINTTOFP_I32_F32, RTLIB::impl___mspabi_fltulf}, // __mspabi_fltulf
@@ -25684,7 +25868,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::UREM_I8, RTLIB::impl___umodqi3}, // __umodqi3
         {RTLIB::UREM_I16, RTLIB::impl___mspabi_remu}, // __mspabi_remu
         {RTLIB::UREM_I32, RTLIB::impl___mspabi_remul}, // __mspabi_remul
-        {RTLIB::UREM_I64, RTLIB::impl___umoddi3}, // __umoddi3
         {RTLIB::UREM_I128, RTLIB::impl___umodti3}, // __umodti3
     };
 
@@ -25715,10 +25898,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImplCallingConv(Impl, CallingConv::MSP430_BUILTIN);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -25744,15 +25938,37 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isNVPTX()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     return;
   }
 
   if (TT.isPPC()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x0000000000001a, 0xffffffffeee00000, 0xcb2834563af7ffff, 0xbe0557fdcaffb2cd,
+      0x1bffffaf0f5f5e3a, 0x597fffcd0000001a, 0x3e000000000d796, 0x7400000000000000,
+      0xff8d00208bde7a2d, 0x8fbfffffffffffff, 0x3d39f3ce037fc601, 0xf3cff39e7a4fd3cf,
+      0x9e79d3cf273fc9cf, 0x0013cfa79e73cf, 0xf3c9f9894e7cf380, 0x00000000004f27
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
         {RTLIB::ACOS_F128, RTLIB::impl_acosf128}, // acosf128
-        {RTLIB::ACOS_PPCF128, RTLIB::impl_acos_ppcf128}, // acosl
+        {RTLIB::ACOS_PPCF128, RTLIB::impl_acosl_ppcf128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addkf3}, // __addkf3
@@ -25760,15 +25976,15 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
         {RTLIB::ASIN_F128, RTLIB::impl_asinf128}, // asinf128
-        {RTLIB::ASIN_PPCF128, RTLIB::impl_asin_ppcf128}, // asinl
+        {RTLIB::ASIN_PPCF128, RTLIB::impl_asinl_ppcf128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
         {RTLIB::ATAN2_F128, RTLIB::impl_atan2f128}, // atan2f128
-        {RTLIB::ATAN2_PPCF128, RTLIB::impl_atan2_ppcf128}, // atan2l
+        {RTLIB::ATAN2_PPCF128, RTLIB::impl_atan2l_ppcf128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
         {RTLIB::ATAN_F128, RTLIB::impl_atanf128}, // atanf128
-        {RTLIB::ATAN_PPCF128, RTLIB::impl_atan_ppcf128}, // atanl
+        {RTLIB::ATAN_PPCF128, RTLIB::impl_atanl_ppcf128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -25827,26 +26043,26 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
         {RTLIB::CBRT_F128, RTLIB::impl_cbrtf128}, // cbrtf128
-        {RTLIB::CBRT_PPCF128, RTLIB::impl_cbrt_ppcf128}, // cbrtl
+        {RTLIB::CBRT_PPCF128, RTLIB::impl_cbrtl_ppcf128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
         {RTLIB::CEIL_F128, RTLIB::impl_ceilf128}, // ceilf128
-        {RTLIB::CEIL_PPCF128, RTLIB::impl_ceil_ppcf128}, // ceill
+        {RTLIB::CEIL_PPCF128, RTLIB::impl_ceill_ppcf128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::CONVERT_F128_PPCF128, RTLIB::impl___extendkftf2}, // __extendkftf2
         {RTLIB::CONVERT_PPCF128_F128, RTLIB::impl___trunctfkf2}, // __trunctfkf2
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
         {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignf128}, // copysignf128
-        {RTLIB::COPYSIGN_PPCF128, RTLIB::impl_copysign_ppcf128}, // copysignl
+        {RTLIB::COPYSIGN_PPCF128, RTLIB::impl_copysignl_ppcf128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
         {RTLIB::COSH_F128, RTLIB::impl_coshf128}, // coshf128
-        {RTLIB::COSH_PPCF128, RTLIB::impl_cosh_ppcf128}, // coshl
+        {RTLIB::COSH_PPCF128, RTLIB::impl_coshl_ppcf128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
         {RTLIB::COS_F128, RTLIB::impl_cosf128}, // cosf128
-        {RTLIB::COS_PPCF128, RTLIB::impl_cos_ppcf128}, // cosl
+        {RTLIB::COS_PPCF128, RTLIB::impl_cosl_ppcf128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -25864,7 +26080,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_PPCF128, RTLIB::impl___exp2l_finite_ppcf128}, // __exp2l_finite
-        {RTLIB::EXP2_PPCF128, RTLIB::impl_exp2_ppcf128}, // exp2l
+        {RTLIB::EXP2_PPCF128, RTLIB::impl_exp2l_ppcf128}, // exp2l
         {RTLIB::EXP10_F32, RTLIB::impl_exp10f}, // exp10f
         {RTLIB::EXP10_F64, RTLIB::impl_exp10}, // exp10
         {RTLIB::EXP10_F128, RTLIB::impl_exp10f128}, // exp10f128
@@ -25875,7 +26091,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_PPCF128, RTLIB::impl___expl_finite_ppcf128}, // __expl_finite
-        {RTLIB::EXP_PPCF128, RTLIB::impl_exp_ppcf128}, // expl
+        {RTLIB::EXP_PPCF128, RTLIB::impl_expl_ppcf128}, // expl
         {RTLIB::FEGETENV, RTLIB::impl_fegetenv}, // fegetenv
         {RTLIB::FEGETMODE, RTLIB::impl_fegetmode}, // fegetmode
         {RTLIB::FESETENV, RTLIB::impl_fesetenv}, // fesetenv
@@ -25883,35 +26099,35 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
         {RTLIB::FLOOR_F128, RTLIB::impl_floorf128}, // floorf128
-        {RTLIB::FLOOR_PPCF128, RTLIB::impl_floor_ppcf128}, // floorl
+        {RTLIB::FLOOR_PPCF128, RTLIB::impl_floorl_ppcf128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
         {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximumf128}, // fmaximumf128
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
         {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numf128}, // fmaximum_numf128
-        {RTLIB::FMAXIMUM_NUM_PPCF128, RTLIB::impl_fmaximum_num_ppcf128}, // fmaximum_numl
-        {RTLIB::FMAXIMUM_PPCF128, RTLIB::impl_fmaximum_ppcf128}, // fmaximuml
+        {RTLIB::FMAXIMUM_NUM_PPCF128, RTLIB::impl_fmaximum_numl_ppcf128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_PPCF128, RTLIB::impl_fmaximuml_ppcf128}, // fmaximuml
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
         {RTLIB::FMAX_F128, RTLIB::impl_fmaxf128}, // fmaxf128
-        {RTLIB::FMAX_PPCF128, RTLIB::impl_fmax_ppcf128}, // fmaxl
+        {RTLIB::FMAX_PPCF128, RTLIB::impl_fmaxl_ppcf128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
         {RTLIB::FMA_F128, RTLIB::impl_fmaf128}, // fmaf128
-        {RTLIB::FMA_PPCF128, RTLIB::impl_fma_ppcf128}, // fmal
+        {RTLIB::FMA_PPCF128, RTLIB::impl_fmal_ppcf128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
         {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimumf128}, // fminimumf128
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
         {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numf128}, // fminimum_numf128
-        {RTLIB::FMINIMUM_NUM_PPCF128, RTLIB::impl_fminimum_num_ppcf128}, // fminimum_numl
-        {RTLIB::FMINIMUM_PPCF128, RTLIB::impl_fminimum_ppcf128}, // fminimuml
+        {RTLIB::FMINIMUM_NUM_PPCF128, RTLIB::impl_fminimum_numl_ppcf128}, // fminimum_numl
+        {RTLIB::FMINIMUM_PPCF128, RTLIB::impl_fminimuml_ppcf128}, // fminimuml
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
         {RTLIB::FMIN_F128, RTLIB::impl_fminf128}, // fminf128
-        {RTLIB::FMIN_PPCF128, RTLIB::impl_fmin_ppcf128}, // fminl
+        {RTLIB::FMIN_PPCF128, RTLIB::impl_fminl_ppcf128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -25964,48 +26180,48 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
         {RTLIB::FREXP_F128, RTLIB::impl_frexpf128}, // frexpf128
-        {RTLIB::FREXP_PPCF128, RTLIB::impl_frexp_ppcf128}, // frexpl
+        {RTLIB::FREXP_PPCF128, RTLIB::impl_frexpl_ppcf128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
         {RTLIB::LDEXP_F128, RTLIB::impl_ldexpf128}, // ldexpf128
-        {RTLIB::LDEXP_PPCF128, RTLIB::impl_ldexp_ppcf128}, // ldexpl
+        {RTLIB::LDEXP_PPCF128, RTLIB::impl_ldexpl_ppcf128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
         {RTLIB::LLRINT_F128, RTLIB::impl_llrintf128}, // llrintf128
-        {RTLIB::LLRINT_PPCF128, RTLIB::impl_llrint_ppcf128}, // llrintl
+        {RTLIB::LLRINT_PPCF128, RTLIB::impl_llrintl_ppcf128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
         {RTLIB::LLROUND_F128, RTLIB::impl_llroundf128}, // llroundf128
-        {RTLIB::LLROUND_PPCF128, RTLIB::impl_llround_ppcf128}, // llroundl
+        {RTLIB::LLROUND_PPCF128, RTLIB::impl_llroundl_ppcf128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
         {RTLIB::LOG2_F128, RTLIB::impl_log2f128}, // log2f128
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_PPCF128, RTLIB::impl___log2l_finite_ppcf128}, // __log2l_finite
-        {RTLIB::LOG2_PPCF128, RTLIB::impl_log2_ppcf128}, // log2l
+        {RTLIB::LOG2_PPCF128, RTLIB::impl_log2l_ppcf128}, // log2l
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
         {RTLIB::LOG10_F128, RTLIB::impl_log10f128}, // log10f128
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_PPCF128, RTLIB::impl___log10l_finite_ppcf128}, // __log10l_finite
-        {RTLIB::LOG10_PPCF128, RTLIB::impl_log10_ppcf128}, // log10l
+        {RTLIB::LOG10_PPCF128, RTLIB::impl_log10l_ppcf128}, // log10l
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
         {RTLIB::LOG_F128, RTLIB::impl_logf128}, // logf128
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_PPCF128, RTLIB::impl___logl_finite_ppcf128}, // __logl_finite
-        {RTLIB::LOG_PPCF128, RTLIB::impl_log_ppcf128}, // logl
+        {RTLIB::LOG_PPCF128, RTLIB::impl_logl_ppcf128}, // logl
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
         {RTLIB::LRINT_F128, RTLIB::impl_lrintf128}, // lrintf128
-        {RTLIB::LRINT_PPCF128, RTLIB::impl_lrint_ppcf128}, // lrintl
+        {RTLIB::LRINT_PPCF128, RTLIB::impl_lrintl_ppcf128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
         {RTLIB::LROUND_F128, RTLIB::impl_lroundf128}, // lroundf128
-        {RTLIB::LROUND_PPCF128, RTLIB::impl_lround_ppcf128}, // lroundl
+        {RTLIB::LROUND_PPCF128, RTLIB::impl_lroundl_ppcf128}, // lroundl
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_4, RTLIB::impl___llvm_memcpy_element_unordered_atomic_4}, // __llvm_memcpy_element_unordered_atomic_4
@@ -26026,7 +26242,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
         {RTLIB::MODF_F128, RTLIB::impl_modff128}, // modff128
-        {RTLIB::MODF_PPCF128, RTLIB::impl_modf_ppcf128}, // modfl
+        {RTLIB::MODF_PPCF128, RTLIB::impl_modfl_ppcf128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -26039,7 +26255,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
         {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintf128}, // nearbyintf128
-        {RTLIB::NEARBYINT_PPCF128, RTLIB::impl_nearbyint_ppcf128}, // nearbyintl
+        {RTLIB::NEARBYINT_PPCF128, RTLIB::impl_nearbyintl_ppcf128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -26072,7 +26288,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_PPCF128, RTLIB::impl___powl_finite_ppcf128}, // __powl_finite
-        {RTLIB::POW_PPCF128, RTLIB::impl_pow_ppcf128}, // powl
+        {RTLIB::POW_PPCF128, RTLIB::impl_powl_ppcf128}, // powl
         {RTLIB::REM_F32, RTLIB::impl_fmodf}, // fmodf
         {RTLIB::REM_F64, RTLIB::impl_fmod}, // fmod
         {RTLIB::REM_F128, RTLIB::impl_fmodf128}, // fmodf128
@@ -26080,15 +26296,15 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
         {RTLIB::RINT_F128, RTLIB::impl_rintf128}, // rintf128
-        {RTLIB::RINT_PPCF128, RTLIB::impl_rint_ppcf128}, // rintl
+        {RTLIB::RINT_PPCF128, RTLIB::impl_rintl_ppcf128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
         {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenf128}, // roundevenf128
-        {RTLIB::ROUNDEVEN_PPCF128, RTLIB::impl_roundeven_ppcf128}, // roundevenl
+        {RTLIB::ROUNDEVEN_PPCF128, RTLIB::impl_roundevenl_ppcf128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
         {RTLIB::ROUND_F128, RTLIB::impl_roundf128}, // roundf128
-        {RTLIB::ROUND_PPCF128, RTLIB::impl_round_ppcf128}, // roundl
+        {RTLIB::ROUND_PPCF128, RTLIB::impl_roundl_ppcf128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -26100,12 +26316,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_PPCF128, RTLIB::impl_sincospi_ppcf128}, // sincospil
+        {RTLIB::SINCOSPI_PPCF128, RTLIB::impl_sincospil_ppcf128}, // sincospil
         {RTLIB::SINCOS_F128, RTLIB::impl_sincosf128}, // sincosf128
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
         {RTLIB::SINH_F128, RTLIB::impl_sinhf128}, // sinhf128
-        {RTLIB::SINH_PPCF128, RTLIB::impl_sinh_ppcf128}, // sinhl
+        {RTLIB::SINH_PPCF128, RTLIB::impl_sinhl_ppcf128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -26125,11 +26341,11 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
         {RTLIB::SIN_F128, RTLIB::impl_sinf128}, // sinf128
-        {RTLIB::SIN_PPCF128, RTLIB::impl_sin_ppcf128}, // sinl
+        {RTLIB::SIN_PPCF128, RTLIB::impl_sinl_ppcf128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
         {RTLIB::SQRT_F128, RTLIB::impl_sqrtf128}, // sqrtf128
-        {RTLIB::SQRT_PPCF128, RTLIB::impl_sqrt_ppcf128}, // sqrtl
+        {RTLIB::SQRT_PPCF128, RTLIB::impl_sqrtl_ppcf128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -26208,15 +26424,15 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
         {RTLIB::TANH_F128, RTLIB::impl_tanhf128}, // tanhf128
-        {RTLIB::TANH_PPCF128, RTLIB::impl_tanh_ppcf128}, // tanhl
+        {RTLIB::TANH_PPCF128, RTLIB::impl_tanhl_ppcf128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
         {RTLIB::TAN_F128, RTLIB::impl_tanf128}, // tanf128
-        {RTLIB::TAN_PPCF128, RTLIB::impl_tan_ppcf128}, // tanl
+        {RTLIB::TAN_PPCF128, RTLIB::impl_tanl_ppcf128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
         {RTLIB::TRUNC_F128, RTLIB::impl_truncf128}, // truncf128
-        {RTLIB::TRUNC_PPCF128, RTLIB::impl_trunc_ppcf128}, // truncl
+        {RTLIB::TRUNC_PPCF128, RTLIB::impl_truncl_ppcf128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -26257,10 +26473,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -26286,8 +26513,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
           {RTLIB::SINCOS_F32, RTLIB::impl_sincosf}, // sincosf
           {RTLIB::SINCOS_F64, RTLIB::impl_sincos}, // sincos
-          {RTLIB::SINCOS_F128, RTLIB::impl_sincos_f128}, // sincosl
-          {RTLIB::SINCOS_PPCF128, RTLIB::impl_sincos_ppcf128}, // sincosl
+          {RTLIB::SINCOS_F128, RTLIB::impl_sincosl_f128}, // sincosl
+          {RTLIB::SINCOS_PPCF128, RTLIB::impl_sincosl_ppcf128}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
@@ -26310,10 +26537,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     if (!TT.isOSAIX()) {
       static const LibcallImplPair LibraryCalls_isNotAIX[] = {
           {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
-          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isNotAIX) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if (!TT.isOSAIX() && !TT.isOSOpenBSD()) {
+      static const LibcallImplPair LibraryCalls_isNotOSAIXAndNotOSOpenBSD[] = {
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_isNotOSAIXAndNotOSOpenBSD) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -26390,22 +26627,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isRISCV()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffeee00000, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000029734, 0x3400000000000000,
+      0xffa9002126df5a6d, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52cb896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -26463,20 +26711,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -26489,7 +26737,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
@@ -26498,7 +26746,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -26508,28 +26756,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -26572,40 +26820,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -26626,7 +26874,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -26637,7 +26885,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -26660,7 +26908,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -26669,14 +26917,14 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::RISCV_FLUSH_ICACHE, RTLIB::impl___riscv_flush_icache}, // __riscv_flush_icache
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -26688,10 +26936,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -26707,10 +26955,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -26787,13 +27035,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -26829,10 +27077,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -26854,13 +27113,14 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     }
 
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
           {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
           {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -26896,22 +27156,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isSPARC()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000007c00000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffeee00000, 0x9a68a4661af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x2e0000000029734, 0x3400000000000000,
+      0xffa9002026df5a4d, 0x7c3fffffffffffff, 0x5c52e5960a6f4602, 0x6597e52c0896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -26969,20 +27240,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -26995,13 +27266,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -27011,28 +27282,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -27075,40 +27346,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -27129,7 +27400,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -27140,7 +27411,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -27163,7 +27434,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -27172,13 +27443,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -27190,10 +27461,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -27209,10 +27480,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -27289,13 +27560,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl_sparc_udiv}, // .udiv
@@ -27331,10 +27602,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -27360,10 +27642,22 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
           {RTLIB::SINCOS_F32, RTLIB::impl_sincosf}, // sincosf
           {RTLIB::SINCOS_F64, RTLIB::impl_sincos}, // sincos
-          {RTLIB::SINCOS_F128, RTLIB::impl_sincos_f128}, // sincosl
+          {RTLIB::SINCOS_F128, RTLIB::impl_sincosl_f128}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -27375,17 +27669,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isNotOSLinuxAndNotOSOpenBSD) {
-        setLibcallImpl(Func, Impl);
-      }
-
-    }
-
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
-          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
-      };
-
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -27440,6 +27723,17 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isSPIRV()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000140000000, 0x00000000000000, 0x00000000000000
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMSET, RTLIB::impl_memset}, // memset
@@ -27453,22 +27747,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if ((TT.isSystemZ() && TT.isOSzOS())) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffffe00000, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000029f34, 0x3400000000000000,
+      0xffa9002026df5aed, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52c0896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -27526,20 +27831,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -27552,13 +27857,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -27568,28 +27873,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -27632,40 +27937,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -27686,7 +27991,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -27698,7 +28003,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I128, RTLIB::impl___multi3}, // __multi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -27721,7 +28026,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -27730,13 +28035,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -27749,10 +28054,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I128, RTLIB::impl___ashlti3}, // __ashlti3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -27768,10 +28073,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -27850,13 +28155,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -27892,10 +28197,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -28012,22 +28328,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isWasm()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000004000, 0x00000000000000,
+      0x00000000000052, 0xffffffffffe00000, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000029f34, 0xb400000000000000,
+      0xffa9182026df5aef, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52c3c96c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -28085,20 +28412,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -28111,7 +28438,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
@@ -28119,7 +28446,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP10_F64, RTLIB::impl_exp10}, // exp10
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -28129,28 +28456,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -28193,40 +28520,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -28247,7 +28574,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MULO_I64, RTLIB::impl___mulodi4}, // __mulodi4
         {RTLIB::MULO_I128, RTLIB::impl___muloti4}, // __muloti4
@@ -28261,7 +28588,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I128, RTLIB::impl___multi3}, // __multi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -28284,7 +28611,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -28294,13 +28621,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::RETURN_ADDRESS, RTLIB::impl_emscripten_return_address}, // emscripten_return_address
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -28313,10 +28640,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I128, RTLIB::impl___ashlti3}, // __ashlti3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -28332,10 +28659,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -28416,13 +28743,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -28459,10 +28786,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -28488,22 +28826,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.isWindowsArm64EC()) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0xffffffffffffffe0, 0xffffffffffffffff, 0xfffeffffffffffff, 0xffffffffffffffff,
+      0x9fffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff,
+      0x000000003fffff, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_arm64ec_acosf}, // #acosf
         {RTLIB::ACOS_F64, RTLIB::impl_arm64ec_acos}, // #acos
-        {RTLIB::ACOS_F128, RTLIB::impl_arm64ec_acos_f128}, // #acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_arm64ec_acosl_f128}, // #acosl
         {RTLIB::ADD_F32, RTLIB::impl_arm64ec___addsf3}, // #__addsf3
         {RTLIB::ADD_F64, RTLIB::impl_arm64ec___adddf3}, // #__adddf3
         {RTLIB::ADD_F128, RTLIB::impl_arm64ec___addtf3}, // #__addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_arm64ec_asinf}, // #asinf
         {RTLIB::ASIN_F64, RTLIB::impl_arm64ec_asin}, // #asin
-        {RTLIB::ASIN_F128, RTLIB::impl_arm64ec_asin_f128}, // #asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_arm64ec_asinl_f128}, // #asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_arm64ec_atan2f}, // #atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_arm64ec_atan2}, // #atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_arm64ec_atan2_f128}, // #atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_arm64ec_atan2l_f128}, // #atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_arm64ec_atanf}, // #atanf
         {RTLIB::ATAN_F64, RTLIB::impl_arm64ec_atan}, // #atan
-        {RTLIB::ATAN_F128, RTLIB::impl_arm64ec_atan_f128}, // #atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_arm64ec_atanl_f128}, // #atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl_arm64ec___atomic_compare_exchange}, // #__atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl_arm64ec___atomic_compare_exchange_1}, // #__atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl_arm64ec___atomic_compare_exchange_2}, // #__atomic_compare_exchange_2
@@ -28561,20 +28910,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_arm64ec_calloc}, // #calloc
         {RTLIB::CBRT_F32, RTLIB::impl_arm64ec_cbrtf}, // #cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_arm64ec_cbrt}, // #cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_arm64ec_cbrt_f128}, // #cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_arm64ec_cbrtl_f128}, // #cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_arm64ec_ceilf}, // #ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_arm64ec_ceil}, // #ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_arm64ec_ceil_f128}, // #ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_arm64ec_ceill_f128}, // #ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl_arm64ec___clear_cache}, // #__clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_arm64ec_copysignf}, // #copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_arm64ec_copysign}, // #copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_arm64ec_copysign_f128}, // #copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_arm64ec_copysignl_f128}, // #copysignl
         {RTLIB::COSH_F32, RTLIB::impl_arm64ec_coshf}, // #coshf
         {RTLIB::COSH_F64, RTLIB::impl_arm64ec_cosh}, // #cosh
-        {RTLIB::COSH_F128, RTLIB::impl_arm64ec_cosh_f128}, // #coshl
+        {RTLIB::COSH_F128, RTLIB::impl_arm64ec_coshl_f128}, // #coshl
         {RTLIB::COS_F32, RTLIB::impl_arm64ec_cosf}, // #cosf
         {RTLIB::COS_F64, RTLIB::impl_arm64ec_cos}, // #cos
-        {RTLIB::COS_F128, RTLIB::impl_arm64ec_cos_f128}, // #cosl
+        {RTLIB::COS_F128, RTLIB::impl_arm64ec_cosl_f128}, // #cosl
         {RTLIB::CTLZ_I32, RTLIB::impl_arm64ec___clzsi2}, // #__clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl_arm64ec___clzdi2}, // #__clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl_arm64ec___clzti2}, // #__clzti2
@@ -28587,13 +28936,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl_arm64ec___divtf3}, // #__divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_arm64ec_exp2f}, // #exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_arm64ec_exp2}, // #exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_arm64ec_exp2_f128}, // #exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_arm64ec_exp2l_f128}, // #exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl_arm64ec___exp2f_finite}, // #__exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl_arm64ec___exp2_finite}, // #__exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl_arm64ec___exp2l_finite_f128}, // #__exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_arm64ec_expf}, // #expf
         {RTLIB::EXP_F64, RTLIB::impl_arm64ec_exp}, // #exp
-        {RTLIB::EXP_F128, RTLIB::impl_arm64ec_exp_f128}, // #expl
+        {RTLIB::EXP_F128, RTLIB::impl_arm64ec_expl_f128}, // #expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl_arm64ec___expf_finite}, // #__expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl_arm64ec___exp_finite}, // #__exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl_arm64ec___expl_finite_f128}, // #__expl_finite
@@ -28603,28 +28952,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_arm64ec_fesetmode}, // #fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_arm64ec_floorf}, // #floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_arm64ec_floor}, // #floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_arm64ec_floor_f128}, // #floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_arm64ec_floorl_f128}, // #floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_arm64ec_fmaximumf}, // #fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_arm64ec_fmaximum}, // #fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_arm64ec_fmaximum_f128}, // #fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_arm64ec_fmaximuml_f128}, // #fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_arm64ec_fmaximum_numf}, // #fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_arm64ec_fmaximum_num}, // #fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_arm64ec_fmaximum_num_f128}, // #fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_arm64ec_fmaximum_numl_f128}, // #fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_arm64ec_fmaxf}, // #fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_arm64ec_fmax}, // #fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_arm64ec_fmax_f128}, // #fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_arm64ec_fmaxl_f128}, // #fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_arm64ec_fmaf}, // #fmaf
         {RTLIB::FMA_F64, RTLIB::impl_arm64ec_fma}, // #fma
-        {RTLIB::FMA_F128, RTLIB::impl_arm64ec_fma_f128}, // #fmal
+        {RTLIB::FMA_F128, RTLIB::impl_arm64ec_fmal_f128}, // #fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_arm64ec_fminimumf}, // #fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_arm64ec_fminimum}, // #fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_arm64ec_fminimum_f128}, // #fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_arm64ec_fminimuml_f128}, // #fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_arm64ec_fminimum_numf}, // #fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_arm64ec_fminimum_num}, // #fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_arm64ec_fminimum_num_f128}, // #fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_arm64ec_fminimum_numl_f128}, // #fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_arm64ec_fminf}, // #fminf
         {RTLIB::FMIN_F64, RTLIB::impl_arm64ec_fmin}, // #fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_arm64ec_fmin_f128}, // #fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_arm64ec_fminl_f128}, // #fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl_arm64ec___extendbfsf2}, // #__extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl_arm64ec___extendhfsf2}, // #__extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl_arm64ec___extendhfdf2}, // #__extendhfdf2
@@ -28669,34 +29018,34 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::LDEXP_F64, RTLIB::impl_arm64ec_ldexp}, // #ldexp
         {RTLIB::LLRINT_F32, RTLIB::impl_arm64ec_llrintf}, // #llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_arm64ec_llrint}, // #llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_arm64ec_llrint_f128}, // #llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_arm64ec_llrintl_f128}, // #llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_arm64ec_llroundf}, // #llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_arm64ec_llround}, // #llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_arm64ec_llround_f128}, // #llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_arm64ec_llroundl_f128}, // #llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_arm64ec_log2f}, // #log2f
         {RTLIB::LOG2_F64, RTLIB::impl_arm64ec_log2}, // #log2
-        {RTLIB::LOG2_F128, RTLIB::impl_arm64ec_log2_f128}, // #log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_arm64ec_log2l_f128}, // #log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl_arm64ec___log2f_finite}, // #__log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl_arm64ec___log2_finite}, // #__log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl_arm64ec___log2l_finite_f128}, // #__log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_arm64ec_log10f}, // #log10f
         {RTLIB::LOG10_F64, RTLIB::impl_arm64ec_log10}, // #log10
-        {RTLIB::LOG10_F128, RTLIB::impl_arm64ec_log10_f128}, // #log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_arm64ec_log10l_f128}, // #log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl_arm64ec___log10f_finite}, // #__log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl_arm64ec___log10_finite}, // #__log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl_arm64ec___log10l_finite_f128}, // #__log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_arm64ec_logf}, // #logf
         {RTLIB::LOG_F64, RTLIB::impl_arm64ec_log}, // #log
-        {RTLIB::LOG_F128, RTLIB::impl_arm64ec_log_f128}, // #logl
+        {RTLIB::LOG_F128, RTLIB::impl_arm64ec_logl_f128}, // #logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl_arm64ec___logf_finite}, // #__logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl_arm64ec___log_finite}, // #__log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl_arm64ec___logl_finite_f128}, // #__logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_arm64ec_lrintf}, // #lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_arm64ec_lrint}, // #lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_arm64ec_lrint_f128}, // #lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_arm64ec_lrintl_f128}, // #lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_arm64ec_lroundf}, // #lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_arm64ec_lround}, // #lround
-        {RTLIB::LROUND_F128, RTLIB::impl_arm64ec_lround_f128}, // #lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_arm64ec_lroundl_f128}, // #lroundl
         {RTLIB::MEMCPY, RTLIB::impl_arm64ec_memcpy}, // #memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl_arm64ec___llvm_memcpy_element_unordered_atomic_1}, // #__llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl_arm64ec___llvm_memcpy_element_unordered_atomic_2}, // #__llvm_memcpy_element_unordered_atomic_2
@@ -28717,7 +29066,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl_arm64ec___llvm_memset_element_unordered_atomic_16}, // #__llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_arm64ec_modff}, // #modff
         {RTLIB::MODF_F64, RTLIB::impl_arm64ec_modf}, // #modf
-        {RTLIB::MODF_F128, RTLIB::impl_arm64ec_modf_f128}, // #modfl
+        {RTLIB::MODF_F128, RTLIB::impl_arm64ec_modfl_f128}, // #modfl
         {RTLIB::MULO_I32, RTLIB::impl_arm64ec___mulosi4}, // #__mulosi4
         {RTLIB::MUL_F32, RTLIB::impl_arm64ec___mulsf3}, // #__mulsf3
         {RTLIB::MUL_F64, RTLIB::impl_arm64ec___muldf3}, // #__muldf3
@@ -28728,7 +29077,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl_arm64ec___muldi3}, // #__muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_arm64ec_nearbyintf}, // #nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_arm64ec_nearbyint}, // #nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_arm64ec_nearbyint_f128}, // #nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_arm64ec_nearbyintl_f128}, // #nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl_arm64ec___negsi2}, // #__negsi2
         {RTLIB::NEG_I64, RTLIB::impl_arm64ec___negdi2}, // #__negdi2
         {RTLIB::OEQ_F32, RTLIB::impl_arm64ec___eqsf2}, // #__eqsf2
@@ -28849,7 +29198,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl_arm64ec___powitf2_f128}, // #__powitf2
         {RTLIB::POW_F32, RTLIB::impl_arm64ec_powf}, // #powf
         {RTLIB::POW_F64, RTLIB::impl_arm64ec_pow}, // #pow
-        {RTLIB::POW_F128, RTLIB::impl_arm64ec_pow_f128}, // #powl
+        {RTLIB::POW_F128, RTLIB::impl_arm64ec_powl_f128}, // #powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl_arm64ec___powf_finite}, // #__powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl_arm64ec___pow_finite}, // #__pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl_arm64ec___powl_finite_f128}, // #__powl_finite
@@ -28858,13 +29207,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_arm64ec_fmodl_f128}, // #fmodl
         {RTLIB::RINT_F32, RTLIB::impl_arm64ec_rintf}, // #rintf
         {RTLIB::RINT_F64, RTLIB::impl_arm64ec_rint}, // #rint
-        {RTLIB::RINT_F128, RTLIB::impl_arm64ec_rint_f128}, // #rintl
+        {RTLIB::RINT_F128, RTLIB::impl_arm64ec_rintl_f128}, // #rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_arm64ec_roundevenf}, // #roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_arm64ec_roundeven}, // #roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_arm64ec_roundeven_f128}, // #roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_arm64ec_roundevenl_f128}, // #roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_arm64ec_roundf}, // #roundf
         {RTLIB::ROUND_F64, RTLIB::impl_arm64ec_round}, // #round
-        {RTLIB::ROUND_F128, RTLIB::impl_arm64ec_round_f128}, // #roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_arm64ec_roundl_f128}, // #roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl_arm64ec___safestack_pointer_address}, // #__safestack_pointer_address
         {RTLIB::SC_MEMCHR, RTLIB::impl_arm64ec___arm_sc_memchr}, // #__arm_sc_memchr
         {RTLIB::SC_MEMCPY, RTLIB::impl_arm64ec___arm_sc_memcpy}, // #__arm_sc_memcpy
@@ -28880,10 +29229,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl_arm64ec___ashldi3}, // #__ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_arm64ec_sincospif}, // #sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_arm64ec_sincospi}, // #sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_arm64ec_sincospi_f128}, // #sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_arm64ec_sincospil_f128}, // #sincospil
         {RTLIB::SINH_F32, RTLIB::impl_arm64ec_sinhf}, // #sinhf
         {RTLIB::SINH_F64, RTLIB::impl_arm64ec_sinh}, // #sinh
-        {RTLIB::SINH_F128, RTLIB::impl_arm64ec_sinh_f128}, // #sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_arm64ec_sinhl_f128}, // #sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl_arm64ec___floatsihf}, // #__floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl_arm64ec___floatsisf}, // #__floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl_arm64ec___floatsidf}, // #__floatsidf
@@ -28899,10 +29248,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl_arm64ec___floattitf_f128}, // #__floattitf
         {RTLIB::SIN_F32, RTLIB::impl_arm64ec_sinf}, // #sinf
         {RTLIB::SIN_F64, RTLIB::impl_arm64ec_sin}, // #sin
-        {RTLIB::SIN_F128, RTLIB::impl_arm64ec_sin_f128}, // #sinl
+        {RTLIB::SIN_F128, RTLIB::impl_arm64ec_sinl_f128}, // #sinl
         {RTLIB::SQRT_F32, RTLIB::impl_arm64ec_sqrtf}, // #sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_arm64ec_sqrt}, // #sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_arm64ec_sqrt_f128}, // #sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_arm64ec_sqrtl_f128}, // #sqrtl
         {RTLIB::SRA_I16, RTLIB::impl_arm64ec___ashrhi3}, // #__ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl_arm64ec___ashrsi3}, // #__ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl_arm64ec___ashrdi3}, // #__ashrdi3
@@ -28914,8 +29263,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SRL_I16, RTLIB::impl_arm64ec___lshrhi3}, // #__lshrhi3
         {RTLIB::SRL_I32, RTLIB::impl_arm64ec___lshrsi3}, // #__lshrsi3
         {RTLIB::SRL_I64, RTLIB::impl_arm64ec___lshrdi3}, // #__lshrdi3
-        {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl_arm64ec___stack_chk_fail}, // #__stack_chk_fail
-        {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
         {RTLIB::SUB_F32, RTLIB::impl_arm64ec___subsf3}, // #__subsf3
         {RTLIB::SUB_F64, RTLIB::impl_arm64ec___subdf3}, // #__subdf3
         {RTLIB::SUB_F128, RTLIB::impl_arm64ec___subtf3}, // #__subtf3
@@ -28981,13 +29328,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl_arm64ec___sync_val_compare_and_swap_16}, // #__sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_arm64ec_tanhf}, // #tanhf
         {RTLIB::TANH_F64, RTLIB::impl_arm64ec_tanh}, // #tanh
-        {RTLIB::TANH_F128, RTLIB::impl_arm64ec_tanh_f128}, // #tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_arm64ec_tanhl_f128}, // #tanhl
         {RTLIB::TAN_F32, RTLIB::impl_arm64ec_tanf}, // #tanf
         {RTLIB::TAN_F64, RTLIB::impl_arm64ec_tan}, // #tan
-        {RTLIB::TAN_F128, RTLIB::impl_arm64ec_tan_f128}, // #tanl
+        {RTLIB::TAN_F128, RTLIB::impl_arm64ec_tanl_f128}, // #tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_arm64ec_truncf}, // #truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_arm64ec_trunc}, // #trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_arm64ec_trunc_f128}, // #truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_arm64ec_truncl_f128}, // #truncl
         {RTLIB::UDIV_I8, RTLIB::impl_arm64ec___udivqi3}, // #__udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl_arm64ec___udivhi3}, // #__udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl_arm64ec___udivsi3}, // #__udivsi3
@@ -29023,10 +29370,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl_arm64ec__Unwind_Resume}, // #_Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl_arm64ec___cxa_end_cleanup}, // #__cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl_arm64ec__Unwind_Resume}, // #_Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -29048,6 +29406,19 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     }
 
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl_arm64ec___stack_chk_fail}, // #__stack_chk_fail
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (TT.isWindowsMSVCEnvironment()) {
       static const LibcallImplPair LibraryCalls_isWindowsMSVCEnvironment[] = {
           {RTLIB::SECURITY_CHECK_COOKIE, RTLIB::impl___security_check_cookie_arm64ec}, // #__security_check_cookie_arm64ec
@@ -29064,27 +29435,38 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.getArch() == Triple::x86) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x000000000000d2, 0xffffffffeee00000, 0xbae8a4f612f7ffff, 0x6ffab63db6c7bcbe,
+      0x5200005b3bb7b7ab, 0xd77fffe900000052, 0x3c0000000029775, 0x2400000000000000,
+      0xffe90020645f5b6d, 0x7c3fffffffffffff, 0xdcd6edb60a7dc47e, 0x6db7ed6c09b6cdb6,
+      0x6db040b6daddb6b7, 0x000db7db6dadb7, 0x6db6d78135bb6d80, 0x000000000036db
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F80, RTLIB::impl_acos_f80}, // acosl
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F80, RTLIB::impl_acosl_f80}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F80, RTLIB::impl___addxf3}, // __addxf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F80, RTLIB::impl_asin_f80}, // asinl
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F80, RTLIB::impl_asinl_f80}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F80, RTLIB::impl_atan2_f80}, // atan2l
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F80, RTLIB::impl_atan2l_f80}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F80, RTLIB::impl_atan_f80}, // atanl
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F80, RTLIB::impl_atanl_f80}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -29142,25 +29524,25 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F80, RTLIB::impl_cbrt_f80}, // cbrtl
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F80, RTLIB::impl_cbrtl_f80}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F80, RTLIB::impl_ceil_f80}, // ceill
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F80, RTLIB::impl_ceill_f80}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F80, RTLIB::impl_copysign_f80}, // copysignl
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F80, RTLIB::impl_copysignl_f80}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F80, RTLIB::impl_cosh_f80}, // coshl
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F80, RTLIB::impl_coshl_f80}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F80, RTLIB::impl_cos_f80}, // cosl
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F80, RTLIB::impl_cosl_f80}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -29174,16 +29556,16 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F80, RTLIB::impl_exp2_f80}, // exp2l
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F80, RTLIB::impl_exp2l_f80}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F80, RTLIB::impl___exp2l_finite_f80}, // __exp2l_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F80, RTLIB::impl_exp_f80}, // expl
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F80, RTLIB::impl_expl_f80}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F80, RTLIB::impl___expl_finite_f80}, // __expl_finite
@@ -29194,36 +29576,36 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F80, RTLIB::impl_floor_f80}, // floorl
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F80, RTLIB::impl_floorl_f80}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F80, RTLIB::impl_fmaximum_f80}, // fmaximuml
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F80, RTLIB::impl_fmaximuml_f80}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F80, RTLIB::impl_fmaximum_num_f80}, // fmaximum_numl
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F80, RTLIB::impl_fmaximum_numl_f80}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F80, RTLIB::impl_fmax_f80}, // fmaxl
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F80, RTLIB::impl_fmaxl_f80}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F80, RTLIB::impl_fma_f80}, // fmal
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F80, RTLIB::impl_fmal_f80}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F80, RTLIB::impl_fminimum_f80}, // fminimuml
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F80, RTLIB::impl_fminimuml_f80}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F80, RTLIB::impl_fminimum_num_f80}, // fminimum_numl
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F80, RTLIB::impl_fminimum_numl_f80}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F80, RTLIB::impl_fmin_f80}, // fminl
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F80, RTLIB::impl_fminl_f80}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -29281,44 +29663,44 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F80, RTLIB::impl_llrint_f80}, // llrintl
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F80, RTLIB::impl_llrintl_f80}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F80, RTLIB::impl_llround_f80}, // llroundl
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F80, RTLIB::impl_llroundl_f80}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F80, RTLIB::impl_log2_f80}, // log2l
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F80, RTLIB::impl_log2l_f80}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F80, RTLIB::impl___log2l_finite_f80}, // __log2l_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F80, RTLIB::impl_log10_f80}, // log10l
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F80, RTLIB::impl_log10l_f80}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F80, RTLIB::impl___log10l_finite_f80}, // __log10l_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F80, RTLIB::impl_log_f80}, // logl
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F80, RTLIB::impl_logl_f80}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F80, RTLIB::impl___logl_finite_f80}, // __logl_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F80, RTLIB::impl_lrint_f80}, // lrintl
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F80, RTLIB::impl_lrintl_f80}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F80, RTLIB::impl_lround_f80}, // lroundl
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F80, RTLIB::impl_lroundl_f80}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -29339,8 +29721,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F80, RTLIB::impl_modf_f80}, // modfl
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F80, RTLIB::impl_modfl_f80}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -29349,11 +29731,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I8, RTLIB::impl___mulqi3}, // __mulqi3
         {RTLIB::MUL_I16, RTLIB::impl___mulhi3}, // __mulhi3
         {RTLIB::MUL_I32, RTLIB::impl___mulsi3}, // __mulsi3
-        {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F80, RTLIB::impl_nearbyint_f80}, // nearbyintl
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F80, RTLIB::impl_nearbyintl_f80}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -29374,8 +29755,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F80, RTLIB::impl_pow_f80}, // powl
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F80, RTLIB::impl_powl_f80}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F80, RTLIB::impl___powl_finite_f80}, // __powl_finite
@@ -29386,33 +29767,32 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F80, RTLIB::impl_rint_f80}, // rintl
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F80, RTLIB::impl_rintl_f80}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F80, RTLIB::impl_roundeven_f80}, // roundevenl
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F80, RTLIB::impl_roundevenl_f80}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F80, RTLIB::impl_round_f80}, // roundl
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F80, RTLIB::impl_roundl_f80}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
         {RTLIB::SDIV_I32, RTLIB::impl___divsi3}, // __divsi3
-        {RTLIB::SDIV_I64, RTLIB::impl___divdi3}, // __divdi3
         {RTLIB::SDIV_I128, RTLIB::impl___divti3}, // __divti3
         {RTLIB::SHL_I16, RTLIB::impl___ashlhi3}, // __ashlhi3
         {RTLIB::SHL_I32, RTLIB::impl___ashlsi3}, // __ashlsi3
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F80, RTLIB::impl_sincospi_f80}, // sincospil
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F80, RTLIB::impl_sincospil_f80}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F80, RTLIB::impl_sinh_f80}, // sinhl
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F80, RTLIB::impl_sinhl_f80}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -29431,19 +29811,18 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F80, RTLIB::impl_sin_f80}, // sinl
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F80, RTLIB::impl_sinl_f80}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F80, RTLIB::impl_sqrt_f80}, // sqrtl
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F80, RTLIB::impl_sqrtl_f80}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
         {RTLIB::SREM_I8, RTLIB::impl___modqi3}, // __modqi3
         {RTLIB::SREM_I16, RTLIB::impl___modhi3}, // __modhi3
         {RTLIB::SREM_I32, RTLIB::impl___modsi3}, // __modsi3
-        {RTLIB::SREM_I64, RTLIB::impl___moddi3}, // __moddi3
         {RTLIB::SREM_I128, RTLIB::impl___modti3}, // __modti3
         {RTLIB::SRL_I16, RTLIB::impl___lshrhi3}, // __lshrhi3
         {RTLIB::SRL_I32, RTLIB::impl___lshrsi3}, // __lshrsi3
@@ -29514,20 +29893,19 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F80, RTLIB::impl_tanh_f80}, // tanhl
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F80, RTLIB::impl_tanhl_f80}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F80, RTLIB::impl_tan_f80}, // tanl
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F80, RTLIB::impl_tanl_f80}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F80, RTLIB::impl_trunc_f80}, // truncl
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F80, RTLIB::impl_truncl_f80}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
-        {RTLIB::UDIV_I64, RTLIB::impl___udivdi3}, // __udivdi3
         {RTLIB::UDIV_I128, RTLIB::impl___udivti3}, // __udivti3
         {RTLIB::UINTTOFP_I32_F16, RTLIB::impl___floatunsihf}, // __floatunsihf
         {RTLIB::UINTTOFP_I32_F32, RTLIB::impl___floatunsisf}, // __floatunsisf
@@ -29554,7 +29932,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::UREM_I8, RTLIB::impl___umodqi3}, // __umodqi3
         {RTLIB::UREM_I16, RTLIB::impl___umodhi3}, // __umodhi3
         {RTLIB::UREM_I32, RTLIB::impl___umodsi3}, // __umodsi3
-        {RTLIB::UREM_I64, RTLIB::impl___umoddi3}, // __umoddi3
         {RTLIB::UREM_I128, RTLIB::impl___umodti3}, // __umodti3
     };
 
@@ -29562,10 +29939,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -29588,7 +29976,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     }
 
     if (TT.isWindowsMSVCEnvironment() || TT.isWindowsItaniumEnvironment()) {
-      static const LibcallImplPair LibraryCalls_anonymous_73_X86_STDCALL[] = {
+      static const LibcallImplPair LibraryCalls_anonymous_80_X86_STDCALL[] = {
           {RTLIB::MUL_I64, RTLIB::impl__allmul}, // _allmul
           {RTLIB::SDIV_I64, RTLIB::impl__alldiv}, // _alldiv
           {RTLIB::SREM_I64, RTLIB::impl__allrem}, // _allrem
@@ -29596,9 +29984,24 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
           {RTLIB::UREM_I64, RTLIB::impl__aullrem}, // _aullrem
       };
 
-      for (const auto [Func, Impl] : LibraryCalls_anonymous_73_X86_STDCALL) {
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_80_X86_STDCALL) {
         setLibcallImpl(Func, Impl);
         setLibcallImplCallingConv(Impl, CallingConv::X86_StdCall);
+      }
+
+    }
+
+    if (!TT.isWindowsMSVCEnvironment() && !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_anonymous_82[] = {
+          {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
+          {RTLIB::SDIV_I64, RTLIB::impl___divdi3}, // __divdi3
+          {RTLIB::SREM_I64, RTLIB::impl___moddi3}, // __moddi3
+          {RTLIB::UDIV_I64, RTLIB::impl___udivdi3}, // __udivdi3
+          {RTLIB::UREM_I64, RTLIB::impl___umoddi3}, // __umoddi3
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_anonymous_82) {
+        setLibcallImpl(Func, Impl);
       }
 
     }
@@ -29654,8 +30057,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     if ((!TT.isOSWindows() || TT.isOSCygMing()) && !TT.isGNUEnvironment()) {
       static const LibcallImplPair LibraryCalls_hasExpFrexplLdexplF128[] = {
           {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
-          {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
-          {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+          {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
+          {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasExpFrexplLdexplF128) {
@@ -29666,7 +30069,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     if (hasSinCos(TT)) {
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
-          {RTLIB::SINCOS_F80, RTLIB::impl_sincos_f80}, // sincosl
+          {RTLIB::SINCOS_F80, RTLIB::impl_sincosl_f80}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
@@ -29682,6 +30085,19 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos_f32_f64) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -29760,24 +30176,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     }
 
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
-          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
-          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
-      };
-
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
-        setLibcallImpl(Func, Impl);
-      }
-
-    }
-
     if (!TT.isOSWindows() || TT.isOSCygMing()) {
       static const LibcallImplPair LibraryCalls_isNotOSWindowsOrIsCygwinMinGW[] = {
           {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
-          {RTLIB::FREXP_F80, RTLIB::impl_frexp_f80}, // frexpl
+          {RTLIB::FREXP_F80, RTLIB::impl_frexpl_f80}, // frexpl
           {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
-          {RTLIB::LDEXP_F80, RTLIB::impl_ldexp_f80}, // ldexpl
+          {RTLIB::LDEXP_F80, RTLIB::impl_ldexpl_f80}, // ldexpl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isNotOSWindowsOrIsCygwinMinGW) {
@@ -29814,27 +30218,38 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.getArch() == Triple::x86_64) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x000000000000d2, 0xffffffffffe00000, 0xbae8a4f612f7ffff, 0x6ffab63db6c7bcbe,
+      0x5200005b3bb7b7ab, 0xd77fffe900000052, 0x3c0000000029f75, 0x2400000000000000,
+      0xffe90020645f5bed, 0x7c3fffffffffffff, 0xdcd6edb60a7dc47e, 0x6db7ed6c09b6cdb6,
+      0x6db040b6daddb6b7, 0x000db7db6dadb7, 0x6db6d78135bb6d80, 0x000000000036db
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F80, RTLIB::impl_acos_f80}, // acosl
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F80, RTLIB::impl_acosl_f80}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F80, RTLIB::impl___addxf3}, // __addxf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F80, RTLIB::impl_asin_f80}, // asinl
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F80, RTLIB::impl_asinl_f80}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F80, RTLIB::impl_atan2_f80}, // atan2l
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F80, RTLIB::impl_atan2l_f80}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F80, RTLIB::impl_atan_f80}, // atanl
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F80, RTLIB::impl_atanl_f80}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -29892,25 +30307,25 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F80, RTLIB::impl_cbrt_f80}, // cbrtl
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F80, RTLIB::impl_cbrtl_f80}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F80, RTLIB::impl_ceil_f80}, // ceill
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F80, RTLIB::impl_ceill_f80}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F80, RTLIB::impl_copysign_f80}, // copysignl
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F80, RTLIB::impl_copysignl_f80}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F80, RTLIB::impl_cosh_f80}, // coshl
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F80, RTLIB::impl_coshl_f80}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F80, RTLIB::impl_cos_f80}, // cosl
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F80, RTLIB::impl_cosl_f80}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -29924,16 +30339,16 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F80, RTLIB::impl_exp2_f80}, // exp2l
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F80, RTLIB::impl_exp2l_f80}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F80, RTLIB::impl___exp2l_finite_f80}, // __exp2l_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F80, RTLIB::impl_exp_f80}, // expl
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F80, RTLIB::impl_expl_f80}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F80, RTLIB::impl___expl_finite_f80}, // __expl_finite
@@ -29944,36 +30359,36 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F80, RTLIB::impl_floor_f80}, // floorl
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F80, RTLIB::impl_floorl_f80}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F80, RTLIB::impl_fmaximum_f80}, // fmaximuml
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F80, RTLIB::impl_fmaximuml_f80}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F80, RTLIB::impl_fmaximum_num_f80}, // fmaximum_numl
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F80, RTLIB::impl_fmaximum_numl_f80}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F80, RTLIB::impl_fmax_f80}, // fmaxl
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F80, RTLIB::impl_fmaxl_f80}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F80, RTLIB::impl_fma_f80}, // fmal
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F80, RTLIB::impl_fmal_f80}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F80, RTLIB::impl_fminimum_f80}, // fminimuml
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F80, RTLIB::impl_fminimuml_f80}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F80, RTLIB::impl_fminimum_num_f80}, // fminimum_numl
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F80, RTLIB::impl_fminimum_numl_f80}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F80, RTLIB::impl_fmin_f80}, // fminl
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F80, RTLIB::impl_fminl_f80}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -30031,44 +30446,44 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F80, RTLIB::impl_llrint_f80}, // llrintl
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F80, RTLIB::impl_llrintl_f80}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F80, RTLIB::impl_llround_f80}, // llroundl
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F80, RTLIB::impl_llroundl_f80}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F80, RTLIB::impl_log2_f80}, // log2l
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F80, RTLIB::impl_log2l_f80}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F80, RTLIB::impl___log2l_finite_f80}, // __log2l_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F80, RTLIB::impl_log10_f80}, // log10l
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F80, RTLIB::impl_log10l_f80}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F80, RTLIB::impl___log10l_finite_f80}, // __log10l_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F80, RTLIB::impl_log_f80}, // logl
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F80, RTLIB::impl_logl_f80}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F80, RTLIB::impl___logl_finite_f80}, // __logl_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F80, RTLIB::impl_lrint_f80}, // lrintl
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F80, RTLIB::impl_lrintl_f80}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F80, RTLIB::impl_lround_f80}, // lroundl
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F80, RTLIB::impl_lroundl_f80}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_2, RTLIB::impl___llvm_memcpy_element_unordered_atomic_2}, // __llvm_memcpy_element_unordered_atomic_2
@@ -30089,8 +30504,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F80, RTLIB::impl_modf_f80}, // modfl
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F80, RTLIB::impl_modfl_f80}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -30099,12 +30514,11 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I8, RTLIB::impl___mulqi3}, // __mulqi3
         {RTLIB::MUL_I16, RTLIB::impl___mulhi3}, // __mulhi3
         {RTLIB::MUL_I32, RTLIB::impl___mulsi3}, // __mulsi3
-        {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::MUL_I128, RTLIB::impl___multi3}, // __multi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F80, RTLIB::impl_nearbyint_f80}, // nearbyintl
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F80, RTLIB::impl_nearbyintl_f80}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -30125,8 +30539,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F80, RTLIB::impl_pow_f80}, // powl
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F80, RTLIB::impl_powl_f80}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F80, RTLIB::impl___powl_finite_f80}, // __powl_finite
@@ -30137,21 +30551,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F80, RTLIB::impl_rint_f80}, // rintl
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F80, RTLIB::impl_rintl_f80}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F80, RTLIB::impl_roundeven_f80}, // roundevenl
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F80, RTLIB::impl_roundevenl_f80}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F80, RTLIB::impl_round_f80}, // roundl
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F80, RTLIB::impl_roundl_f80}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
         {RTLIB::SDIV_I32, RTLIB::impl___divsi3}, // __divsi3
-        {RTLIB::SDIV_I64, RTLIB::impl___divdi3}, // __divdi3
         {RTLIB::SDIV_I128, RTLIB::impl___divti3}, // __divti3
         {RTLIB::SHL_I16, RTLIB::impl___ashlhi3}, // __ashlhi3
         {RTLIB::SHL_I32, RTLIB::impl___ashlsi3}, // __ashlsi3
@@ -30159,12 +30572,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I128, RTLIB::impl___ashlti3}, // __ashlti3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F80, RTLIB::impl_sincospi_f80}, // sincospil
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F80, RTLIB::impl_sincospil_f80}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F80, RTLIB::impl_sinh_f80}, // sinhl
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F80, RTLIB::impl_sinhl_f80}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -30183,12 +30596,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F80, RTLIB::impl_sin_f80}, // sinl
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F80, RTLIB::impl_sinl_f80}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F80, RTLIB::impl_sqrt_f80}, // sqrtl
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F80, RTLIB::impl_sqrtl_f80}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -30196,7 +30609,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SREM_I8, RTLIB::impl___modqi3}, // __modqi3
         {RTLIB::SREM_I16, RTLIB::impl___modhi3}, // __modhi3
         {RTLIB::SREM_I32, RTLIB::impl___modsi3}, // __modsi3
-        {RTLIB::SREM_I64, RTLIB::impl___moddi3}, // __moddi3
         {RTLIB::SREM_I128, RTLIB::impl___modti3}, // __modti3
         {RTLIB::SRL_I16, RTLIB::impl___lshrhi3}, // __lshrhi3
         {RTLIB::SRL_I32, RTLIB::impl___lshrsi3}, // __lshrsi3
@@ -30268,20 +30680,19 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F80, RTLIB::impl_tanh_f80}, // tanhl
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F80, RTLIB::impl_tanhl_f80}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F80, RTLIB::impl_tan_f80}, // tanl
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F80, RTLIB::impl_tanl_f80}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F80, RTLIB::impl_trunc_f80}, // truncl
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F80, RTLIB::impl_truncl_f80}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
-        {RTLIB::UDIV_I64, RTLIB::impl___udivdi3}, // __udivdi3
         {RTLIB::UDIV_I128, RTLIB::impl___udivti3}, // __udivti3
         {RTLIB::UINTTOFP_I32_F16, RTLIB::impl___floatunsihf}, // __floatunsihf
         {RTLIB::UINTTOFP_I32_F32, RTLIB::impl___floatunsisf}, // __floatunsisf
@@ -30308,7 +30719,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::UREM_I8, RTLIB::impl___umodqi3}, // __umodqi3
         {RTLIB::UREM_I16, RTLIB::impl___umodhi3}, // __umodhi3
         {RTLIB::UREM_I32, RTLIB::impl___umodsi3}, // __umodsi3
-        {RTLIB::UREM_I64, RTLIB::impl___umoddi3}, // __umoddi3
         {RTLIB::UREM_I128, RTLIB::impl___umodti3}, // __umodti3
     };
 
@@ -30316,10 +30726,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -30392,8 +30813,8 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
     if ((!TT.isOSWindows() || TT.isOSCygMing()) && !TT.isGNUEnvironment()) {
       static const LibcallImplPair LibraryCalls_hasExpFrexplLdexplF128[] = {
           {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
-          {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
-          {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+          {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
+          {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasExpFrexplLdexplF128) {
@@ -30404,7 +30825,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     if (hasSinCos(TT)) {
       static const LibcallImplPair LibraryCalls_hasSinCos[] = {
-          {RTLIB::SINCOS_F80, RTLIB::impl_sincos_f80}, // sincosl
+          {RTLIB::SINCOS_F80, RTLIB::impl_sincosl_f80}, // sincosl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos) {
@@ -30420,6 +30841,19 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       };
 
       for (const auto [Func, Impl] : LibraryCalls_hasSinCos_f32_f64) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
+    if ( !TT.isOSOpenBSD() && !TT.isWindowsMSVCEnvironment() &&
+     !TT.isWindowsItaniumEnvironment()) {
+      static const LibcallImplPair LibraryCalls_hasStackChkFail[] = {
+          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
+          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_hasStackChkFail) {
         setLibcallImpl(Func, Impl);
       }
 
@@ -30498,24 +30932,12 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
 
     }
 
-    if (!TT.isOSOpenBSD()) {
-      static const LibcallImplPair LibraryCalls_isNotOSOpenBSD[] = {
-          {RTLIB::STACKPROTECTOR_CHECK_FAIL, RTLIB::impl___stack_chk_fail}, // __stack_chk_fail
-          {RTLIB::STACK_CHECK_GUARD, RTLIB::impl___stack_chk_guard}, // __stack_chk_guard
-      };
-
-      for (const auto [Func, Impl] : LibraryCalls_isNotOSOpenBSD) {
-        setLibcallImpl(Func, Impl);
-      }
-
-    }
-
     if (!TT.isOSWindows() || TT.isOSCygMing()) {
       static const LibcallImplPair LibraryCalls_isNotOSWindowsOrIsCygwinMinGW[] = {
           {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
-          {RTLIB::FREXP_F80, RTLIB::impl_frexp_f80}, // frexpl
+          {RTLIB::FREXP_F80, RTLIB::impl_frexpl_f80}, // frexpl
           {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
-          {RTLIB::LDEXP_F80, RTLIB::impl_ldexp_f80}, // ldexpl
+          {RTLIB::LDEXP_F80, RTLIB::impl_ldexpl_f80}, // ldexpl
       };
 
       for (const auto [Func, Impl] : LibraryCalls_isNotOSWindowsOrIsCygwinMinGW) {
@@ -30552,22 +30974,33 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   }
 
   if (TT.getArch() == Triple::xcore) {
+    static constexpr LibcallImplBitset SystemAvailableImpls({
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000000, 0x00000000000000, 0x00000000000000, 0x00000000000000,
+      0x00000000000052, 0xffffffffeee00000, 0x9a68a4761af7ffff, 0x6e02b63db6c7b49e,
+      0x5200001b1b3736aa, 0xd37fffe900000052, 0x3e0000000069734, 0x3400000000000000,
+      0xffa9002026df5a6d, 0x7c3fffffffffffff, 0x5c52e5960a7fc602, 0x6597e52cb896c596,
+      0x2cb2c5964a5d9297, 0x000597cb2ca597, 0x6592d38114b96580, 0x0000000000164b
+    });
+    AvailableLibcallImpls = SystemAvailableImpls;
+
     static const LibcallImplPair LibraryCalls[] = {
         {RTLIB::ACOS_F32, RTLIB::impl_acosf}, // acosf
         {RTLIB::ACOS_F64, RTLIB::impl_acos}, // acos
-        {RTLIB::ACOS_F128, RTLIB::impl_acos_f128}, // acosl
+        {RTLIB::ACOS_F128, RTLIB::impl_acosl_f128}, // acosl
         {RTLIB::ADD_F32, RTLIB::impl___addsf3}, // __addsf3
         {RTLIB::ADD_F64, RTLIB::impl___adddf3}, // __adddf3
         {RTLIB::ADD_F128, RTLIB::impl___addtf3}, // __addtf3
         {RTLIB::ASIN_F32, RTLIB::impl_asinf}, // asinf
         {RTLIB::ASIN_F64, RTLIB::impl_asin}, // asin
-        {RTLIB::ASIN_F128, RTLIB::impl_asin_f128}, // asinl
+        {RTLIB::ASIN_F128, RTLIB::impl_asinl_f128}, // asinl
         {RTLIB::ATAN2_F32, RTLIB::impl_atan2f}, // atan2f
         {RTLIB::ATAN2_F64, RTLIB::impl_atan2}, // atan2
-        {RTLIB::ATAN2_F128, RTLIB::impl_atan2_f128}, // atan2l
+        {RTLIB::ATAN2_F128, RTLIB::impl_atan2l_f128}, // atan2l
         {RTLIB::ATAN_F32, RTLIB::impl_atanf}, // atanf
         {RTLIB::ATAN_F64, RTLIB::impl_atan}, // atan
-        {RTLIB::ATAN_F128, RTLIB::impl_atan_f128}, // atanl
+        {RTLIB::ATAN_F128, RTLIB::impl_atanl_f128}, // atanl
         {RTLIB::ATOMIC_COMPARE_EXCHANGE, RTLIB::impl___atomic_compare_exchange}, // __atomic_compare_exchange
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_1, RTLIB::impl___atomic_compare_exchange_1}, // __atomic_compare_exchange_1
         {RTLIB::ATOMIC_COMPARE_EXCHANGE_2, RTLIB::impl___atomic_compare_exchange_2}, // __atomic_compare_exchange_2
@@ -30625,20 +31058,20 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::CALLOC, RTLIB::impl_calloc}, // calloc
         {RTLIB::CBRT_F32, RTLIB::impl_cbrtf}, // cbrtf
         {RTLIB::CBRT_F64, RTLIB::impl_cbrt}, // cbrt
-        {RTLIB::CBRT_F128, RTLIB::impl_cbrt_f128}, // cbrtl
+        {RTLIB::CBRT_F128, RTLIB::impl_cbrtl_f128}, // cbrtl
         {RTLIB::CEIL_F32, RTLIB::impl_ceilf}, // ceilf
         {RTLIB::CEIL_F64, RTLIB::impl_ceil}, // ceil
-        {RTLIB::CEIL_F128, RTLIB::impl_ceil_f128}, // ceill
+        {RTLIB::CEIL_F128, RTLIB::impl_ceill_f128}, // ceill
         {RTLIB::CLEAR_CACHE, RTLIB::impl___clear_cache}, // __clear_cache
         {RTLIB::COPYSIGN_F32, RTLIB::impl_copysignf}, // copysignf
         {RTLIB::COPYSIGN_F64, RTLIB::impl_copysign}, // copysign
-        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysign_f128}, // copysignl
+        {RTLIB::COPYSIGN_F128, RTLIB::impl_copysignl_f128}, // copysignl
         {RTLIB::COSH_F32, RTLIB::impl_coshf}, // coshf
         {RTLIB::COSH_F64, RTLIB::impl_cosh}, // cosh
-        {RTLIB::COSH_F128, RTLIB::impl_cosh_f128}, // coshl
+        {RTLIB::COSH_F128, RTLIB::impl_coshl_f128}, // coshl
         {RTLIB::COS_F32, RTLIB::impl_cosf}, // cosf
         {RTLIB::COS_F64, RTLIB::impl_cos}, // cos
-        {RTLIB::COS_F128, RTLIB::impl_cos_f128}, // cosl
+        {RTLIB::COS_F128, RTLIB::impl_cosl_f128}, // cosl
         {RTLIB::CTLZ_I32, RTLIB::impl___clzsi2}, // __clzsi2
         {RTLIB::CTLZ_I64, RTLIB::impl___clzdi2}, // __clzdi2
         {RTLIB::CTLZ_I128, RTLIB::impl___clzti2}, // __clzti2
@@ -30651,7 +31084,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::DIV_F128, RTLIB::impl___divtf3}, // __divtf3
         {RTLIB::EXP2_F32, RTLIB::impl_exp2f}, // exp2f
         {RTLIB::EXP2_F64, RTLIB::impl_exp2}, // exp2
-        {RTLIB::EXP2_F128, RTLIB::impl_exp2_f128}, // exp2l
+        {RTLIB::EXP2_F128, RTLIB::impl_exp2l_f128}, // exp2l
         {RTLIB::EXP2_FINITE_F32, RTLIB::impl___exp2f_finite}, // __exp2f_finite
         {RTLIB::EXP2_FINITE_F64, RTLIB::impl___exp2_finite}, // __exp2_finite
         {RTLIB::EXP2_FINITE_F128, RTLIB::impl___exp2l_finite_f128}, // __exp2l_finite
@@ -30660,7 +31093,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::EXP10_F128, RTLIB::impl_exp10l_f128}, // exp10l
         {RTLIB::EXP_F32, RTLIB::impl_expf}, // expf
         {RTLIB::EXP_F64, RTLIB::impl_exp}, // exp
-        {RTLIB::EXP_F128, RTLIB::impl_exp_f128}, // expl
+        {RTLIB::EXP_F128, RTLIB::impl_expl_f128}, // expl
         {RTLIB::EXP_FINITE_F32, RTLIB::impl___expf_finite}, // __expf_finite
         {RTLIB::EXP_FINITE_F64, RTLIB::impl___exp_finite}, // __exp_finite
         {RTLIB::EXP_FINITE_F128, RTLIB::impl___expl_finite_f128}, // __expl_finite
@@ -30670,28 +31103,28 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FESETMODE, RTLIB::impl_fesetmode}, // fesetmode
         {RTLIB::FLOOR_F32, RTLIB::impl_floorf}, // floorf
         {RTLIB::FLOOR_F64, RTLIB::impl_floor}, // floor
-        {RTLIB::FLOOR_F128, RTLIB::impl_floor_f128}, // floorl
+        {RTLIB::FLOOR_F128, RTLIB::impl_floorl_f128}, // floorl
         {RTLIB::FMAXIMUM_F32, RTLIB::impl_fmaximumf}, // fmaximumf
         {RTLIB::FMAXIMUM_F64, RTLIB::impl_fmaximum}, // fmaximum
-        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximum_f128}, // fmaximuml
+        {RTLIB::FMAXIMUM_F128, RTLIB::impl_fmaximuml_f128}, // fmaximuml
         {RTLIB::FMAXIMUM_NUM_F32, RTLIB::impl_fmaximum_numf}, // fmaximum_numf
         {RTLIB::FMAXIMUM_NUM_F64, RTLIB::impl_fmaximum_num}, // fmaximum_num
-        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_num_f128}, // fmaximum_numl
+        {RTLIB::FMAXIMUM_NUM_F128, RTLIB::impl_fmaximum_numl_f128}, // fmaximum_numl
         {RTLIB::FMAX_F32, RTLIB::impl_fmaxf}, // fmaxf
         {RTLIB::FMAX_F64, RTLIB::impl_fmax}, // fmax
-        {RTLIB::FMAX_F128, RTLIB::impl_fmax_f128}, // fmaxl
+        {RTLIB::FMAX_F128, RTLIB::impl_fmaxl_f128}, // fmaxl
         {RTLIB::FMA_F32, RTLIB::impl_fmaf}, // fmaf
         {RTLIB::FMA_F64, RTLIB::impl_fma}, // fma
-        {RTLIB::FMA_F128, RTLIB::impl_fma_f128}, // fmal
+        {RTLIB::FMA_F128, RTLIB::impl_fmal_f128}, // fmal
         {RTLIB::FMINIMUM_F32, RTLIB::impl_fminimumf}, // fminimumf
         {RTLIB::FMINIMUM_F64, RTLIB::impl_fminimum}, // fminimum
-        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimum_f128}, // fminimuml
+        {RTLIB::FMINIMUM_F128, RTLIB::impl_fminimuml_f128}, // fminimuml
         {RTLIB::FMINIMUM_NUM_F32, RTLIB::impl_fminimum_numf}, // fminimum_numf
         {RTLIB::FMINIMUM_NUM_F64, RTLIB::impl_fminimum_num}, // fminimum_num
-        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_num_f128}, // fminimum_numl
+        {RTLIB::FMINIMUM_NUM_F128, RTLIB::impl_fminimum_numl_f128}, // fminimum_numl
         {RTLIB::FMIN_F32, RTLIB::impl_fminf}, // fminf
         {RTLIB::FMIN_F64, RTLIB::impl_fmin}, // fmin
-        {RTLIB::FMIN_F128, RTLIB::impl_fmin_f128}, // fminl
+        {RTLIB::FMIN_F128, RTLIB::impl_fminl_f128}, // fminl
         {RTLIB::FPEXT_BF16_F32, RTLIB::impl___extendbfsf2}, // __extendbfsf2
         {RTLIB::FPEXT_F16_F32, RTLIB::impl___extendhfsf2}, // __extendhfsf2
         {RTLIB::FPEXT_F16_F64, RTLIB::impl___extendhfdf2}, // __extendhfdf2
@@ -30734,40 +31167,40 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::FPTOUINT_F128_I128, RTLIB::impl___fixunstfti_f128}, // __fixunstfti
         {RTLIB::FREXP_F32, RTLIB::impl_frexpf}, // frexpf
         {RTLIB::FREXP_F64, RTLIB::impl_frexp}, // frexp
-        {RTLIB::FREXP_F128, RTLIB::impl_frexp_f128}, // frexpl
+        {RTLIB::FREXP_F128, RTLIB::impl_frexpl_f128}, // frexpl
         {RTLIB::LDEXP_F32, RTLIB::impl_ldexpf}, // ldexpf
         {RTLIB::LDEXP_F64, RTLIB::impl_ldexp}, // ldexp
-        {RTLIB::LDEXP_F128, RTLIB::impl_ldexp_f128}, // ldexpl
+        {RTLIB::LDEXP_F128, RTLIB::impl_ldexpl_f128}, // ldexpl
         {RTLIB::LLRINT_F32, RTLIB::impl_llrintf}, // llrintf
         {RTLIB::LLRINT_F64, RTLIB::impl_llrint}, // llrint
-        {RTLIB::LLRINT_F128, RTLIB::impl_llrint_f128}, // llrintl
+        {RTLIB::LLRINT_F128, RTLIB::impl_llrintl_f128}, // llrintl
         {RTLIB::LLROUND_F32, RTLIB::impl_llroundf}, // llroundf
         {RTLIB::LLROUND_F64, RTLIB::impl_llround}, // llround
-        {RTLIB::LLROUND_F128, RTLIB::impl_llround_f128}, // llroundl
+        {RTLIB::LLROUND_F128, RTLIB::impl_llroundl_f128}, // llroundl
         {RTLIB::LOG2_F32, RTLIB::impl_log2f}, // log2f
         {RTLIB::LOG2_F64, RTLIB::impl_log2}, // log2
-        {RTLIB::LOG2_F128, RTLIB::impl_log2_f128}, // log2l
+        {RTLIB::LOG2_F128, RTLIB::impl_log2l_f128}, // log2l
         {RTLIB::LOG2_FINITE_F32, RTLIB::impl___log2f_finite}, // __log2f_finite
         {RTLIB::LOG2_FINITE_F64, RTLIB::impl___log2_finite}, // __log2_finite
         {RTLIB::LOG2_FINITE_F128, RTLIB::impl___log2l_finite_f128}, // __log2l_finite
         {RTLIB::LOG10_F32, RTLIB::impl_log10f}, // log10f
         {RTLIB::LOG10_F64, RTLIB::impl_log10}, // log10
-        {RTLIB::LOG10_F128, RTLIB::impl_log10_f128}, // log10l
+        {RTLIB::LOG10_F128, RTLIB::impl_log10l_f128}, // log10l
         {RTLIB::LOG10_FINITE_F32, RTLIB::impl___log10f_finite}, // __log10f_finite
         {RTLIB::LOG10_FINITE_F64, RTLIB::impl___log10_finite}, // __log10_finite
         {RTLIB::LOG10_FINITE_F128, RTLIB::impl___log10l_finite_f128}, // __log10l_finite
         {RTLIB::LOG_F32, RTLIB::impl_logf}, // logf
         {RTLIB::LOG_F64, RTLIB::impl_log}, // log
-        {RTLIB::LOG_F128, RTLIB::impl_log_f128}, // logl
+        {RTLIB::LOG_F128, RTLIB::impl_logl_f128}, // logl
         {RTLIB::LOG_FINITE_F32, RTLIB::impl___logf_finite}, // __logf_finite
         {RTLIB::LOG_FINITE_F64, RTLIB::impl___log_finite}, // __log_finite
         {RTLIB::LOG_FINITE_F128, RTLIB::impl___logl_finite_f128}, // __logl_finite
         {RTLIB::LRINT_F32, RTLIB::impl_lrintf}, // lrintf
         {RTLIB::LRINT_F64, RTLIB::impl_lrint}, // lrint
-        {RTLIB::LRINT_F128, RTLIB::impl_lrint_f128}, // lrintl
+        {RTLIB::LRINT_F128, RTLIB::impl_lrintl_f128}, // lrintl
         {RTLIB::LROUND_F32, RTLIB::impl_lroundf}, // lroundf
         {RTLIB::LROUND_F64, RTLIB::impl_lround}, // lround
-        {RTLIB::LROUND_F128, RTLIB::impl_lround_f128}, // lroundl
+        {RTLIB::LROUND_F128, RTLIB::impl_lroundl_f128}, // lroundl
         {RTLIB::MEMCPY, RTLIB::impl_memcpy}, // memcpy
         {RTLIB::MEMCPY_ALIGN_4, RTLIB::impl___memcpy_4}, // __memcpy_4
         {RTLIB::MEMCPY_ELEMENT_UNORDERED_ATOMIC_1, RTLIB::impl___llvm_memcpy_element_unordered_atomic_1}, // __llvm_memcpy_element_unordered_atomic_1
@@ -30789,7 +31222,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MEMSET_ELEMENT_UNORDERED_ATOMIC_16, RTLIB::impl___llvm_memset_element_unordered_atomic_16}, // __llvm_memset_element_unordered_atomic_16
         {RTLIB::MODF_F32, RTLIB::impl_modff}, // modff
         {RTLIB::MODF_F64, RTLIB::impl_modf}, // modf
-        {RTLIB::MODF_F128, RTLIB::impl_modf_f128}, // modfl
+        {RTLIB::MODF_F128, RTLIB::impl_modfl_f128}, // modfl
         {RTLIB::MULO_I32, RTLIB::impl___mulosi4}, // __mulosi4
         {RTLIB::MUL_F32, RTLIB::impl___mulsf3}, // __mulsf3
         {RTLIB::MUL_F64, RTLIB::impl___muldf3}, // __muldf3
@@ -30800,7 +31233,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::MUL_I64, RTLIB::impl___muldi3}, // __muldi3
         {RTLIB::NEARBYINT_F32, RTLIB::impl_nearbyintf}, // nearbyintf
         {RTLIB::NEARBYINT_F64, RTLIB::impl_nearbyint}, // nearbyint
-        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyint_f128}, // nearbyintl
+        {RTLIB::NEARBYINT_F128, RTLIB::impl_nearbyintl_f128}, // nearbyintl
         {RTLIB::NEG_I32, RTLIB::impl___negsi2}, // __negsi2
         {RTLIB::NEG_I64, RTLIB::impl___negdi2}, // __negdi2
         {RTLIB::OEQ_F32, RTLIB::impl___eqsf2}, // __eqsf2
@@ -30823,7 +31256,7 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::POWI_F128, RTLIB::impl___powitf2_f128}, // __powitf2
         {RTLIB::POW_F32, RTLIB::impl_powf}, // powf
         {RTLIB::POW_F64, RTLIB::impl_pow}, // pow
-        {RTLIB::POW_F128, RTLIB::impl_pow_f128}, // powl
+        {RTLIB::POW_F128, RTLIB::impl_powl_f128}, // powl
         {RTLIB::POW_FINITE_F32, RTLIB::impl___powf_finite}, // __powf_finite
         {RTLIB::POW_FINITE_F64, RTLIB::impl___pow_finite}, // __pow_finite
         {RTLIB::POW_FINITE_F128, RTLIB::impl___powl_finite_f128}, // __powl_finite
@@ -30832,13 +31265,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::REM_F128, RTLIB::impl_fmodl_f128}, // fmodl
         {RTLIB::RINT_F32, RTLIB::impl_rintf}, // rintf
         {RTLIB::RINT_F64, RTLIB::impl_rint}, // rint
-        {RTLIB::RINT_F128, RTLIB::impl_rint_f128}, // rintl
+        {RTLIB::RINT_F128, RTLIB::impl_rintl_f128}, // rintl
         {RTLIB::ROUNDEVEN_F32, RTLIB::impl_roundevenf}, // roundevenf
         {RTLIB::ROUNDEVEN_F64, RTLIB::impl_roundeven}, // roundeven
-        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundeven_f128}, // roundevenl
+        {RTLIB::ROUNDEVEN_F128, RTLIB::impl_roundevenl_f128}, // roundevenl
         {RTLIB::ROUND_F32, RTLIB::impl_roundf}, // roundf
         {RTLIB::ROUND_F64, RTLIB::impl_round}, // round
-        {RTLIB::ROUND_F128, RTLIB::impl_round_f128}, // roundl
+        {RTLIB::ROUND_F128, RTLIB::impl_roundl_f128}, // roundl
         {RTLIB::SAFESTACK_POINTER_ADDRESS, RTLIB::impl___safestack_pointer_address}, // __safestack_pointer_address
         {RTLIB::SDIV_I8, RTLIB::impl___divqi3}, // __divqi3
         {RTLIB::SDIV_I16, RTLIB::impl___divhi3}, // __divhi3
@@ -30850,10 +31283,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SHL_I64, RTLIB::impl___ashldi3}, // __ashldi3
         {RTLIB::SINCOSPI_F32, RTLIB::impl_sincospif}, // sincospif
         {RTLIB::SINCOSPI_F64, RTLIB::impl_sincospi}, // sincospi
-        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospi_f128}, // sincospil
+        {RTLIB::SINCOSPI_F128, RTLIB::impl_sincospil_f128}, // sincospil
         {RTLIB::SINH_F32, RTLIB::impl_sinhf}, // sinhf
         {RTLIB::SINH_F64, RTLIB::impl_sinh}, // sinh
-        {RTLIB::SINH_F128, RTLIB::impl_sinh_f128}, // sinhl
+        {RTLIB::SINH_F128, RTLIB::impl_sinhl_f128}, // sinhl
         {RTLIB::SINTTOFP_I32_F16, RTLIB::impl___floatsihf}, // __floatsihf
         {RTLIB::SINTTOFP_I32_F32, RTLIB::impl___floatsisf}, // __floatsisf
         {RTLIB::SINTTOFP_I32_F64, RTLIB::impl___floatsidf}, // __floatsidf
@@ -30869,10 +31302,10 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SINTTOFP_I128_F128, RTLIB::impl___floattitf_f128}, // __floattitf
         {RTLIB::SIN_F32, RTLIB::impl_sinf}, // sinf
         {RTLIB::SIN_F64, RTLIB::impl_sin}, // sin
-        {RTLIB::SIN_F128, RTLIB::impl_sin_f128}, // sinl
+        {RTLIB::SIN_F128, RTLIB::impl_sinl_f128}, // sinl
         {RTLIB::SQRT_F32, RTLIB::impl_sqrtf}, // sqrtf
         {RTLIB::SQRT_F64, RTLIB::impl_sqrt}, // sqrt
-        {RTLIB::SQRT_F128, RTLIB::impl_sqrt_f128}, // sqrtl
+        {RTLIB::SQRT_F128, RTLIB::impl_sqrtl_f128}, // sqrtl
         {RTLIB::SRA_I16, RTLIB::impl___ashrhi3}, // __ashrhi3
         {RTLIB::SRA_I32, RTLIB::impl___ashrsi3}, // __ashrsi3
         {RTLIB::SRA_I64, RTLIB::impl___ashrdi3}, // __ashrdi3
@@ -30949,13 +31382,13 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
         {RTLIB::SYNC_VAL_COMPARE_AND_SWAP_16, RTLIB::impl___sync_val_compare_and_swap_16}, // __sync_val_compare_and_swap_16
         {RTLIB::TANH_F32, RTLIB::impl_tanhf}, // tanhf
         {RTLIB::TANH_F64, RTLIB::impl_tanh}, // tanh
-        {RTLIB::TANH_F128, RTLIB::impl_tanh_f128}, // tanhl
+        {RTLIB::TANH_F128, RTLIB::impl_tanhl_f128}, // tanhl
         {RTLIB::TAN_F32, RTLIB::impl_tanf}, // tanf
         {RTLIB::TAN_F64, RTLIB::impl_tan}, // tan
-        {RTLIB::TAN_F128, RTLIB::impl_tan_f128}, // tanl
+        {RTLIB::TAN_F128, RTLIB::impl_tanl_f128}, // tanl
         {RTLIB::TRUNC_F32, RTLIB::impl_truncf}, // truncf
         {RTLIB::TRUNC_F64, RTLIB::impl_trunc}, // trunc
-        {RTLIB::TRUNC_F128, RTLIB::impl_trunc_f128}, // truncl
+        {RTLIB::TRUNC_F128, RTLIB::impl_truncl_f128}, // truncl
         {RTLIB::UDIV_I8, RTLIB::impl___udivqi3}, // __udivqi3
         {RTLIB::UDIV_I16, RTLIB::impl___udivhi3}, // __udivhi3
         {RTLIB::UDIV_I32, RTLIB::impl___udivsi3}, // __udivsi3
@@ -30991,10 +31424,21 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
       setLibcallImpl(Func, Impl);
     }
 
+    if (ExceptionModel != ExceptionHandling::None &&
+    ExceptionModel != ExceptionHandling::SjLj) {
+      static const LibcallImplPair LibraryCalls_ExceptionModelHasUnwindResume[] = {
+          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
+      };
+
+      for (const auto [Func, Impl] : LibraryCalls_ExceptionModelHasUnwindResume) {
+        setLibcallImpl(Func, Impl);
+      }
+
+    }
+
     if (ExceptionModel != ExceptionHandling::None) {
       static const LibcallImplPair LibraryCalls_ExceptionModelIsNotNone[] = {
           {RTLIB::CXA_END_CLEANUP, RTLIB::impl___cxa_end_cleanup}, // __cxa_end_cleanup
-          {RTLIB::UNWIND_RESUME, RTLIB::impl__Unwind_Resume}, // _Unwind_Resume
       };
 
       for (const auto [Func, Impl] : LibraryCalls_ExceptionModelIsNotNone) {
@@ -31081,5 +31525,6 @@ void llvm::RTLIB::RuntimeLibcallsInfo::setTargetRuntimeLibcallSets(const llvm::T
   LLVM_DEBUG(dbgs() << "no system runtime library applied to target \'" << TT.str() << "\'\n");
 }
 
-#endif
+
+#endif // GET_SET_TARGET_RUNTIME_LIBCALL_SETS
 

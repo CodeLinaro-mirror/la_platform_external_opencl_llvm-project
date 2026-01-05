@@ -923,6 +923,19 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
+  case attr::CUDAClusterDims: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    Expr * x = Record.readExpr();
+    Expr * y = Record.readExpr();
+    Expr * z = Record.readExpr();
+    New = new (Context) CUDAClusterDimsAttr(Context, Info, x, y, z);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
   case attr::CUDAConstant: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -1011,6 +1024,16 @@
     Expr * minBlocks = Record.readExpr();
     Expr * maxBlocks = Record.readExpr();
     New = new (Context) CUDALaunchBoundsAttr(Context, Info, maxThreads, minBlocks, maxBlocks);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::CUDANoCluster: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) CUDANoClusterAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1860,7 +1883,10 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) HLSLSV_DispatchThreadIDAttr(Context, Info);
+    NamedDecl * target = Record.readDeclAs<NamedDecl >();
+    int semanticIndex = Record.readInt();
+    bool semanticExplicitIndex = Record.readInt();
+    New = new (Context) HLSLSV_DispatchThreadIDAttr(Context, Info, target, semanticIndex, semanticExplicitIndex);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1870,7 +1896,10 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) HLSLSV_GroupIDAttr(Context, Info);
+    NamedDecl * target = Record.readDeclAs<NamedDecl >();
+    int semanticIndex = Record.readInt();
+    bool semanticExplicitIndex = Record.readInt();
+    New = new (Context) HLSLSV_GroupIDAttr(Context, Info, target, semanticIndex, semanticExplicitIndex);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1880,7 +1909,10 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) HLSLSV_GroupIndexAttr(Context, Info);
+    NamedDecl * target = Record.readDeclAs<NamedDecl >();
+    int semanticIndex = Record.readInt();
+    bool semanticExplicitIndex = Record.readInt();
+    New = new (Context) HLSLSV_GroupIndexAttr(Context, Info, target, semanticIndex, semanticExplicitIndex);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1890,7 +1922,10 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) HLSLSV_GroupThreadIDAttr(Context, Info);
+    NamedDecl * target = Record.readDeclAs<NamedDecl >();
+    int semanticIndex = Record.readInt();
+    bool semanticExplicitIndex = Record.readInt();
+    New = new (Context) HLSLSV_GroupThreadIDAttr(Context, Info, target, semanticIndex, semanticExplicitIndex);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1900,7 +1935,10 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    New = new (Context) HLSLSV_PositionAttr(Context, Info);
+    NamedDecl * target = Record.readDeclAs<NamedDecl >();
+    int semanticIndex = Record.readInt();
+    bool semanticExplicitIndex = Record.readInt();
+    New = new (Context) HLSLSV_PositionAttr(Context, Info, target, semanticIndex, semanticExplicitIndex);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -3969,6 +4007,16 @@
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     New = new (Context) SYCLExternalAttr(Context, Info);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    New->setPackExpansion(isPackExpansion);
+    break;
+  }
+  case attr::SYCLKernel: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    bool isPackExpansion = Record.readInt();
+    New = new (Context) SYCLKernelAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);

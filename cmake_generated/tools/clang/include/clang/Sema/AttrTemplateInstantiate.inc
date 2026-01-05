@@ -365,6 +365,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<CPUSpecificAttr>(At);
       return A->clone(C);
     }
+    case attr::CUDAClusterDims: {
+      const auto *A = cast<CUDAClusterDimsAttr>(At);
+      return A->clone(C);
+    }
     case attr::CUDAConstant: {
       const auto *A = cast<CUDAConstantAttr>(At);
       return A->clone(C);
@@ -399,6 +403,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::CUDALaunchBounds: {
       const auto *A = cast<CUDALaunchBoundsAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CUDANoCluster: {
+      const auto *A = cast<CUDANoClusterAttr>(At);
       return A->clone(C);
     }
     case attr::CUDAShared: {
@@ -1613,6 +1621,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<SYCLExternalAttr>(At);
       return A->clone(C);
     }
+    case attr::SYCLKernel: {
+      const auto *A = cast<SYCLKernelAttr>(At);
+      return A->clone(C);
+    }
     case attr::SYCLKernelEntryPoint: {
       const auto *A = cast<SYCLKernelEntryPointAttr>(At);
       TypeSourceInfo * tempInstKernelName =
@@ -2213,6 +2225,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::CPUSpecific: {
       return nullptr;
     }
+    case attr::CUDAClusterDims: {
+      return nullptr;
+    }
     case attr::CUDAConstant: {
       return nullptr;
     }
@@ -2240,6 +2255,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::CUDALaunchBounds: {
+      return nullptr;
+    }
+    case attr::CUDANoCluster: {
       return nullptr;
     }
     case attr::CUDAShared: {
@@ -3085,6 +3103,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::SYCLExternal: {
+      return nullptr;
+    }
+    case attr::SYCLKernel: {
       return nullptr;
     }
     case attr::SYCLKernelEntryPoint: {

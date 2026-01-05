@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum ARMIntrinsics : unsigned {
 // Enum values for intrinsics.
-    arm_cde_cx1 = 3622,                               // llvm.arm.cde.cx1 (IntrinsicsARM.td:1387)
+    arm_cde_cx1 = 3631,                               // llvm.arm.cde.cx1 (IntrinsicsARM.td:1387)
     arm_cde_cx1a,                              // llvm.arm.cde.cx1a (IntrinsicsARM.td:1391)
     arm_cde_cx1d,                              // llvm.arm.cde.cx1d (IntrinsicsARM.td:1397)
     arm_cde_cx1da,                             // llvm.arm.cde.cx1da (IntrinsicsARM.td:1401)
