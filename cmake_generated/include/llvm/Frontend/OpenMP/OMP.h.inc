@@ -11,6 +11,7 @@
 #include <utility>
 
 namespace llvm {
+
 namespace omp {
 
 LLVM_ENABLE_BITMASK_ENUMS_IN_NAMESPACE();
@@ -20,13 +21,14 @@ enum class Association {
   First_ = Block,
   Declaration,
   Delimited,
-  Loop,
+  LoopNest,
+  LoopSeq,
   None,
   Separating,
   Last_ = Separating,
 };
 
-static constexpr std::size_t Association_enumSize = 6;
+static constexpr std::size_t Association_enumSize = 7;
 
 enum class Category {
   Declarative,
@@ -63,6 +65,7 @@ enum class Directive {
   OMPD_cancel,
   OMPD_cancellation_point,
   OMPD_critical,
+  OMPD_declare_induction,
   OMPD_declare_mapper,
   OMPD_declare_reduction,
   OMPD_declare_simd,
@@ -176,7 +179,7 @@ enum class Directive {
   Last_ = OMPD_teams_loop,
 };
 
-static constexpr std::size_t Directive_enumSize = 122;
+static constexpr std::size_t Directive_enumSize = 123;
 
 constexpr auto OMPD_allocate = Directive::OMPD_allocate;
 constexpr auto OMPD_allocators = Directive::OMPD_allocators;
@@ -190,6 +193,7 @@ constexpr auto OMPD_begin_declare_variant = Directive::OMPD_begin_declare_varian
 constexpr auto OMPD_cancel = Directive::OMPD_cancel;
 constexpr auto OMPD_cancellation_point = Directive::OMPD_cancellation_point;
 constexpr auto OMPD_critical = Directive::OMPD_critical;
+constexpr auto OMPD_declare_induction = Directive::OMPD_declare_induction;
 constexpr auto OMPD_declare_mapper = Directive::OMPD_declare_mapper;
 constexpr auto OMPD_declare_reduction = Directive::OMPD_declare_reduction;
 constexpr auto OMPD_declare_simd = Directive::OMPD_declare_simd;
@@ -313,16 +317,20 @@ enum class Clause {
   OMPC_allocate,
   OMPC_allocator,
   OMPC_append_args,
+  OMPC_apply,
   OMPC_at,
   OMPC_atomic_default_mem_order,
   OMPC_bind,
   OMPC_cancellation_construct_type,
   OMPC_capture,
   OMPC_collapse,
+  OMPC_collector,
+  OMPC_combiner,
   OMPC_compare,
   OMPC_contains,
   OMPC_copyprivate,
   OMPC_copyin,
+  OMPC_counts,
   OMPC_default,
   OMPC_defaultmap,
   OMPC_depend,
@@ -357,16 +365,22 @@ enum class Clause {
   OMPC_inbranch,
   OMPC_inclusive,
   OMPC_indirect,
+  OMPC_induction,
+  OMPC_inductor,
   OMPC_init,
+  OMPC_init_complete,
   OMPC_initializer,
+  OMPC_interop,
   OMPC_is_device_ptr,
   OMPC_lastprivate,
   OMPC_linear,
   OMPC_link,
+  OMPC_local,
   OMPC_looprange,
   OMPC_map,
   OMPC_match,
   OMPC_memory_order,
+  OMPC_memscope,
   OMPC_mergeable,
   OMPC_message,
   OMPC_nogroup,
@@ -400,6 +414,7 @@ enum class Clause {
   OMPC_replayable,
   OMPC_reverse_offload,
   OMPC_safelen,
+  OMPC_safesync,
   OMPC_schedule,
   OMPC_self_maps,
   OMPC_seq_cst,
@@ -431,7 +446,7 @@ enum class Clause {
   Last_ = OMPC_write,
 };
 
-static constexpr std::size_t Clause_enumSize = 125;
+static constexpr std::size_t Clause_enumSize = 136;
 
 constexpr auto OMPC_absent = Clause::OMPC_absent;
 constexpr auto OMPC_acq_rel = Clause::OMPC_acq_rel;
@@ -443,16 +458,20 @@ constexpr auto OMPC_aligned = Clause::OMPC_aligned;
 constexpr auto OMPC_allocate = Clause::OMPC_allocate;
 constexpr auto OMPC_allocator = Clause::OMPC_allocator;
 constexpr auto OMPC_append_args = Clause::OMPC_append_args;
+constexpr auto OMPC_apply = Clause::OMPC_apply;
 constexpr auto OMPC_at = Clause::OMPC_at;
 constexpr auto OMPC_atomic_default_mem_order = Clause::OMPC_atomic_default_mem_order;
 constexpr auto OMPC_bind = Clause::OMPC_bind;
 constexpr auto OMPC_cancellation_construct_type = Clause::OMPC_cancellation_construct_type;
 constexpr auto OMPC_capture = Clause::OMPC_capture;
 constexpr auto OMPC_collapse = Clause::OMPC_collapse;
+constexpr auto OMPC_collector = Clause::OMPC_collector;
+constexpr auto OMPC_combiner = Clause::OMPC_combiner;
 constexpr auto OMPC_compare = Clause::OMPC_compare;
 constexpr auto OMPC_contains = Clause::OMPC_contains;
 constexpr auto OMPC_copyprivate = Clause::OMPC_copyprivate;
 constexpr auto OMPC_copyin = Clause::OMPC_copyin;
+constexpr auto OMPC_counts = Clause::OMPC_counts;
 constexpr auto OMPC_default = Clause::OMPC_default;
 constexpr auto OMPC_defaultmap = Clause::OMPC_defaultmap;
 constexpr auto OMPC_depend = Clause::OMPC_depend;
@@ -487,16 +506,22 @@ constexpr auto OMPC_in_reduction = Clause::OMPC_in_reduction;
 constexpr auto OMPC_inbranch = Clause::OMPC_inbranch;
 constexpr auto OMPC_inclusive = Clause::OMPC_inclusive;
 constexpr auto OMPC_indirect = Clause::OMPC_indirect;
+constexpr auto OMPC_induction = Clause::OMPC_induction;
+constexpr auto OMPC_inductor = Clause::OMPC_inductor;
 constexpr auto OMPC_init = Clause::OMPC_init;
+constexpr auto OMPC_init_complete = Clause::OMPC_init_complete;
 constexpr auto OMPC_initializer = Clause::OMPC_initializer;
+constexpr auto OMPC_interop = Clause::OMPC_interop;
 constexpr auto OMPC_is_device_ptr = Clause::OMPC_is_device_ptr;
 constexpr auto OMPC_lastprivate = Clause::OMPC_lastprivate;
 constexpr auto OMPC_linear = Clause::OMPC_linear;
 constexpr auto OMPC_link = Clause::OMPC_link;
+constexpr auto OMPC_local = Clause::OMPC_local;
 constexpr auto OMPC_looprange = Clause::OMPC_looprange;
 constexpr auto OMPC_map = Clause::OMPC_map;
 constexpr auto OMPC_match = Clause::OMPC_match;
 constexpr auto OMPC_memory_order = Clause::OMPC_memory_order;
+constexpr auto OMPC_memscope = Clause::OMPC_memscope;
 constexpr auto OMPC_mergeable = Clause::OMPC_mergeable;
 constexpr auto OMPC_message = Clause::OMPC_message;
 constexpr auto OMPC_nogroup = Clause::OMPC_nogroup;
@@ -530,6 +555,7 @@ constexpr auto OMPC_release = Clause::OMPC_release;
 constexpr auto OMPC_replayable = Clause::OMPC_replayable;
 constexpr auto OMPC_reverse_offload = Clause::OMPC_reverse_offload;
 constexpr auto OMPC_safelen = Clause::OMPC_safelen;
+constexpr auto OMPC_safesync = Clause::OMPC_safesync;
 constexpr auto OMPC_schedule = Clause::OMPC_schedule;
 constexpr auto OMPC_self_maps = Clause::OMPC_self_maps;
 constexpr auto OMPC_seq_cst = Clause::OMPC_seq_cst;
@@ -653,7 +679,8 @@ enum class ScheduleKind {
   OMP_SCHEDULE_Guided=4,
   OMP_SCHEDULE_Auto=5,
   OMP_SCHEDULE_Runtime=6,
-  OMP_SCHEDULE_Default=7,
+  OMP_SCHEDULE_Distribute=7,
+  OMP_SCHEDULE_Default=8,
 };
 
 constexpr auto OMP_SCHEDULE_Static = ScheduleKind::OMP_SCHEDULE_Static;
@@ -661,6 +688,7 @@ constexpr auto OMP_SCHEDULE_Dynamic = ScheduleKind::OMP_SCHEDULE_Dynamic;
 constexpr auto OMP_SCHEDULE_Guided = ScheduleKind::OMP_SCHEDULE_Guided;
 constexpr auto OMP_SCHEDULE_Auto = ScheduleKind::OMP_SCHEDULE_Auto;
 constexpr auto OMP_SCHEDULE_Runtime = ScheduleKind::OMP_SCHEDULE_Runtime;
+constexpr auto OMP_SCHEDULE_Distribute = ScheduleKind::OMP_SCHEDULE_Distribute;
 constexpr auto OMP_SCHEDULE_Default = ScheduleKind::OMP_SCHEDULE_Default;
 
 // Enumeration helper functions
@@ -722,6 +750,8 @@ template <> struct enum_iteration_traits<omp::Directive> {
 template <> struct enum_iteration_traits<omp::Clause> {
   static constexpr bool is_iterable = true;
 };
+
 } // namespace llvm
 
 #endif // LLVM_OpenMP_INC
+

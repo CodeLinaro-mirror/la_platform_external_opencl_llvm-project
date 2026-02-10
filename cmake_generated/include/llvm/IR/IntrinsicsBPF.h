@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum BPFIntrinsics : unsigned {
 // Enum values for intrinsics.
-    bpf_btf_type_id = 4115,                           // llvm.bpf.btf.type.id (IntrinsicsBPF.td:26)
+    bpf_btf_type_id = 4188,                           // llvm.bpf.btf.type.id (IntrinsicsBPF.td:26)
     bpf_compare,                               // llvm.bpf.compare (IntrinsicsBPF.td:37)
     bpf_getelementptr_and_load,                // llvm.bpf.getelementptr.and.load (IntrinsicsBPF.td:40)
     bpf_getelementptr_and_store,               // llvm.bpf.getelementptr.and.store (IntrinsicsBPF.td:59)

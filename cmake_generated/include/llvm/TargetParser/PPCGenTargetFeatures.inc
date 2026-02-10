@@ -4,7 +4,9 @@
 #undef GET_SUBTARGETFEATURES_ENUM
 
 namespace llvm {
+
 namespace PPC {
+
 enum {
   AIXOS = 0,
   DeprecatedDST = 1,
@@ -122,7 +124,9 @@ enum {
   FeatureZeroMoveFusion = 113,
   NumSubtargetFeatures = 114
 };
+
 } // namespace PPC
+
 } // namespace llvm
 
 #endif // GET_SUBTARGETFEATURES_ENUM
@@ -131,6 +135,7 @@ enum {
 #undef GET_SUBTARGETFEATURES_KV
 
 namespace llvm {
+
 // Sorted (by key) array of values for CPU features.
 extern const llvm::BasicSubtargetFeatureKV BasicPPCFeatureKV[] = {
   { "64bit", PPC::Feature64Bit, { { { 0x80000000ULL, 0x0ULL, 0x0ULL, 0x0ULL, 0x0ULL, 0x0ULL, } } } },
@@ -262,6 +267,7 @@ extern const llvm::BasicSubtargetSubTypeKV BasicPPCSubTypeKV[] = {
  { "pwr8", { { { 0x47de597081800002ULL, 0x70a9821c6347ULL, 0x0ULL, 0x0ULL, 0x0ULL, 0x0ULL, } } } },
  { "pwr9", { { { 0x47de594083800002ULL, 0xf0a9b27c634fULL, 0x0ULL, 0x0ULL, 0x0ULL, 0x0ULL, } } } },
 };
+
 
 } // namespace llvm
 

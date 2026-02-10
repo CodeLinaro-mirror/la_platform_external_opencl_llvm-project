@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum MIPSIntrinsics : unsigned {
 // Enum values for intrinsics.
-    mips_absq_s_ph = 7767,                            // llvm.mips.absq.s.ph (IntrinsicsMips.td:82)
+    mips_absq_s_ph = 7927,                            // llvm.mips.absq.s.ph (IntrinsicsMips.td:82)
     mips_absq_s_qb,                            // llvm.mips.absq.s.qb (IntrinsicsMips.td:275)
     mips_absq_s_w,                             // llvm.mips.absq.s.w (IntrinsicsMips.td:84)
     mips_add_a_b,                              // llvm.mips.add.a.b (IntrinsicsMips.td:399)

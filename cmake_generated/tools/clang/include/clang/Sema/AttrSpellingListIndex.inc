@@ -945,6 +945,10 @@
       return 3;
     break;
   }
+  case AT_DLLExportOnDecl: {
+    return 0;
+    break;
+  }
   case AT_DLLExportStaticLocal: {
     return 0;
     break;
@@ -1212,6 +1216,15 @@
       return 2;
     break;
   }
+  case AT_GCCStruct: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 2;
+    break;
+  }
   case AT_GNUInline: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1237,6 +1250,10 @@
       return 0;
     if (Name.size() == 11 && getSyntax() == AttributeCommonInfo::AS_Declspec && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 1;
+    break;
+  }
+  case AT_HLSLAppliedSemantic: {
+    return 0;
     break;
   }
   case AT_HLSLContainedType: {
@@ -1282,6 +1299,10 @@
       return 2;
     break;
   }
+  case AT_HLSLParsedSemantic: {
+    return 0;
+    break;
+  }
   case AT_HLSLROV: {
     return 0;
     break;
@@ -1295,26 +1316,6 @@
     break;
   }
   case AT_HLSLResourceClass: {
-    return 0;
-    break;
-  }
-  case AT_HLSLSV_DispatchThreadID: {
-    return 0;
-    break;
-  }
-  case AT_HLSLSV_GroupID: {
-    return 0;
-    break;
-  }
-  case AT_HLSLSV_GroupIndex: {
-    return 0;
-    break;
-  }
-  case AT_HLSLSV_GroupThreadID: {
-    return 0;
-    break;
-  }
-  case AT_HLSLSV_Position: {
     return 0;
     break;
   }
@@ -1335,6 +1336,14 @@
     break;
   }
   case AT_HLSLVkExtBuiltinInput: {
+    return 0;
+    break;
+  }
+  case AT_HLSLVkLocation: {
+    return 0;
+    break;
+  }
+  case AT_HLSLVkPushConstant: {
     return 0;
     break;
   }
@@ -1557,6 +1566,15 @@
       return 2;
     break;
   }
+  case AT_MallocSpan: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 2;
+    break;
+  }
   case AT_MatrixType: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1656,6 +1674,15 @@
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
       return 1;
     if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
+      return 2;
+    break;
+  }
+  case AT_ModularFormat: {
+    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
+      return 0;
+    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
+      return 1;
+    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 2;
     break;
   }
