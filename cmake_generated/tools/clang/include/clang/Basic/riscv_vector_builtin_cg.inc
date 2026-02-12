@@ -2340,6 +2340,150 @@ case RISCVVector::BI__builtin_rvv_vfmv_v_f:
   Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
   IntrinsicTypes = {ResultType, Ops.back()->getType()};
   break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_tu:
+  ID = Intrinsic::riscv_vfncvt_f_f_q;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q:
+  ID = Intrinsic::riscv_vfncvt_f_f_q;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_alt_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_alt_tu:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_alt;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_alt:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_alt:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_alt;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_alt_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_alt_tum:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_alt_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_alt_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_alt_m:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_alt_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_alt_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_alt_tumu:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_alt_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_alt_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_alt_mu:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_alt_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_tum:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_m:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_tumu:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_rm_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_q_mu:
+  ID = Intrinsic::riscv_vfncvt_f_f_q_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
 case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_tu:
 case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_tu:
   ID = Intrinsic::riscv_vfncvt_f_f_w;
@@ -2358,6 +2502,78 @@ case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w:
   PolicyAttrs = 3;
   SegInstSEW = 0;
 IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_alt_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_alt_tu:
+  ID = Intrinsic::riscv_vfncvt_f_f_w_alt;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_alt:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_alt:
+  ID = Intrinsic::riscv_vfncvt_f_f_w_alt;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_alt_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_alt_tum:
+  ID = Intrinsic::riscv_vfncvt_f_f_w_alt_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_alt_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_alt_m:
+  ID = Intrinsic::riscv_vfncvt_f_f_w_alt_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_alt_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_alt_tumu:
+  ID = Intrinsic::riscv_vfncvt_f_f_w_alt_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_rm_alt_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_f_f_w_alt_mu:
+  ID = Intrinsic::riscv_vfncvt_f_f_w_alt_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
 
   {
     return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
@@ -2694,6 +2910,294 @@ case RISCVVector::BI__builtin_rvv_vfncvt_rtz_xu_f_w_mu:
   Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
   IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
   break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_tu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_alt_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_alt_tu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_alt;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_alt:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_alt:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_alt;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_alt_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_alt_tum:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_alt_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_alt_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_alt_m:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_alt_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_alt_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_alt_tumu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_alt_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_alt_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_alt_mu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_alt_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_tum:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_m:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_tumu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_rm_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_q_mu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_q_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_tu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_alt_tu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_alt_tu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_alt;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_alt:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_alt:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_alt;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = false;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_alt_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_alt_tum:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_alt_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_alt_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_alt_m:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_alt_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_alt_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_alt_tumu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_alt_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_alt_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_alt_mu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_alt_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_tum:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_tum:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_m:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_m:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_tumu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_tumu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_rm_mu:
+case RISCVVector::BI__builtin_rvv_vfncvt_sat_f_f_w_mu:
+  ID = Intrinsic::riscv_vfncvt_sat_f_f_w_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+IsMasked = true;
+
+  {
+    return emitRVVFloatingConvBuiltin(this, E, ReturnValue, ResultType, ID,
+                                      Ops, PolicyAttrs, IsMasked, SegInstSEW);
+  }
+break;
 case RISCVVector::BI__builtin_rvv_vfncvt_x_f_w_rm_tu:
 case RISCVVector::BI__builtin_rvv_vfncvt_x_f_w_tu:
   ID = Intrinsic::riscv_vfncvt_x_f_w;
@@ -4413,6 +4917,52 @@ case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v:
   PolicyAttrs = 3;
   SegInstSEW = 0;
   Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_alt_tu:
+  ID = Intrinsic::riscv_vfwcvt_f_f_v_alt;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_alt:
+  ID = Intrinsic::riscv_vfwcvt_f_f_v_alt;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_alt_tum:
+  ID = Intrinsic::riscv_vfwcvt_f_f_v_alt_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_alt_m:
+  ID = Intrinsic::riscv_vfwcvt_f_f_v_alt_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_alt_tumu:
+  ID = Intrinsic::riscv_vfwcvt_f_f_v_alt_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_alt_mu:
+  ID = Intrinsic::riscv_vfwcvt_f_f_v_alt_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
   IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops.back()->getType()};
   break;
 case RISCVVector::BI__builtin_rvv_vfwcvt_f_f_v_tum:

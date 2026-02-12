@@ -297,7 +297,7 @@ of 2.
    .. code-block:: c
 
      typedef double * aligned_double_ptr __attribute__((align_value(64)));
-     void foo(double & x  __attribute__((align_value(128)),
+     void foo(double & x  __attribute__((align_value(128))),
               aligned_double_ptr y) { ... }
 
 If the pointer value does not have the specified alignment at runtime, the
@@ -796,17 +796,17 @@ used by other languages. (This prefix is also added to the standard Itanium
 C++ ABI prefix on "mangled" symbol names, so that e.g. on such targets the true
 symbol name for a C++ variable declared as ``int cppvar;`` would be
 ``__Z6cppvar``; note the two underscores.)  This prefix is *not* added to the
-symbol names specified by the ``asm`` attribute; programmers wishing to match a
-C symbol name must compensate for this.
+symbol names specified by the ``__asm`` attribute; programmers wishing to match
+a C symbol name must compensate for this.
 
 For example, consider the following C code:
 
 .. code-block:: c
 
-  int var1 asm("altvar") = 1;  // "altvar" in symbol table.
+  int var1 __asm("altvar") = 1;  // "altvar" in symbol table.
   int var2 = 1; // "_var2" in symbol table.
 
-  void func1(void) asm("altfunc");
+  void func1(void) __asm("altfunc");
   void func1(void) {} // "altfunc" in symbol table.
   void func2(void) {} // "_func2" in symbol table.
 
@@ -1353,7 +1353,9 @@ functions intended for different purposes have distinct CFI identities.
 
 static const char AttrDoc_CFIUncheckedCallee[] = R"reST(``cfi_unchecked_callee`` is a function type attribute which prevents the compiler from instrumenting
 `Control Flow Integrity <https://clang.llvm.org/docs/ControlFlowIntegrity.html>`_ checks on indirect
-function calls. Specifically, the attribute has the following semantics:
+function calls. This also includes control flow checks added by
+`-fsanitize=function <https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#available-checks>`.
+Specifically, the attribute has the following semantics:
 
 1. Indirect calls to a function type with this attribute will not be instrumented with CFI. That is,
    the indirect call will not be checked. Note that this only changes the behavior for indirect calls
@@ -2581,6 +2583,8 @@ information.
 
 .. _dllexport: https://msdn.microsoft.com/en-us/library/3y1sfaz2.aspx)reST";
 
+static const char AttrDoc_DLLExportOnDecl[] = R"reST()reST";
+
 static const char AttrDoc_DLLExportStaticLocal[] = R"reST()reST";
 
 static const char AttrDoc_DLLImport[] = R"reST(The ``__declspec(dllimport)`` attribute declares a variable, function, or
@@ -3487,6 +3491,22 @@ The symbol used for ``thunk-extern`` is target specific:
 
 As such, this function attribute is currently only supported on X86 targets.)reST";
 
+static const char AttrDoc_GCCStruct[] = R"reST(The ``ms_struct`` and ``gcc_struct`` attributes request the compiler to enter a
+special record layout compatibility mode which mimics the layout of Microsoft or
+Itanium C++ ABI respectively. Obviously, if the current C++ ABI matches the
+requested ABI, the attribute does nothing. However, if it does not, annotated
+structure or class is laid out in a special compatibility mode, which slightly
+changes offsets for fields and bit-fields. The intention is to match the layout
+of the requested ABI for structures which only use C features.
+
+Note that the default behavior can be controlled by ``-mms-bitfields`` and
+``-mno-ms-bitfields`` switches and via ``#pragma ms_struct``.
+
+The primary difference is for bitfields, where the MS variant only packs
+adjacent fields into the same allocation unit if they have integral types
+of the same size, while the GCC/Itanium variant packs all fields in a bitfield
+tightly.)reST";
+
 static const char AttrDoc_GNUInline[] = R"reST(The ``gnu_inline`` changes the meaning of ``extern inline`` to use GNU inline
 semantics, meaning:
 
@@ -3526,6 +3546,8 @@ A managed variable is emitted as an undefined global symbol in the device binary
 registered by ``__hipRegisterManagedVariable`` in init functions. The HIP runtime allocates
 managed memory and uses it to define the symbol when loading the device binary.
 A managed variable can be accessed in both device and host code.)reST";
+
+static const char AttrDoc_HLSLAppliedSemantic[] = R"reST()reST";
 
 static const char AttrDoc_HLSLContainedType[] = R"reST()reST";
 
@@ -3610,6 +3632,8 @@ into the callee).
 Parameters annotated with `inout` are copied into the callee via a temporary,
 and copied back to the argument after the callee returns.)reST";
 
+static const char AttrDoc_HLSLParsedSemantic[] = R"reST()reST";
+
 static const char AttrDoc_HLSLROV[] = R"reST()reST";
 
 static const char AttrDoc_HLSLRawBuffer[] = R"reST()reST";
@@ -3636,42 +3660,6 @@ Here're resource binding examples with and without space:
 The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3d12/resource-binding-in-hlsl)reST";
 
 static const char AttrDoc_HLSLResourceClass[] = R"reST()reST";
-
-static const char AttrDoc_HLSLSV_DispatchThreadID[] = R"reST(The ``SV_DispatchThreadID`` semantic, when applied to an input parameter,
-specifies a data binding to map the global thread offset within the Dispatch
-call (per dimension of the group) to the specified parameter.
-When applied to a field of a struct, the data binding is specified to the field
-when the struct is used as a parameter type.
-The semantic on the field is ignored when not used as a parameter.
-This attribute is only supported in compute shaders.
-
-The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-dispatchthreadid)reST";
-
-static const char AttrDoc_HLSLSV_GroupID[] = R"reST(The ``SV_GroupID`` semantic, when applied to an input parameter, specifies which
-thread group a shader is executing in. This attribute is only supported in compute shaders.
-
-The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-groupid)reST";
-
-static const char AttrDoc_HLSLSV_GroupIndex[] = R"reST(The ``SV_GroupIndex`` semantic, when applied to an input parameter, specifies a
-data binding to map the group index to the specified parameter. This attribute
-is only supported in compute shaders.
-
-The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-groupindex)reST";
-
-static const char AttrDoc_HLSLSV_GroupThreadID[] = R"reST(The ``SV_GroupThreadID`` semantic, when applied to an input parameter, specifies which
-individual thread within a thread group is executing in. This attribute is
-only supported in compute shaders.
-
-The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sv-groupthreadid)reST";
-
-static const char AttrDoc_HLSLSV_Position[] = R"reST(The ``SV_Position`` semantic, when applied to an input parameter in a pixel
-shader, contains the location of the pixel center (x, y) in screen space.
-This semantic can be applied to the parameter, or a field in a struct used
-as an input parameter.
-This attribute is supported as an input in pixel, hull, domain and mesh shaders.
-This attribute is supported as an output in vertex, geometry and domain shaders.
-
-The full documentation is available here: https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics)reST";
 
 static const char AttrDoc_HLSLShader[] = R"reST(The ``shader`` type attribute applies to HLSL shader entry functions to
 identify the shader type for the entry function.
@@ -3739,6 +3727,24 @@ storage class, and the `BuiltIn 26` decoration.
 
 The full documentation for this inline SPIR-V attribute can be found here:
 https://github.com/microsoft/hlsl-specs/blob/main/proposals/0011-inline-spirv.md)reST";
+
+static const char AttrDoc_HLSLVkLocation[] = R"reST(Attribute used for specifying the location number for the stage input/output
+variables. Allowed on function parameters, function returns, and struct
+fields. This parameter has no effect when used outside of an entrypoint
+parameter/parameter field/return value.
+
+This attribute maps to the 'Location' SPIR-V decoration.)reST";
+
+static const char AttrDoc_HLSLVkPushConstant[] = R"reST(Vulkan shaders have `PushConstants`
+
+The ``[[vk::push_constant]]`` attribute allows you to declare this
+global variable as a push constant when targeting Vulkan.
+This attribute is ignored otherwise.
+
+This attribute must be applied to the variable, not underlying type.
+The variable type must be a struct, per the requirements of Vulkan, "there
+must be no more than one push constant block statically used per shader entry
+point.")reST";
 
 static const char AttrDoc_HLSLWaveSize[] = R"reST(The ``WaveSize`` attribute specify a wave size on a shader entry point in order
 to indicate either that a shader depends on or strongly prefers a specific wave
@@ -4260,9 +4266,9 @@ from the routine. The attribute can be applied to C++ methods, and in this case
 it will be automatically applied to overrides if the method is virtual. The
 attribute can also be written using C++11 syntax: ``[[mig::server_routine]]``.)reST";
 
-static const char AttrDoc_MSABI[] = R"reST(On non-Windows x86_64 targets, this attribute changes the calling convention of
-a function to match the default convention used on Windows x86_64. This
-attribute has no effect on Windows targets or non-x86_64 targets.)reST";
+static const char AttrDoc_MSABI[] = R"reST(On non-Windows x86_64 and aarch64 targets, this attribute changes the calling convention of
+a function to match the default convention used on Windows. This
+attribute has no effect on Windows targets or non-x86_64, non-aarch64 targets.)reST";
 
 static const char AttrDoc_MSAllocator[] = R"reST(The ``__declspec(allocator)`` attribute is applied to functions that allocate
 memory, such as operator new in C++. When CodeView debug information is emitted
@@ -4333,9 +4339,34 @@ function table. It is only supported when using the Microsoft C++ ABI.)reST";
 
 static const char AttrDoc_MSP430Interrupt[] = R"reST(No documentation.)reST";
 
-static const char AttrDoc_MSStruct[] = R"reST(No documentation.)reST";
+static const char AttrDoc_MSStruct[] = R"reST(The ``ms_struct`` and ``gcc_struct`` attributes request the compiler to enter a
+special record layout compatibility mode which mimics the layout of Microsoft or
+Itanium C++ ABI respectively. Obviously, if the current C++ ABI matches the
+requested ABI, the attribute does nothing. However, if it does not, annotated
+structure or class is laid out in a special compatibility mode, which slightly
+changes offsets for fields and bit-fields. The intention is to match the layout
+of the requested ABI for structures which only use C features.
+
+Note that the default behavior can be controlled by ``-mms-bitfields`` and
+``-mno-ms-bitfields`` switches and via ``#pragma ms_struct``.
+
+The primary difference is for bitfields, where the MS variant only packs
+adjacent fields into the same allocation unit if they have integral types
+of the same size, while the GCC/Itanium variant packs all fields in a bitfield
+tightly.)reST";
 
 static const char AttrDoc_MSVtorDisp[] = R"reST()reST";
+
+static const char AttrDoc_MallocSpan[] = R"reST(The ``malloc_span`` attribute can be used to mark that a function which acts
+like a system memory allocation function and returns a span-like structure,
+where the returned memory range does not alias storage from any other object
+accessible to the caller.
+
+In this context, a span-like structure is assumed to have two non-static data
+members, one of which is a pointer to the start of the allocated memory and
+the other one is either an integer type containing the size of the actually
+allocated memory or a pointer to the end of the allocated region. Note, static
+data members do not impact whether a type is span-like or not.)reST";
 
 static const char AttrDoc_MaxFieldAlignment[] = R"reST()reST";
 
@@ -4458,6 +4489,41 @@ These attributes take priority over command line switches such
 as ``-mlong-calls`` and ``-mno-long-calls``.)reST";
 
 static const char AttrDoc_Mode[] = R"reST(No documentation.)reST";
+
+static const char AttrDoc_ModularFormat[] = R"reST(The ``modular_format`` attribute can be applied to a function that bears the
+``format`` attribute (or standard library functions) to indicate that the
+implementation is "modular", that is, that the implementation is logically
+divided into a number of named aspects. When the compiler can determine that
+not all aspects of the implementation are needed for a given call, the compiler
+may redirect the call to the identifier given as the first argument to the
+attribute (the modular implementation function).
+
+The second argument is a implementation name, and the remaining arguments are
+aspects of the format string for the compiler to report. The implementation
+name is an unevaluated identifier be in the C namespace.
+
+The compiler reports that a call requires an aspect by issuing a relocation for
+the symbol ``<impl_name>_<aspect>`` at the point of the call. This arranges for
+code and data needed to support the aspect of the implementation to be brought
+into the link to satisfy weak references in the modular implemenation function.
+If the compiler does not understand an aspect, it must summarily consider any
+call to require that aspect. 
+
+For example, say ``printf`` is annotated with
+``modular_format(__modular_printf, "__printf", "float")``. Then, a call to
+``printf(var, 42)`` would be untouched. A call to ``printf("%d", 42)`` would
+become a call to ``__modular_printf`` with the same arguments, as would
+``printf("%f", 42.0)``. The latter would be accompanied with a strong
+relocation against the symbol ``__printf_float``, which would bring floating
+point support for ``printf`` into the link.
+
+If the attribute appears more than once on a declaration, or across a chain of
+redeclarations, it is an error for the attributes to have different arguments,
+excepting that the aspects may be in any order.
+
+The following aspects are currently supported:
+
+- ``float``: The call has a floating point argument)reST";
 
 static const char AttrDoc_MustTail[] = R"reST(If a ``return`` statement is marked ``musttail``, this indicates that the
 compiler must generate a tail call for the program to be correct, even when
@@ -7040,8 +7106,6 @@ attribute requires a string literal argument to identify the handle being releas
 
   zx_status_t zx_handle_close(zx_handle_t handle [[clang::release_handle("tag")]]);)reST";
 
-static const char AttrDoc_Replaceable[] = R"reST()reST";
-
 static const char AttrDoc_ReqdWorkGroupSize[] = R"reST(No documentation.)reST";
 
 static const char AttrDoc_RequiresCapability[] = R"reST(No documentation.)reST";
@@ -8363,8 +8427,6 @@ Attribute ``trivial_abi`` has no effect in the following cases:
   - classes that are non-trivial for the purposes of calls
   - __weak-qualified types in Objective-C++
   - arrays of any of the above)reST";
-
-static const char AttrDoc_TriviallyRelocatable[] = R"reST()reST";
 
 static const char AttrDoc_TryAcquireCapability[] = R"reST(Marks a function that attempts to acquire a capability. This function may fail to
 actually acquire the capability; they accept a Boolean value determining

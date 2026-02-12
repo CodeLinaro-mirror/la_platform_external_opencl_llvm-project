@@ -316,6 +316,12 @@ MEMBEREXPR(MemberExpr, Expr)
 MATRIXSUBSCRIPTEXPR(MatrixSubscriptExpr, Expr)
 #undef MATRIXSUBSCRIPTEXPR
 
+#ifndef MATRIXSINGLESUBSCRIPTEXPR
+#  define MATRIXSINGLESUBSCRIPTEXPR(Type, Base) EXPR(Type, Base)
+#endif
+MATRIXSINGLESUBSCRIPTEXPR(MatrixSingleSubscriptExpr, Expr)
+#undef MATRIXSINGLESUBSCRIPTEXPR
+
 #ifndef MATERIALIZETEMPORARYEXPR
 #  define MATERIALIZETEMPORARYEXPR(Type, Base) EXPR(Type, Base)
 #endif
@@ -1649,6 +1655,12 @@ FORSTMT(ForStmt, Stmt)
 #endif
 DOSTMT(DoStmt, Stmt)
 #undef DOSTMT
+
+#ifndef DEFERSTMT
+#  define DEFERSTMT(Type, Base) STMT(Type, Base)
+#endif
+DEFERSTMT(DeferStmt, Stmt)
+#undef DEFERSTMT
 
 #ifndef DECLSTMT
 #  define DECLSTMT(Type, Base) STMT(Type, Base)

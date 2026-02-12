@@ -341,7 +341,6 @@ OP_AddOffsetUint64,
 OP_AddOffsetIntAP,
 OP_AddOffsetIntAPS,
 OP_AddOffsetBool,
-OP_AddOffsetFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_AddOffsetSint8: {
@@ -399,11 +398,6 @@ case OP_AddOffsetBool: {
     return false;
   continue;
 }
-case OP_AddOffsetFixedPoint: {
-  if (!AddOffset<PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_AddOffsetSint8:
@@ -439,9 +433,6 @@ case OP_AddOffsetIntAPS:
 case OP_AddOffsetBool:
   Text.Op = PrintName("AddOffsetBool");
   break;
-case OP_AddOffsetFixedPoint:
-  Text.Op = PrintName("AddOffsetFixedPoint");
-  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAddOffsetSint8(SourceInfo);
@@ -455,7 +446,6 @@ bool emitAddOffsetUint64(SourceInfo);
 bool emitAddOffsetIntAP(SourceInfo);
 bool emitAddOffsetIntAPS(SourceInfo);
 bool emitAddOffsetBool(SourceInfo);
-bool emitAddOffsetFixedPoint(SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitAddOffset(PrimType, SourceInfo I);
@@ -491,8 +481,6 @@ ByteCodeEmitter
     return emitAddOffsetIntAPS(I);
   case PT_Bool:
     return emitAddOffsetBool(I);
-  case PT_FixedPoint:
-    return emitAddOffsetFixedPoint(I);
   default: llvm_unreachable("invalid type: emitAddOffset");
   }
   llvm_unreachable("invalid enum value");
@@ -531,9 +519,6 @@ bool ByteCodeEmitter::emitAddOffsetIntAPS(SourceInfo L) {
 }
 bool ByteCodeEmitter::emitAddOffsetBool(SourceInfo L) {
   return emitOp<>(OP_AddOffsetBool, L);
-}
-bool ByteCodeEmitter::emitAddOffsetFixedPoint(SourceInfo L) {
-  return emitOp<>(OP_AddOffsetFixedPoint, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -591,11 +576,6 @@ bool EvalEmitter::emitAddOffsetBool(SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return AddOffset<PT_Bool>(S, OpPC);
-}
-bool EvalEmitter::emitAddOffsetFixedPoint(SourceInfo L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return AddOffset<PT_FixedPoint>(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -1978,7 +1958,6 @@ OP_ArrayElemPtrUint64,
 OP_ArrayElemPtrIntAP,
 OP_ArrayElemPtrIntAPS,
 OP_ArrayElemPtrBool,
-OP_ArrayElemPtrFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_ArrayElemPtrSint8: {
@@ -2036,11 +2015,6 @@ case OP_ArrayElemPtrBool: {
     return false;
   continue;
 }
-case OP_ArrayElemPtrFixedPoint: {
-  if (!ArrayElemPtr<PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_ArrayElemPtrSint8:
@@ -2076,9 +2050,6 @@ case OP_ArrayElemPtrIntAPS:
 case OP_ArrayElemPtrBool:
   Text.Op = PrintName("ArrayElemPtrBool");
   break;
-case OP_ArrayElemPtrFixedPoint:
-  Text.Op = PrintName("ArrayElemPtrFixedPoint");
-  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayElemPtrSint8(SourceInfo);
@@ -2092,7 +2063,6 @@ bool emitArrayElemPtrUint64(SourceInfo);
 bool emitArrayElemPtrIntAP(SourceInfo);
 bool emitArrayElemPtrIntAPS(SourceInfo);
 bool emitArrayElemPtrBool(SourceInfo);
-bool emitArrayElemPtrFixedPoint(SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitArrayElemPtr(PrimType, SourceInfo I);
@@ -2128,8 +2098,6 @@ ByteCodeEmitter
     return emitArrayElemPtrIntAPS(I);
   case PT_Bool:
     return emitArrayElemPtrBool(I);
-  case PT_FixedPoint:
-    return emitArrayElemPtrFixedPoint(I);
   default: llvm_unreachable("invalid type: emitArrayElemPtr");
   }
   llvm_unreachable("invalid enum value");
@@ -2168,9 +2136,6 @@ bool ByteCodeEmitter::emitArrayElemPtrIntAPS(SourceInfo L) {
 }
 bool ByteCodeEmitter::emitArrayElemPtrBool(SourceInfo L) {
   return emitOp<>(OP_ArrayElemPtrBool, L);
-}
-bool ByteCodeEmitter::emitArrayElemPtrFixedPoint(SourceInfo L) {
-  return emitOp<>(OP_ArrayElemPtrFixedPoint, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -2229,11 +2194,6 @@ bool EvalEmitter::emitArrayElemPtrBool(SourceInfo L) {
   CurrentSource = L;
   return ArrayElemPtr<PT_Bool>(S, OpPC);
 }
-bool EvalEmitter::emitArrayElemPtrFixedPoint(SourceInfo L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return ArrayElemPtr<PT_FixedPoint>(S, OpPC);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_ArrayElemPtrPopSint8,
@@ -2247,7 +2207,6 @@ OP_ArrayElemPtrPopUint64,
 OP_ArrayElemPtrPopIntAP,
 OP_ArrayElemPtrPopIntAPS,
 OP_ArrayElemPtrPopBool,
-OP_ArrayElemPtrPopFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_ArrayElemPtrPopSint8: {
@@ -2305,11 +2264,6 @@ case OP_ArrayElemPtrPopBool: {
     return false;
   continue;
 }
-case OP_ArrayElemPtrPopFixedPoint: {
-  if (!ArrayElemPtrPop<PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_ArrayElemPtrPopSint8:
@@ -2345,9 +2299,6 @@ case OP_ArrayElemPtrPopIntAPS:
 case OP_ArrayElemPtrPopBool:
   Text.Op = PrintName("ArrayElemPtrPopBool");
   break;
-case OP_ArrayElemPtrPopFixedPoint:
-  Text.Op = PrintName("ArrayElemPtrPopFixedPoint");
-  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitArrayElemPtrPopSint8(SourceInfo);
@@ -2361,7 +2312,6 @@ bool emitArrayElemPtrPopUint64(SourceInfo);
 bool emitArrayElemPtrPopIntAP(SourceInfo);
 bool emitArrayElemPtrPopIntAPS(SourceInfo);
 bool emitArrayElemPtrPopBool(SourceInfo);
-bool emitArrayElemPtrPopFixedPoint(SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitArrayElemPtrPop(PrimType, SourceInfo I);
@@ -2397,8 +2347,6 @@ ByteCodeEmitter
     return emitArrayElemPtrPopIntAPS(I);
   case PT_Bool:
     return emitArrayElemPtrPopBool(I);
-  case PT_FixedPoint:
-    return emitArrayElemPtrPopFixedPoint(I);
   default: llvm_unreachable("invalid type: emitArrayElemPtrPop");
   }
   llvm_unreachable("invalid enum value");
@@ -2437,9 +2385,6 @@ bool ByteCodeEmitter::emitArrayElemPtrPopIntAPS(SourceInfo L) {
 }
 bool ByteCodeEmitter::emitArrayElemPtrPopBool(SourceInfo L) {
   return emitOp<>(OP_ArrayElemPtrPopBool, L);
-}
-bool ByteCodeEmitter::emitArrayElemPtrPopFixedPoint(SourceInfo L) {
-  return emitOp<>(OP_ArrayElemPtrPopFixedPoint, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -2497,11 +2442,6 @@ bool EvalEmitter::emitArrayElemPtrPopBool(SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return ArrayElemPtrPop<PT_Bool>(S, OpPC);
-}
-bool EvalEmitter::emitArrayElemPtrPopFixedPoint(SourceInfo L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return ArrayElemPtrPop<PT_FixedPoint>(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -8625,6 +8565,40 @@ bool EvalEmitter::emitCheckArraySize( uint64_t A0, SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_CheckBitCast,
+#endif
+#ifdef GET_INTERP
+case OP_CheckBitCast: {
+  const auto V0 = ReadArg<const Type *>(S, PC);
+  const auto V1 = ReadArg<bool>(S, PC);
+  if (!CheckBitCast(S, OpPC, V0, V1))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CheckBitCast:
+  Text.Op = PrintName("CheckBitCast");
+  Text.Args.push_back(printArg<const Type *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCheckBitCast( const Type * ,  bool , SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCheckBitCast( const Type * A0,  bool A1, SourceInfo L) {
+  return emitOp<const Type *, bool>(OP_CheckBitCast, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCheckBitCast( const Type * A0,  bool A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CheckBitCast(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_CheckDecl,
 #endif
 #ifdef GET_INTERP
@@ -8955,6 +8929,38 @@ bool EvalEmitter::emitCheckEnumValueBool( const EnumDecl * A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return CheckEnumValue<PT_Bool>(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_CheckFunctionDecl,
+#endif
+#ifdef GET_INTERP
+case OP_CheckFunctionDecl: {
+  const auto V0 = ReadArg<const FunctionDecl *>(S, PC);
+  if (!CheckFunctionDecl(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CheckFunctionDecl:
+  Text.Op = PrintName("CheckFunctionDecl");
+  Text.Args.push_back(printArg<const FunctionDecl *>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCheckFunctionDecl( const FunctionDecl * , SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCheckFunctionDecl( const FunctionDecl * A0, SourceInfo L) {
+  return emitOp<const FunctionDecl *>(OP_CheckFunctionDecl, A0, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCheckFunctionDecl( const FunctionDecl * A0, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CheckFunctionDecl(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -10460,6 +10466,36 @@ bool EvalEmitter::emitCopyArrayFloat( uint32_t A0,  uint32_t A1,  uint32_t A2, S
   if (!isActive()) return true;
   CurrentSource = L;
   return CopyArray<PT_Float>(S, OpPC, A0, A1, A2);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_CtorCheck,
+#endif
+#ifdef GET_INTERP
+case OP_CtorCheck: {
+  if (!CtorCheck(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_CtorCheck:
+  Text.Op = PrintName("CtorCheck");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCtorCheck(SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCtorCheck(SourceInfo L) {
+  return emitOp<>(OP_CtorCheck, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCtorCheck(SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CtorCheck(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -13164,6 +13200,31 @@ bool EvalEmitter::emitEQFloat(SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return EQ<PT_Float>(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_EnableLocal,
+#endif
+#ifdef GET_INTERP
+case OP_EnableLocal: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!EnableLocal(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_EnableLocal:
+  Text.Op = PrintName("EnableLocal");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitEnableLocal( uint32_t , SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitEnableLocal( uint32_t A0, SourceInfo L) {
+  return emitOp<uint32_t>(OP_EnableLocal, A0, L);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -20851,6 +20912,31 @@ bool ByteCodeEmitter::emitGetLocalMemberPtr( uint32_t A0, SourceInfo L) {
 }
 bool ByteCodeEmitter::emitGetLocalFloat( uint32_t A0, SourceInfo L) {
   return emitOp<uint32_t>(OP_GetLocalFloat, A0, L);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_GetLocalEnabled,
+#endif
+#ifdef GET_INTERP
+case OP_GetLocalEnabled: {
+  const auto V0 = ReadArg<uint32_t>(S, PC);
+  if (!GetLocalEnabled(S, OpPC, V0))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_GetLocalEnabled:
+  Text.Op = PrintName("GetLocalEnabled");
+  Text.Args.push_back(printArg<uint32_t>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitGetLocalEnabled( uint32_t , SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitGetLocalEnabled( uint32_t A0, SourceInfo L) {
+  return emitOp<uint32_t>(OP_GetLocalEnabled, A0, L);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -31860,6 +31946,36 @@ bool EvalEmitter::emitPopCC(SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_PopMSVCCE,
+#endif
+#ifdef GET_INTERP
+case OP_PopMSVCCE: {
+  if (!PopMSVCCE(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PopMSVCCE:
+  Text.Op = PrintName("PopMSVCCE");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPopMSVCCE(SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPopMSVCCE(SourceInfo L) {
+  return emitOp<>(OP_PopMSVCCE, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPopMSVCCE(SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PopMSVCCE(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_PreDecSint8,
 OP_PreDecUint8,
 OP_PreDecSint16,
@@ -33141,6 +33257,36 @@ bool EvalEmitter::emitPushCC( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
   return PushCC(S, OpPC, A0);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_PushMSVCCE,
+#endif
+#ifdef GET_INTERP
+case OP_PushMSVCCE: {
+  if (!PushMSVCCE(S, OpPC))
+    return false;
+  continue;
+}
+#endif
+#ifdef GET_DISASM
+case OP_PushMSVCCE:
+  Text.Op = PrintName("PushMSVCCE");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPushMSVCCE(SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPushMSVCCE(SourceInfo L) {
+  return emitOp<>(OP_PushMSVCCE, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPushMSVCCE(SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PushMSVCCE(S, OpPC);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
@@ -42654,7 +42800,6 @@ OP_SubOffsetUint64,
 OP_SubOffsetIntAP,
 OP_SubOffsetIntAPS,
 OP_SubOffsetBool,
-OP_SubOffsetFixedPoint,
 #endif
 #ifdef GET_INTERP
 case OP_SubOffsetSint8: {
@@ -42712,11 +42857,6 @@ case OP_SubOffsetBool: {
     return false;
   continue;
 }
-case OP_SubOffsetFixedPoint: {
-  if (!SubOffset<PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
 #endif
 #ifdef GET_DISASM
 case OP_SubOffsetSint8:
@@ -42752,9 +42892,6 @@ case OP_SubOffsetIntAPS:
 case OP_SubOffsetBool:
   Text.Op = PrintName("SubOffsetBool");
   break;
-case OP_SubOffsetFixedPoint:
-  Text.Op = PrintName("SubOffsetFixedPoint");
-  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitSubOffsetSint8(SourceInfo);
@@ -42768,7 +42905,6 @@ bool emitSubOffsetUint64(SourceInfo);
 bool emitSubOffsetIntAP(SourceInfo);
 bool emitSubOffsetIntAPS(SourceInfo);
 bool emitSubOffsetBool(SourceInfo);
-bool emitSubOffsetFixedPoint(SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitSubOffset(PrimType, SourceInfo I);
@@ -42804,8 +42940,6 @@ ByteCodeEmitter
     return emitSubOffsetIntAPS(I);
   case PT_Bool:
     return emitSubOffsetBool(I);
-  case PT_FixedPoint:
-    return emitSubOffsetFixedPoint(I);
   default: llvm_unreachable("invalid type: emitSubOffset");
   }
   llvm_unreachable("invalid enum value");
@@ -42844,9 +42978,6 @@ bool ByteCodeEmitter::emitSubOffsetIntAPS(SourceInfo L) {
 }
 bool ByteCodeEmitter::emitSubOffsetBool(SourceInfo L) {
   return emitOp<>(OP_SubOffsetBool, L);
-}
-bool ByteCodeEmitter::emitSubOffsetFixedPoint(SourceInfo L) {
-  return emitOp<>(OP_SubOffsetFixedPoint, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -42905,11 +43036,6 @@ bool EvalEmitter::emitSubOffsetBool(SourceInfo L) {
   CurrentSource = L;
   return SubOffset<PT_Bool>(S, OpPC);
 }
-bool EvalEmitter::emitSubOffsetFixedPoint(SourceInfo L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return SubOffset<PT_FixedPoint>(S, OpPC);
-}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_SubPtrSint8,
@@ -42925,52 +43051,62 @@ OP_SubPtrIntAPS,
 #endif
 #ifdef GET_INTERP
 case OP_SubPtrSint8: {
-  if (!SubPtr<PT_Sint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Sint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrUint8: {
-  if (!SubPtr<PT_Uint8>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Uint8>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrSint16: {
-  if (!SubPtr<PT_Sint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Sint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrUint16: {
-  if (!SubPtr<PT_Uint16>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Uint16>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrSint32: {
-  if (!SubPtr<PT_Sint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Sint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrUint32: {
-  if (!SubPtr<PT_Uint32>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Uint32>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrSint64: {
-  if (!SubPtr<PT_Sint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Sint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrUint64: {
-  if (!SubPtr<PT_Uint64>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_Uint64>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrIntAP: {
-  if (!SubPtr<PT_IntAP>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_IntAP>(S, OpPC, V0))
     return false;
   continue;
 }
 case OP_SubPtrIntAPS: {
-  if (!SubPtr<PT_IntAPS>(S, OpPC))
+  const auto V0 = ReadArg<bool>(S, PC);
+  if (!SubPtr<PT_IntAPS>(S, OpPC, V0))
     return false;
   continue;
 }
@@ -42978,49 +43114,59 @@ case OP_SubPtrIntAPS: {
 #ifdef GET_DISASM
 case OP_SubPtrSint8:
   Text.Op = PrintName("SubPtrSint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrUint8:
   Text.Op = PrintName("SubPtrUint8");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrSint16:
   Text.Op = PrintName("SubPtrSint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrUint16:
   Text.Op = PrintName("SubPtrUint16");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrSint32:
   Text.Op = PrintName("SubPtrSint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrUint32:
   Text.Op = PrintName("SubPtrUint32");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrSint64:
   Text.Op = PrintName("SubPtrSint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrUint64:
   Text.Op = PrintName("SubPtrUint64");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrIntAP:
   Text.Op = PrintName("SubPtrIntAP");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 case OP_SubPtrIntAPS:
   Text.Op = PrintName("SubPtrIntAPS");
+  Text.Args.push_back(printArg<bool>(P, PC));
   break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitSubPtrSint8(SourceInfo);
-bool emitSubPtrUint8(SourceInfo);
-bool emitSubPtrSint16(SourceInfo);
-bool emitSubPtrUint16(SourceInfo);
-bool emitSubPtrSint32(SourceInfo);
-bool emitSubPtrUint32(SourceInfo);
-bool emitSubPtrSint64(SourceInfo);
-bool emitSubPtrUint64(SourceInfo);
-bool emitSubPtrIntAP(SourceInfo);
-bool emitSubPtrIntAPS(SourceInfo);
+bool emitSubPtrSint8( bool , SourceInfo);
+bool emitSubPtrUint8( bool , SourceInfo);
+bool emitSubPtrSint16( bool , SourceInfo);
+bool emitSubPtrUint16( bool , SourceInfo);
+bool emitSubPtrSint32( bool , SourceInfo);
+bool emitSubPtrUint32( bool , SourceInfo);
+bool emitSubPtrSint64( bool , SourceInfo);
+bool emitSubPtrUint64( bool , SourceInfo);
+bool emitSubPtrIntAP( bool , SourceInfo);
+bool emitSubPtrIntAPS( bool , SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-[[nodiscard]] bool emitSubPtr(PrimType, SourceInfo I);
+[[nodiscard]] bool emitSubPtr(PrimType, bool, SourceInfo I);
 #endif
 #if defined(GET_EVAL_IMPL) || defined(GET_LINK_IMPL)
 bool
@@ -43029,115 +43175,115 @@ EvalEmitter
 #else
 ByteCodeEmitter
 #endif
-::emitSubPtr(PrimType T0, SourceInfo I) {
+::emitSubPtr(PrimType T0,  bool A0, SourceInfo I) {
   switch (T0) {
   case PT_Sint8:
-    return emitSubPtrSint8(I);
+    return emitSubPtrSint8(A0, I);
   case PT_Uint8:
-    return emitSubPtrUint8(I);
+    return emitSubPtrUint8(A0, I);
   case PT_Sint16:
-    return emitSubPtrSint16(I);
+    return emitSubPtrSint16(A0, I);
   case PT_Uint16:
-    return emitSubPtrUint16(I);
+    return emitSubPtrUint16(A0, I);
   case PT_Sint32:
-    return emitSubPtrSint32(I);
+    return emitSubPtrSint32(A0, I);
   case PT_Uint32:
-    return emitSubPtrUint32(I);
+    return emitSubPtrUint32(A0, I);
   case PT_Sint64:
-    return emitSubPtrSint64(I);
+    return emitSubPtrSint64(A0, I);
   case PT_Uint64:
-    return emitSubPtrUint64(I);
+    return emitSubPtrUint64(A0, I);
   case PT_IntAP:
-    return emitSubPtrIntAP(I);
+    return emitSubPtrIntAP(A0, I);
   case PT_IntAPS:
-    return emitSubPtrIntAPS(I);
+    return emitSubPtrIntAPS(A0, I);
   default: llvm_unreachable("invalid type: emitSubPtr");
   }
   llvm_unreachable("invalid enum value");
 }
 #endif
 #ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitSubPtrSint8(SourceInfo L) {
-  return emitOp<>(OP_SubPtrSint8, L);
+bool ByteCodeEmitter::emitSubPtrSint8( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrSint8, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrUint8(SourceInfo L) {
-  return emitOp<>(OP_SubPtrUint8, L);
+bool ByteCodeEmitter::emitSubPtrUint8( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrUint8, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrSint16(SourceInfo L) {
-  return emitOp<>(OP_SubPtrSint16, L);
+bool ByteCodeEmitter::emitSubPtrSint16( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrSint16, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrUint16(SourceInfo L) {
-  return emitOp<>(OP_SubPtrUint16, L);
+bool ByteCodeEmitter::emitSubPtrUint16( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrUint16, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrSint32(SourceInfo L) {
-  return emitOp<>(OP_SubPtrSint32, L);
+bool ByteCodeEmitter::emitSubPtrSint32( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrSint32, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrUint32(SourceInfo L) {
-  return emitOp<>(OP_SubPtrUint32, L);
+bool ByteCodeEmitter::emitSubPtrUint32( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrUint32, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrSint64(SourceInfo L) {
-  return emitOp<>(OP_SubPtrSint64, L);
+bool ByteCodeEmitter::emitSubPtrSint64( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrSint64, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrUint64(SourceInfo L) {
-  return emitOp<>(OP_SubPtrUint64, L);
+bool ByteCodeEmitter::emitSubPtrUint64( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrUint64, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrIntAP(SourceInfo L) {
-  return emitOp<>(OP_SubPtrIntAP, L);
+bool ByteCodeEmitter::emitSubPtrIntAP( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrIntAP, A0, L);
 }
-bool ByteCodeEmitter::emitSubPtrIntAPS(SourceInfo L) {
-  return emitOp<>(OP_SubPtrIntAPS, L);
+bool ByteCodeEmitter::emitSubPtrIntAPS( bool A0, SourceInfo L) {
+  return emitOp<bool>(OP_SubPtrIntAPS, A0, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitSubPtrSint8(SourceInfo L) {
+bool EvalEmitter::emitSubPtrSint8( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Sint8>(S, OpPC);
+  return SubPtr<PT_Sint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrUint8(SourceInfo L) {
+bool EvalEmitter::emitSubPtrUint8( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Uint8>(S, OpPC);
+  return SubPtr<PT_Uint8>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrSint16(SourceInfo L) {
+bool EvalEmitter::emitSubPtrSint16( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Sint16>(S, OpPC);
+  return SubPtr<PT_Sint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrUint16(SourceInfo L) {
+bool EvalEmitter::emitSubPtrUint16( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Uint16>(S, OpPC);
+  return SubPtr<PT_Uint16>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrSint32(SourceInfo L) {
+bool EvalEmitter::emitSubPtrSint32( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Sint32>(S, OpPC);
+  return SubPtr<PT_Sint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrUint32(SourceInfo L) {
+bool EvalEmitter::emitSubPtrUint32( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Uint32>(S, OpPC);
+  return SubPtr<PT_Uint32>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrSint64(SourceInfo L) {
+bool EvalEmitter::emitSubPtrSint64( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Sint64>(S, OpPC);
+  return SubPtr<PT_Sint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrUint64(SourceInfo L) {
+bool EvalEmitter::emitSubPtrUint64( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_Uint64>(S, OpPC);
+  return SubPtr<PT_Uint64>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrIntAP(SourceInfo L) {
+bool EvalEmitter::emitSubPtrIntAP( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_IntAP>(S, OpPC);
+  return SubPtr<PT_IntAP>(S, OpPC, A0);
 }
-bool EvalEmitter::emitSubPtrIntAPS(SourceInfo L) {
+bool EvalEmitter::emitSubPtrIntAPS( bool A0, SourceInfo L) {
   if (!isActive()) return true;
   CurrentSource = L;
-  return SubPtr<PT_IntAPS>(S, OpPC);
+  return SubPtr<PT_IntAPS>(S, OpPC, A0);
 }
 #endif
 #ifdef GET_OPCODE_NAMES
