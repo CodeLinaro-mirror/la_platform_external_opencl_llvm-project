@@ -425,6 +425,11 @@
       break;
     }
   }
+  void VisitHLSLAppliedSemanticAttr(const HLSLAppliedSemanticAttr *A) {
+    const auto *SA = cast<HLSLAppliedSemanticAttr>(A); (void)SA;
+    OS << " \"" << SA->getSemanticName() << "\"";
+    OS << " " << SA->getSemanticIndex();
+  }
   void VisitHLSLContainedTypeAttr(const HLSLContainedTypeAttr *A) {
     const auto *SA = cast<HLSLContainedTypeAttr>(A); (void)SA;
     OS << " " << SA->getType().getAsString();
@@ -453,6 +458,11 @@
     OS << " " << A->getSpelling();
     if (SA->getMergedSpelling()) OS << " MergedSpelling";
   }
+  void VisitHLSLParsedSemanticAttr(const HLSLParsedSemanticAttr *A) {
+    const auto *SA = cast<HLSLParsedSemanticAttr>(A); (void)SA;
+    OS << " \"" << SA->getSemanticName() << "\"";
+    OS << " " << SA->getSemanticIndex();
+  }
   void VisitHLSLResourceBindingAttr(const HLSLResourceBindingAttr *A) {
     const auto *SA = cast<HLSLResourceBindingAttr>(A); (void)SA;
     OS << " \"" << SA->getSlot() << "\"";
@@ -474,41 +484,6 @@
       OS << " Sampler";
       break;
     }
-  }
-  void VisitHLSLSV_DispatchThreadIDAttr(const HLSLSV_DispatchThreadIDAttr *A) {
-    const auto *SA = cast<HLSLSV_DispatchThreadIDAttr>(A); (void)SA;
-    OS << " ";
-    dumpBareDeclRef(SA->getTarget());
-    OS << " " << SA->getSemanticIndex();
-    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
-  }
-  void VisitHLSLSV_GroupIDAttr(const HLSLSV_GroupIDAttr *A) {
-    const auto *SA = cast<HLSLSV_GroupIDAttr>(A); (void)SA;
-    OS << " ";
-    dumpBareDeclRef(SA->getTarget());
-    OS << " " << SA->getSemanticIndex();
-    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
-  }
-  void VisitHLSLSV_GroupIndexAttr(const HLSLSV_GroupIndexAttr *A) {
-    const auto *SA = cast<HLSLSV_GroupIndexAttr>(A); (void)SA;
-    OS << " ";
-    dumpBareDeclRef(SA->getTarget());
-    OS << " " << SA->getSemanticIndex();
-    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
-  }
-  void VisitHLSLSV_GroupThreadIDAttr(const HLSLSV_GroupThreadIDAttr *A) {
-    const auto *SA = cast<HLSLSV_GroupThreadIDAttr>(A); (void)SA;
-    OS << " ";
-    dumpBareDeclRef(SA->getTarget());
-    OS << " " << SA->getSemanticIndex();
-    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
-  }
-  void VisitHLSLSV_PositionAttr(const HLSLSV_PositionAttr *A) {
-    const auto *SA = cast<HLSLSV_PositionAttr>(A); (void)SA;
-    OS << " ";
-    dumpBareDeclRef(SA->getTarget());
-    OS << " " << SA->getSemanticIndex();
-    if (SA->getSemanticExplicitIndex()) OS << " SemanticExplicitIndex";
   }
   void VisitHLSLShaderAttr(const HLSLShaderAttr *A) {
     const auto *SA = cast<HLSLShaderAttr>(A); (void)SA;
@@ -576,6 +551,10 @@
   void VisitHLSLVkExtBuiltinInputAttr(const HLSLVkExtBuiltinInputAttr *A) {
     const auto *SA = cast<HLSLVkExtBuiltinInputAttr>(A); (void)SA;
     OS << " " << SA->getBuiltIn();
+  }
+  void VisitHLSLVkLocationAttr(const HLSLVkLocationAttr *A) {
+    const auto *SA = cast<HLSLVkLocationAttr>(A); (void)SA;
+    OS << " " << SA->getLocation();
   }
   void VisitHLSLWaveSizeAttr(const HLSLWaveSizeAttr *A) {
     const auto *SA = cast<HLSLWaveSizeAttr>(A); (void)SA;
@@ -740,6 +719,14 @@
     const auto *SA = cast<ModeAttr>(A); (void)SA;
     if (SA->getMode())
       OS << " " << SA->getMode()->getName();
+  }
+  void VisitModularFormatAttr(const ModularFormatAttr *A) {
+    const auto *SA = cast<ModularFormatAttr>(A); (void)SA;
+    if (SA->getModularImplFn())
+      OS << " " << SA->getModularImplFn()->getName();
+    OS << " \"" << SA->getImplName() << "\"";
+    for (const auto &Val : SA->aspects())
+      OS << " " << Val;
   }
   void VisitNSErrorDomainAttr(const NSErrorDomainAttr *A) {
     const auto *SA = cast<NSErrorDomainAttr>(A); (void)SA;

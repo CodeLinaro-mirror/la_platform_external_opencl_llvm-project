@@ -40,6 +40,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AArch64SVEPcsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AArch64SVEPcs; }
@@ -69,6 +70,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AArch64VectorPcsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AArch64VectorPcs; }
@@ -111,6 +113,7 @@ public:
     return max;
   }
 
+  bool isEquivalent(const AMDGPUFlatWorkGroupSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AMDGPUFlatWorkGroupSize; }
@@ -163,6 +166,7 @@ public:
     return maxNumWorkGroupsZ;
   }
 
+  bool isEquivalent(const AMDGPUMaxNumWorkGroupsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AMDGPUMaxNumWorkGroups; }
@@ -198,6 +202,7 @@ public:
     return numSGPR;
   }
 
+  bool isEquivalent(const AMDGPUNumSGPRAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AMDGPUNumSGPR; }
@@ -233,6 +238,7 @@ public:
     return numVGPR;
   }
 
+  bool isEquivalent(const AMDGPUNumVGPRAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AMDGPUNumVGPR; }
@@ -278,6 +284,7 @@ public:
     return max;
   }
 
+  bool isEquivalent(const AMDGPUWavesPerEUAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AMDGPUWavesPerEU; }
@@ -328,6 +335,7 @@ public:
 
   static bool ConvertStrToInterruptType(StringRef Val, ARMInterruptAttr::InterruptType &Out);
   static const char *ConvertInterruptTypeToStr(ARMInterruptAttr::InterruptType Val);
+  bool isEquivalent(const ARMInterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ARMInterrupt; }
@@ -370,6 +378,7 @@ public:
 
   static bool ConvertStrToInterruptType(StringRef Val, ARMInterruptSaveFPAttr::InterruptType &Out);
   static const char *ConvertInterruptTypeToStr(ARMInterruptSaveFPAttr::InterruptType Val);
+  bool isEquivalent(const ARMInterruptSaveFPAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ARMInterruptSaveFP; }
@@ -391,6 +400,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ARMSaveFPAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ARMSaveFP; }
@@ -420,6 +430,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AVRInterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AVRInterrupt; }
@@ -449,6 +460,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AVRSignalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AVRSignal; }
@@ -490,6 +502,7 @@ public:
   llvm::iterator_range<tags_iterator> tags() const { return llvm::make_range(tags_begin(), tags_end()); }
 
 
+  bool isEquivalent(const AbiTagAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AbiTag; }
@@ -546,6 +559,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const AcquireCapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -602,6 +616,7 @@ public:
       std::memcpy(this->handleType, S.data(), handleTypeLength);
   }
 
+  bool isEquivalent(const AcquireHandleAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AcquireHandle; }
@@ -643,6 +658,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const AcquiredAfterAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -694,6 +710,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const AcquiredBeforeAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -740,6 +757,7 @@ public:
     return addressSpace;
   }
 
+  bool isEquivalent(const AddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AddressSpace; }
@@ -786,6 +804,7 @@ public:
       std::memcpy(this->aliasee, S.data(), aliaseeLength);
   }
 
+  bool isEquivalent(const AliasAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Alias; }
@@ -807,6 +826,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AlignMac68kAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AlignMac68k; }
@@ -828,6 +848,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AlignNaturalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AlignNatural; }
@@ -856,6 +877,7 @@ public:
     return alignment;
   }
 
+  bool isEquivalent(const AlignValueAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AlignValue; }
@@ -926,6 +948,7 @@ public:
     alignmentCache = AlignVal;
   }
 
+  bool isEquivalent(const AlignedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Aligned; }
@@ -962,6 +985,7 @@ public:
     return paramIndex;
   }
 
+  bool isEquivalent(const AllocAlignAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AllocAlign; }
@@ -1008,6 +1032,7 @@ public:
     return numElemsParam;
   }
 
+  bool isEquivalent(const AllocSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AllocSize; }
@@ -1037,6 +1062,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AllocatingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Allocating; }
@@ -1065,6 +1091,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AlwaysDestroyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AlwaysDestroy; }
@@ -1100,6 +1127,7 @@ public:
   Spelling getSemanticSpelling() const;
   bool isClangAlwaysInline() const { return getAttributeSpellingListIndex() == 3 ||
     getAttributeSpellingListIndex() == 4; }
+  bool isEquivalent(const AlwaysInlineAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AlwaysInline; }
@@ -1121,6 +1149,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AnalyzerNoReturnAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AnalyzerNoReturn; }
@@ -1190,6 +1219,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const AnnotateAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -1277,6 +1307,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const AnnotateTypeAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -1316,6 +1347,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AnyX86InterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AnyX86Interrupt; }
@@ -1345,6 +1377,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AnyX86NoCallerSavedRegistersAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AnyX86NoCallerSavedRegisters; }
@@ -1374,6 +1407,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AnyX86NoCfCheckAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AnyX86NoCfCheck; }
@@ -1403,13 +1437,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ArcWeakrefUnavailableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArcWeakrefUnavailable; }
 };
 
 class CLANG_ABI ArgumentWithTypeTagAttr : public InheritableAttr {
-IdentifierInfo * argumentKind;
+const IdentifierInfo * argumentKind;
 
 ParamIdx argumentIdx;
 
@@ -1430,24 +1465,24 @@ public:
   };
 
   // Factory methods
-  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo);
-  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo);
-  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
-  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
-  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo);
-  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo);
-  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
-  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
+  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo);
+  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo);
+  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
+  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
+  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo);
+  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo);
+  static ArgumentWithTypeTagAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
+  static ArgumentWithTypeTagAttr *Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range = {}, Spelling S = GNU_argument_with_type_tag);
 
   // Constructors
   ArgumentWithTypeTagAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ArgumentKind
+              , const IdentifierInfo * ArgumentKind
               , ParamIdx ArgumentIdx
               , ParamIdx TypeTagIdx
               , bool IsPointer
              );
   ArgumentWithTypeTagAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ArgumentKind
+              , const IdentifierInfo * ArgumentKind
               , ParamIdx ArgumentIdx
               , ParamIdx TypeTagIdx
              );
@@ -1457,7 +1492,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
-  IdentifierInfo * getArgumentKind() const {
+  const IdentifierInfo * getArgumentKind() const {
     return argumentKind;
   }
 
@@ -1473,6 +1508,7 @@ public:
     return isPointer;
   }
 
+  bool isEquivalent(const ArgumentWithTypeTagAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArgumentWithTypeTag; }
@@ -1507,13 +1543,14 @@ public:
   llvm::iterator_range<agnosticArgs_iterator> agnosticArgs() const { return llvm::make_range(agnosticArgs_begin(), agnosticArgs_end()); }
 
 
+  bool isEquivalent(const ArmAgnosticAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmAgnostic; }
 };
 
 class CLANG_ABI ArmBuiltinAliasAttr : public InheritableAttr {
-IdentifierInfo * builtinName;
+const IdentifierInfo * builtinName;
 
 public:
   enum Spelling {
@@ -1525,24 +1562,25 @@ public:
   };
 
   // Factory methods
-  static ArmBuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
-  static ArmBuiltinAliasAttr *Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
-  static ArmBuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = GNU_clang_arm_builtin_alias);
-  static ArmBuiltinAliasAttr *Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = GNU_clang_arm_builtin_alias);
+  static ArmBuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
+  static ArmBuiltinAliasAttr *Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
+  static ArmBuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = GNU_clang_arm_builtin_alias);
+  static ArmBuiltinAliasAttr *Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = GNU_clang_arm_builtin_alias);
 
   // Constructors
   ArmBuiltinAliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BuiltinName
+              , const IdentifierInfo * BuiltinName
              );
 
   ArmBuiltinAliasAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getBuiltinName() const {
+  const IdentifierInfo * getBuiltinName() const {
     return builtinName;
   }
 
+  bool isEquivalent(const ArmBuiltinAliasAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmBuiltinAlias; }
@@ -1577,6 +1615,7 @@ public:
   llvm::iterator_range<inArgs_iterator> inArgs() const { return llvm::make_range(inArgs_begin(), inArgs_end()); }
 
 
+  bool isEquivalent(const ArmInAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmIn; }
@@ -1611,6 +1650,7 @@ public:
   llvm::iterator_range<inOutArgs_iterator> inOutArgs() const { return llvm::make_range(inOutArgs_begin(), inOutArgs_end()); }
 
 
+  bool isEquivalent(const ArmInOutAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmInOut; }
@@ -1632,6 +1672,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ArmLocallyStreamingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmLocallyStreaming; }
@@ -1661,6 +1702,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ArmMveStrictPolymorphismAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmMveStrictPolymorphism; }
@@ -1695,6 +1737,7 @@ public:
   llvm::iterator_range<newArgs_iterator> newArgs() const { return llvm::make_range(newArgs_begin(), newArgs_end()); }
 
 
+  bool isEquivalent(const ArmNewAttr &Other, StructuralEquivalenceContext &Context) const;
 
     bool isNewZA() const {
       return llvm::is_contained(newArgs(), "za");
@@ -1736,6 +1779,7 @@ public:
   llvm::iterator_range<outArgs_iterator> outArgs() const { return llvm::make_range(outArgs_begin(), outArgs_end()); }
 
 
+  bool isEquivalent(const ArmOutAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmOut; }
@@ -1770,6 +1814,7 @@ public:
   llvm::iterator_range<preserveArgs_iterator> preserveArgs() const { return llvm::make_range(preserveArgs_begin(), preserveArgs_end()); }
 
 
+  bool isEquivalent(const ArmPreservesAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmPreserves; }
@@ -1791,6 +1836,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ArmStreamingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmStreaming; }
@@ -1812,6 +1858,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ArmStreamingCompatibleAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ArmStreamingCompatible; }
@@ -1841,6 +1888,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ArtificialAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Artificial; }
@@ -1885,6 +1933,7 @@ public:
       std::memcpy(this->label, S.data(), labelLength);
   }
 
+  bool isEquivalent(const AsmLabelAttr &Other, StructuralEquivalenceContext &Context) const;
 
 bool isEquivalent(AsmLabelAttr *Other) const {
   return getLabel() == Other->getLabel();
@@ -1945,6 +1994,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const AssertCapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -2001,6 +2051,7 @@ public:
     return offset;
   }
 
+  bool isEquivalent(const AssumeAlignedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AssumeAligned; }
@@ -2055,13 +2106,14 @@ public:
 
   static bool ConvertStrToConsumedOption(StringRef Val, AtomicAttr::ConsumedOption &Out);
   static const char *ConvertConsumedOptionToStr(AtomicAttr::ConsumedOption Val);
+  bool isEquivalent(const AtomicAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Atomic; }
 };
 
 class CLANG_ABI AvailabilityAttr : public InheritableAttr {
-IdentifierInfo * platform;
+const IdentifierInfo * platform;
 
 VersionTuple introduced;
 
@@ -2084,7 +2136,7 @@ char *replacement;
 
 int priority;
 
-IdentifierInfo * environment;
+const IdentifierInfo * environment;
 
 public:
   enum Spelling {
@@ -2096,14 +2148,14 @@ public:
   };
 
   // Factory methods
-  static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo);
-  static AvailabilityAttr *Create(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo);
-  static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, SourceRange Range = {}, Spelling S = GNU_availability);
-  static AvailabilityAttr *Create(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, SourceRange Range = {}, Spelling S = GNU_availability);
+  static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo);
+  static AvailabilityAttr *Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo);
+  static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, SourceRange Range = {}, Spelling S = GNU_availability);
+  static AvailabilityAttr *Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, SourceRange Range = {}, Spelling S = GNU_availability);
 
   // Constructors
   AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Platform
+              , const IdentifierInfo * Platform
               , VersionTuple Introduced
               , VersionTuple Deprecated
               , VersionTuple Obsoleted
@@ -2112,14 +2164,14 @@ public:
               , bool Strict
               , llvm::StringRef Replacement
               , int Priority
-              , IdentifierInfo * Environment
+              , const IdentifierInfo * Environment
              );
 
   AvailabilityAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getPlatform() const {
+  const IdentifierInfo * getPlatform() const {
     return platform;
   }
 
@@ -2182,10 +2234,11 @@ public:
     return priority;
   }
 
-  IdentifierInfo * getEnvironment() const {
+  const IdentifierInfo * getEnvironment() const {
     return environment;
   }
 
+  bool isEquivalent(const AvailabilityAttr &Other, StructuralEquivalenceContext &Context) const;
 static llvm::StringRef getPrettyPlatformName(llvm::StringRef Platform) {
     return llvm::StringSwitch<llvm::StringRef>(Platform)
              .Case("android", "Android")
@@ -2346,6 +2399,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const AvailableOnlyInDefaultEvalMethodAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::AvailableOnlyInDefaultEvalMethod; }
@@ -2375,6 +2429,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const BPFFastCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::BPFFastCall; }
@@ -2404,6 +2459,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const BPFPreserveAccessIndexAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::BPFPreserveAccessIndex; }
@@ -2433,6 +2489,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const BPFPreserveStaticOffsetAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::BPFPreserveStaticOffset; }
@@ -2479,6 +2536,7 @@ public:
       std::memcpy(this->bTFDeclTag, S.data(), bTFDeclTagLength);
   }
 
+  bool isEquivalent(const BTFDeclTagAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::BTFDeclTag; }
@@ -2525,6 +2583,7 @@ public:
       std::memcpy(this->bTFTypeTag, S.data(), bTFTypeTagLength);
   }
 
+  bool isEquivalent(const BTFTypeTagAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::BTFTypeTag; }
@@ -2554,6 +2613,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const BlockingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Blocking; }
@@ -2597,6 +2657,7 @@ public:
 
   static bool ConvertStrToBlockType(StringRef Val, BlocksAttr::BlockType &Out);
   static const char *ConvertBlockTypeToStr(BlocksAttr::BlockType Val);
+  bool isEquivalent(const BlocksAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Blocks; }
@@ -2625,13 +2686,14 @@ public:
     return iD;
   }
 
+  bool isEquivalent(const BuiltinAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Builtin; }
 };
 
 class CLANG_ABI BuiltinAliasAttr : public Attr {
-IdentifierInfo * builtinName;
+const IdentifierInfo * builtinName;
 
 public:
   enum Spelling {
@@ -2643,14 +2705,14 @@ public:
   };
 
   // Factory methods
-  static BuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
-  static BuiltinAliasAttr *Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
-  static BuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = CXX11_clang_builtin_alias);
-  static BuiltinAliasAttr *Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = CXX11_clang_builtin_alias);
+  static BuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
+  static BuiltinAliasAttr *Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo);
+  static BuiltinAliasAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = CXX11_clang_builtin_alias);
+  static BuiltinAliasAttr *Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range = {}, Spelling S = CXX11_clang_builtin_alias);
 
   // Constructors
   BuiltinAliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BuiltinName
+              , const IdentifierInfo * BuiltinName
              );
 
   BuiltinAliasAttr *clone(ASTContext &C) const;
@@ -2658,10 +2720,11 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
-  IdentifierInfo * getBuiltinName() const {
+  const IdentifierInfo * getBuiltinName() const {
     return builtinName;
   }
 
+  bool isEquivalent(const BuiltinAliasAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::BuiltinAlias; }
@@ -2683,6 +2746,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const C11NoReturnAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::C11NoReturn; }
@@ -2713,6 +2777,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CDecl; }
@@ -2742,6 +2807,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFAuditedTransferAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFAuditedTransfer; }
@@ -2771,6 +2837,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFConsumedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFConsumed; }
@@ -2815,6 +2882,7 @@ public:
 
   static bool ConvertStrToGuardArg(StringRef Val, CFGuardAttr::GuardArg &Out);
   static const char *ConvertGuardArgToStr(CFGuardAttr::GuardArg Val);
+  bool isEquivalent(const CFGuardAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFGuard; }
@@ -2844,6 +2912,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFICanonicalJumpTableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFICanonicalJumpTable; }
@@ -2890,6 +2959,7 @@ public:
       std::memcpy(this->salt, S.data(), saltLength);
   }
 
+  bool isEquivalent(const CFISaltAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFISalt; }
@@ -2919,6 +2989,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFIUncheckedCalleeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFIUncheckedCallee; }
@@ -2948,6 +3019,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFReturnsNotRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFReturnsNotRetained; }
@@ -2977,6 +3049,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFReturnsRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFReturnsRetained; }
@@ -3006,6 +3079,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CFUnknownTransferAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CFUnknownTransfer; }
@@ -3013,7 +3087,7 @@ public:
 
 class CLANG_ABI CPUDispatchAttr : public InheritableAttr {
   unsigned cpus_Size;
-  IdentifierInfo * *cpus_;
+  const IdentifierInfo * *cpus_;
 
 public:
   enum Spelling {
@@ -3026,14 +3100,14 @@ public:
   };
 
   // Factory methods
-  static CPUDispatchAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
-  static CPUDispatchAttr *Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
-  static CPUDispatchAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_dispatch);
-  static CPUDispatchAttr *Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_dispatch);
+  static CPUDispatchAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
+  static CPUDispatchAttr *Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
+  static CPUDispatchAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_dispatch);
+  static CPUDispatchAttr *Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_dispatch);
 
   // Constructors
   CPUDispatchAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * *Cpus, unsigned CpusSize
+              , const IdentifierInfo * *Cpus, unsigned CpusSize
              );
   CPUDispatchAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              );
@@ -3042,13 +3116,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  typedef IdentifierInfo ** cpus_iterator;
+  typedef const IdentifierInfo ** cpus_iterator;
   cpus_iterator cpus_begin() const { return cpus_; }
   cpus_iterator cpus_end() const { return cpus_ + cpus_Size; }
   unsigned cpus_size() const { return cpus_Size; }
   llvm::iterator_range<cpus_iterator> cpus() const { return llvm::make_range(cpus_begin(), cpus_end()); }
 
 
+  bool isEquivalent(const CPUDispatchAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CPUDispatch; }
@@ -3056,7 +3131,7 @@ public:
 
 class CLANG_ABI CPUSpecificAttr : public InheritableAttr {
   unsigned cpus_Size;
-  IdentifierInfo * *cpus_;
+  const IdentifierInfo * *cpus_;
 
 public:
   enum Spelling {
@@ -3069,14 +3144,14 @@ public:
   };
 
   // Factory methods
-  static CPUSpecificAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
-  static CPUSpecificAttr *Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
-  static CPUSpecificAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_specific);
-  static CPUSpecificAttr *Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_specific);
+  static CPUSpecificAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
+  static CPUSpecificAttr *Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo);
+  static CPUSpecificAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_specific);
+  static CPUSpecificAttr *Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range = {}, Spelling S = GNU_cpu_specific);
 
   // Constructors
   CPUSpecificAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * *Cpus, unsigned CpusSize
+              , const IdentifierInfo * *Cpus, unsigned CpusSize
              );
   CPUSpecificAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              );
@@ -3085,15 +3160,16 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  typedef IdentifierInfo ** cpus_iterator;
+  typedef const IdentifierInfo ** cpus_iterator;
   cpus_iterator cpus_begin() const { return cpus_; }
   cpus_iterator cpus_end() const { return cpus_ + cpus_Size; }
   unsigned cpus_size() const { return cpus_Size; }
   llvm::iterator_range<cpus_iterator> cpus() const { return llvm::make_range(cpus_begin(), cpus_end()); }
 
 
+  bool isEquivalent(const CPUSpecificAttr &Other, StructuralEquivalenceContext &Context) const;
 
-    IdentifierInfo *getCPUName(unsigned Index) const {
+    const IdentifierInfo *getCPUName(unsigned Index) const {
       return *(cpus_begin() + Index);
     }
   
@@ -3141,6 +3217,7 @@ public:
     return z;
   }
 
+  bool isEquivalent(const CUDAClusterDimsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAClusterDims; }
@@ -3169,6 +3246,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDAConstantAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAConstant; }
@@ -3197,6 +3275,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDADeviceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDADevice; }
@@ -3225,6 +3304,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDADeviceBuiltinSurfaceTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDADeviceBuiltinSurfaceType; }
@@ -3253,6 +3333,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDADeviceBuiltinTextureTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDADeviceBuiltinTextureType; }
@@ -3281,6 +3362,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDAGlobalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAGlobal; }
@@ -3309,6 +3391,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDAGridConstantAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAGridConstant; }
@@ -3337,6 +3420,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDAHostAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAHost; }
@@ -3358,6 +3442,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDAInvalidTargetAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAInvalidTarget; }
@@ -3410,6 +3495,7 @@ public:
     return maxBlocks;
   }
 
+  bool isEquivalent(const CUDALaunchBoundsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDALaunchBounds; }
@@ -3431,6 +3517,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDANoClusterAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDANoCluster; }
@@ -3459,6 +3546,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CUDASharedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CUDAShared; }
@@ -3489,6 +3577,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const CXX11NoReturnAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CXX11NoReturn; }
@@ -3526,6 +3615,7 @@ public:
     return assumption;
   }
 
+  bool isEquivalent(const CXXAssumeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CXXAssume; }
@@ -3576,6 +3666,7 @@ public:
 
   static bool ConvertStrToConsumedState(StringRef Val, CallableWhenAttr::ConsumedState &Out);
   static const char *ConvertConsumedStateToStr(CallableWhenAttr::ConsumedState Val);
+  bool isEquivalent(const CallableWhenAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CallableWhen; }
@@ -3618,6 +3709,7 @@ public:
   llvm::iterator_range<encoding_iterator> encoding() const { return llvm::make_range(encoding_begin(), encoding_end()); }
 
 
+  bool isEquivalent(const CallbackAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Callback; }
@@ -3647,6 +3739,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CalledOnceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CalledOnce; }
@@ -3697,6 +3790,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const CapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Capability; }
@@ -3718,6 +3812,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CapturedRecordAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CapturedRecord; }
@@ -3746,6 +3841,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CarriesDependencyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CarriesDependency; }
@@ -3782,6 +3878,7 @@ public:
     return functionDecl;
   }
 
+  bool isEquivalent(const CleanupAttr &Other, StructuralEquivalenceContext &Context) const;
 
 private:
     SourceLocation ArgLoc;
@@ -3818,6 +3915,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ClspvLibclcBuiltinAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ClspvLibclcBuiltin; }
@@ -3839,6 +3937,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CmseNSCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CmseNSCall; }
@@ -3860,6 +3959,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CmseNSEntryAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CmseNSEntry; }
@@ -3896,6 +3996,7 @@ public:
     return alignment;
   }
 
+  bool isEquivalent(const CodeAlignAttr &Other, StructuralEquivalenceContext &Context) const;
 
     static constexpr int MinimumAlignment = 1;
     static constexpr int MaximumAlignment = 4096;
@@ -3938,6 +4039,7 @@ public:
 
   static bool ConvertStrToModel(StringRef Val, llvm::CodeModel::Model &Out);
   static const char *ConvertModelToStr(llvm::CodeModel::Model Val);
+  bool isEquivalent(const CodeModelAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CodeModel; }
@@ -3976,6 +4078,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const CodeSegAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CodeSeg; }
@@ -4005,6 +4108,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ColdAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Cold; }
@@ -4034,6 +4138,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CommonAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Common; }
@@ -4063,6 +4168,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ConstAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Const; }
@@ -4094,6 +4200,7 @@ public:
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
   bool isConstinit() const { return getAttributeSpellingListIndex() == 0; }
+  bool isEquivalent(const ConstInitAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ConstInit; }
@@ -4132,6 +4239,7 @@ public:
     return priority;
   }
 
+  bool isEquivalent(const ConstructorAttr &Other, StructuralEquivalenceContext &Context) const;
 
     static constexpr unsigned DefaultPriority = 65535;
   
@@ -4178,6 +4286,7 @@ public:
 
   static bool ConvertStrToConsumedState(StringRef Val, ConsumableAttr::ConsumedState &Out);
   static const char *ConvertConsumedStateToStr(ConsumableAttr::ConsumedState Val);
+  bool isEquivalent(const ConsumableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Consumable; }
@@ -4206,6 +4315,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ConsumableAutoCastAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ConsumableAutoCast; }
@@ -4234,6 +4344,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ConsumableSetOnReadAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ConsumableSetOnRead; }
@@ -4263,6 +4374,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ConvergentAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Convergent; }
@@ -4292,6 +4404,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroAwaitElidableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroAwaitElidable; }
@@ -4321,6 +4434,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroAwaitElidableArgumentAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroAwaitElidableArgument; }
@@ -4350,6 +4464,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroDisableLifetimeBoundAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroDisableLifetimeBound; }
@@ -4379,6 +4494,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroLifetimeBoundAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroLifetimeBound; }
@@ -4408,6 +4524,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroOnlyDestroyWhenCompleteAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroOnlyDestroyWhenComplete; }
@@ -4437,6 +4554,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroReturnTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroReturnType; }
@@ -4466,6 +4584,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const CoroWrapperAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CoroWrapper; }
@@ -4512,6 +4631,7 @@ public:
     return nestedLevel;
   }
 
+  bool isEquivalent(const CountedByAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CountedBy; }
@@ -4558,6 +4678,7 @@ public:
     return nestedLevel;
   }
 
+  bool isEquivalent(const CountedByOrNullAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::CountedByOrNull; }
@@ -4588,9 +4709,32 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const DLLExportAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DLLExport; }
+};
+
+class CLANG_ABI DLLExportOnDeclAttr : public InheritableAttr {
+public:
+  // Factory methods
+  static DLLExportOnDeclAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static DLLExportOnDeclAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static DLLExportOnDeclAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static DLLExportOnDeclAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  DLLExportOnDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  DLLExportOnDeclAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const DLLExportOnDeclAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::DLLExportOnDecl; }
 };
 
 class CLANG_ABI DLLExportStaticLocalAttr : public InheritableAttr {
@@ -4609,6 +4753,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const DLLExportStaticLocalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DLLExportStaticLocal; }
@@ -4639,6 +4784,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const DLLImportAttr &Other, StructuralEquivalenceContext &Context) const;
 
 private:
   bool PropagatedToBaseTemplate = false;
@@ -4667,6 +4813,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const DLLImportStaticLocalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DLLImportStaticLocal; }
@@ -4735,6 +4882,7 @@ public:
       std::memcpy(this->replacement, S.data(), replacementLength);
   }
 
+  bool isEquivalent(const DeprecatedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Deprecated; }
@@ -4773,6 +4921,7 @@ public:
     return priority;
   }
 
+  bool isEquivalent(const DestructorAttr &Other, StructuralEquivalenceContext &Context) const;
 
     static constexpr unsigned int DefaultPriority = 65535;
   
@@ -4812,6 +4961,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const DeviceKernelAttr &Other, StructuralEquivalenceContext &Context) const;
 
     static inline bool isAMDGPUSpelling(const AttributeCommonInfo& A) {
       return A.getAttributeSpellingListIndex() == GNU_amdgpu_kernel ||
@@ -4892,6 +5042,7 @@ public:
   llvm::iterator_range<argIndices_iterator> argIndices() const { return llvm::make_range(argIndices_begin(), argIndices_end()); }
 
 
+  bool isEquivalent(const DiagnoseAsBuiltinAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DiagnoseAsBuiltin; }
@@ -4998,6 +5149,7 @@ public:
     return parent;
   }
 
+  bool isEquivalent(const DiagnoseIfAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DiagnoseIf; }
@@ -5027,6 +5179,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const DisableSanitizerInstrumentationAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DisableSanitizerInstrumentation; }
@@ -5056,6 +5209,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const DisableTailCallsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DisableTailCalls; }
@@ -5077,6 +5231,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const EmptyBasesAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::EmptyBases; }
@@ -5122,6 +5277,7 @@ public:
       std::memcpy(this->message, S.data(), messageLength);
   }
 
+  bool isEquivalent(const EnableIfAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::EnableIf; }
@@ -5168,6 +5324,7 @@ public:
       std::memcpy(this->tCBName, S.data(), tCBNameLength);
   }
 
+  bool isEquivalent(const EnforceTCBAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::EnforceTCB; }
@@ -5214,6 +5371,7 @@ public:
       std::memcpy(this->tCBName, S.data(), tCBNameLength);
   }
 
+  bool isEquivalent(const EnforceTCBLeafAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::EnforceTCBLeaf; }
@@ -5258,6 +5416,7 @@ public:
 
   static bool ConvertStrToKind(StringRef Val, EnumExtensibilityAttr::Kind &Out);
   static const char *ConvertKindToStr(EnumExtensibilityAttr::Kind Val);
+  bool isEquivalent(const EnumExtensibilityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::EnumExtensibility; }
@@ -5314,6 +5473,7 @@ public:
       std::memcpy(this->userDiagnostic, S.data(), userDiagnosticLength);
   }
 
+  bool isEquivalent(const ErrorAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Error; }
@@ -5343,6 +5503,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ExcludeFromExplicitInstantiationAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ExcludeFromExplicitInstantiation; }
@@ -5372,6 +5533,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ExplicitInitAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ExplicitInit; }
@@ -5408,6 +5570,7 @@ public:
     return numElements;
   }
 
+  bool isEquivalent(const ExtVectorTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ExtVectorType; }
@@ -5497,6 +5660,7 @@ public:
       std::memcpy(this->uSR, S.data(), uSRLength);
   }
 
+  bool isEquivalent(const ExternalSourceSymbolAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ExternalSourceSymbol; }
@@ -5529,6 +5693,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const FallThroughAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::FallThrough; }
@@ -5559,6 +5724,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const FastCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::FastCall; }
@@ -5589,6 +5755,7 @@ public:
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
   bool isSpelledAsSealed() const { return getAttributeSpellingListIndex() == 1; }
+  bool isEquivalent(const FinalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Final; }
@@ -5618,6 +5785,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const FlagEnumAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::FlagEnum; }
@@ -5647,13 +5815,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const FlattenAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Flatten; }
 };
 
 class CLANG_ABI FormatAttr : public InheritableAttr {
-IdentifierInfo * type;
+const IdentifierInfo * type;
 
 int formatIdx;
 
@@ -5669,14 +5838,14 @@ public:
   };
 
   // Factory methods
-  static FormatAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo);
-  static FormatAttr *Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo);
-  static FormatAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range = {}, Spelling S = GNU_format);
-  static FormatAttr *Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range = {}, Spelling S = GNU_format);
+  static FormatAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo);
+  static FormatAttr *Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo);
+  static FormatAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range = {}, Spelling S = GNU_format);
+  static FormatAttr *Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range = {}, Spelling S = GNU_format);
 
   // Constructors
   FormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Type
+              , const IdentifierInfo * Type
               , int FormatIdx
               , int FirstArg
              );
@@ -5685,7 +5854,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getType() const {
+  const IdentifierInfo * getType() const {
     return type;
   }
 
@@ -5697,6 +5866,7 @@ public:
     return firstArg;
   }
 
+  bool isEquivalent(const FormatAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Format; }
@@ -5733,13 +5903,14 @@ public:
     return formatIdx;
   }
 
+  bool isEquivalent(const FormatArgAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::FormatArg; }
 };
 
 class CLANG_ABI FormatMatchesAttr : public InheritableAttr {
-IdentifierInfo * type;
+const IdentifierInfo * type;
 
 int formatIdx;
 
@@ -5755,14 +5926,14 @@ public:
   };
 
   // Factory methods
-  static FormatMatchesAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo);
-  static FormatMatchesAttr *Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo);
-  static FormatMatchesAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range = {}, Spelling S = GNU_format_matches);
-  static FormatMatchesAttr *Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range = {}, Spelling S = GNU_format_matches);
+  static FormatMatchesAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo);
+  static FormatMatchesAttr *Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo);
+  static FormatMatchesAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range = {}, Spelling S = GNU_format_matches);
+  static FormatMatchesAttr *Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range = {}, Spelling S = GNU_format_matches);
 
   // Constructors
   FormatMatchesAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Type
+              , const IdentifierInfo * Type
               , int FormatIdx
               , Expr * ExpectedFormat
              );
@@ -5771,7 +5942,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getType() const {
+  const IdentifierInfo * getType() const {
     return type;
   }
 
@@ -5783,6 +5954,7 @@ public:
     return expectedFormat;
   }
 
+  bool isEquivalent(const FormatMatchesAttr &Other, StructuralEquivalenceContext &Context) const;
 
     StringLiteral *getFormatString() const;
   
@@ -5829,9 +6001,40 @@ public:
 
   static bool ConvertStrToKind(StringRef Val, FunctionReturnThunksAttr::Kind &Out);
   static const char *ConvertKindToStr(FunctionReturnThunksAttr::Kind Val);
+  bool isEquivalent(const FunctionReturnThunksAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::FunctionReturnThunks; }
+};
+
+class CLANG_ABI GCCStructAttr : public InheritableAttr {
+public:
+  enum Spelling {
+    GNU_gcc_struct = 0,
+    CXX11_gnu_gcc_struct = 1,
+    C23_gnu_gcc_struct = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static GCCStructAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static GCCStructAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static GCCStructAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_gcc_struct);
+  static GCCStructAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_gcc_struct);
+
+  // Constructors
+  GCCStructAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  GCCStructAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const GCCStructAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::GCCStruct; }
 };
 
 class CLANG_ABI GNUInlineAttr : public InheritableAttr {
@@ -5858,6 +6061,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const GNUInlineAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::GNUInline; }
@@ -5886,6 +6090,7 @@ public:
     return arg;
   }
 
+  bool isEquivalent(const GuardedByAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::GuardedBy; }
@@ -5914,6 +6119,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const GuardedVarAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::GuardedVar; }
@@ -5942,9 +6148,56 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HIPManagedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HIPManaged; }
+};
+
+class CLANG_ABI HLSLAppliedSemanticAttr : public HLSLSemanticBaseAttr {
+unsigned semanticNameLength;
+char *semanticName;
+
+int semanticIndex;
+
+public:
+  // Factory methods
+  static HLSLAppliedSemanticAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLAppliedSemanticAttr *Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLAppliedSemanticAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range = {});
+  static HLSLAppliedSemanticAttr *Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range = {});
+
+  // Constructors
+  HLSLAppliedSemanticAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , llvm::StringRef SemanticName
+              , int SemanticIndex
+             );
+
+  HLSLAppliedSemanticAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  llvm::StringRef getSemanticName() const {
+    return llvm::StringRef(semanticName, semanticNameLength);
+  }
+  unsigned getSemanticNameLength() const {
+    return semanticNameLength;
+  }
+  void setSemanticName(ASTContext &C, llvm::StringRef S) {
+    semanticNameLength = S.size();
+    this->semanticName = new (C, 1) char [semanticNameLength];
+    if (!S.empty())
+      std::memcpy(this->semanticName, S.data(), semanticNameLength);
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool isEquivalent(const HLSLAppliedSemanticAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLAppliedSemantic; }
 };
 
 class CLANG_ABI HLSLContainedTypeAttr : public TypeAttr {
@@ -5972,6 +6225,7 @@ public:
     return type;
   }
 
+  bool isEquivalent(const HLSLContainedTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLContainedType; }
@@ -6001,6 +6255,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const HLSLControlFlowHintAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLControlFlowHint; }
@@ -6022,6 +6277,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HLSLGroupSharedAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLGroupSharedAddressSpace; }
@@ -6043,6 +6299,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HLSLIsCounterAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLIsCounter; }
@@ -6081,6 +6338,7 @@ public:
     return directive;
   }
 
+  bool isEquivalent(const HLSLLoopHintAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLLoopHint; }
@@ -6123,6 +6381,7 @@ public:
     return z;
   }
 
+  bool isEquivalent(const HLSLNumThreadsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLNumThreads; }
@@ -6158,6 +6417,7 @@ public:
     return component;
   }
 
+  bool isEquivalent(const HLSLPackOffsetAttr &Other, StructuralEquivalenceContext &Context) const;
 
   unsigned getOffsetInBytes() {
     return subcomponent * 16 + component * 4;
@@ -6214,9 +6474,56 @@ public:
 
   static const bool DefaultMergedSpelling = false;
 
+  bool isEquivalent(const HLSLParamModifierAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLParamModifier; }
+};
+
+class CLANG_ABI HLSLParsedSemanticAttr : public HLSLSemanticBaseAttr {
+unsigned semanticNameLength;
+char *semanticName;
+
+int semanticIndex;
+
+public:
+  // Factory methods
+  static HLSLParsedSemanticAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLParsedSemanticAttr *Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo);
+  static HLSLParsedSemanticAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range = {});
+  static HLSLParsedSemanticAttr *Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range = {});
+
+  // Constructors
+  HLSLParsedSemanticAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , llvm::StringRef SemanticName
+              , int SemanticIndex
+             );
+
+  HLSLParsedSemanticAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  llvm::StringRef getSemanticName() const {
+    return llvm::StringRef(semanticName, semanticNameLength);
+  }
+  unsigned getSemanticNameLength() const {
+    return semanticNameLength;
+  }
+  void setSemanticName(ASTContext &C, llvm::StringRef S) {
+    semanticNameLength = S.size();
+    this->semanticName = new (C, 1) char [semanticNameLength];
+    if (!S.empty())
+      std::memcpy(this->semanticName, S.data(), semanticNameLength);
+  }
+
+  int getSemanticIndex() const {
+    return semanticIndex;
+  }
+
+  bool isEquivalent(const HLSLParsedSemanticAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLParsedSemantic; }
 };
 
 class CLANG_ABI HLSLROVAttr : public TypeAttr {
@@ -6235,6 +6542,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HLSLROVAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLROV; }
@@ -6256,6 +6564,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HLSLRawBufferAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLRawBuffer; }
@@ -6314,6 +6623,7 @@ public:
       std::memcpy(this->space, S.data(), spaceLength);
   }
 
+  bool isEquivalent(const HLSLResourceBindingAttr &Other, StructuralEquivalenceContext &Context) const;
 
   public:
       enum class RegisterType : unsigned { SRV, UAV, CBuffer, Sampler, C, I };
@@ -6398,219 +6708,10 @@ public:
 
   static bool ConvertStrToResourceClass(StringRef Val, llvm::hlsl::ResourceClass &Out);
   static const char *ConvertResourceClassToStr(llvm::hlsl::ResourceClass Val);
+  bool isEquivalent(const HLSLResourceClassAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLResourceClass; }
-};
-
-class CLANG_ABI HLSLSV_DispatchThreadIDAttr : public HLSLSemanticAttr {
-NamedDecl * target;
-
-int semanticIndex;
-
-bool semanticExplicitIndex;
-
-public:
-  // Factory methods
-  static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_DispatchThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_DispatchThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-  static HLSLSV_DispatchThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-
-  // Constructors
-  HLSLSV_DispatchThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             );
-
-  HLSLSV_DispatchThreadIDAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-  NamedDecl * getTarget() const {
-    return target;
-  }
-
-  int getSemanticIndex() const {
-    return semanticIndex;
-  }
-
-  bool getSemanticExplicitIndex() const {
-    return semanticExplicitIndex;
-  }
-
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_DispatchThreadID; }
-};
-
-class CLANG_ABI HLSLSV_GroupIDAttr : public HLSLSemanticAttr {
-NamedDecl * target;
-
-int semanticIndex;
-
-bool semanticExplicitIndex;
-
-public:
-  // Factory methods
-  static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-  static HLSLSV_GroupIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-
-  // Constructors
-  HLSLSV_GroupIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             );
-
-  HLSLSV_GroupIDAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-  NamedDecl * getTarget() const {
-    return target;
-  }
-
-  int getSemanticIndex() const {
-    return semanticIndex;
-  }
-
-  bool getSemanticExplicitIndex() const {
-    return semanticExplicitIndex;
-  }
-
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupID; }
-};
-
-class CLANG_ABI HLSLSV_GroupIndexAttr : public HLSLSemanticAttr {
-NamedDecl * target;
-
-int semanticIndex;
-
-bool semanticExplicitIndex;
-
-public:
-  // Factory methods
-  static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIndexAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupIndexAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-  static HLSLSV_GroupIndexAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-
-  // Constructors
-  HLSLSV_GroupIndexAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             );
-
-  HLSLSV_GroupIndexAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-  NamedDecl * getTarget() const {
-    return target;
-  }
-
-  int getSemanticIndex() const {
-    return semanticIndex;
-  }
-
-  bool getSemanticExplicitIndex() const {
-    return semanticExplicitIndex;
-  }
-
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupIndex; }
-};
-
-class CLANG_ABI HLSLSV_GroupThreadIDAttr : public HLSLSemanticAttr {
-NamedDecl * target;
-
-int semanticIndex;
-
-bool semanticExplicitIndex;
-
-public:
-  // Factory methods
-  static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_GroupThreadIDAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-  static HLSLSV_GroupThreadIDAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-
-  // Constructors
-  HLSLSV_GroupThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             );
-
-  HLSLSV_GroupThreadIDAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-  NamedDecl * getTarget() const {
-    return target;
-  }
-
-  int getSemanticIndex() const {
-    return semanticIndex;
-  }
-
-  bool getSemanticExplicitIndex() const {
-    return semanticExplicitIndex;
-  }
-
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_GroupThreadID; }
-};
-
-class CLANG_ABI HLSLSV_PositionAttr : public HLSLSemanticAttr {
-NamedDecl * target;
-
-int semanticIndex;
-
-bool semanticExplicitIndex;
-
-public:
-  // Factory methods
-  static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_PositionAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo);
-  static HLSLSV_PositionAttr *CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-  static HLSLSV_PositionAttr *Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range = {});
-
-  // Constructors
-  HLSLSV_PositionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             );
-
-  HLSLSV_PositionAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-  NamedDecl * getTarget() const {
-    return target;
-  }
-
-  int getSemanticIndex() const {
-    return semanticIndex;
-  }
-
-  bool getSemanticExplicitIndex() const {
-    return semanticExplicitIndex;
-  }
-
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLSV_Position; }
 };
 
 class CLANG_ABI HLSLShaderAttr : public InheritableAttr {
@@ -6639,6 +6740,7 @@ public:
 
   static bool ConvertStrToEnvironmentType(StringRef Val, llvm::Triple::EnvironmentType &Out);
   static const char *ConvertEnvironmentTypeToStr(llvm::Triple::EnvironmentType Val);
+  bool isEquivalent(const HLSLShaderAttr &Other, StructuralEquivalenceContext &Context) const;
 
   static bool isValidShaderType(llvm::Triple::EnvironmentType ShaderType) {
     return ShaderType >= llvm::Triple::Pixel && ShaderType <= llvm::Triple::Amplification;
@@ -6684,6 +6786,7 @@ public:
 
   static const bool DefaultExplicitIndex = false;
 
+  bool isEquivalent(const HLSLUnparsedSemanticAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLUnparsedSemantic; }
@@ -6722,6 +6825,7 @@ public:
     return set;
   }
 
+  bool isEquivalent(const HLSLVkBindingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkBinding; }
@@ -6750,6 +6854,7 @@ public:
     return id;
   }
 
+  bool isEquivalent(const HLSLVkConstantIdAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkConstantId; }
@@ -6778,9 +6883,61 @@ public:
     return builtIn;
   }
 
+  bool isEquivalent(const HLSLVkExtBuiltinInputAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkExtBuiltinInput; }
+};
+
+class CLANG_ABI HLSLVkLocationAttr : public HLSLAnnotationAttr {
+int location;
+
+public:
+  // Factory methods
+  static HLSLVkLocationAttr *CreateImplicit(ASTContext &Ctx, int Location, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkLocationAttr *Create(ASTContext &Ctx, int Location, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkLocationAttr *CreateImplicit(ASTContext &Ctx, int Location, SourceRange Range = {});
+  static HLSLVkLocationAttr *Create(ASTContext &Ctx, int Location, SourceRange Range = {});
+
+  // Constructors
+  HLSLVkLocationAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Location
+             );
+
+  HLSLVkLocationAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  int getLocation() const {
+    return location;
+  }
+
+  bool isEquivalent(const HLSLVkLocationAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkLocation; }
+};
+
+class CLANG_ABI HLSLVkPushConstantAttr : public InheritableAttr {
+public:
+  // Factory methods
+  static HLSLVkPushConstantAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkPushConstantAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkPushConstantAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static HLSLVkPushConstantAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  HLSLVkPushConstantAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  HLSLVkPushConstantAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const HLSLVkPushConstantAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkPushConstant; }
 };
 
 class CLANG_ABI HLSLWaveSizeAttr : public InheritableAttr {
@@ -6827,6 +6984,7 @@ public:
 
   static const int DefaultPreferred = 0;
 
+  bool isEquivalent(const HLSLWaveSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
     private:
       int SpelledArgsCount = 0;
@@ -6863,6 +7021,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HotAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Hot; }
@@ -6893,6 +7052,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const HybridPatchableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HybridPatchable; }
@@ -6922,6 +7082,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const IBActionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::IBAction; }
@@ -6951,6 +7112,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const IBOutletAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::IBOutlet; }
@@ -6991,6 +7153,7 @@ public:
     return interface_;
   }
 
+  bool isEquivalent(const IBOutletCollectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::IBOutletCollection; }
@@ -7037,6 +7200,7 @@ public:
       std::memcpy(this->resolver, S.data(), resolverLength);
   }
 
+  bool isEquivalent(const IFuncAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::IFunc; }
@@ -7058,6 +7222,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const InferredNoReturnAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::InferredNoReturn; }
@@ -7093,6 +7258,7 @@ public:
     return priority;
   }
 
+  bool isEquivalent(const InitPriorityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::InitPriority; }
@@ -7131,6 +7297,7 @@ public:
       std::memcpy(this->section, S.data(), sectionLength);
   }
 
+  bool isEquivalent(const InitSegAttr &Other, StructuralEquivalenceContext &Context) const;
 
   void printPrettyPragma(raw_ostream &OS, const PrintingPolicy &Policy) const {
     OS << " (" << getSection() << ')';
@@ -7163,6 +7330,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const IntelOclBiccAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::IntelOclBicc; }
@@ -7192,6 +7360,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const InternalLinkageAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::InternalLinkage; }
@@ -7221,6 +7390,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const LTOVisibilityPublicAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::LTOVisibilityPublic; }
@@ -7249,6 +7419,7 @@ public:
     return version;
   }
 
+  bool isEquivalent(const LayoutVersionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::LayoutVersion; }
@@ -7278,6 +7449,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const LeafAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Leaf; }
@@ -7306,6 +7478,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const LifetimeBoundAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::LifetimeBound; }
@@ -7347,6 +7520,7 @@ public:
   llvm::iterator_range<params_iterator> params() const { return llvm::make_range(params_begin(), params_end()); }
 
 
+  bool isEquivalent(const LifetimeCaptureByAttr &Other, StructuralEquivalenceContext &Context) const;
 
 private:
   ArrayRef<IdentifierInfo*> ArgIdents;
@@ -7400,6 +7574,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const LikelyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Likely; }
@@ -7429,6 +7604,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const LoaderUninitializedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::LoaderUninitialized; }
@@ -7457,6 +7633,7 @@ public:
     return arg;
   }
 
+  bool isEquivalent(const LockReturnedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::LockReturned; }
@@ -7498,6 +7675,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const LocksExcludedAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -7592,6 +7770,7 @@ public:
     return value;
   }
 
+  bool isEquivalent(const LoopHintAttr &Other, StructuralEquivalenceContext &Context) const;
 
   static const char *getOptionName(int Option) {
     switch(Option) {
@@ -7647,6 +7826,7 @@ public:
     return number;
   }
 
+  bool isEquivalent(const M68kInterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::M68kInterrupt; }
@@ -7676,6 +7856,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const M68kRTDAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::M68kRTD; }
@@ -7705,6 +7886,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MIGServerRoutineAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MIGServerRoutine; }
@@ -7734,6 +7916,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MSABIAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSABI; }
@@ -7755,6 +7938,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MSAllocatorAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSAllocator; }
@@ -7776,6 +7960,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MSConstexprAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSConstexpr; }
@@ -7822,6 +8007,7 @@ public:
 
   static const bool DefaultBestCase = true;
 
+  bool isEquivalent(const MSInheritanceAttr &Other, StructuralEquivalenceContext &Context) const;
 
   MSInheritanceModel getInheritanceModel() const {
     // The spelling enum should agree with MSInheritanceModel.
@@ -7848,6 +8034,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MSNoVTableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSNoVTable; }
@@ -7884,6 +8071,7 @@ public:
     return number;
   }
 
+  bool isEquivalent(const MSP430InterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSP430Interrupt; }
@@ -7913,6 +8101,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MSStructAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSStruct; }
@@ -7941,11 +8130,42 @@ public:
     return vdm;
   }
 
+  bool isEquivalent(const MSVtorDispAttr &Other, StructuralEquivalenceContext &Context) const;
 
   MSVtorDispMode getVtorDispMode() const { return MSVtorDispMode(vdm); }
   
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MSVtorDisp; }
+};
+
+class CLANG_ABI MallocSpanAttr : public InheritableAttr {
+public:
+  enum Spelling {
+    GNU_malloc_span = 0,
+    CXX11_clang_malloc_span = 1,
+    C23_clang_malloc_span = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static MallocSpanAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static MallocSpanAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static MallocSpanAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_malloc_span);
+  static MallocSpanAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_malloc_span);
+
+  // Constructors
+  MallocSpanAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  MallocSpanAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const MallocSpanAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::MallocSpan; }
 };
 
 class CLANG_ABI MaxFieldAlignmentAttr : public InheritableAttr {
@@ -7971,6 +8191,7 @@ public:
     return alignment;
   }
 
+  bool isEquivalent(const MaxFieldAlignmentAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MaxFieldAlignment; }
@@ -8000,6 +8221,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MayAliasAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MayAlias; }
@@ -8029,6 +8251,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MaybeUndefAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MaybeUndef; }
@@ -8058,6 +8281,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MicroMipsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MicroMips; }
@@ -8087,6 +8311,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MinSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MinSize; }
@@ -8123,6 +8348,7 @@ public:
     return vectorWidth;
   }
 
+  bool isEquivalent(const MinVectorWidthAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MinVectorWidth; }
@@ -8152,6 +8378,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const Mips16Attr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Mips16; }
@@ -8203,6 +8430,7 @@ public:
 
   static bool ConvertStrToInterruptType(StringRef Val, MipsInterruptAttr::InterruptType &Out);
   static const char *ConvertInterruptTypeToStr(MipsInterruptAttr::InterruptType Val);
+  bool isEquivalent(const MipsInterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MipsInterrupt; }
@@ -8236,6 +8464,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const MipsLongCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MipsLongCall; }
@@ -8269,13 +8498,14 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const MipsShortCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MipsShortCall; }
 };
 
 class CLANG_ABI ModeAttr : public Attr {
-IdentifierInfo * mode;
+const IdentifierInfo * mode;
 
 public:
   enum Spelling {
@@ -8287,27 +8517,97 @@ public:
   };
 
   // Factory methods
-  static ModeAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo);
-  static ModeAttr *Create(ASTContext &Ctx, IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo);
-  static ModeAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Mode, SourceRange Range = {}, Spelling S = GNU_mode);
-  static ModeAttr *Create(ASTContext &Ctx, IdentifierInfo * Mode, SourceRange Range = {}, Spelling S = GNU_mode);
+  static ModeAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo);
+  static ModeAttr *Create(ASTContext &Ctx, const IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo);
+  static ModeAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Mode, SourceRange Range = {}, Spelling S = GNU_mode);
+  static ModeAttr *Create(ASTContext &Ctx, const IdentifierInfo * Mode, SourceRange Range = {}, Spelling S = GNU_mode);
 
   // Constructors
   ModeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Mode
+              , const IdentifierInfo * Mode
              );
 
   ModeAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getMode() const {
+  const IdentifierInfo * getMode() const {
     return mode;
   }
 
+  bool isEquivalent(const ModeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Mode; }
+};
+
+class CLANG_ABI ModularFormatAttr : public InheritableAttr {
+const IdentifierInfo * modularImplFn;
+
+unsigned implNameLength;
+char *implName;
+
+  unsigned aspects_Size;
+  StringRef *aspects_;
+
+public:
+  enum Spelling {
+    GNU_modular_format = 0,
+    CXX11_clang_modular_format = 1,
+    C23_clang_modular_format = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static ModularFormatAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, const AttributeCommonInfo &CommonInfo);
+  static ModularFormatAttr *Create(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, const AttributeCommonInfo &CommonInfo);
+  static ModularFormatAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, SourceRange Range = {}, Spelling S = GNU_modular_format);
+  static ModularFormatAttr *Create(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, SourceRange Range = {}, Spelling S = GNU_modular_format);
+
+  // Constructors
+  ModularFormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , const IdentifierInfo * ModularImplFn
+              , llvm::StringRef ImplName
+              , StringRef *Aspects, unsigned AspectsSize
+             );
+  ModularFormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , const IdentifierInfo * ModularImplFn
+              , llvm::StringRef ImplName
+             );
+
+  ModularFormatAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  const IdentifierInfo * getModularImplFn() const {
+    return modularImplFn;
+  }
+
+  llvm::StringRef getImplName() const {
+    return llvm::StringRef(implName, implNameLength);
+  }
+  unsigned getImplNameLength() const {
+    return implNameLength;
+  }
+  void setImplName(ASTContext &C, llvm::StringRef S) {
+    implNameLength = S.size();
+    this->implName = new (C, 1) char [implNameLength];
+    if (!S.empty())
+      std::memcpy(this->implName, S.data(), implNameLength);
+  }
+
+  typedef StringRef* aspects_iterator;
+  aspects_iterator aspects_begin() const { return aspects_; }
+  aspects_iterator aspects_end() const { return aspects_ + aspects_Size; }
+  unsigned aspects_size() const { return aspects_Size; }
+  llvm::iterator_range<aspects_iterator> aspects() const { return llvm::make_range(aspects_begin(), aspects_end()); }
+
+
+  bool isEquivalent(const ModularFormatAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::ModularFormat; }
 };
 
 class CLANG_ABI MustTailAttr : public StmtAttr {
@@ -8334,6 +8634,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const MustTailAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MustTail; }
@@ -8363,6 +8664,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NSConsumedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NSConsumed; }
@@ -8392,34 +8694,36 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NSConsumesSelfAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NSConsumesSelf; }
 };
 
 class CLANG_ABI NSErrorDomainAttr : public InheritableAttr {
-IdentifierInfo * errorDomain;
+const IdentifierInfo * errorDomain;
 
 public:
   // Factory methods
-  static NSErrorDomainAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo);
-  static NSErrorDomainAttr *Create(ASTContext &Ctx, IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo);
-  static NSErrorDomainAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ErrorDomain, SourceRange Range = {});
-  static NSErrorDomainAttr *Create(ASTContext &Ctx, IdentifierInfo * ErrorDomain, SourceRange Range = {});
+  static NSErrorDomainAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo);
+  static NSErrorDomainAttr *Create(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo);
+  static NSErrorDomainAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, SourceRange Range = {});
+  static NSErrorDomainAttr *Create(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, SourceRange Range = {});
 
   // Constructors
   NSErrorDomainAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ErrorDomain
+              , const IdentifierInfo * ErrorDomain
              );
 
   NSErrorDomainAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getErrorDomain() const {
+  const IdentifierInfo * getErrorDomain() const {
     return errorDomain;
   }
 
+  bool isEquivalent(const NSErrorDomainAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NSErrorDomain; }
@@ -8449,6 +8753,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NSReturnsAutoreleasedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NSReturnsAutoreleased; }
@@ -8478,6 +8783,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NSReturnsNotRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NSReturnsNotRetained; }
@@ -8507,6 +8813,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NSReturnsRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NSReturnsRetained; }
@@ -8537,6 +8844,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NakedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Naked; }
@@ -8558,6 +8866,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoAliasAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoAlias; }
@@ -8600,6 +8909,7 @@ public:
   llvm::iterator_range<builtinNames_iterator> builtinNames() const { return llvm::make_range(builtinNames_begin(), builtinNames_end()); }
 
 
+  bool isEquivalent(const NoBuiltinAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoBuiltin; }
@@ -8629,6 +8939,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoCommonAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoCommon; }
@@ -8659,6 +8970,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoConvergentAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoConvergent; }
@@ -8688,6 +9000,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoDebugAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoDebug; }
@@ -8717,6 +9030,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoDerefAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoDeref; }
@@ -8745,6 +9059,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoDestroyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoDestroy; }
@@ -8774,6 +9089,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoDuplicateAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoDuplicate; }
@@ -8803,6 +9119,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoEscapeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoEscape; }
@@ -8842,6 +9159,7 @@ public:
     getAttributeSpellingListIndex() == 5 ||
     getAttributeSpellingListIndex() == 6 ||
     getAttributeSpellingListIndex() == 7; }
+  bool isEquivalent(const NoInlineAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoInline; }
@@ -8871,6 +9189,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoInstrumentFunctionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoInstrumentFunction; }
@@ -8900,6 +9219,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoMergeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoMerge; }
@@ -8929,6 +9249,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoMicroMipsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoMicroMips; }
@@ -8958,6 +9279,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoMips16Attr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoMips16; }
@@ -8987,6 +9309,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoProfileFunctionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoProfileFunction; }
@@ -9016,6 +9339,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoRandomizeLayoutAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoRandomizeLayout; }
@@ -9046,6 +9370,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoReturnAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoReturn; }
@@ -9090,6 +9415,7 @@ public:
   llvm::iterator_range<sanitizers_iterator> sanitizers() const { return llvm::make_range(sanitizers_begin(), sanitizers_end()); }
 
 
+  bool isEquivalent(const NoSanitizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
     SanitizerMask getMask() const {
       SanitizerMask Mask;
@@ -9151,6 +9477,7 @@ public:
       std::memcpy(this->message, S.data(), messageLength);
   }
 
+  bool isEquivalent(const NoSpecializationsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoSpecializations; }
@@ -9180,6 +9507,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoSpeculativeLoadHardeningAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoSpeculativeLoadHardening; }
@@ -9209,6 +9537,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoSplitStackAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoSplitStack; }
@@ -9242,6 +9571,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const NoStackProtectorAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoStackProtector; }
@@ -9271,6 +9601,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoThreadSafetyAnalysisAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoThreadSafetyAnalysis; }
@@ -9301,6 +9632,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoThrowAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoThrow; }
@@ -9322,6 +9654,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoTrivialAutoVarInitAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoTrivialAutoVarInit; }
@@ -9350,6 +9683,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoUniqueAddressAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoUniqueAddress; }
@@ -9379,6 +9713,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NoUwtableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoUwtable; }
@@ -9417,6 +9752,7 @@ public:
     return cond;
   }
 
+  bool isEquivalent(const NonAllocatingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NonAllocating; }
@@ -9455,6 +9791,7 @@ public:
     return cond;
   }
 
+  bool isEquivalent(const NonBlockingAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NonBlocking; }
@@ -9497,6 +9834,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const NonNullAttr &Other, StructuralEquivalenceContext &Context) const;
 
     bool isNonNull(unsigned IdxAST) const {
       if (!args_size())
@@ -9534,6 +9872,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NonStringAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NonString; }
@@ -9563,6 +9902,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const NotTailCalledAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NotTailCalled; }
@@ -9621,6 +9961,7 @@ public:
     return alignment;
   }
 
+  bool isEquivalent(const OMPAllocateDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPAllocateDecl; }
@@ -9659,6 +10000,7 @@ public:
       std::memcpy(this->assumption, S.data(), assumptionLength);
   }
 
+  bool isEquivalent(const OMPAssumeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPAssume; }
@@ -9687,6 +10029,7 @@ public:
     return captureKindVal;
   }
 
+  bool isEquivalent(const OMPCaptureKindAttr &Other, StructuralEquivalenceContext &Context) const;
 
     llvm::omp::Clause getCaptureKind() const {
       return static_cast<llvm::omp::Clause>(getCaptureKindVal());
@@ -9712,6 +10055,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OMPCaptureNoInitAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPCaptureNoInit; }
@@ -9826,6 +10170,7 @@ public:
   llvm::iterator_range<steps_iterator> steps() const { return llvm::make_range(steps_begin(), steps_end()); }
 
 
+  bool isEquivalent(const OMPDeclareSimdDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
     void printPrettyPragma(raw_ostream & OS, const PrintingPolicy &Policy)
         const;
@@ -9903,6 +10248,7 @@ public:
     return level;
   }
 
+  bool isEquivalent(const OMPDeclareTargetDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
     void printPrettyPragma(raw_ostream &OS, const PrintingPolicy &Policy) const;
     static std::optional<MapTypeTy>
@@ -9994,6 +10340,7 @@ public:
   llvm::iterator_range<appendArgs_iterator> appendArgs() const { return llvm::make_range(appendArgs_begin(), appendArgs_end()); }
 
 
+  bool isEquivalent(const OMPDeclareVariantAttr &Other, StructuralEquivalenceContext &Context) const;
 
     OMPTraitInfo &getTraitInfo() { return *traitInfos; }
     void printPrettyPragma(raw_ostream & OS, const PrintingPolicy &Policy)
@@ -10026,6 +10373,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OMPGroupPrivateDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPGroupPrivateDecl; }
@@ -10054,6 +10402,7 @@ public:
     return ref;
   }
 
+  bool isEquivalent(const OMPReferencedVarAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPReferencedVar; }
@@ -10075,6 +10424,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OMPThreadPrivateDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPThreadPrivateDecl; }
@@ -10104,6 +10454,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OSConsumedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OSConsumed; }
@@ -10133,6 +10484,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OSConsumesThisAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OSConsumesThis; }
@@ -10162,6 +10514,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OSReturnsNotRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OSReturnsNotRetained; }
@@ -10191,6 +10544,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OSReturnsRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OSReturnsRetained; }
@@ -10220,6 +10574,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OSReturnsRetainedOnNonZeroAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OSReturnsRetainedOnNonZero; }
@@ -10249,6 +10604,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OSReturnsRetainedOnZeroAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OSReturnsRetainedOnZero; }
@@ -10278,13 +10634,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCBoxableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCBoxable; }
 };
 
 class CLANG_ABI ObjCBridgeAttr : public InheritableAttr {
-IdentifierInfo * bridgedType;
+const IdentifierInfo * bridgedType;
 
 public:
   enum Spelling {
@@ -10296,31 +10653,32 @@ public:
   };
 
   // Factory methods
-  static ObjCBridgeAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
-  static ObjCBridgeAttr *Create(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
-  static ObjCBridgeAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge);
-  static ObjCBridgeAttr *Create(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge);
+  static ObjCBridgeAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
+  static ObjCBridgeAttr *Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
+  static ObjCBridgeAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge);
+  static ObjCBridgeAttr *Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge);
 
   // Constructors
   ObjCBridgeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BridgedType
+              , const IdentifierInfo * BridgedType
              );
 
   ObjCBridgeAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getBridgedType() const {
+  const IdentifierInfo * getBridgedType() const {
     return bridgedType;
   }
 
+  bool isEquivalent(const ObjCBridgeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCBridge; }
 };
 
 class CLANG_ABI ObjCBridgeMutableAttr : public InheritableAttr {
-IdentifierInfo * bridgedType;
+const IdentifierInfo * bridgedType;
 
 public:
   enum Spelling {
@@ -10332,35 +10690,36 @@ public:
   };
 
   // Factory methods
-  static ObjCBridgeMutableAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
-  static ObjCBridgeMutableAttr *Create(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
-  static ObjCBridgeMutableAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge_mutable);
-  static ObjCBridgeMutableAttr *Create(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge_mutable);
+  static ObjCBridgeMutableAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
+  static ObjCBridgeMutableAttr *Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo);
+  static ObjCBridgeMutableAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge_mutable);
+  static ObjCBridgeMutableAttr *Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range = {}, Spelling S = GNU_objc_bridge_mutable);
 
   // Constructors
   ObjCBridgeMutableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BridgedType
+              , const IdentifierInfo * BridgedType
              );
 
   ObjCBridgeMutableAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getBridgedType() const {
+  const IdentifierInfo * getBridgedType() const {
     return bridgedType;
   }
 
+  bool isEquivalent(const ObjCBridgeMutableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCBridgeMutable; }
 };
 
 class CLANG_ABI ObjCBridgeRelatedAttr : public InheritableAttr {
-IdentifierInfo * relatedClass;
+const IdentifierInfo * relatedClass;
 
-IdentifierInfo * classMethod;
+const IdentifierInfo * classMethod;
 
-IdentifierInfo * instanceMethod;
+const IdentifierInfo * instanceMethod;
 
 public:
   enum Spelling {
@@ -10372,34 +10731,35 @@ public:
   };
 
   // Factory methods
-  static ObjCBridgeRelatedAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo);
-  static ObjCBridgeRelatedAttr *Create(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo);
-  static ObjCBridgeRelatedAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, SourceRange Range = {}, Spelling S = GNU_objc_bridge_related);
-  static ObjCBridgeRelatedAttr *Create(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, SourceRange Range = {}, Spelling S = GNU_objc_bridge_related);
+  static ObjCBridgeRelatedAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo);
+  static ObjCBridgeRelatedAttr *Create(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo);
+  static ObjCBridgeRelatedAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, SourceRange Range = {}, Spelling S = GNU_objc_bridge_related);
+  static ObjCBridgeRelatedAttr *Create(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, SourceRange Range = {}, Spelling S = GNU_objc_bridge_related);
 
   // Constructors
   ObjCBridgeRelatedAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * RelatedClass
-              , IdentifierInfo * ClassMethod
-              , IdentifierInfo * InstanceMethod
+              , const IdentifierInfo * RelatedClass
+              , const IdentifierInfo * ClassMethod
+              , const IdentifierInfo * InstanceMethod
              );
 
   ObjCBridgeRelatedAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getRelatedClass() const {
+  const IdentifierInfo * getRelatedClass() const {
     return relatedClass;
   }
 
-  IdentifierInfo * getClassMethod() const {
+  const IdentifierInfo * getClassMethod() const {
     return classMethod;
   }
 
-  IdentifierInfo * getInstanceMethod() const {
+  const IdentifierInfo * getInstanceMethod() const {
     return instanceMethod;
   }
 
+  bool isEquivalent(const ObjCBridgeRelatedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCBridgeRelated; }
@@ -10429,6 +10789,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCClassStubAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCClassStub; }
@@ -10458,6 +10819,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCDesignatedInitializerAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCDesignatedInitializer; }
@@ -10487,6 +10849,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCDirectAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCDirect; }
@@ -10516,6 +10879,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCDirectMembersAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCDirectMembers; }
@@ -10545,6 +10909,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCExceptionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCException; }
@@ -10574,6 +10939,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCExplicitProtocolImplAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCExplicitProtocolImpl; }
@@ -10603,13 +10969,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCExternallyRetainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCExternallyRetained; }
 };
 
 class CLANG_ABI ObjCGCAttr : public TypeAttr {
-IdentifierInfo * kind;
+const IdentifierInfo * kind;
 
 public:
   enum Spelling {
@@ -10621,24 +10988,25 @@ public:
   };
 
   // Factory methods
-  static ObjCGCAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
-  static ObjCGCAttr *Create(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
-  static ObjCGCAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_gc);
-  static ObjCGCAttr *Create(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_gc);
+  static ObjCGCAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
+  static ObjCGCAttr *Create(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
+  static ObjCGCAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_gc);
+  static ObjCGCAttr *Create(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_gc);
 
   // Constructors
   ObjCGCAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Kind
+              , const IdentifierInfo * Kind
              );
 
   ObjCGCAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getKind() const {
+  const IdentifierInfo * getKind() const {
     return kind;
   }
 
+  bool isEquivalent(const ObjCGCAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCGC; }
@@ -10668,6 +11036,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCIndependentClassAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCIndependentClass; }
@@ -10689,6 +11058,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCInertUnsafeUnretainedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCInertUnsafeUnretained; }
@@ -10710,6 +11080,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCKindOfAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCKindOf; }
@@ -10758,6 +11129,7 @@ public:
 
   static bool ConvertStrToFamilyKind(StringRef Val, ObjCMethodFamilyAttr::FamilyKind &Out);
   static const char *ConvertFamilyKindToStr(ObjCMethodFamilyAttr::FamilyKind Val);
+  bool isEquivalent(const ObjCMethodFamilyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCMethodFamily; }
@@ -10787,6 +11159,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCNSObjectAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCNSObject; }
@@ -10816,6 +11189,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCNonLazyClassAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCNonLazyClass; }
@@ -10845,13 +11219,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCNonRuntimeProtocolAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCNonRuntimeProtocol; }
 };
 
 class CLANG_ABI ObjCOwnershipAttr : public InheritableAttr {
-IdentifierInfo * kind;
+const IdentifierInfo * kind;
 
 public:
   enum Spelling {
@@ -10863,24 +11238,25 @@ public:
   };
 
   // Factory methods
-  static ObjCOwnershipAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
-  static ObjCOwnershipAttr *Create(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
-  static ObjCOwnershipAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_ownership);
-  static ObjCOwnershipAttr *Create(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_ownership);
+  static ObjCOwnershipAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
+  static ObjCOwnershipAttr *Create(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo);
+  static ObjCOwnershipAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_ownership);
+  static ObjCOwnershipAttr *Create(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range = {}, Spelling S = GNU_objc_ownership);
 
   // Constructors
   ObjCOwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Kind
+              , const IdentifierInfo * Kind
              );
 
   ObjCOwnershipAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getKind() const {
+  const IdentifierInfo * getKind() const {
     return kind;
   }
 
+  bool isEquivalent(const ObjCOwnershipAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCOwnership; }
@@ -10910,6 +11286,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCPreciseLifetimeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCPreciseLifetime; }
@@ -10939,6 +11316,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCRequiresPropertyDefsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCRequiresPropertyDefs; }
@@ -10968,6 +11346,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCRequiresSuperAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCRequiresSuper; }
@@ -10997,6 +11376,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCReturnsInnerPointerAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCReturnsInnerPointer; }
@@ -11026,6 +11406,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCRootClassAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCRootClass; }
@@ -11072,6 +11453,7 @@ public:
       std::memcpy(this->metadataName, S.data(), metadataNameLength);
   }
 
+  bool isEquivalent(const ObjCRuntimeNameAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCRuntimeName; }
@@ -11101,6 +11483,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCRuntimeVisibleAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCRuntimeVisible; }
@@ -11130,6 +11513,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ObjCSubclassingRestrictedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ObjCSubclassingRestricted; }
@@ -11151,6 +11535,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OpenACCRoutineAnnotAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenACCRoutineAnnot; }
@@ -11172,6 +11557,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OpenACCRoutineDeclAttr &Other, StructuralEquivalenceContext &Context) const;
 
     llvm::SmallVector<const OpenACCClause *> Clauses;
     void printPrettyPragma(raw_ostream &OS, const PrintingPolicy &Policy) const;
@@ -11211,6 +11597,7 @@ public:
     getAttributeSpellingListIndex() == 5; }
   bool isWriteOnly() const { return getAttributeSpellingListIndex() == 2 ||
     getAttributeSpellingListIndex() == 3; }
+  bool isEquivalent(const OpenCLAccessAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLAccess; }
@@ -11242,6 +11629,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const OpenCLConstantAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLConstantAddressSpace; }
@@ -11273,6 +11661,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const OpenCLGenericAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLGenericAddressSpace; }
@@ -11304,6 +11693,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const OpenCLGlobalAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLGlobalAddressSpace; }
@@ -11333,6 +11723,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OpenCLGlobalDeviceAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLGlobalDeviceAddressSpace; }
@@ -11362,6 +11753,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OpenCLGlobalHostAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLGlobalHostAddressSpace; }
@@ -11390,6 +11782,7 @@ public:
     return subGroupSize;
   }
 
+  bool isEquivalent(const OpenCLIntelReqdSubGroupSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLIntelReqdSubGroupSize; }
@@ -11421,6 +11814,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const OpenCLLocalAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLLocalAddressSpace; }
@@ -11452,6 +11846,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const OpenCLPrivateAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLPrivateAddressSpace; }
@@ -11482,6 +11877,7 @@ public:
     return unrollHint;
   }
 
+  bool isEquivalent(const OpenCLUnrollHintAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OpenCLUnrollHint; }
@@ -11511,6 +11907,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OptimizeNoneAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OptimizeNone; }
@@ -11540,6 +11937,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OverloadableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Overloadable; }
@@ -11561,6 +11959,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const OverrideAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Override; }
@@ -11593,13 +11992,14 @@ public:
     return derefType;
   }
 
+  bool isEquivalent(const OwnerAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Owner; }
 };
 
 class CLANG_ABI OwnershipAttr : public InheritableAttr {
-IdentifierInfo * module;
+const IdentifierInfo * module;
 
   unsigned args_Size;
   ParamIdx *args_;
@@ -11620,18 +12020,18 @@ public:
   };
 
   // Factory methods
-  static OwnershipAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
-  static OwnershipAttr *Create(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
-  static OwnershipAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range = {}, Spelling S = GNU_ownership_holds);
-  static OwnershipAttr *Create(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range = {}, Spelling S = GNU_ownership_holds);
+  static OwnershipAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
+  static OwnershipAttr *Create(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
+  static OwnershipAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range = {}, Spelling S = GNU_ownership_holds);
+  static OwnershipAttr *Create(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range = {}, Spelling S = GNU_ownership_holds);
 
   // Constructors
   OwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Module
+              , const IdentifierInfo * Module
               , ParamIdx *Args, unsigned ArgsSize
              );
   OwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Module
+              , const IdentifierInfo * Module
              );
 
   OwnershipAttr *clone(ASTContext &C) const;
@@ -11648,7 +12048,7 @@ public:
   bool isTakes() const { return getAttributeSpellingListIndex() == 6 ||
     getAttributeSpellingListIndex() == 7 ||
     getAttributeSpellingListIndex() == 8; }
-  IdentifierInfo * getModule() const {
+  const IdentifierInfo * getModule() const {
     return module;
   }
 
@@ -11659,6 +12059,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const OwnershipAttr &Other, StructuralEquivalenceContext &Context) const;
 
     enum OwnershipKind { Holds, Returns, Takes };
     OwnershipKind getOwnKind() const {
@@ -11695,6 +12096,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PackedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Packed; }
@@ -11739,6 +12141,7 @@ public:
 
   static bool ConvertStrToConsumedState(StringRef Val, ParamTypestateAttr::ConsumedState &Out);
   static const char *ConvertConsumedStateToStr(ParamTypestateAttr::ConsumedState Val);
+  bool isEquivalent(const ParamTypestateAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ParamTypestate; }
@@ -11769,6 +12172,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PascalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Pascal; }
@@ -11812,6 +12216,7 @@ public:
     return type;
   }
 
+  bool isEquivalent(const PassObjectSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PassObjectSize; }
@@ -11877,6 +12282,7 @@ public:
       std::memcpy(this->section, S.data(), sectionLength);
   }
 
+  bool isEquivalent(const PatchableFunctionEntryAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PatchableFunctionEntry; }
@@ -11921,6 +12327,7 @@ public:
 
   static bool ConvertStrToPCSType(StringRef Val, PcsAttr::PCSType &Out);
   static const char *ConvertPCSTypeToStr(PcsAttr::PCSType Val);
+  bool isEquivalent(const PcsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Pcs; }
@@ -11953,6 +12360,7 @@ public:
     return derefType;
   }
 
+  bool isEquivalent(const PointerAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Pointer; }
@@ -11998,6 +12406,7 @@ public:
     return extraDiscriminator;
   }
 
+  bool isEquivalent(const PointerAuthAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PointerAuth; }
@@ -12036,6 +12445,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const PragmaClangBSSSectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PragmaClangBSSSection; }
@@ -12074,6 +12484,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const PragmaClangDataSectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PragmaClangDataSection; }
@@ -12112,6 +12523,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const PragmaClangRelroSectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PragmaClangRelroSection; }
@@ -12150,6 +12562,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const PragmaClangRodataSectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PragmaClangRodataSection; }
@@ -12188,6 +12601,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const PragmaClangTextSectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PragmaClangTextSection; }
@@ -12225,6 +12639,7 @@ public:
     return typedefType;
   }
 
+  bool isEquivalent(const PreferredNameAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PreferredName; }
@@ -12265,6 +12680,7 @@ public:
     return type;
   }
 
+  bool isEquivalent(const PreferredTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PreferredType; }
@@ -12294,6 +12710,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PreserveAllAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PreserveAll; }
@@ -12323,6 +12740,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PreserveMostAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PreserveMost; }
@@ -12352,6 +12770,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PreserveNoneAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PreserveNone; }
@@ -12380,6 +12799,7 @@ public:
     return arg;
   }
 
+  bool isEquivalent(const PtGuardedByAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PtGuardedBy; }
@@ -12408,6 +12828,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PtGuardedVarAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PtGuardedVar; }
@@ -12429,6 +12850,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const Ptr32Attr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Ptr32; }
@@ -12450,6 +12872,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const Ptr64Attr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Ptr64; }
@@ -12479,6 +12902,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const PureAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Pure; }
@@ -12534,6 +12958,7 @@ public:
 
   static bool ConvertStrToInterruptType(StringRef Val, RISCVInterruptAttr::InterruptType &Out);
   static const char *ConvertInterruptTypeToStr(RISCVInterruptAttr::InterruptType Val);
+  bool isEquivalent(const RISCVInterruptAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::RISCVInterrupt; }
@@ -12575,6 +13000,7 @@ public:
     return vectorWidth;
   }
 
+  bool isEquivalent(const RISCVVLSCCAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::RISCVVLSCC; }
@@ -12607,6 +13033,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const RISCVVectorCCAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::RISCVVectorCC; }
@@ -12636,6 +13063,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const RandomizeLayoutAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::RandomizeLayout; }
@@ -12665,6 +13093,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ReadOnlyPlacementAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReadOnlyPlacement; }
@@ -12694,6 +13123,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ReentrantCapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReentrantCapability; }
@@ -12724,6 +13154,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const RegCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::RegCall; }
@@ -12752,6 +13183,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ReinitializesAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Reinitializes; }
@@ -12813,6 +13245,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const ReleaseCapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -12869,30 +13302,10 @@ public:
       std::memcpy(this->handleType, S.data(), handleTypeLength);
   }
 
+  bool isEquivalent(const ReleaseHandleAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReleaseHandle; }
-};
-
-class CLANG_ABI ReplaceableAttr : public InheritableAttr {
-public:
-  // Factory methods
-  static ReplaceableAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static ReplaceableAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static ReplaceableAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static ReplaceableAttr *Create(ASTContext &Ctx, SourceRange Range = {});
-
-  // Constructors
-  ReplaceableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             );
-
-  ReplaceableAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::Replaceable; }
 };
 
 class CLANG_ABI ReqdWorkGroupSizeAttr : public InheritableAttr {
@@ -12932,6 +13345,7 @@ public:
     return zDim;
   }
 
+  bool isEquivalent(const ReqdWorkGroupSizeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReqdWorkGroupSize; }
@@ -12991,6 +13405,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const RequiresCapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -13048,6 +13463,7 @@ public:
     return deallocatorPtrArgIndex;
   }
 
+  bool isEquivalent(const RestrictAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Restrict; }
@@ -13077,6 +13493,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const RetainAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Retain; }
@@ -13121,6 +13538,7 @@ public:
 
   static bool ConvertStrToConsumedState(StringRef Val, ReturnTypestateAttr::ConsumedState &Out);
   static const char *ConvertConsumedStateToStr(ReturnTypestateAttr::ConsumedState Val);
+  bool isEquivalent(const ReturnTypestateAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReturnTypestate; }
@@ -13150,6 +13568,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ReturnsNonNullAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReturnsNonNull; }
@@ -13179,41 +13598,42 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ReturnsTwiceAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ReturnsTwice; }
 };
 
 class CLANG_ABI RootSignatureAttr : public Attr {
-IdentifierInfo * signatureIdent;
+const IdentifierInfo * signatureIdent;
 
 HLSLRootSignatureDecl * signatureDecl;
 
 public:
   // Factory methods
-  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo);
-  static RootSignatureAttr *Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo);
-  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range = {});
-  static RootSignatureAttr *Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range = {});
-  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo);
-  static RootSignatureAttr *Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo);
-  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, SourceRange Range = {});
-  static RootSignatureAttr *Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, SourceRange Range = {});
+  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo);
+  static RootSignatureAttr *Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo);
+  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range = {});
+  static RootSignatureAttr *Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range = {});
+  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo);
+  static RootSignatureAttr *Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo);
+  static RootSignatureAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, SourceRange Range = {});
+  static RootSignatureAttr *Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, SourceRange Range = {});
 
   // Constructors
   RootSignatureAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * SignatureIdent
+              , const IdentifierInfo * SignatureIdent
               , HLSLRootSignatureDecl * SignatureDecl
              );
   RootSignatureAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * SignatureIdent
+              , const IdentifierInfo * SignatureIdent
              );
 
   RootSignatureAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getSignatureIdent() const {
+  const IdentifierInfo * getSignatureIdent() const {
     return signatureIdent;
   }
 
@@ -13221,6 +13641,7 @@ public:
     return signatureDecl;
   }
 
+  bool isEquivalent(const RootSignatureAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::RootSignature; }
@@ -13242,6 +13663,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SPtrAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SPtr; }
@@ -13263,6 +13685,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SYCLExternalAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SYCLExternal; }
@@ -13292,6 +13715,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SYCLKernelAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SYCLKernel; }
@@ -13338,6 +13762,7 @@ public:
 
   static const bool DefaultInvalid = false;
 
+  bool isEquivalent(const SYCLKernelEntryPointAttr &Other, StructuralEquivalenceContext &Context) const;
 
     void setInvalidAttr() { invalid = true; }
     bool isInvalidAttr() const { return invalid; }
@@ -13370,6 +13795,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SYCLSpecialClassAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SYCLSpecialClass; }
@@ -13398,6 +13824,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ScopedLockableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ScopedLockable; }
@@ -13446,6 +13873,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const SectionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Section; }
@@ -13476,6 +13904,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SelectAnyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SelectAny; }
@@ -13525,6 +13954,7 @@ public:
 
   static const int DefaultNullPos = 0;
 
+  bool isEquivalent(const SentinelAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Sentinel; }
@@ -13569,6 +13999,7 @@ public:
 
   static bool ConvertStrToConsumedState(StringRef Val, SetTypestateAttr::ConsumedState &Out);
   static const char *ConvertConsumedStateToStr(SetTypestateAttr::ConsumedState Val);
+  bool isEquivalent(const SetTypestateAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SetTypestate; }
@@ -13615,6 +14046,7 @@ public:
     return nestedLevel;
   }
 
+  bool isEquivalent(const SizedByAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SizedBy; }
@@ -13661,6 +14093,7 @@ public:
     return nestedLevel;
   }
 
+  bool isEquivalent(const SizedByOrNullAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SizedByOrNull; }
@@ -13690,6 +14123,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SpeculativeLoadHardeningAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SpeculativeLoadHardening; }
@@ -13718,6 +14152,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const StandaloneDebugAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::StandaloneDebug; }
@@ -13748,6 +14183,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const StdCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::StdCall; }
@@ -13769,6 +14205,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const StrictFPAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::StrictFP; }
@@ -13790,6 +14227,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const StrictGuardStackCheckAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::StrictGuardStackCheck; }
@@ -13834,6 +14272,7 @@ public:
   llvm::iterator_range<diagnosticIdentifiers_iterator> diagnosticIdentifiers() const { return llvm::make_range(diagnosticIdentifiers_begin(), diagnosticIdentifiers_end()); }
 
 
+  bool isEquivalent(const SuppressAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Suppress; }
@@ -13889,6 +14328,7 @@ public:
     return completionHandlerIndex;
   }
 
+  bool isEquivalent(const SwiftAsyncAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftAsync; }
@@ -13918,6 +14358,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftAsyncCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftAsyncCall; }
@@ -13947,6 +14388,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftAsyncContextAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftAsyncContext; }
@@ -14003,6 +14445,7 @@ public:
     return handlerParamIdx;
   }
 
+  bool isEquivalent(const SwiftAsyncErrorAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftAsyncError; }
@@ -14041,6 +14484,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const SwiftAsyncNameAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftAsyncName; }
@@ -14079,6 +14523,7 @@ public:
       std::memcpy(this->attribute, S.data(), attributeLength);
   }
 
+  bool isEquivalent(const SwiftAttrAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftAttr; }
@@ -14117,6 +14562,7 @@ public:
       std::memcpy(this->swiftType, S.data(), swiftTypeLength);
   }
 
+  bool isEquivalent(const SwiftBridgeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftBridge; }
@@ -14138,6 +14584,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftBridgedTypedefAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftBridgedTypedef; }
@@ -14167,6 +14614,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftCall; }
@@ -14196,6 +14644,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftContextAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftContext; }
@@ -14235,6 +14684,7 @@ public:
 
   static bool ConvertStrToConventionKind(StringRef Val, SwiftErrorAttr::ConventionKind &Out);
   static const char *ConvertConventionKindToStr(SwiftErrorAttr::ConventionKind Val);
+  bool isEquivalent(const SwiftErrorAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftError; }
@@ -14264,6 +14714,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftErrorResultAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftErrorResult; }
@@ -14285,6 +14736,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftImportAsNonGenericAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftImportAsNonGeneric; }
@@ -14306,6 +14758,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftImportPropertyAsAccessorsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftImportPropertyAsAccessors; }
@@ -14335,6 +14788,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftIndirectResultAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftIndirectResult; }
@@ -14373,6 +14827,7 @@ public:
       std::memcpy(this->name, S.data(), nameLength);
   }
 
+  bool isEquivalent(const SwiftNameAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftName; }
@@ -14417,6 +14872,7 @@ public:
 
   static bool ConvertStrToNewtypeKind(StringRef Val, SwiftNewTypeAttr::NewtypeKind &Out);
   static const char *ConvertNewtypeKindToStr(SwiftNewTypeAttr::NewtypeKind Val);
+  bool isEquivalent(const SwiftNewTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftNewType; }
@@ -14455,6 +14911,7 @@ public:
 
   static bool ConvertStrToKind(StringRef Val, SwiftNullabilityAttr::Kind &Out);
   static const char *ConvertKindToStr(SwiftNullabilityAttr::Kind Val);
+  bool isEquivalent(const SwiftNullabilityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftNullability; }
@@ -14476,6 +14933,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftObjCMembersAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftObjCMembers; }
@@ -14497,6 +14955,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SwiftPrivateAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftPrivate; }
@@ -14535,6 +14994,7 @@ public:
       std::memcpy(this->typeString, S.data(), typeStringLength);
   }
 
+  bool isEquivalent(const SwiftTypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftType; }
@@ -14581,6 +15041,7 @@ public:
     return isReplacedByActive;
   }
 
+  bool isEquivalent(const SwiftVersionedAdditionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SwiftVersionedAddition; }
@@ -14627,6 +15088,7 @@ public:
     return isReplacedByActive;
   }
 
+  bool isEquivalent(const SwiftVersionedRemovalAttr &Other, StructuralEquivalenceContext &Context) const;
 
     attr::Kind getAttrKindToRemove() const {
       return static_cast<attr::Kind>(getRawKind());
@@ -14660,6 +15122,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const SysVABIAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SysVABI; }
@@ -14706,6 +15169,7 @@ public:
       std::memcpy(this->model, S.data(), modelLength);
   }
 
+  bool isEquivalent(const TLSModelAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TLSModel; }
@@ -14752,6 +15216,7 @@ public:
       std::memcpy(this->featuresStr, S.data(), featuresStrLength);
   }
 
+  bool isEquivalent(const TargetAttr &Other, StructuralEquivalenceContext &Context) const;
 
     std::optional<StringRef> getX86Architecture() const {
       StringRef Features = getFeaturesStr();
@@ -14824,6 +15289,7 @@ public:
   llvm::iterator_range<featuresStrs_iterator> featuresStrs() const { return llvm::make_range(featuresStrs_begin(), featuresStrs_end()); }
 
 
+  bool isEquivalent(const TargetClonesAttr &Other, StructuralEquivalenceContext &Context) const;
 
     StringRef getFeatureStr(unsigned Index) const {
       return *(featuresStrs_begin() + Index);
@@ -14934,6 +15400,7 @@ public:
       std::memcpy(this->namesStr, S.data(), namesStrLength);
   }
 
+  bool isEquivalent(const TargetVersionAttr &Other, StructuralEquivalenceContext &Context) const;
 
     StringRef getName() const { return getNamesStr().trim(); }
 
@@ -14994,6 +15461,7 @@ public:
 
   static bool ConvertStrToConsumedState(StringRef Val, TestTypestateAttr::ConsumedState &Out);
   static const char *ConvertConsumedStateToStr(TestTypestateAttr::ConsumedState Val);
+  bool isEquivalent(const TestTypestateAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TestTypestate; }
@@ -15024,6 +15492,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ThisCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ThisCall; }
@@ -15045,6 +15514,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const ThreadAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Thread; }
@@ -15074,6 +15544,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const TransparentUnionAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TransparentUnion; }
@@ -15102,30 +15573,10 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const TrivialABIAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TrivialABI; }
-};
-
-class CLANG_ABI TriviallyRelocatableAttr : public InheritableAttr {
-public:
-  // Factory methods
-  static TriviallyRelocatableAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static TriviallyRelocatableAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
-  static TriviallyRelocatableAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
-  static TriviallyRelocatableAttr *Create(ASTContext &Ctx, SourceRange Range = {});
-
-  // Constructors
-  TriviallyRelocatableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             );
-
-  TriviallyRelocatableAttr *clone(ASTContext &C) const;
-  void printPretty(raw_ostream &OS,
-                   const PrintingPolicy &Policy) const;
-  const char *getSpelling() const;
-
-
-  static bool classof(const Attr *A) { return A->getKind() == attr::TriviallyRelocatable; }
 };
 
 class CLANG_ABI TryAcquireCapabilityAttr : public InheritableAttr {
@@ -15189,6 +15640,7 @@ public:
   llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
 
 
+  bool isEquivalent(const TryAcquireCapabilityAttr &Other, StructuralEquivalenceContext &Context) const;
   typedef Expr ** delayedArgs_iterator;
   delayedArgs_iterator delayedArgs_begin() const { return delayedArgs_; }
   delayedArgs_iterator delayedArgs_end() const { return delayedArgs_ + delayedArgs_Size; }
@@ -15220,6 +15672,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const TypeNonNullAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TypeNonNull; }
@@ -15241,6 +15694,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const TypeNullUnspecifiedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TypeNullUnspecified; }
@@ -15262,6 +15716,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const TypeNullableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TypeNullable; }
@@ -15283,13 +15738,14 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const TypeNullableResultAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TypeNullableResult; }
 };
 
 class CLANG_ABI TypeTagForDatatypeAttr : public InheritableAttr {
-IdentifierInfo * argumentKind;
+const IdentifierInfo * argumentKind;
 
 TypeSourceInfo * matchingCType;
 
@@ -15307,14 +15763,14 @@ public:
   };
 
   // Factory methods
-  static TypeTagForDatatypeAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo);
-  static TypeTagForDatatypeAttr *Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo);
-  static TypeTagForDatatypeAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range = {}, Spelling S = GNU_type_tag_for_datatype);
-  static TypeTagForDatatypeAttr *Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range = {}, Spelling S = GNU_type_tag_for_datatype);
+  static TypeTagForDatatypeAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo);
+  static TypeTagForDatatypeAttr *Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo);
+  static TypeTagForDatatypeAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range = {}, Spelling S = GNU_type_tag_for_datatype);
+  static TypeTagForDatatypeAttr *Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range = {}, Spelling S = GNU_type_tag_for_datatype);
 
   // Constructors
   TypeTagForDatatypeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ArgumentKind
+              , const IdentifierInfo * ArgumentKind
               , TypeSourceInfo * MatchingCType
               , bool LayoutCompatible
               , bool MustBeNull
@@ -15324,7 +15780,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  IdentifierInfo * getArgumentKind() const {
+  const IdentifierInfo * getArgumentKind() const {
     return argumentKind;
   }
 
@@ -15342,6 +15798,7 @@ public:
     return mustBeNull;
   }
 
+  bool isEquivalent(const TypeTagForDatatypeAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TypeTagForDatatype; }
@@ -15387,6 +15844,7 @@ public:
 
   static bool ConvertStrToVisibilityType(StringRef Val, TypeVisibilityAttr::VisibilityType &Out);
   static const char *ConvertVisibilityTypeToStr(TypeVisibilityAttr::VisibilityType Val);
+  bool isEquivalent(const TypeVisibilityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::TypeVisibility; }
@@ -15408,6 +15866,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const UPtrAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::UPtr; }
@@ -15480,6 +15939,7 @@ public:
     return implicitReason;
   }
 
+  bool isEquivalent(const UnavailableAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Unavailable; }
@@ -15508,6 +15968,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const UninitializedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Uninitialized; }
@@ -15536,6 +15997,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const UnlikelyAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Unlikely; }
@@ -15565,6 +16027,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const UnsafeBufferUsageAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::UnsafeBufferUsage; }
@@ -15597,6 +16060,7 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
   Spelling getSemanticSpelling() const;
+  bool isEquivalent(const UnusedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Unused; }
@@ -15643,6 +16107,7 @@ public:
       std::memcpy(this->handleType, S.data(), handleTypeLength);
   }
 
+  bool isEquivalent(const UseHandleAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::UseHandle; }
@@ -15672,6 +16137,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const UsedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Used; }
@@ -15700,6 +16166,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const UsingIfExistsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::UsingIfExists; }
@@ -15759,6 +16226,7 @@ public:
     return guidDecl;
   }
 
+  bool isEquivalent(const UuidAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Uuid; }
@@ -15850,6 +16318,7 @@ public:
     return customDiscriminationValue;
   }
 
+  bool isEquivalent(const VTablePointerAuthenticationAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::VTablePointerAuthentication; }
@@ -15878,6 +16347,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const VecReturnAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::VecReturn; }
@@ -15908,6 +16378,7 @@ public:
     return typeHint;
   }
 
+  bool isEquivalent(const VecTypeHintAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::VecTypeHint; }
@@ -15938,6 +16409,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const VectorCallAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::VectorCall; }
@@ -15983,6 +16455,7 @@ public:
 
   static bool ConvertStrToVisibilityType(StringRef Val, VisibilityAttr::VisibilityType &Out);
   static const char *ConvertVisibilityTypeToStr(VisibilityAttr::VisibilityType Val);
+  bool isEquivalent(const VisibilityAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Visibility; }
@@ -16012,6 +16485,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const WarnUnusedAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WarnUnused; }
@@ -16064,6 +16538,7 @@ public:
       std::memcpy(this->message, S.data(), messageLength);
   }
 
+  bool isEquivalent(const WarnUnusedResultAttr &Other, StructuralEquivalenceContext &Context) const;
 
     // Check whether this the C++11 nodiscard version, even in non C++11
     // spellings.
@@ -16099,6 +16574,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const WeakAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::Weak; }
@@ -16128,6 +16604,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const WeakImportAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WeakImport; }
@@ -16176,6 +16653,7 @@ public:
       std::memcpy(this->aliasee, S.data(), aliaseeLength);
   }
 
+  bool isEquivalent(const WeakRefAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WeakRef; }
@@ -16222,6 +16700,7 @@ public:
       std::memcpy(this->exportName, S.data(), exportNameLength);
   }
 
+  bool isEquivalent(const WebAssemblyExportNameAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WebAssemblyExportName; }
@@ -16243,6 +16722,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const WebAssemblyFuncrefAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WebAssemblyFuncref; }
@@ -16289,6 +16769,7 @@ public:
       std::memcpy(this->importModule, S.data(), importModuleLength);
   }
 
+  bool isEquivalent(const WebAssemblyImportModuleAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WebAssemblyImportModule; }
@@ -16335,6 +16816,7 @@ public:
       std::memcpy(this->importName, S.data(), importNameLength);
   }
 
+  bool isEquivalent(const WebAssemblyImportNameAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WebAssemblyImportName; }
@@ -16377,6 +16859,7 @@ public:
     return zDim;
   }
 
+  bool isEquivalent(const WorkGroupSizeHintAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::WorkGroupSizeHint; }
@@ -16406,6 +16889,7 @@ public:
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
+  bool isEquivalent(const X86ForceAlignArgPointerAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::X86ForceAlignArgPointer; }
@@ -16445,6 +16929,7 @@ public:
   bool neverXRayInstrument() const { return getAttributeSpellingListIndex() == 3 ||
     getAttributeSpellingListIndex() == 4 ||
     getAttributeSpellingListIndex() == 5; }
+  bool isEquivalent(const XRayInstrumentAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::XRayInstrument; }
@@ -16481,6 +16966,7 @@ public:
     return argumentCount;
   }
 
+  bool isEquivalent(const XRayLogArgsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::XRayLogArgs; }
@@ -16532,6 +17018,7 @@ public:
 
   static bool ConvertStrToZeroCallUsedRegsKind(StringRef Val, ZeroCallUsedRegsAttr::ZeroCallUsedRegsKind &Out);
   static const char *ConvertZeroCallUsedRegsKindToStr(ZeroCallUsedRegsAttr::ZeroCallUsedRegsKind Val);
+  bool isEquivalent(const ZeroCallUsedRegsAttr &Other, StructuralEquivalenceContext &Context) const;
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::ZeroCallUsedRegs; }

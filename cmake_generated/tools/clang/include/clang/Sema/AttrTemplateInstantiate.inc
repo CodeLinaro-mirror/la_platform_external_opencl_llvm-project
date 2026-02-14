@@ -557,6 +557,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<DLLExportAttr>(At);
       return A->clone(C);
     }
+    case attr::DLLExportOnDecl: {
+      const auto *A = cast<DLLExportOnDeclAttr>(At);
+      return A->clone(C);
+    }
     case attr::DLLExportStaticLocal: {
       const auto *A = cast<DLLExportStaticLocalAttr>(At);
       return A->clone(C);
@@ -697,6 +701,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<FunctionReturnThunksAttr>(At);
       return A->clone(C);
     }
+    case attr::GCCStruct: {
+      const auto *A = cast<GCCStructAttr>(At);
+      return A->clone(C);
+    }
     case attr::GNUInline: {
       const auto *A = cast<GNUInlineAttr>(At);
       return A->clone(C);
@@ -719,6 +727,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::HIPManaged: {
       const auto *A = cast<HIPManagedAttr>(At);
+      return A->clone(C);
+    }
+    case attr::HLSLAppliedSemantic: {
+      const auto *A = cast<HLSLAppliedSemanticAttr>(At);
       return A->clone(C);
     }
     case attr::HLSLContainedType: {
@@ -753,6 +765,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<HLSLParamModifierAttr>(At);
       return A->clone(C);
     }
+    case attr::HLSLParsedSemantic: {
+      const auto *A = cast<HLSLParsedSemanticAttr>(At);
+      return A->clone(C);
+    }
     case attr::HLSLROV: {
       const auto *A = cast<HLSLROVAttr>(At);
       return A->clone(C);
@@ -767,26 +783,6 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::HLSLResourceClass: {
       const auto *A = cast<HLSLResourceClassAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HLSLSV_DispatchThreadID: {
-      const auto *A = cast<HLSLSV_DispatchThreadIDAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HLSLSV_GroupID: {
-      const auto *A = cast<HLSLSV_GroupIDAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HLSLSV_GroupIndex: {
-      const auto *A = cast<HLSLSV_GroupIndexAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HLSLSV_GroupThreadID: {
-      const auto *A = cast<HLSLSV_GroupThreadIDAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HLSLSV_Position: {
-      const auto *A = cast<HLSLSV_PositionAttr>(At);
       return A->clone(C);
     }
     case attr::HLSLShader: {
@@ -807,6 +803,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::HLSLVkExtBuiltinInput: {
       const auto *A = cast<HLSLVkExtBuiltinInputAttr>(At);
+      return A->clone(C);
+    }
+    case attr::HLSLVkLocation: {
+      const auto *A = cast<HLSLVkLocationAttr>(At);
+      return A->clone(C);
+    }
+    case attr::HLSLVkPushConstant: {
+      const auto *A = cast<HLSLVkPushConstantAttr>(At);
       return A->clone(C);
     }
     case attr::HLSLWaveSize: {
@@ -961,6 +965,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<MSVtorDispAttr>(At);
       return A->clone(C);
     }
+    case attr::MallocSpan: {
+      const auto *A = cast<MallocSpanAttr>(At);
+      return A->clone(C);
+    }
     case attr::MaxFieldAlignment: {
       const auto *A = cast<MaxFieldAlignmentAttr>(At);
       return A->clone(C);
@@ -1003,6 +1011,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::Mode: {
       const auto *A = cast<ModeAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ModularFormat: {
+      const auto *A = cast<ModularFormatAttr>(At);
       return A->clone(C);
     }
     case attr::MustTail: {
@@ -1565,10 +1577,6 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<ReleaseHandleAttr>(At);
       return A->clone(C);
     }
-    case attr::Replaceable: {
-      const auto *A = cast<ReplaceableAttr>(At);
-      return A->clone(C);
-    }
     case attr::ReqdWorkGroupSize: {
       const auto *A = cast<ReqdWorkGroupSizeAttr>(At);
       return A->clone(C);
@@ -1819,10 +1827,6 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::TrivialABI: {
       const auto *A = cast<TrivialABIAttr>(At);
-      return A->clone(C);
-    }
-    case attr::TriviallyRelocatable: {
-      const auto *A = cast<TriviallyRelocatableAttr>(At);
       return A->clone(C);
     }
     case attr::TryAcquireCapability: {
@@ -2365,6 +2369,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::DLLExport: {
       return nullptr;
     }
+    case attr::DLLExportOnDecl: {
+      return nullptr;
+    }
     case attr::DLLExportStaticLocal: {
       return nullptr;
     }
@@ -2454,6 +2461,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::FunctionReturnThunks: {
       return nullptr;
     }
+    case attr::GCCStruct: {
+      return nullptr;
+    }
     case attr::GNUInline: {
       return nullptr;
     }
@@ -2464,6 +2474,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::HIPManaged: {
+      return nullptr;
+    }
+    case attr::HLSLAppliedSemantic: {
       return nullptr;
     }
     case attr::HLSLContainedType: {
@@ -2490,6 +2503,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::HLSLParamModifier: {
       return nullptr;
     }
+    case attr::HLSLParsedSemantic: {
+      return nullptr;
+    }
     case attr::HLSLROV: {
       return nullptr;
     }
@@ -2500,21 +2516,6 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::HLSLResourceClass: {
-      return nullptr;
-    }
-    case attr::HLSLSV_DispatchThreadID: {
-      return nullptr;
-    }
-    case attr::HLSLSV_GroupID: {
-      return nullptr;
-    }
-    case attr::HLSLSV_GroupIndex: {
-      return nullptr;
-    }
-    case attr::HLSLSV_GroupThreadID: {
-      return nullptr;
-    }
-    case attr::HLSLSV_Position: {
       return nullptr;
     }
     case attr::HLSLShader: {
@@ -2530,6 +2531,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::HLSLVkExtBuiltinInput: {
+      return nullptr;
+    }
+    case attr::HLSLVkLocation: {
+      return nullptr;
+    }
+    case attr::HLSLVkPushConstant: {
       return nullptr;
     }
     case attr::HLSLWaveSize: {
@@ -2631,6 +2638,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::MSVtorDisp: {
       return nullptr;
     }
+    case attr::MallocSpan: {
+      return nullptr;
+    }
     case attr::MaxFieldAlignment: {
       return nullptr;
     }
@@ -2662,6 +2672,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::Mode: {
+      return nullptr;
+    }
+    case attr::ModularFormat: {
       return nullptr;
     }
     case attr::MustTail: {
@@ -3072,9 +3085,6 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::ReleaseHandle: {
       return nullptr;
     }
-    case attr::Replaceable: {
-      return nullptr;
-    }
     case attr::ReqdWorkGroupSize: {
       return nullptr;
     }
@@ -3250,9 +3260,6 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::TrivialABI: {
-      return nullptr;
-    }
-    case attr::TriviallyRelocatable: {
       return nullptr;
     }
     case attr::TryAcquireCapability: {
