@@ -25,67 +25,34 @@ license {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangSupport_a",
-    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
+    name: "llvm-project_lib_libclangToolingInclusions_a",
+    srcs: ["clang/lib/Tooling/Inclusions/*.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Support",
+        "clang/lib/Tooling/Inclusions",
         "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libLLVMSupport_a",
-    srcs: [
-        "llvm/lib/Support/*.c",
-        "llvm/lib/Support/*.cpp",
-        "llvm/lib/Support/BLAKE3/blake3.c",
-        "llvm/lib/Support/BLAKE3/blake3_dispatch.c",
-        "llvm/lib/Support/BLAKE3/blake3_neon.c",
-        "llvm/lib/Support/BLAKE3/blake3_portable.c",
-    ],
-    cflags: [
-        "-DBLAKE3_NO_AVX2",
-        "-DBLAKE3_NO_AVX512",
-        "-DBLAKE3_NO_SSE2",
-        "-DBLAKE3_NO_SSE41",
-    ],
-    shared_libs: ["libz"],
-    local_include_dirs: [
-        "llvm/../third-party/siphash/include",
-        "llvm/lib/Support",
-        "llvm/lib/Support/BLAKE3",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMDemangle_a",
-    srcs: ["llvm/lib/Demangle/*.cpp"],
-    local_include_dirs: ["llvm/lib/Demangle"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangSerialization_a",
-    srcs: ["clang/lib/Serialization/*.cpp"],
+    name: "llvm-project_lib_libclangToolingCore_a",
+    srcs: ["clang/lib/Tooling/Core/*.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Serialization",
+        "clang/lib/Tooling/Core",
         "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangSema_a",
-    srcs: ["clang/lib/Sema/*.cpp"],
+    name: "llvm-project_lib_libclangRewrite_a",
+    srcs: ["clang/lib/Rewrite/*.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Sema",
+        "clang/lib/Rewrite",
         "cmake_generated/tools/clang/include",
-        "cmake_generated/tools/clang/lib/Sema",
     ],
     defaults: ["llvm-project-defaults"],
 }
@@ -134,6 +101,38 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMTargetParser_a",
     srcs: ["llvm/lib/TargetParser/*.cpp"],
     local_include_dirs: ["llvm/lib/TargetParser"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMSupport_a",
+    srcs: [
+        "llvm/lib/Support/*.c",
+        "llvm/lib/Support/*.cpp",
+        "llvm/lib/Support/BLAKE3/blake3.c",
+        "llvm/lib/Support/BLAKE3/blake3_dispatch.c",
+        "llvm/lib/Support/BLAKE3/blake3_neon.c",
+        "llvm/lib/Support/BLAKE3/blake3_portable.c",
+    ],
+    cflags: [
+        "-DBLAKE3_NO_AVX2",
+        "-DBLAKE3_NO_AVX512",
+        "-DBLAKE3_NO_SSE2",
+        "-DBLAKE3_NO_SSE41",
+    ],
+    shared_libs: ["libz"],
+    local_include_dirs: [
+        "llvm/../third-party/siphash/include",
+        "llvm/lib/Support",
+        "llvm/lib/Support/BLAKE3",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMDemangle_a",
+    srcs: ["llvm/lib/Demangle/*.cpp"],
+    local_include_dirs: ["llvm/lib/Demangle"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -344,6 +343,51 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libclangSupport_a",
+    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Support",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangSerialization_a",
+    srcs: ["clang/lib/Serialization/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Serialization",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangSema_a",
+    srcs: ["clang/lib/Sema/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Sema",
+        "cmake_generated/tools/clang/include",
+        "cmake_generated/tools/clang/lib/Sema",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangFormat_a",
+    srcs: ["clang/lib/Format/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Format",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libclangEdit_a",
     srcs: ["clang/lib/Edit/*.cpp"],
     local_include_dirs: [
@@ -425,6 +469,24 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libclangOptions_a",
+    srcs: ["clang/lib/Options/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Options",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMOption_a",
+    srcs: ["llvm/lib/Option/*.cpp"],
+    local_include_dirs: ["llvm/lib/Option"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libclangFrontend_a",
     srcs: ["clang/lib/Frontend/*.cpp"],
     local_include_dirs: [
@@ -436,31 +498,9 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangDriver_a",
-    srcs: [
-        "clang/lib/Driver/*.cpp",
-        "clang/lib/Driver/ToolChains/*.cpp",
-        "clang/lib/Driver/ToolChains/Arch/*.cpp",
-    ],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Driver",
-        "cmake_generated/tools/clang/include",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMWindowsDriver_a",
-    srcs: ["llvm/lib/WindowsDriver/MSVCPaths.cpp"],
-    local_include_dirs: ["llvm/lib/WindowsDriver"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMOption_a",
-    srcs: ["llvm/lib/Option/*.cpp"],
-    local_include_dirs: ["llvm/lib/Option"],
+    name: "llvm-project_lib_libLLVMPlugins_a",
+    srcs: ["llvm/lib/Plugins/PassPlugin.cpp"],
+    local_include_dirs: ["llvm/lib/Plugins"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -686,6 +726,7 @@ cc_binary {
         "llvm-project_lib_libLLVMObject_a",
         "llvm-project_lib_libLLVMOptDriver_a",
         "llvm-project_lib_libLLVMPasses_a",
+        "llvm-project_lib_libLLVMPlugins_a",
         "llvm-project_lib_libLLVMProfileData_a",
         "llvm-project_lib_libLLVMRemarks_a",
         "llvm-project_lib_libLLVMSandboxIR_a",
@@ -765,7 +806,7 @@ cc_binary {
 }
 
 cc_binary {
-    name: "llvm-project_bin_clang-22",
+    name: "llvm-project_bin_clang-23",
     srcs: [
         "clang/tools/driver/*.cpp",
         "cmake_generated/tools/clang/tools/driver/clang-driver.cpp",
@@ -816,6 +857,7 @@ cc_binary {
         "llvm-project_lib_libLLVMObject_a",
         "llvm-project_lib_libLLVMOption_a",
         "llvm-project_lib_libLLVMPasses_a",
+        "llvm-project_lib_libLLVMPlugins_a",
         "llvm-project_lib_libLLVMProfileData_a",
         "llvm-project_lib_libLLVMRemarks_a",
         "llvm-project_lib_libLLVMSandboxIR_a",
@@ -848,6 +890,7 @@ cc_binary {
         "llvm-project_lib_libclangIndex_a",
         "llvm-project_lib_libclangInstallAPI_a",
         "llvm-project_lib_libclangLex_a",
+        "llvm-project_lib_libclangOptions_a",
         "llvm-project_lib_libclangParse_a",
         "llvm-project_lib_libclangRewriteFrontend_a",
         "llvm-project_lib_libclangRewrite_a",
@@ -865,39 +908,6 @@ cc_binary {
         "clang/tools/driver",
         "cmake_generated/tools/clang/include",
         "cmake_generated/tools/clang/tools/driver",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangToolingInclusions_a",
-    srcs: ["clang/lib/Tooling/Inclusions/*.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Tooling/Inclusions",
-        "cmake_generated/tools/clang/include",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangToolingCore_a",
-    srcs: ["clang/lib/Tooling/Core/*.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Tooling/Core",
-        "cmake_generated/tools/clang/include",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangRewrite_a",
-    srcs: ["clang/lib/Rewrite/*.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Rewrite",
-        "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
@@ -936,13 +946,24 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangFormat_a",
-    srcs: ["clang/lib/Format/*.cpp"],
+    name: "llvm-project_lib_libclangDriver_a",
+    srcs: [
+        "clang/lib/Driver/*.cpp",
+        "clang/lib/Driver/ToolChains/*.cpp",
+        "clang/lib/Driver/ToolChains/Arch/*.cpp",
+    ],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Format",
+        "clang/lib/Driver",
         "cmake_generated/tools/clang/include",
     ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMWindowsDriver_a",
+    srcs: ["llvm/lib/WindowsDriver/MSVCPaths.cpp"],
+    local_include_dirs: ["llvm/lib/WindowsDriver"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -1110,6 +1131,7 @@ cc_defaults {
         "llvm-project_lib_libLLVMOptDriver_a",
         "llvm-project_lib_libLLVMOption_a",
         "llvm-project_lib_libLLVMPasses_a",
+        "llvm-project_lib_libLLVMPlugins_a",
         "llvm-project_lib_libLLVMProfileData_a",
         "llvm-project_lib_libLLVMRemarks_a",
         "llvm-project_lib_libLLVMSandboxIR_a",
@@ -1142,6 +1164,7 @@ cc_defaults {
         "llvm-project_lib_libclangIndex_a",
         "llvm-project_lib_libclangInstallAPI_a",
         "llvm-project_lib_libclangLex_a",
+        "llvm-project_lib_libclangOptions_a",
         "llvm-project_lib_libclangParse_a",
         "llvm-project_lib_libclangRewriteFrontend_a",
         "llvm-project_lib_libclangRewrite_a",

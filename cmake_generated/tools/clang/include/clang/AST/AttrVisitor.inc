@@ -497,6 +497,10 @@
   bool VisitDLLExportAttr(DLLExportAttr *A) {
     return true; 
   }
+  bool TraverseDLLExportOnDeclAttr(DLLExportOnDeclAttr *A);
+  bool VisitDLLExportOnDeclAttr(DLLExportOnDeclAttr *A) {
+    return true; 
+  }
   bool TraverseDLLExportStaticLocalAttr(DLLExportStaticLocalAttr *A);
   bool VisitDLLExportStaticLocalAttr(DLLExportStaticLocalAttr *A) {
     return true; 
@@ -613,6 +617,10 @@
   bool VisitFunctionReturnThunksAttr(FunctionReturnThunksAttr *A) {
     return true; 
   }
+  bool TraverseGCCStructAttr(GCCStructAttr *A);
+  bool VisitGCCStructAttr(GCCStructAttr *A) {
+    return true; 
+  }
   bool TraverseGNUInlineAttr(GNUInlineAttr *A);
   bool VisitGNUInlineAttr(GNUInlineAttr *A) {
     return true; 
@@ -627,6 +635,10 @@
   }
   bool TraverseHIPManagedAttr(HIPManagedAttr *A);
   bool VisitHIPManagedAttr(HIPManagedAttr *A) {
+    return true; 
+  }
+  bool TraverseHLSLAppliedSemanticAttr(HLSLAppliedSemanticAttr *A);
+  bool VisitHLSLAppliedSemanticAttr(HLSLAppliedSemanticAttr *A) {
     return true; 
   }
   bool TraverseHLSLContainedTypeAttr(HLSLContainedTypeAttr *A);
@@ -661,6 +673,10 @@
   bool VisitHLSLParamModifierAttr(HLSLParamModifierAttr *A) {
     return true; 
   }
+  bool TraverseHLSLParsedSemanticAttr(HLSLParsedSemanticAttr *A);
+  bool VisitHLSLParsedSemanticAttr(HLSLParsedSemanticAttr *A) {
+    return true; 
+  }
   bool TraverseHLSLROVAttr(HLSLROVAttr *A);
   bool VisitHLSLROVAttr(HLSLROVAttr *A) {
     return true; 
@@ -675,26 +691,6 @@
   }
   bool TraverseHLSLResourceClassAttr(HLSLResourceClassAttr *A);
   bool VisitHLSLResourceClassAttr(HLSLResourceClassAttr *A) {
-    return true; 
-  }
-  bool TraverseHLSLSV_DispatchThreadIDAttr(HLSLSV_DispatchThreadIDAttr *A);
-  bool VisitHLSLSV_DispatchThreadIDAttr(HLSLSV_DispatchThreadIDAttr *A) {
-    return true; 
-  }
-  bool TraverseHLSLSV_GroupIDAttr(HLSLSV_GroupIDAttr *A);
-  bool VisitHLSLSV_GroupIDAttr(HLSLSV_GroupIDAttr *A) {
-    return true; 
-  }
-  bool TraverseHLSLSV_GroupIndexAttr(HLSLSV_GroupIndexAttr *A);
-  bool VisitHLSLSV_GroupIndexAttr(HLSLSV_GroupIndexAttr *A) {
-    return true; 
-  }
-  bool TraverseHLSLSV_GroupThreadIDAttr(HLSLSV_GroupThreadIDAttr *A);
-  bool VisitHLSLSV_GroupThreadIDAttr(HLSLSV_GroupThreadIDAttr *A) {
-    return true; 
-  }
-  bool TraverseHLSLSV_PositionAttr(HLSLSV_PositionAttr *A);
-  bool VisitHLSLSV_PositionAttr(HLSLSV_PositionAttr *A) {
     return true; 
   }
   bool TraverseHLSLShaderAttr(HLSLShaderAttr *A);
@@ -715,6 +711,14 @@
   }
   bool TraverseHLSLVkExtBuiltinInputAttr(HLSLVkExtBuiltinInputAttr *A);
   bool VisitHLSLVkExtBuiltinInputAttr(HLSLVkExtBuiltinInputAttr *A) {
+    return true; 
+  }
+  bool TraverseHLSLVkLocationAttr(HLSLVkLocationAttr *A);
+  bool VisitHLSLVkLocationAttr(HLSLVkLocationAttr *A) {
+    return true; 
+  }
+  bool TraverseHLSLVkPushConstantAttr(HLSLVkPushConstantAttr *A);
+  bool VisitHLSLVkPushConstantAttr(HLSLVkPushConstantAttr *A) {
     return true; 
   }
   bool TraverseHLSLWaveSizeAttr(HLSLWaveSizeAttr *A);
@@ -849,6 +853,10 @@
   bool VisitMSVtorDispAttr(MSVtorDispAttr *A) {
     return true; 
   }
+  bool TraverseMallocSpanAttr(MallocSpanAttr *A);
+  bool VisitMallocSpanAttr(MallocSpanAttr *A) {
+    return true; 
+  }
   bool TraverseMaxFieldAlignmentAttr(MaxFieldAlignmentAttr *A);
   bool VisitMaxFieldAlignmentAttr(MaxFieldAlignmentAttr *A) {
     return true; 
@@ -891,6 +899,10 @@
   }
   bool TraverseModeAttr(ModeAttr *A);
   bool VisitModeAttr(ModeAttr *A) {
+    return true; 
+  }
+  bool TraverseModularFormatAttr(ModularFormatAttr *A);
+  bool VisitModularFormatAttr(ModularFormatAttr *A) {
     return true; 
   }
   bool TraverseMustTailAttr(MustTailAttr *A);
@@ -1429,10 +1441,6 @@
   bool VisitReleaseHandleAttr(ReleaseHandleAttr *A) {
     return true; 
   }
-  bool TraverseReplaceableAttr(ReplaceableAttr *A);
-  bool VisitReplaceableAttr(ReplaceableAttr *A) {
-    return true; 
-  }
   bool TraverseReqdWorkGroupSizeAttr(ReqdWorkGroupSizeAttr *A);
   bool VisitReqdWorkGroupSizeAttr(ReqdWorkGroupSizeAttr *A) {
     return true; 
@@ -1667,10 +1675,6 @@
   }
   bool TraverseTrivialABIAttr(TrivialABIAttr *A);
   bool VisitTrivialABIAttr(TrivialABIAttr *A) {
-    return true; 
-  }
-  bool TraverseTriviallyRelocatableAttr(TriviallyRelocatableAttr *A);
-  bool VisitTriviallyRelocatableAttr(TriviallyRelocatableAttr *A) {
     return true; 
   }
   bool TraverseTryAcquireCapabilityAttr(TryAcquireCapabilityAttr *A);
@@ -3064,6 +3068,15 @@ bool VISITORCLASS<Derived>::TraverseDLLExportAttr(DLLExportAttr *A) {
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseDLLExportOnDeclAttr(DLLExportOnDeclAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitDLLExportOnDeclAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseDLLExportStaticLocalAttr(DLLExportStaticLocalAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -3335,6 +3348,15 @@ bool VISITORCLASS<Derived>::TraverseFunctionReturnThunksAttr(FunctionReturnThunk
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseGCCStructAttr(GCCStructAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitGCCStructAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseGNUInlineAttr(GNUInlineAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -3368,6 +3390,15 @@ bool VISITORCLASS<Derived>::TraverseHIPManagedAttr(HIPManagedAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitHIPManagedAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLAppliedSemanticAttr(HLSLAppliedSemanticAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLAppliedSemanticAttr(A))
     return false;
   return true;
 }
@@ -3448,6 +3479,15 @@ bool VISITORCLASS<Derived>::TraverseHLSLParamModifierAttr(HLSLParamModifierAttr 
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLParsedSemanticAttr(HLSLParsedSemanticAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLParsedSemanticAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseHLSLROVAttr(HLSLROVAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -3479,51 +3519,6 @@ bool VISITORCLASS<Derived>::TraverseHLSLResourceClassAttr(HLSLResourceClassAttr 
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitHLSLResourceClassAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseHLSLSV_DispatchThreadIDAttr(HLSLSV_DispatchThreadIDAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitHLSLSV_DispatchThreadIDAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseHLSLSV_GroupIDAttr(HLSLSV_GroupIDAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitHLSLSV_GroupIDAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseHLSLSV_GroupIndexAttr(HLSLSV_GroupIndexAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitHLSLSV_GroupIndexAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseHLSLSV_GroupThreadIDAttr(HLSLSV_GroupThreadIDAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitHLSLSV_GroupThreadIDAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseHLSLSV_PositionAttr(HLSLSV_PositionAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitHLSLSV_PositionAttr(A))
     return false;
   return true;
 }
@@ -3569,6 +3564,24 @@ bool VISITORCLASS<Derived>::TraverseHLSLVkExtBuiltinInputAttr(HLSLVkExtBuiltinIn
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitHLSLVkExtBuiltinInputAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLVkLocationAttr(HLSLVkLocationAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLVkLocationAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHLSLVkPushConstantAttr(HLSLVkPushConstantAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHLSLVkPushConstantAttr(A))
     return false;
   return true;
 }
@@ -3894,6 +3907,15 @@ bool VISITORCLASS<Derived>::TraverseMSVtorDispAttr(MSVtorDispAttr *A) {
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseMallocSpanAttr(MallocSpanAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitMallocSpanAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseMaxFieldAlignmentAttr(MaxFieldAlignmentAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -3988,6 +4010,15 @@ bool VISITORCLASS<Derived>::TraverseModeAttr(ModeAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitModeAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseModularFormatAttr(ModularFormatAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitModularFormatAttr(A))
     return false;
   return true;
 }
@@ -5309,15 +5340,6 @@ bool VISITORCLASS<Derived>::TraverseReleaseHandleAttr(ReleaseHandleAttr *A) {
 }
 
 template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseReplaceableAttr(ReplaceableAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitReplaceableAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseReqdWorkGroupSizeAttr(ReqdWorkGroupSizeAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -5875,15 +5897,6 @@ bool VISITORCLASS<Derived>::TraverseTrivialABIAttr(TrivialABIAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitTrivialABIAttr(A))
-    return false;
-  return true;
-}
-
-template <typename Derived>
-bool VISITORCLASS<Derived>::TraverseTriviallyRelocatableAttr(TriviallyRelocatableAttr *A) {
-  if (!getDerived().VisitAttr(A))
-    return false;
-  if (!getDerived().VisitTriviallyRelocatableAttr(A))
     return false;
   return true;
 }
@@ -6492,6 +6505,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseCountedByOrNullAttr(cast<CountedByOrNullAttr>(A));
     case attr::DLLExport:
       return getDerived().TraverseDLLExportAttr(cast<DLLExportAttr>(A));
+    case attr::DLLExportOnDecl:
+      return getDerived().TraverseDLLExportOnDeclAttr(cast<DLLExportOnDeclAttr>(A));
     case attr::DLLExportStaticLocal:
       return getDerived().TraverseDLLExportStaticLocalAttr(cast<DLLExportStaticLocalAttr>(A));
     case attr::DLLImport:
@@ -6550,6 +6565,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseFormatMatchesAttr(cast<FormatMatchesAttr>(A));
     case attr::FunctionReturnThunks:
       return getDerived().TraverseFunctionReturnThunksAttr(cast<FunctionReturnThunksAttr>(A));
+    case attr::GCCStruct:
+      return getDerived().TraverseGCCStructAttr(cast<GCCStructAttr>(A));
     case attr::GNUInline:
       return getDerived().TraverseGNUInlineAttr(cast<GNUInlineAttr>(A));
     case attr::GuardedBy:
@@ -6558,6 +6575,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseGuardedVarAttr(cast<GuardedVarAttr>(A));
     case attr::HIPManaged:
       return getDerived().TraverseHIPManagedAttr(cast<HIPManagedAttr>(A));
+    case attr::HLSLAppliedSemantic:
+      return getDerived().TraverseHLSLAppliedSemanticAttr(cast<HLSLAppliedSemanticAttr>(A));
     case attr::HLSLContainedType:
       return getDerived().TraverseHLSLContainedTypeAttr(cast<HLSLContainedTypeAttr>(A));
     case attr::HLSLControlFlowHint:
@@ -6574,6 +6593,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseHLSLPackOffsetAttr(cast<HLSLPackOffsetAttr>(A));
     case attr::HLSLParamModifier:
       return getDerived().TraverseHLSLParamModifierAttr(cast<HLSLParamModifierAttr>(A));
+    case attr::HLSLParsedSemantic:
+      return getDerived().TraverseHLSLParsedSemanticAttr(cast<HLSLParsedSemanticAttr>(A));
     case attr::HLSLROV:
       return getDerived().TraverseHLSLROVAttr(cast<HLSLROVAttr>(A));
     case attr::HLSLRawBuffer:
@@ -6582,16 +6603,6 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseHLSLResourceBindingAttr(cast<HLSLResourceBindingAttr>(A));
     case attr::HLSLResourceClass:
       return getDerived().TraverseHLSLResourceClassAttr(cast<HLSLResourceClassAttr>(A));
-    case attr::HLSLSV_DispatchThreadID:
-      return getDerived().TraverseHLSLSV_DispatchThreadIDAttr(cast<HLSLSV_DispatchThreadIDAttr>(A));
-    case attr::HLSLSV_GroupID:
-      return getDerived().TraverseHLSLSV_GroupIDAttr(cast<HLSLSV_GroupIDAttr>(A));
-    case attr::HLSLSV_GroupIndex:
-      return getDerived().TraverseHLSLSV_GroupIndexAttr(cast<HLSLSV_GroupIndexAttr>(A));
-    case attr::HLSLSV_GroupThreadID:
-      return getDerived().TraverseHLSLSV_GroupThreadIDAttr(cast<HLSLSV_GroupThreadIDAttr>(A));
-    case attr::HLSLSV_Position:
-      return getDerived().TraverseHLSLSV_PositionAttr(cast<HLSLSV_PositionAttr>(A));
     case attr::HLSLShader:
       return getDerived().TraverseHLSLShaderAttr(cast<HLSLShaderAttr>(A));
     case attr::HLSLUnparsedSemantic:
@@ -6602,6 +6613,10 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseHLSLVkConstantIdAttr(cast<HLSLVkConstantIdAttr>(A));
     case attr::HLSLVkExtBuiltinInput:
       return getDerived().TraverseHLSLVkExtBuiltinInputAttr(cast<HLSLVkExtBuiltinInputAttr>(A));
+    case attr::HLSLVkLocation:
+      return getDerived().TraverseHLSLVkLocationAttr(cast<HLSLVkLocationAttr>(A));
+    case attr::HLSLVkPushConstant:
+      return getDerived().TraverseHLSLVkPushConstantAttr(cast<HLSLVkPushConstantAttr>(A));
     case attr::HLSLWaveSize:
       return getDerived().TraverseHLSLWaveSizeAttr(cast<HLSLWaveSizeAttr>(A));
     case attr::Hot:
@@ -6668,6 +6683,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseMSStructAttr(cast<MSStructAttr>(A));
     case attr::MSVtorDisp:
       return getDerived().TraverseMSVtorDispAttr(cast<MSVtorDispAttr>(A));
+    case attr::MallocSpan:
+      return getDerived().TraverseMallocSpanAttr(cast<MallocSpanAttr>(A));
     case attr::MaxFieldAlignment:
       return getDerived().TraverseMaxFieldAlignmentAttr(cast<MaxFieldAlignmentAttr>(A));
     case attr::MayAlias:
@@ -6690,6 +6707,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseMipsShortCallAttr(cast<MipsShortCallAttr>(A));
     case attr::Mode:
       return getDerived().TraverseModeAttr(cast<ModeAttr>(A));
+    case attr::ModularFormat:
+      return getDerived().TraverseModularFormatAttr(cast<ModularFormatAttr>(A));
     case attr::MustTail:
       return getDerived().TraverseMustTailAttr(cast<MustTailAttr>(A));
     case attr::NSConsumed:
@@ -6958,8 +6977,6 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseReleaseCapabilityAttr(cast<ReleaseCapabilityAttr>(A));
     case attr::ReleaseHandle:
       return getDerived().TraverseReleaseHandleAttr(cast<ReleaseHandleAttr>(A));
-    case attr::Replaceable:
-      return getDerived().TraverseReplaceableAttr(cast<ReplaceableAttr>(A));
     case attr::ReqdWorkGroupSize:
       return getDerived().TraverseReqdWorkGroupSizeAttr(cast<ReqdWorkGroupSizeAttr>(A));
     case attr::RequiresCapability:
@@ -7078,8 +7095,6 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseTransparentUnionAttr(cast<TransparentUnionAttr>(A));
     case attr::TrivialABI:
       return getDerived().TraverseTrivialABIAttr(cast<TrivialABIAttr>(A));
-    case attr::TriviallyRelocatable:
-      return getDerived().TraverseTriviallyRelocatableAttr(cast<TriviallyRelocatableAttr>(A));
     case attr::TryAcquireCapability:
       return getDerived().TraverseTryAcquireCapabilityAttr(cast<TryAcquireCapabilityAttr>(A));
     case attr::TypeNonNull:

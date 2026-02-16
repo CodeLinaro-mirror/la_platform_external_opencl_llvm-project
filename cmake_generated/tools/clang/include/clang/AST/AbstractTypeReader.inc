@@ -600,8 +600,10 @@ public:
     QualType pattern = R.find("pattern").readQualType();
     Expr* indexExpression = R.find("indexExpression").readExprRef();
     bool isFullySubstituted = R.find("isFullySubstituted").readBool();
+    llvm::SmallVector<QualType, 8> expansions_buffer_0;
+    llvm::ArrayRef<QualType> expansions = R.find("expansions").template readArray<QualType>(expansions_buffer_0);
     
-    return ctx.getPackIndexingType(pattern, indexExpression, isFullySubstituted);
+    return ctx.getPackIndexingType(pattern, indexExpression, isFullySubstituted, expansions);
   
   }
 

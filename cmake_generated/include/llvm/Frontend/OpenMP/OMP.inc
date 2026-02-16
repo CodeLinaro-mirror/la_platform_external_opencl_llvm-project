@@ -1,8 +1,7 @@
 #ifdef GEN_FLANG_DIRECTIVE_CLAUSE_SETS
 #undef GEN_FLANG_DIRECTIVE_CLAUSE_SETS
 
-namespace llvm {
-namespace omp {
+namespace llvm::omp {
 
 // Sets for allocate
 
@@ -19,7 +18,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_allocate {
 
 static OmpClauseSet requiredClauses_OMPD_allocate {
 };
-
 // Sets for allocators
 
 static OmpClauseSet allowedClauses_OMPD_allocators {
@@ -34,7 +32,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_allocators {
 
 static OmpClauseSet requiredClauses_OMPD_allocators {
 };
-
 // Sets for assume
 
 static OmpClauseSet allowedClauses_OMPD_assume {
@@ -55,7 +52,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_assume {
 
 static OmpClauseSet requiredClauses_OMPD_assume {
 };
-
 // Sets for assumes
 
 static OmpClauseSet allowedClauses_OMPD_assumes {
@@ -75,7 +71,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_assumes {
 
 static OmpClauseSet requiredClauses_OMPD_assumes {
 };
-
 // Sets for atomic
 
 static OmpClauseSet allowedClauses_OMPD_atomic {
@@ -102,7 +97,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_atomic {
 
 static OmpClauseSet requiredClauses_OMPD_atomic {
 };
-
 // Sets for barrier
 
 static OmpClauseSet allowedClauses_OMPD_barrier {
@@ -116,7 +110,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_barrier {
 
 static OmpClauseSet requiredClauses_OMPD_barrier {
 };
-
 // Sets for begin assumes
 
 static OmpClauseSet allowedClauses_OMPD_begin_assumes {
@@ -136,7 +129,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_begin_assumes {
 
 static OmpClauseSet requiredClauses_OMPD_begin_assumes {
 };
-
 // Sets for begin declare target
 
 static OmpClauseSet allowedClauses_OMPD_begin_declare_target {
@@ -154,7 +146,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_begin_declare_target {
 
 static OmpClauseSet requiredClauses_OMPD_begin_declare_target {
 };
-
 // Sets for begin declare variant
 
 static OmpClauseSet allowedClauses_OMPD_begin_declare_variant {
@@ -168,7 +159,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_begin_declare_variant {
 
 static OmpClauseSet requiredClauses_OMPD_begin_declare_variant {
 };
-
 // Sets for cancel
 
 static OmpClauseSet allowedClauses_OMPD_cancel {
@@ -184,7 +174,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_cancel {
 
 static OmpClauseSet requiredClauses_OMPD_cancel {
 };
-
 // Sets for cancellation point
 
 static OmpClauseSet allowedClauses_OMPD_cancellation_point {
@@ -199,7 +188,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_cancellation_point {
 
 static OmpClauseSet requiredClauses_OMPD_cancellation_point {
 };
-
 // Sets for critical
 
 static OmpClauseSet allowedClauses_OMPD_critical {
@@ -214,7 +202,21 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_critical {
 
 static OmpClauseSet requiredClauses_OMPD_critical {
 };
+// Sets for declare_induction
 
+static OmpClauseSet allowedClauses_OMPD_declare_induction {
+};
+
+static OmpClauseSet allowedOnceClauses_OMPD_declare_induction {
+  Clause::OMPC_collector,
+  Clause::OMPC_inductor,
+};
+
+static OmpClauseSet allowedExclusiveClauses_OMPD_declare_induction {
+};
+
+static OmpClauseSet requiredClauses_OMPD_declare_induction {
+};
 // Sets for declare mapper
 
 static OmpClauseSet allowedClauses_OMPD_declare_mapper {
@@ -229,13 +231,13 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_declare_mapper {
 static OmpClauseSet requiredClauses_OMPD_declare_mapper {
   Clause::OMPC_map,
 };
-
 // Sets for declare reduction
 
 static OmpClauseSet allowedClauses_OMPD_declare_reduction {
 };
 
 static OmpClauseSet allowedOnceClauses_OMPD_declare_reduction {
+  Clause::OMPC_combiner,
   Clause::OMPC_initializer,
 };
 
@@ -244,7 +246,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_declare_reduction {
 
 static OmpClauseSet requiredClauses_OMPD_declare_reduction {
 };
-
 // Sets for declare simd
 
 static OmpClauseSet allowedClauses_OMPD_declare_simd {
@@ -264,7 +265,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_declare_simd {
 
 static OmpClauseSet requiredClauses_OMPD_declare_simd {
 };
-
 // Sets for declare target
 
 static OmpClauseSet allowedClauses_OMPD_declare_target {
@@ -283,7 +283,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_declare_target {
 
 static OmpClauseSet requiredClauses_OMPD_declare_target {
 };
-
 // Sets for declare variant
 
 static OmpClauseSet allowedClauses_OMPD_declare_variant {
@@ -300,13 +299,13 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_declare_variant {
 
 static OmpClauseSet requiredClauses_OMPD_declare_variant {
 };
-
 // Sets for depobj
 
 static OmpClauseSet allowedClauses_OMPD_depobj {
   Clause::OMPC_depend,
   Clause::OMPC_depobj,
   Clause::OMPC_destroy,
+  Clause::OMPC_init,
   Clause::OMPC_update,
 };
 
@@ -318,7 +317,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_depobj {
 
 static OmpClauseSet requiredClauses_OMPD_depobj {
 };
-
 // Sets for distribute
 
 static OmpClauseSet allowedClauses_OMPD_distribute {
@@ -339,7 +337,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_distribute {
 
 static OmpClauseSet requiredClauses_OMPD_distribute {
 };
-
 // Sets for distribute parallel do
 
 static OmpClauseSet allowedClauses_OMPD_distribute_parallel_do {
@@ -371,7 +368,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_distribute_parallel_do {
 
 static OmpClauseSet requiredClauses_OMPD_distribute_parallel_do {
 };
-
 // Sets for distribute parallel do simd
 
 static OmpClauseSet allowedClauses_OMPD_distribute_parallel_do_simd {
@@ -407,7 +403,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_distribute_parallel_do_simd {
 
 static OmpClauseSet requiredClauses_OMPD_distribute_parallel_do_simd {
 };
-
 // Sets for distribute parallel for
 
 static OmpClauseSet allowedClauses_OMPD_distribute_parallel_for {
@@ -439,7 +434,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_distribute_parallel_for {
 
 static OmpClauseSet requiredClauses_OMPD_distribute_parallel_for {
 };
-
 // Sets for distribute parallel for simd
 
 static OmpClauseSet allowedClauses_OMPD_distribute_parallel_for_simd {
@@ -476,7 +470,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_distribute_parallel_for_simd {
 
 static OmpClauseSet requiredClauses_OMPD_distribute_parallel_for_simd {
 };
-
 // Sets for distribute simd
 
 static OmpClauseSet allowedClauses_OMPD_distribute_simd {
@@ -511,7 +504,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_distribute_simd {
 
 static OmpClauseSet requiredClauses_OMPD_distribute_simd {
 };
-
 // Sets for do
 
 static OmpClauseSet allowedClauses_OMPD_do {
@@ -535,7 +527,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_do {
 
 static OmpClauseSet requiredClauses_OMPD_do {
 };
-
 // Sets for do simd
 
 static OmpClauseSet allowedClauses_OMPD_do_simd {
@@ -563,7 +554,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_do_simd {
 
 static OmpClauseSet requiredClauses_OMPD_do_simd {
 };
-
 // Sets for end assumes
 
 static OmpClauseSet allowedClauses_OMPD_end_assumes {
@@ -577,7 +567,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_assumes {
 
 static OmpClauseSet requiredClauses_OMPD_end_assumes {
 };
-
 // Sets for end declare target
 
 static OmpClauseSet allowedClauses_OMPD_end_declare_target {
@@ -591,7 +580,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_declare_target {
 
 static OmpClauseSet requiredClauses_OMPD_end_declare_target {
 };
-
 // Sets for end declare variant
 
 static OmpClauseSet allowedClauses_OMPD_end_declare_variant {
@@ -605,7 +593,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_declare_variant {
 
 static OmpClauseSet requiredClauses_OMPD_end_declare_variant {
 };
-
 // Sets for end do
 
 static OmpClauseSet allowedClauses_OMPD_end_do {
@@ -620,7 +607,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_do {
 
 static OmpClauseSet requiredClauses_OMPD_end_do {
 };
-
 // Sets for end do simd
 
 static OmpClauseSet allowedClauses_OMPD_end_do_simd {
@@ -635,7 +621,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_do_simd {
 
 static OmpClauseSet requiredClauses_OMPD_end_do_simd {
 };
-
 // Sets for end scope
 
 static OmpClauseSet allowedClauses_OMPD_end_scope {
@@ -650,7 +635,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_scope {
 
 static OmpClauseSet requiredClauses_OMPD_end_scope {
 };
-
 // Sets for end sections
 
 static OmpClauseSet allowedClauses_OMPD_end_sections {
@@ -665,7 +649,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_sections {
 
 static OmpClauseSet requiredClauses_OMPD_end_sections {
 };
-
 // Sets for end single
 
 static OmpClauseSet allowedClauses_OMPD_end_single {
@@ -681,7 +664,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_single {
 
 static OmpClauseSet requiredClauses_OMPD_end_single {
 };
-
 // Sets for end workdistribute
 
 static OmpClauseSet allowedClauses_OMPD_end_workdistribute {
@@ -695,7 +677,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_workdistribute {
 
 static OmpClauseSet requiredClauses_OMPD_end_workdistribute {
 };
-
 // Sets for end workshare
 
 static OmpClauseSet allowedClauses_OMPD_end_workshare {
@@ -710,7 +691,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_end_workshare {
 
 static OmpClauseSet requiredClauses_OMPD_end_workshare {
 };
-
 // Sets for error
 
 static OmpClauseSet allowedClauses_OMPD_error {
@@ -727,7 +707,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_error {
 
 static OmpClauseSet requiredClauses_OMPD_error {
 };
-
 // Sets for flush
 
 static OmpClauseSet allowedClauses_OMPD_flush {
@@ -746,7 +725,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_flush {
 
 static OmpClauseSet requiredClauses_OMPD_flush {
 };
-
 // Sets for for
 
 static OmpClauseSet allowedClauses_OMPD_for {
@@ -771,7 +749,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_for {
 
 static OmpClauseSet requiredClauses_OMPD_for {
 };
-
 // Sets for for simd
 
 static OmpClauseSet allowedClauses_OMPD_for_simd {
@@ -801,7 +778,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_for_simd {
 
 static OmpClauseSet requiredClauses_OMPD_for_simd {
 };
-
 // Sets for fuse
 
 static OmpClauseSet allowedClauses_OMPD_fuse {
@@ -816,7 +792,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_fuse {
 
 static OmpClauseSet requiredClauses_OMPD_fuse {
 };
-
 // Sets for groupprivate
 
 static OmpClauseSet allowedClauses_OMPD_groupprivate {
@@ -831,7 +806,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_groupprivate {
 
 static OmpClauseSet requiredClauses_OMPD_groupprivate {
 };
-
 // Sets for interchange
 
 static OmpClauseSet allowedClauses_OMPD_interchange {
@@ -846,7 +820,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_interchange {
 
 static OmpClauseSet requiredClauses_OMPD_interchange {
 };
-
 // Sets for masked taskloop
 
 static OmpClauseSet allowedClauses_OMPD_masked_taskloop {
@@ -878,7 +851,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_masked_taskloop {
 
 static OmpClauseSet requiredClauses_OMPD_masked_taskloop {
 };
-
 // Sets for masked taskloop simd
 
 static OmpClauseSet allowedClauses_OMPD_masked_taskloop_simd {
@@ -916,7 +888,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_masked_taskloop_simd {
 
 static OmpClauseSet requiredClauses_OMPD_masked_taskloop_simd {
 };
-
 // Sets for master
 
 static OmpClauseSet allowedClauses_OMPD_master {
@@ -930,7 +901,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_master {
 
 static OmpClauseSet requiredClauses_OMPD_master {
 };
-
 // Sets for master taskloop
 
 static OmpClauseSet allowedClauses_OMPD_master_taskloop {
@@ -961,7 +931,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_master_taskloop {
 
 static OmpClauseSet requiredClauses_OMPD_master_taskloop {
 };
-
 // Sets for master taskloop simd
 
 static OmpClauseSet allowedClauses_OMPD_master_taskloop_simd {
@@ -998,7 +967,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_master_taskloop_simd {
 
 static OmpClauseSet requiredClauses_OMPD_master_taskloop_simd {
 };
-
 // Sets for metadirective
 
 static OmpClauseSet allowedClauses_OMPD_metadirective {
@@ -1015,7 +983,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_metadirective {
 
 static OmpClauseSet requiredClauses_OMPD_metadirective {
 };
-
 // Sets for nothing
 
 static OmpClauseSet allowedClauses_OMPD_nothing {
@@ -1029,7 +996,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_nothing {
 
 static OmpClauseSet requiredClauses_OMPD_nothing {
 };
-
 // Sets for ordered
 
 static OmpClauseSet allowedClauses_OMPD_ordered {
@@ -1047,7 +1013,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_ordered {
 
 static OmpClauseSet requiredClauses_OMPD_ordered {
 };
-
 // Sets for parallel
 
 static OmpClauseSet allowedClauses_OMPD_parallel {
@@ -1074,7 +1039,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel {
 
 static OmpClauseSet requiredClauses_OMPD_parallel {
 };
-
 // Sets for parallel do
 
 static OmpClauseSet allowedClauses_OMPD_parallel_do {
@@ -1105,7 +1069,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_do {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_do {
 };
-
 // Sets for parallel do simd
 
 static OmpClauseSet allowedClauses_OMPD_parallel_do_simd {
@@ -1141,7 +1104,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_do_simd {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_do_simd {
 };
-
 // Sets for parallel for
 
 static OmpClauseSet allowedClauses_OMPD_parallel_for {
@@ -1174,7 +1136,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_for {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_for {
 };
-
 // Sets for parallel for simd
 
 static OmpClauseSet allowedClauses_OMPD_parallel_for_simd {
@@ -1211,7 +1172,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_for_simd {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_for_simd {
 };
-
 // Sets for parallel masked
 
 static OmpClauseSet allowedClauses_OMPD_parallel_masked {
@@ -1239,7 +1199,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_masked {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_masked {
 };
-
 // Sets for parallel masked taskloop
 
 static OmpClauseSet allowedClauses_OMPD_parallel_masked_taskloop {
@@ -1276,7 +1235,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_masked_taskloop {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_masked_taskloop {
 };
-
 // Sets for parallel masked taskloop simd
 
 static OmpClauseSet allowedClauses_OMPD_parallel_masked_taskloop_simd {
@@ -1319,7 +1277,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_masked_taskloop_simd {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_masked_taskloop_simd {
 };
-
 // Sets for parallel master
 
 static OmpClauseSet allowedClauses_OMPD_parallel_master {
@@ -1346,7 +1303,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_master {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_master {
 };
-
 // Sets for parallel master taskloop
 
 static OmpClauseSet allowedClauses_OMPD_parallel_master_taskloop {
@@ -1382,7 +1338,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_master_taskloop {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_master_taskloop {
 };
-
 // Sets for parallel master taskloop simd
 
 static OmpClauseSet allowedClauses_OMPD_parallel_master_taskloop_simd {
@@ -1424,7 +1379,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_master_taskloop_simd {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_master_taskloop_simd {
 };
-
 // Sets for parallel sections
 
 static OmpClauseSet allowedClauses_OMPD_parallel_sections {
@@ -1452,7 +1406,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_sections {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_sections {
 };
-
 // Sets for parallel workshare
 
 static OmpClauseSet allowedClauses_OMPD_parallel_workshare {
@@ -1478,7 +1431,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_workshare {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_workshare {
 };
-
 // Sets for requires
 
 static OmpClauseSet allowedClauses_OMPD_requires {
@@ -1499,7 +1451,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_requires {
 
 static OmpClauseSet requiredClauses_OMPD_requires {
 };
-
 // Sets for reverse
 
 static OmpClauseSet allowedClauses_OMPD_reverse {
@@ -1513,7 +1464,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_reverse {
 
 static OmpClauseSet requiredClauses_OMPD_reverse {
 };
-
 // Sets for scan
 
 static OmpClauseSet allowedClauses_OMPD_scan {
@@ -1529,7 +1479,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_scan {
 
 static OmpClauseSet requiredClauses_OMPD_scan {
 };
-
 // Sets for scope
 
 static OmpClauseSet allowedClauses_OMPD_scope {
@@ -1548,7 +1497,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_scope {
 
 static OmpClauseSet requiredClauses_OMPD_scope {
 };
-
 // Sets for section
 
 static OmpClauseSet allowedClauses_OMPD_section {
@@ -1562,7 +1510,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_section {
 
 static OmpClauseSet requiredClauses_OMPD_section {
 };
-
 // Sets for sections
 
 static OmpClauseSet allowedClauses_OMPD_sections {
@@ -1582,7 +1529,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_sections {
 
 static OmpClauseSet requiredClauses_OMPD_sections {
 };
-
 // Sets for simd
 
 static OmpClauseSet allowedClauses_OMPD_simd {
@@ -1608,7 +1554,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_simd {
 
 static OmpClauseSet requiredClauses_OMPD_simd {
 };
-
 // Sets for single
 
 static OmpClauseSet allowedClauses_OMPD_single {
@@ -1627,7 +1572,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_single {
 
 static OmpClauseSet requiredClauses_OMPD_single {
 };
-
 // Sets for stripe
 
 static OmpClauseSet allowedClauses_OMPD_stripe {
@@ -1642,7 +1586,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_stripe {
 
 static OmpClauseSet requiredClauses_OMPD_stripe {
 };
-
 // Sets for target
 
 static OmpClauseSet allowedClauses_OMPD_target {
@@ -1676,7 +1619,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target {
 
 static OmpClauseSet requiredClauses_OMPD_target {
 };
-
 // Sets for target data
 
 static OmpClauseSet allowedClauses_OMPD_target_data {
@@ -1697,7 +1639,6 @@ static OmpClauseSet requiredClauses_OMPD_target_data {
   Clause::OMPC_use_device_addr,
   Clause::OMPC_use_device_ptr,
 };
-
 // Sets for target enter data
 
 static OmpClauseSet allowedClauses_OMPD_target_enter_data {
@@ -1717,7 +1658,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_enter_data {
 static OmpClauseSet requiredClauses_OMPD_target_enter_data {
   Clause::OMPC_map,
 };
-
 // Sets for target exit data
 
 static OmpClauseSet allowedClauses_OMPD_target_exit_data {
@@ -1737,7 +1677,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_exit_data {
 static OmpClauseSet requiredClauses_OMPD_target_exit_data {
   Clause::OMPC_map,
 };
-
 // Sets for target parallel
 
 static OmpClauseSet allowedClauses_OMPD_target_parallel {
@@ -1774,7 +1713,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_parallel {
 
 static OmpClauseSet requiredClauses_OMPD_target_parallel {
 };
-
 // Sets for target parallel do
 
 static OmpClauseSet allowedClauses_OMPD_target_parallel_do {
@@ -1814,7 +1752,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_parallel_do {
 
 static OmpClauseSet requiredClauses_OMPD_target_parallel_do {
 };
-
 // Sets for target parallel do simd
 
 static OmpClauseSet allowedClauses_OMPD_target_parallel_do_simd {
@@ -1858,7 +1795,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_parallel_do_simd {
 
 static OmpClauseSet requiredClauses_OMPD_target_parallel_do_simd {
 };
-
 // Sets for target parallel for
 
 static OmpClauseSet allowedClauses_OMPD_target_parallel_for {
@@ -1901,7 +1837,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_parallel_for {
 
 static OmpClauseSet requiredClauses_OMPD_target_parallel_for {
 };
-
 // Sets for target parallel for simd
 
 static OmpClauseSet allowedClauses_OMPD_target_parallel_for_simd {
@@ -1948,7 +1883,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_parallel_for_simd {
 
 static OmpClauseSet requiredClauses_OMPD_target_parallel_for_simd {
 };
-
 // Sets for target simd
 
 static OmpClauseSet allowedClauses_OMPD_target_simd {
@@ -1993,7 +1927,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_simd {
 
 static OmpClauseSet requiredClauses_OMPD_target_simd {
 };
-
 // Sets for target teams
 
 static OmpClauseSet allowedClauses_OMPD_target_teams {
@@ -2028,7 +1961,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams {
 
 static OmpClauseSet requiredClauses_OMPD_target_teams {
 };
-
 // Sets for target teams distribute
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_distribute {
@@ -2066,7 +1998,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_distribute {
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_distribute {
 };
-
 // Sets for target teams distribute parallel do
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_distribute_parallel_do {
@@ -2108,7 +2039,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_distribute_paralle
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_distribute_parallel_do {
 };
-
 // Sets for target teams distribute parallel do simd
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_distribute_parallel_do_simd {
@@ -2154,7 +2084,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_distribute_paralle
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_distribute_parallel_do_simd {
 };
-
 // Sets for target teams distribute parallel for
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_distribute_parallel_for {
@@ -2197,7 +2126,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_distribute_paralle
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_distribute_parallel_for {
 };
-
 // Sets for target teams distribute parallel for simd
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_distribute_parallel_for_simd {
@@ -2245,7 +2173,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_distribute_paralle
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_distribute_parallel_for_simd {
 };
-
 // Sets for target teams distribute simd
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_distribute_simd {
@@ -2288,7 +2215,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_distribute_simd {
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_distribute_simd {
 };
-
 // Sets for target teams workdistribute
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_workdistribute {
@@ -2322,7 +2248,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_workdistribute {
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_workdistribute {
 };
-
 // Sets for target update
 
 static OmpClauseSet allowedClauses_OMPD_target_update {
@@ -2343,7 +2268,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_update {
 
 static OmpClauseSet requiredClauses_OMPD_target_update {
 };
-
 // Sets for task
 
 static OmpClauseSet allowedClauses_OMPD_task {
@@ -2374,7 +2298,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_task {
 
 static OmpClauseSet requiredClauses_OMPD_task {
 };
-
 // Sets for taskgroup
 
 static OmpClauseSet allowedClauses_OMPD_taskgroup {
@@ -2390,7 +2313,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_taskgroup {
 
 static OmpClauseSet requiredClauses_OMPD_taskgroup {
 };
-
 // Sets for taskloop
 
 static OmpClauseSet allowedClauses_OMPD_taskloop {
@@ -2424,7 +2346,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_taskloop {
 
 static OmpClauseSet requiredClauses_OMPD_taskloop {
 };
-
 // Sets for taskloop simd
 
 static OmpClauseSet allowedClauses_OMPD_taskloop_simd {
@@ -2461,7 +2382,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_taskloop_simd {
 
 static OmpClauseSet requiredClauses_OMPD_taskloop_simd {
 };
-
 // Sets for taskwait
 
 static OmpClauseSet allowedClauses_OMPD_taskwait {
@@ -2478,7 +2398,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_taskwait {
 
 static OmpClauseSet requiredClauses_OMPD_taskwait {
 };
-
 // Sets for taskyield
 
 static OmpClauseSet allowedClauses_OMPD_taskyield {
@@ -2492,7 +2411,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_taskyield {
 
 static OmpClauseSet requiredClauses_OMPD_taskyield {
 };
-
 // Sets for taskgraph
 
 static OmpClauseSet allowedClauses_OMPD_taskgraph {
@@ -2510,7 +2428,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_taskgraph {
 
 static OmpClauseSet requiredClauses_OMPD_taskgraph {
 };
-
 // Sets for teams
 
 static OmpClauseSet allowedClauses_OMPD_teams {
@@ -2535,7 +2452,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams {
 
 static OmpClauseSet requiredClauses_OMPD_teams {
 };
-
 // Sets for teams distribute
 
 static OmpClauseSet allowedClauses_OMPD_teams_distribute {
@@ -2564,7 +2480,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_distribute {
 
 static OmpClauseSet requiredClauses_OMPD_teams_distribute {
 };
-
 // Sets for teams distribute parallel do
 
 static OmpClauseSet allowedClauses_OMPD_teams_distribute_parallel_do {
@@ -2599,7 +2514,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_distribute_parallel_do {
 
 static OmpClauseSet requiredClauses_OMPD_teams_distribute_parallel_do {
 };
-
 // Sets for teams distribute parallel do simd
 
 static OmpClauseSet allowedClauses_OMPD_teams_distribute_parallel_do_simd {
@@ -2637,7 +2551,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_distribute_parallel_do_si
 
 static OmpClauseSet requiredClauses_OMPD_teams_distribute_parallel_do_simd {
 };
-
 // Sets for teams distribute parallel for
 
 static OmpClauseSet allowedClauses_OMPD_teams_distribute_parallel_for {
@@ -2672,7 +2585,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_distribute_parallel_for {
 
 static OmpClauseSet requiredClauses_OMPD_teams_distribute_parallel_for {
 };
-
 // Sets for teams distribute parallel for simd
 
 static OmpClauseSet allowedClauses_OMPD_teams_distribute_parallel_for_simd {
@@ -2711,7 +2623,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_distribute_parallel_for_s
 
 static OmpClauseSet requiredClauses_OMPD_teams_distribute_parallel_for_simd {
 };
-
 // Sets for teams distribute simd
 
 static OmpClauseSet allowedClauses_OMPD_teams_distribute_simd {
@@ -2745,7 +2656,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_distribute_simd {
 
 static OmpClauseSet requiredClauses_OMPD_teams_distribute_simd {
 };
-
 // Sets for teams workdistribute
 
 static OmpClauseSet allowedClauses_OMPD_teams_workdistribute {
@@ -2769,7 +2679,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_workdistribute {
 
 static OmpClauseSet requiredClauses_OMPD_teams_workdistribute {
 };
-
 // Sets for threadprivate
 
 static OmpClauseSet allowedClauses_OMPD_threadprivate {
@@ -2783,7 +2692,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_threadprivate {
 
 static OmpClauseSet requiredClauses_OMPD_threadprivate {
 };
-
 // Sets for tile
 
 static OmpClauseSet allowedClauses_OMPD_tile {
@@ -2799,7 +2707,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_tile {
 static OmpClauseSet requiredClauses_OMPD_tile {
   Clause::OMPC_sizes,
 };
-
 // Sets for unknown
 
 static OmpClauseSet allowedClauses_OMPD_unknown {
@@ -2813,7 +2720,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_unknown {
 
 static OmpClauseSet requiredClauses_OMPD_unknown {
 };
-
 // Sets for unroll
 
 static OmpClauseSet allowedClauses_OMPD_unroll {
@@ -2829,7 +2735,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_unroll {
 
 static OmpClauseSet requiredClauses_OMPD_unroll {
 };
-
 // Sets for workdistribute
 
 static OmpClauseSet allowedClauses_OMPD_workdistribute {
@@ -2843,7 +2748,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_workdistribute {
 
 static OmpClauseSet requiredClauses_OMPD_workdistribute {
 };
-
 // Sets for workshare
 
 static OmpClauseSet allowedClauses_OMPD_workshare {
@@ -2858,7 +2762,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_workshare {
 
 static OmpClauseSet requiredClauses_OMPD_workshare {
 };
-
 // Sets for dispatch
 
 static OmpClauseSet allowedClauses_OMPD_dispatch {
@@ -2879,7 +2782,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_dispatch {
 
 static OmpClauseSet requiredClauses_OMPD_dispatch {
 };
-
 // Sets for interop
 
 static OmpClauseSet allowedClauses_OMPD_interop {
@@ -2899,7 +2801,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_interop {
 
 static OmpClauseSet requiredClauses_OMPD_interop {
 };
-
 // Sets for loop
 
 static OmpClauseSet allowedClauses_OMPD_loop {
@@ -2919,7 +2820,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_loop {
 
 static OmpClauseSet requiredClauses_OMPD_loop {
 };
-
 // Sets for masked
 
 static OmpClauseSet allowedClauses_OMPD_masked {
@@ -2934,7 +2834,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_masked {
 
 static OmpClauseSet requiredClauses_OMPD_masked {
 };
-
 // Sets for parallel loop
 
 static OmpClauseSet allowedClauses_OMPD_parallel_loop {
@@ -2965,7 +2864,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_parallel_loop {
 
 static OmpClauseSet requiredClauses_OMPD_parallel_loop {
 };
-
 // Sets for target loop
 
 static OmpClauseSet allowedClauses_OMPD_target_loop {
@@ -3001,7 +2899,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_loop {
 
 static OmpClauseSet requiredClauses_OMPD_target_loop {
 };
-
 // Sets for target parallel loop
 
 static OmpClauseSet allowedClauses_OMPD_target_parallel_loop {
@@ -3042,7 +2939,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_parallel_loop {
 
 static OmpClauseSet requiredClauses_OMPD_target_parallel_loop {
 };
-
 // Sets for target teams loop
 
 static OmpClauseSet allowedClauses_OMPD_target_teams_loop {
@@ -3080,7 +2976,6 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_target_teams_loop {
 
 static OmpClauseSet requiredClauses_OMPD_target_teams_loop {
 };
-
 // Sets for teams loop
 
 static OmpClauseSet allowedClauses_OMPD_teams_loop {
@@ -3108,8 +3003,8 @@ static OmpClauseSet allowedExclusiveClauses_OMPD_teams_loop {
 
 static OmpClauseSet requiredClauses_OMPD_teams_loop {
 };
-} // namespace omp
-} // namespace llvm
+
+} // namespace llvm::omp
 
 #endif // GEN_FLANG_DIRECTIVE_CLAUSE_SETS
 
@@ -3211,6 +3106,14 @@ static OmpClauseSet requiredClauses_OMPD_teams_loop {
       llvm::omp::allowedOnceClauses_OMPD_critical,
       llvm::omp::allowedExclusiveClauses_OMPD_critical,
       llvm::omp::requiredClauses_OMPD_critical,
+    }
+  },
+  {llvm::omp::Directive::OMPD_declare_induction,
+    {
+      llvm::omp::allowedClauses_OMPD_declare_induction,
+      llvm::omp::allowedOnceClauses_OMPD_declare_induction,
+      llvm::omp::allowedExclusiveClauses_OMPD_declare_induction,
+      llvm::omp::requiredClauses_OMPD_declare_induction,
     }
   },
   {llvm::omp::Directive::OMPD_declare_mapper,
@@ -4110,16 +4013,20 @@ WRAPPER_CLASS(Aligned, OmpAlignedClause);
 WRAPPER_CLASS(Allocate, OmpAllocateClause);
 WRAPPER_CLASS(Allocator, ScalarIntExpr);
 WRAPPER_CLASS(AppendArgs, OmpAppendArgsClause);
+EMPTY_CLASS(Apply);
 WRAPPER_CLASS(At, OmpAtClause);
 WRAPPER_CLASS(AtomicDefaultMemOrder, OmpAtomicDefaultMemOrderClause);
 WRAPPER_CLASS(Bind, OmpBindClause);
 WRAPPER_CLASS(CancellationConstructType, OmpCancellationConstructTypeClause);
 EMPTY_CLASS(Capture);
 WRAPPER_CLASS(Collapse, ScalarIntConstantExpr);
+EMPTY_CLASS(Collector);
+WRAPPER_CLASS(Combiner, OmpCombinerClause);
 EMPTY_CLASS(Compare);
 WRAPPER_CLASS(Contains, OmpContainsClause);
 WRAPPER_CLASS(Copyprivate, OmpObjectList);
 WRAPPER_CLASS(Copyin, OmpObjectList);
+EMPTY_CLASS(Counts);
 WRAPPER_CLASS(Default, OmpDefaultClause);
 WRAPPER_CLASS(Defaultmap, OmpDefaultmapClause);
 WRAPPER_CLASS(Depend, OmpDependClause);
@@ -4154,16 +4061,22 @@ WRAPPER_CLASS(InReduction, OmpInReductionClause);
 EMPTY_CLASS(Inbranch);
 WRAPPER_CLASS(Inclusive, OmpObjectList);
 WRAPPER_CLASS(Indirect, OmpIndirectClause);
+EMPTY_CLASS(Induction);
+EMPTY_CLASS(Inductor);
 WRAPPER_CLASS(Init, OmpInitClause);
+EMPTY_CLASS(InitComplete);
 WRAPPER_CLASS(Initializer, OmpInitializerClause);
+EMPTY_CLASS(Interop);
 WRAPPER_CLASS(IsDevicePtr, OmpObjectList);
 WRAPPER_CLASS(Lastprivate, OmpLastprivateClause);
 WRAPPER_CLASS(Linear, OmpLinearClause);
 WRAPPER_CLASS(Link, OmpObjectList);
-WRAPPER_CLASS(Looprange, OmpLoopRangeClause);
+EMPTY_CLASS(Local);
+WRAPPER_CLASS(Looprange, OmpLooprangeClause);
 WRAPPER_CLASS(Map, OmpMapClause);
 WRAPPER_CLASS(Match, OmpMatchClause);
 EMPTY_CLASS(MemoryOrder);
+EMPTY_CLASS(Memscope);
 EMPTY_CLASS(Mergeable);
 WRAPPER_CLASS(Message, OmpMessageClause);
 EMPTY_CLASS(Nogroup);
@@ -4177,8 +4090,8 @@ WRAPPER_CLASS(Nontemporal, std::list<Name>);
 EMPTY_CLASS(Notinbranch);
 WRAPPER_CLASS(Novariants, ScalarLogicalExpr);
 WRAPPER_CLASS(NumTasks, OmpNumTasksClause);
-WRAPPER_CLASS(NumTeams, ScalarIntExpr);
-WRAPPER_CLASS(NumThreads, ScalarIntExpr);
+WRAPPER_CLASS(NumTeams, OmpNumTeamsClause);
+WRAPPER_CLASS(NumThreads, OmpNumThreadsClause);
 EMPTY_CLASS(OmpxAttribute);
 EMPTY_CLASS(OmpxBare);
 WRAPPER_CLASS(OmpxDynCgroupMem, ScalarIntExpr);
@@ -4197,6 +4110,7 @@ EMPTY_CLASS(Release);
 WRAPPER_CLASS(Replayable, std::optional<OmpReplayableClause>);
 WRAPPER_CLASS(ReverseOffload, std::optional<OmpReverseOffloadClause>);
 WRAPPER_CLASS(Safelen, ScalarIntConstantExpr);
+EMPTY_CLASS(Safesync);
 WRAPPER_CLASS(Schedule, OmpScheduleClause);
 WRAPPER_CLASS(SelfMaps, std::optional<OmpSelfMapsClause>);
 EMPTY_CLASS(SeqCst);
@@ -4206,7 +4120,7 @@ EMPTY_CLASS(Simd);
 WRAPPER_CLASS(Simdlen, ScalarIntConstantExpr);
 WRAPPER_CLASS(Sizes, std::list<ScalarIntExpr>);
 WRAPPER_CLASS(TaskReduction, OmpTaskReductionClause);
-WRAPPER_CLASS(ThreadLimit, ScalarIntExpr);
+WRAPPER_CLASS(ThreadLimit, OmpThreadLimitClause);
 EMPTY_CLASS(Threadprivate);
 EMPTY_CLASS(Threads);
 WRAPPER_CLASS(Threadset, OmpThreadsetClause);
@@ -4241,16 +4155,20 @@ Absent
 , Allocate
 , Allocator
 , AppendArgs
+, Apply
 , At
 , AtomicDefaultMemOrder
 , Bind
 , CancellationConstructType
 , Capture
 , Collapse
+, Collector
+, Combiner
 , Compare
 , Contains
 , Copyprivate
 , Copyin
+, Counts
 , Default
 , Defaultmap
 , Depend
@@ -4285,16 +4203,22 @@ Absent
 , Inbranch
 , Inclusive
 , Indirect
+, Induction
+, Inductor
 , Init
+, InitComplete
 , Initializer
+, Interop
 , IsDevicePtr
 , Lastprivate
 , Linear
 , Link
+, Local
 , Looprange
 , Map
 , Match
 , MemoryOrder
+, Memscope
 , Mergeable
 , Message
 , Nogroup
@@ -4328,6 +4252,7 @@ Absent
 , Replayable
 , ReverseOffload
 , Safelen
+, Safesync
 , Schedule
 , SelfMaps
 , SeqCst
@@ -4372,16 +4297,20 @@ NODE(OmpClause, Aligned)
 NODE(OmpClause, Allocate)
 NODE(OmpClause, Allocator)
 NODE(OmpClause, AppendArgs)
+NODE(OmpClause, Apply)
 NODE(OmpClause, At)
 NODE(OmpClause, AtomicDefaultMemOrder)
 NODE(OmpClause, Bind)
 NODE(OmpClause, CancellationConstructType)
 NODE(OmpClause, Capture)
 NODE(OmpClause, Collapse)
+NODE(OmpClause, Collector)
+NODE(OmpClause, Combiner)
 NODE(OmpClause, Compare)
 NODE(OmpClause, Contains)
 NODE(OmpClause, Copyprivate)
 NODE(OmpClause, Copyin)
+NODE(OmpClause, Counts)
 NODE(OmpClause, Default)
 NODE(OmpClause, Defaultmap)
 NODE(OmpClause, Depend)
@@ -4416,16 +4345,22 @@ NODE(OmpClause, InReduction)
 NODE(OmpClause, Inbranch)
 NODE(OmpClause, Inclusive)
 NODE(OmpClause, Indirect)
+NODE(OmpClause, Induction)
+NODE(OmpClause, Inductor)
 NODE(OmpClause, Init)
+NODE(OmpClause, InitComplete)
 NODE(OmpClause, Initializer)
+NODE(OmpClause, Interop)
 NODE(OmpClause, IsDevicePtr)
 NODE(OmpClause, Lastprivate)
 NODE(OmpClause, Linear)
 NODE(OmpClause, Link)
+NODE(OmpClause, Local)
 NODE(OmpClause, Looprange)
 NODE(OmpClause, Map)
 NODE(OmpClause, Match)
 NODE(OmpClause, MemoryOrder)
+NODE(OmpClause, Memscope)
 NODE(OmpClause, Mergeable)
 NODE(OmpClause, Message)
 NODE(OmpClause, Nogroup)
@@ -4459,6 +4394,7 @@ NODE(OmpClause, Release)
 NODE(OmpClause, Replayable)
 NODE(OmpClause, ReverseOffload)
 NODE(OmpClause, Safelen)
+NODE(OmpClause, Safesync)
 NODE(OmpClause, Schedule)
 NODE(OmpClause, SelfMaps)
 NODE(OmpClause, SeqCst)
@@ -4543,6 +4479,7 @@ void Unparse(const OmpClause::AppendArgs &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Apply &) { Word("APPLY"); }
 void Unparse(const OmpClause::At &x) {
   Word("AT");
   Put("(");
@@ -4568,6 +4505,13 @@ void Unparse(const OmpClause::Collapse &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Collector &) { Word("COLLECTOR"); }
+void Unparse(const OmpClause::Combiner &x) {
+  Word("COMBINER");
+  Put("(");
+  Walk(x.v);
+  Put(")");
+}
 void Before(const OmpClause::Compare &) { Word("COMPARE"); }
 void Unparse(const OmpClause::Contains &x) {
   Word("CONTAINS");
@@ -4587,6 +4531,7 @@ void Unparse(const OmpClause::Copyin &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Counts &) { Word("COUNTS"); }
 void Unparse(const OmpClause::Default &x) {
   Word("DEFAULT");
   Put("(");
@@ -4756,18 +4701,22 @@ void Unparse(const OmpClause::Indirect &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Induction &) { Word("INDUCTION"); }
+void Before(const OmpClause::Inductor &) { Word("INDUCTOR"); }
 void Unparse(const OmpClause::Init &x) {
   Word("INIT");
   Put("(");
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::InitComplete &) { Word("INIT_COMPLETE"); }
 void Unparse(const OmpClause::Initializer &x) {
   Word("INITIALIZER");
   Put("(");
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Interop &) { Word("INTEROP"); }
 void Unparse(const OmpClause::IsDevicePtr &x) {
   Word("IS_DEVICE_PTR");
   Put("(");
@@ -4792,6 +4741,7 @@ void Unparse(const OmpClause::Link &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Local &) { Word("LOCAL"); }
 void Unparse(const OmpClause::Looprange &x) {
   Word("LOOPRANGE");
   Put("(");
@@ -4811,6 +4761,7 @@ void Unparse(const OmpClause::Match &x) {
   Put(")");
 }
 void Before(const OmpClause::MemoryOrder &) { Word("MEMORY_ORDER"); }
+void Before(const OmpClause::Memscope &) { Word("MEMSCOPE"); }
 void Before(const OmpClause::Mergeable &) { Word("MERGEABLE"); }
 void Unparse(const OmpClause::Message &x) {
   Word("MESSAGE");
@@ -4934,6 +4885,7 @@ void Unparse(const OmpClause::Safelen &x) {
   Walk(x.v);
   Put(")");
 }
+void Before(const OmpClause::Safesync &) { Word("SAFESYNC"); }
 void Unparse(const OmpClause::Schedule &x) {
   Word("SCHEDULE");
   Put("(");
@@ -5063,16 +5015,20 @@ void Enter(const parser::OmpClause::Aligned &);
 void Enter(const parser::OmpClause::Allocate &);
 void Enter(const parser::OmpClause::Allocator &);
 void Enter(const parser::OmpClause::AppendArgs &);
+void Enter(const parser::OmpClause::Apply &);
 void Enter(const parser::OmpClause::At &);
 void Enter(const parser::OmpClause::AtomicDefaultMemOrder &);
 void Enter(const parser::OmpClause::Bind &);
 void Enter(const parser::OmpClause::CancellationConstructType &);
 void Enter(const parser::OmpClause::Capture &);
 void Enter(const parser::OmpClause::Collapse &);
+void Enter(const parser::OmpClause::Collector &);
+void Enter(const parser::OmpClause::Combiner &);
 void Enter(const parser::OmpClause::Compare &);
 void Enter(const parser::OmpClause::Contains &);
 void Enter(const parser::OmpClause::Copyprivate &);
 void Enter(const parser::OmpClause::Copyin &);
+void Enter(const parser::OmpClause::Counts &);
 void Enter(const parser::OmpClause::Default &);
 void Enter(const parser::OmpClause::Defaultmap &);
 void Enter(const parser::OmpClause::Depend &);
@@ -5107,16 +5063,22 @@ void Enter(const parser::OmpClause::InReduction &);
 void Enter(const parser::OmpClause::Inbranch &);
 void Enter(const parser::OmpClause::Inclusive &);
 void Enter(const parser::OmpClause::Indirect &);
+void Enter(const parser::OmpClause::Induction &);
+void Enter(const parser::OmpClause::Inductor &);
 void Enter(const parser::OmpClause::Init &);
+void Enter(const parser::OmpClause::InitComplete &);
 void Enter(const parser::OmpClause::Initializer &);
+void Enter(const parser::OmpClause::Interop &);
 void Enter(const parser::OmpClause::IsDevicePtr &);
 void Enter(const parser::OmpClause::Lastprivate &);
 void Enter(const parser::OmpClause::Linear &);
 void Enter(const parser::OmpClause::Link &);
+void Enter(const parser::OmpClause::Local &);
 void Enter(const parser::OmpClause::Looprange &);
 void Enter(const parser::OmpClause::Map &);
 void Enter(const parser::OmpClause::Match &);
 void Enter(const parser::OmpClause::MemoryOrder &);
+void Enter(const parser::OmpClause::Memscope &);
 void Enter(const parser::OmpClause::Mergeable &);
 void Enter(const parser::OmpClause::Message &);
 void Enter(const parser::OmpClause::Nogroup &);
@@ -5150,6 +5112,7 @@ void Enter(const parser::OmpClause::Release &);
 void Enter(const parser::OmpClause::Replayable &);
 void Enter(const parser::OmpClause::ReverseOffload &);
 void Enter(const parser::OmpClause::Safelen &);
+void Enter(const parser::OmpClause::Safesync &);
 void Enter(const parser::OmpClause::Schedule &);
 void Enter(const parser::OmpClause::SelfMaps &);
 void Enter(const parser::OmpClause::SeqCst &);
@@ -5204,6 +5167,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Allocator>)
   return llvm::omp::Clause::OMPC_allocator;
 if constexpr (std::is_same_v<A, parser::OmpClause::AppendArgs>)
   return llvm::omp::Clause::OMPC_append_args;
+if constexpr (std::is_same_v<A, parser::OmpClause::Apply>)
+  return llvm::omp::Clause::OMPC_apply;
 if constexpr (std::is_same_v<A, parser::OmpClause::At>)
   return llvm::omp::Clause::OMPC_at;
 if constexpr (std::is_same_v<A, parser::OmpClause::AtomicDefaultMemOrder>)
@@ -5216,6 +5181,10 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Capture>)
   return llvm::omp::Clause::OMPC_capture;
 if constexpr (std::is_same_v<A, parser::OmpClause::Collapse>)
   return llvm::omp::Clause::OMPC_collapse;
+if constexpr (std::is_same_v<A, parser::OmpClause::Collector>)
+  return llvm::omp::Clause::OMPC_collector;
+if constexpr (std::is_same_v<A, parser::OmpClause::Combiner>)
+  return llvm::omp::Clause::OMPC_combiner;
 if constexpr (std::is_same_v<A, parser::OmpClause::Compare>)
   return llvm::omp::Clause::OMPC_compare;
 if constexpr (std::is_same_v<A, parser::OmpClause::Contains>)
@@ -5224,6 +5193,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Copyprivate>)
   return llvm::omp::Clause::OMPC_copyprivate;
 if constexpr (std::is_same_v<A, parser::OmpClause::Copyin>)
   return llvm::omp::Clause::OMPC_copyin;
+if constexpr (std::is_same_v<A, parser::OmpClause::Counts>)
+  return llvm::omp::Clause::OMPC_counts;
 if constexpr (std::is_same_v<A, parser::OmpClause::Default>)
   return llvm::omp::Clause::OMPC_default;
 if constexpr (std::is_same_v<A, parser::OmpClause::Defaultmap>)
@@ -5292,10 +5263,18 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Inclusive>)
   return llvm::omp::Clause::OMPC_inclusive;
 if constexpr (std::is_same_v<A, parser::OmpClause::Indirect>)
   return llvm::omp::Clause::OMPC_indirect;
+if constexpr (std::is_same_v<A, parser::OmpClause::Induction>)
+  return llvm::omp::Clause::OMPC_induction;
+if constexpr (std::is_same_v<A, parser::OmpClause::Inductor>)
+  return llvm::omp::Clause::OMPC_inductor;
 if constexpr (std::is_same_v<A, parser::OmpClause::Init>)
   return llvm::omp::Clause::OMPC_init;
+if constexpr (std::is_same_v<A, parser::OmpClause::InitComplete>)
+  return llvm::omp::Clause::OMPC_init_complete;
 if constexpr (std::is_same_v<A, parser::OmpClause::Initializer>)
   return llvm::omp::Clause::OMPC_initializer;
+if constexpr (std::is_same_v<A, parser::OmpClause::Interop>)
+  return llvm::omp::Clause::OMPC_interop;
 if constexpr (std::is_same_v<A, parser::OmpClause::IsDevicePtr>)
   return llvm::omp::Clause::OMPC_is_device_ptr;
 if constexpr (std::is_same_v<A, parser::OmpClause::Lastprivate>)
@@ -5304,6 +5283,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Linear>)
   return llvm::omp::Clause::OMPC_linear;
 if constexpr (std::is_same_v<A, parser::OmpClause::Link>)
   return llvm::omp::Clause::OMPC_link;
+if constexpr (std::is_same_v<A, parser::OmpClause::Local>)
+  return llvm::omp::Clause::OMPC_local;
 if constexpr (std::is_same_v<A, parser::OmpClause::Looprange>)
   return llvm::omp::Clause::OMPC_looprange;
 if constexpr (std::is_same_v<A, parser::OmpClause::Map>)
@@ -5312,6 +5293,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::Match>)
   return llvm::omp::Clause::OMPC_match;
 if constexpr (std::is_same_v<A, parser::OmpClause::MemoryOrder>)
   return llvm::omp::Clause::OMPC_memory_order;
+if constexpr (std::is_same_v<A, parser::OmpClause::Memscope>)
+  return llvm::omp::Clause::OMPC_memscope;
 if constexpr (std::is_same_v<A, parser::OmpClause::Mergeable>)
   return llvm::omp::Clause::OMPC_mergeable;
 if constexpr (std::is_same_v<A, parser::OmpClause::Message>)
@@ -5378,6 +5361,8 @@ if constexpr (std::is_same_v<A, parser::OmpClause::ReverseOffload>)
   return llvm::omp::Clause::OMPC_reverse_offload;
 if constexpr (std::is_same_v<A, parser::OmpClause::Safelen>)
   return llvm::omp::Clause::OMPC_safelen;
+if constexpr (std::is_same_v<A, parser::OmpClause::Safesync>)
+  return llvm::omp::Clause::OMPC_safesync;
 if constexpr (std::is_same_v<A, parser::OmpClause::Schedule>)
   return llvm::omp::Clause::OMPC_schedule;
 if constexpr (std::is_same_v<A, parser::OmpClause::SelfMaps>)
@@ -5460,7 +5445,7 @@ TYPE_PARSER(
   "threadset" >> construct<OmpClause>(construct<OmpClause::Threadset>(parenthesized(Parser<OmpThreadsetClause>{}))) ||
   "threads" >> construct<OmpClause>(construct<OmpClause::Threads>()) ||
   "threadprivate" >> construct<OmpClause>(construct<OmpClause::Threadprivate>()) ||
-  "thread_limit" >> construct<OmpClause>(construct<OmpClause::ThreadLimit>(parenthesized(scalarIntExpr))) ||
+  "thread_limit" >> construct<OmpClause>(construct<OmpClause::ThreadLimit>(parenthesized(Parser<OmpThreadLimitClause>{}))) ||
   "task_reduction" >> construct<OmpClause>(construct<OmpClause::TaskReduction>(parenthesized(Parser<OmpTaskReductionClause>{}))) ||
   "sizes" >> construct<OmpClause>(construct<OmpClause::Sizes>(parenthesized(nonemptyList(scalarIntExpr)))) ||
   "simdlen" >> construct<OmpClause>(construct<OmpClause::Simdlen>(parenthesized(scalarIntConstantExpr))) ||
@@ -5470,6 +5455,7 @@ TYPE_PARSER(
   "seq_cst" >> construct<OmpClause>(construct<OmpClause::SeqCst>()) ||
   "self_maps" >> construct<OmpClause>(construct<OmpClause::SelfMaps>(maybe(parenthesized(Parser<OmpSelfMapsClause>{})))) ||
   "schedule" >> construct<OmpClause>(construct<OmpClause::Schedule>(parenthesized(Parser<OmpScheduleClause>{}))) ||
+  "safesync" >> construct<OmpClause>(construct<OmpClause::Safesync>()) ||
   "safelen" >> construct<OmpClause>(construct<OmpClause::Safelen>(parenthesized(scalarIntConstantExpr))) ||
   "reverse_offload" >> construct<OmpClause>(construct<OmpClause::ReverseOffload>(maybe(parenthesized(Parser<OmpReverseOffloadClause>{})))) ||
   "replayable" >> construct<OmpClause>(construct<OmpClause::Replayable>(maybe(parenthesized(Parser<OmpReplayableClause>{})))) ||
@@ -5488,8 +5474,8 @@ TYPE_PARSER(
   "ompx_dyn_cgroup_mem" >> construct<OmpClause>(construct<OmpClause::OmpxDynCgroupMem>(parenthesized(scalarIntExpr))) ||
   "ompx_bare" >> construct<OmpClause>(construct<OmpClause::OmpxBare>()) ||
   "ompx_attribute" >> construct<OmpClause>(construct<OmpClause::OmpxAttribute>()) ||
-  "num_threads" >> construct<OmpClause>(construct<OmpClause::NumThreads>(parenthesized(scalarIntExpr))) ||
-  "num_teams" >> construct<OmpClause>(construct<OmpClause::NumTeams>(parenthesized(scalarIntExpr))) ||
+  "num_threads" >> construct<OmpClause>(construct<OmpClause::NumThreads>(parenthesized(Parser<OmpNumThreadsClause>{}))) ||
+  "num_teams" >> construct<OmpClause>(construct<OmpClause::NumTeams>(parenthesized(Parser<OmpNumTeamsClause>{}))) ||
   "num_tasks" >> construct<OmpClause>(construct<OmpClause::NumTasks>(parenthesized(Parser<OmpNumTasksClause>{}))) ||
   "nowait" >> construct<OmpClause>(construct<OmpClause::Nowait>()) ||
   "novariants" >> construct<OmpClause>(construct<OmpClause::Novariants>(parenthesized(scalarLogicalExpr))) ||
@@ -5503,16 +5489,22 @@ TYPE_PARSER(
   "no_openmp" >> construct<OmpClause>(construct<OmpClause::NoOpenmp>()) ||
   "message" >> construct<OmpClause>(construct<OmpClause::Message>(parenthesized(Parser<OmpMessageClause>{}))) ||
   "mergeable" >> construct<OmpClause>(construct<OmpClause::Mergeable>()) ||
+  "memscope" >> construct<OmpClause>(construct<OmpClause::Memscope>()) ||
   "memory_order" >> construct<OmpClause>(construct<OmpClause::MemoryOrder>()) ||
   "match" >> construct<OmpClause>(construct<OmpClause::Match>(parenthesized(Parser<OmpMatchClause>{}))) ||
   "map" >> construct<OmpClause>(construct<OmpClause::Map>(parenthesized(Parser<OmpMapClause>{}))) ||
-  "looprange" >> construct<OmpClause>(construct<OmpClause::Looprange>(parenthesized(Parser<OmpLoopRangeClause>{}))) ||
+  "looprange" >> construct<OmpClause>(construct<OmpClause::Looprange>(parenthesized(Parser<OmpLooprangeClause>{}))) ||
+  "local" >> construct<OmpClause>(construct<OmpClause::Local>()) ||
   "link" >> construct<OmpClause>(construct<OmpClause::Link>(parenthesized(Parser<OmpObjectList>{}))) ||
   "linear" >> construct<OmpClause>(construct<OmpClause::Linear>(parenthesized(Parser<OmpLinearClause>{}))) ||
   "lastprivate" >> construct<OmpClause>(construct<OmpClause::Lastprivate>(parenthesized(Parser<OmpLastprivateClause>{}))) ||
   "is_device_ptr" >> construct<OmpClause>(construct<OmpClause::IsDevicePtr>(parenthesized(Parser<OmpObjectList>{}))) ||
+  "interop" >> construct<OmpClause>(construct<OmpClause::Interop>()) ||
   "initializer" >> construct<OmpClause>(construct<OmpClause::Initializer>(parenthesized(Parser<OmpInitializerClause>{}))) ||
+  "init_complete" >> construct<OmpClause>(construct<OmpClause::InitComplete>()) ||
   "init" >> construct<OmpClause>(construct<OmpClause::Init>(parenthesized(Parser<OmpInitClause>{}))) ||
+  "inductor" >> construct<OmpClause>(construct<OmpClause::Inductor>()) ||
+  "induction" >> construct<OmpClause>(construct<OmpClause::Induction>()) ||
   "indirect" >> construct<OmpClause>(construct<OmpClause::Indirect>(parenthesized(Parser<OmpIndirectClause>{}))) ||
   "inclusive" >> construct<OmpClause>(construct<OmpClause::Inclusive>(parenthesized(Parser<OmpObjectList>{}))) ||
   "inbranch" >> construct<OmpClause>(construct<OmpClause::Inbranch>()) ||
@@ -5547,16 +5539,20 @@ TYPE_PARSER(
   "depend" >> construct<OmpClause>(construct<OmpClause::Depend>(parenthesized(Parser<OmpDependClause>{}))) ||
   "defaultmap" >> construct<OmpClause>(construct<OmpClause::Defaultmap>(parenthesized(Parser<OmpDefaultmapClause>{}))) ||
   "default" >> construct<OmpClause>(construct<OmpClause::Default>(parenthesized(Parser<OmpDefaultClause>{}))) ||
+  "counts" >> construct<OmpClause>(construct<OmpClause::Counts>()) ||
   "copyprivate" >> construct<OmpClause>(construct<OmpClause::Copyprivate>(parenthesized(Parser<OmpObjectList>{}))) ||
   "copyin" >> construct<OmpClause>(construct<OmpClause::Copyin>(parenthesized(Parser<OmpObjectList>{}))) ||
   "contains" >> construct<OmpClause>(construct<OmpClause::Contains>(parenthesized(Parser<OmpContainsClause>{}))) ||
   "compare" >> construct<OmpClause>(construct<OmpClause::Compare>()) ||
+  "combiner" >> construct<OmpClause>(construct<OmpClause::Combiner>(parenthesized(Parser<OmpCombinerClause>{}))) ||
+  "collector" >> construct<OmpClause>(construct<OmpClause::Collector>()) ||
   "collapse" >> construct<OmpClause>(construct<OmpClause::Collapse>(parenthesized(scalarIntConstantExpr))) ||
   "capture" >> construct<OmpClause>(construct<OmpClause::Capture>()) ||
   "cancellation_construct_type" >> construct<OmpClause>(construct<OmpClause::CancellationConstructType>(parenthesized(Parser<OmpCancellationConstructTypeClause>{}))) ||
   "bind" >> construct<OmpClause>(construct<OmpClause::Bind>(parenthesized(Parser<OmpBindClause>{}))) ||
   "atomic_default_mem_order" >> construct<OmpClause>(construct<OmpClause::AtomicDefaultMemOrder>(parenthesized(Parser<OmpAtomicDefaultMemOrderClause>{}))) ||
   "at" >> construct<OmpClause>(construct<OmpClause::At>(parenthesized(Parser<OmpAtClause>{}))) ||
+  "apply" >> construct<OmpClause>(construct<OmpClause::Apply>()) ||
   "append_args" >> construct<OmpClause>(construct<OmpClause::AppendArgs>(parenthesized(Parser<OmpAppendArgsClause>{}))) ||
   "allocator" >> construct<OmpClause>(construct<OmpClause::Allocator>(parenthesized(scalarIntExpr))) ||
   "allocate" >> construct<OmpClause>(construct<OmpClause::Allocate>(parenthesized(Parser<OmpAllocateClause>{}))) ||
@@ -5607,16 +5603,20 @@ __CLAUSE(aligned, OMPAlignedClause)
 __CLAUSE(allocate, OMPAllocateClause)
 __CLAUSE(allocator, OMPAllocatorClause)
 __CLAUSE_NO_CLASS(append_args)
+__CLAUSE_NO_CLASS(apply)
 __CLAUSE(at, OMPAtClause)
 __CLAUSE(atomic_default_mem_order, OMPAtomicDefaultMemOrderClause)
 __CLAUSE(bind, OMPBindClause)
 __CLAUSE_NO_CLASS(cancellation_construct_type)
 __CLAUSE(capture, OMPCaptureClause)
 __CLAUSE(collapse, OMPCollapseClause)
+__CLAUSE_NO_CLASS(collector)
+__CLAUSE_NO_CLASS(combiner)
 __CLAUSE(compare, OMPCompareClause)
 __CLAUSE(contains, OMPContainsClause)
 __CLAUSE(copyprivate, OMPCopyprivateClause)
 __CLAUSE(copyin, OMPCopyinClause)
+__CLAUSE_NO_CLASS(counts)
 __CLAUSE(default, OMPDefaultClause)
 __CLAUSE(defaultmap, OMPDefaultmapClause)
 __CLAUSE(depend, OMPDependClause)
@@ -5628,7 +5628,7 @@ __CLAUSE_NO_CLASS(device_safesync)
 __CLAUSE_NO_CLASS(device_type)
 __CLAUSE(dist_schedule, OMPDistScheduleClause)
 __CLAUSE(doacross, OMPDoacrossClause)
-__CLAUSE_NO_CLASS(dyn_groupprivate)
+__CLAUSE(dyn_groupprivate, OMPDynGroupprivateClause)
 __CLAUSE(dynamic_allocators, OMPDynamicAllocatorsClause)
 __CLAUSE_NO_CLASS(enter)
 __CLAUSE(exclusive, OMPExclusiveClause)
@@ -5651,16 +5651,22 @@ __CLAUSE(in_reduction, OMPInReductionClause)
 __CLAUSE_NO_CLASS(inbranch)
 __CLAUSE(inclusive, OMPInclusiveClause)
 __CLAUSE_NO_CLASS(indirect)
+__CLAUSE_NO_CLASS(induction)
+__CLAUSE_NO_CLASS(inductor)
 __CLAUSE(init, OMPInitClause)
+__CLAUSE_NO_CLASS(init_complete)
 __CLAUSE_NO_CLASS(initializer)
+__CLAUSE_NO_CLASS(interop)
 __CLAUSE(is_device_ptr, OMPIsDevicePtrClause)
 __CLAUSE(lastprivate, OMPLastprivateClause)
 __CLAUSE(linear, OMPLinearClause)
 __CLAUSE_NO_CLASS(link)
+__CLAUSE_NO_CLASS(local)
 __CLAUSE(looprange, OMPLoopRangeClause)
 __CLAUSE(map, OMPMapClause)
 __CLAUSE_NO_CLASS(match)
 __CLAUSE_NO_CLASS(memory_order)
+__CLAUSE_NO_CLASS(memscope)
 __CLAUSE(mergeable, OMPMergeableClause)
 __CLAUSE(message, OMPMessageClause)
 __CLAUSE(nogroup, OMPNogroupClause)
@@ -5694,6 +5700,7 @@ __CLAUSE(release, OMPReleaseClause)
 __CLAUSE_NO_CLASS(replayable)
 __CLAUSE(reverse_offload, OMPReverseOffloadClause)
 __CLAUSE(safelen, OMPSafelenClause)
+__CLAUSE_NO_CLASS(safesync)
 __CLAUSE(schedule, OMPScheduleClause)
 __CLAUSE(self_maps, OMPSelfMapsClause)
 __CLAUSE(seq_cst, OMPSeqCstClause)
@@ -5708,7 +5715,7 @@ __IMPLICIT_CLAUSE_NO_CLASS(threadprivate, "threadprivate")
 __CLAUSE(threads, OMPThreadsClause)
 __CLAUSE(threadset, OMPThreadsetClause)
 __CLAUSE(to, OMPToClause)
-__CLAUSE_NO_CLASS(transparent)
+__CLAUSE(transparent, OMPTransparentClause)
 __CLAUSE(unified_address, OMPUnifiedAddressClause)
 __CLAUSE(unified_shared_memory, OMPUnifiedSharedMemoryClause)
 __CLAUSE_NO_CLASS(uniform)
@@ -5758,6 +5765,7 @@ std::pair<llvm::omp::Directive, llvm::directive::VersionRange> llvm::omp::getOpe
     .Case("cancellation point", {OMPD_cancellation_point, {1, 52}})
     .Case("cancellation_point", {OMPD_cancellation_point, {60, 2147483647}})
     .Case("critical", {OMPD_critical, All})
+    .Case("declare_induction", {OMPD_declare_induction, All})
     .Case("declare mapper", {OMPD_declare_mapper, {1, 52}})
     .Case("declare_mapper", {OMPD_declare_mapper, {60, 2147483647}})
     .Case("declare reduction", {OMPD_declare_reduction, {1, 52}})
@@ -5923,6 +5931,8 @@ llvm::StringRef llvm::omp::getOpenMPDirectiveName(llvm::omp::Directive Kind, uns
     }
     case OMPD_critical:
       return "critical";
+    case OMPD_declare_induction:
+      return "declare_induction";
     case OMPD_declare_mapper: {
       static constexpr llvm::directive::Spelling OMPD_declare_mapper_spellings[] = {
           {"declare mapper", {1, 52}},
@@ -6215,16 +6225,20 @@ std::pair<llvm::omp::Clause, llvm::directive::VersionRange> llvm::omp::getOpenMP
     .Case("allocate", {OMPC_allocate, All})
     .Case("allocator", {OMPC_allocator, All})
     .Case("append_args", {OMPC_append_args, All})
+    .Case("apply", {OMPC_apply, All})
     .Case("at", {OMPC_at, All})
     .Case("atomic_default_mem_order", {OMPC_atomic_default_mem_order, All})
     .Case("bind", {OMPC_bind, All})
     .Case("cancellation_construct_type", {OMPC_cancellation_construct_type, All})
     .Case("capture", {OMPC_capture, All})
     .Case("collapse", {OMPC_collapse, All})
+    .Case("collector", {OMPC_collector, All})
+    .Case("combiner", {OMPC_combiner, All})
     .Case("compare", {OMPC_compare, All})
     .Case("contains", {OMPC_contains, All})
     .Case("copyprivate", {OMPC_copyprivate, All})
     .Case("copyin", {OMPC_copyin, All})
+    .Case("counts", {OMPC_counts, All})
     .Case("default", {OMPC_default, All})
     .Case("defaultmap", {OMPC_defaultmap, All})
     .Case("depend", {OMPC_depend, All})
@@ -6259,16 +6273,22 @@ std::pair<llvm::omp::Clause, llvm::directive::VersionRange> llvm::omp::getOpenMP
     .Case("inbranch", {OMPC_inbranch, All})
     .Case("inclusive", {OMPC_inclusive, All})
     .Case("indirect", {OMPC_indirect, All})
+    .Case("induction", {OMPC_induction, All})
+    .Case("inductor", {OMPC_inductor, All})
     .Case("init", {OMPC_init, All})
+    .Case("init_complete", {OMPC_init_complete, All})
     .Case("initializer", {OMPC_initializer, All})
+    .Case("interop", {OMPC_interop, All})
     .Case("is_device_ptr", {OMPC_is_device_ptr, All})
     .Case("lastprivate", {OMPC_lastprivate, All})
     .Case("linear", {OMPC_linear, All})
     .Case("link", {OMPC_link, All})
+    .Case("local", {OMPC_local, All})
     .Case("looprange", {OMPC_looprange, All})
     .Case("map", {OMPC_map, All})
     .Case("match", {OMPC_match, All})
     .Case("memory_order", {OMPC_memory_order, All})
+    .Case("memscope", {OMPC_memscope, All})
     .Case("mergeable", {OMPC_mergeable, All})
     .Case("message", {OMPC_message, All})
     .Case("nogroup", {OMPC_nogroup, All})
@@ -6302,6 +6322,7 @@ std::pair<llvm::omp::Clause, llvm::directive::VersionRange> llvm::omp::getOpenMP
     .Case("replayable", {OMPC_replayable, All})
     .Case("reverse_offload", {OMPC_reverse_offload, All})
     .Case("safelen", {OMPC_safelen, All})
+    .Case("safesync", {OMPC_safesync, All})
     .Case("schedule", {OMPC_schedule, All})
     .Case("self_maps", {OMPC_self_maps, All})
     .Case("seq_cst", {OMPC_seq_cst, All})
@@ -6355,6 +6376,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "allocator";
     case OMPC_append_args:
       return "append_args";
+    case OMPC_apply:
+      return "apply";
     case OMPC_at:
       return "at";
     case OMPC_atomic_default_mem_order:
@@ -6367,6 +6390,10 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "capture";
     case OMPC_collapse:
       return "collapse";
+    case OMPC_collector:
+      return "collector";
+    case OMPC_combiner:
+      return "combiner";
     case OMPC_compare:
       return "compare";
     case OMPC_contains:
@@ -6375,6 +6402,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "copyprivate";
     case OMPC_copyin:
       return "copyin";
+    case OMPC_counts:
+      return "counts";
     case OMPC_default:
       return "default";
     case OMPC_defaultmap:
@@ -6443,10 +6472,18 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "inclusive";
     case OMPC_indirect:
       return "indirect";
+    case OMPC_induction:
+      return "induction";
+    case OMPC_inductor:
+      return "inductor";
     case OMPC_init:
       return "init";
+    case OMPC_init_complete:
+      return "init_complete";
     case OMPC_initializer:
       return "initializer";
+    case OMPC_interop:
+      return "interop";
     case OMPC_is_device_ptr:
       return "is_device_ptr";
     case OMPC_lastprivate:
@@ -6455,6 +6492,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "linear";
     case OMPC_link:
       return "link";
+    case OMPC_local:
+      return "local";
     case OMPC_looprange:
       return "looprange";
     case OMPC_map:
@@ -6463,6 +6502,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "match";
     case OMPC_memory_order:
       return "memory_order";
+    case OMPC_memscope:
+      return "memscope";
     case OMPC_mergeable:
       return "mergeable";
     case OMPC_message:
@@ -6529,6 +6570,8 @@ llvm::StringRef llvm::omp::getOpenMPClauseName(llvm::omp::Clause Kind, unsigned 
       return "reverse_offload";
     case OMPC_safelen:
       return "safelen";
+    case OMPC_safesync:
+      return "safesync";
     case OMPC_schedule:
       return "schedule";
     case OMPC_self_maps:
@@ -6768,6 +6811,7 @@ llvm::omp::ScheduleKind llvm::omp::getScheduleKind(llvm::StringRef Str) {
     .Case("guided",OMP_SCHEDULE_Guided)
     .Case("auto",OMP_SCHEDULE_Auto)
     .Case("runtime",OMP_SCHEDULE_Runtime)
+    .Case("distribute",OMP_SCHEDULE_Distribute)
     .Case("default",OMP_SCHEDULE_Default)
     .Default(OMP_SCHEDULE_Default);
 }
@@ -6784,6 +6828,8 @@ llvm::StringRef llvm::omp::getOpenMPScheduleKindName(llvm::omp::ScheduleKind x) 
       return "auto";
     case OMP_SCHEDULE_Runtime:
       return "runtime";
+    case OMP_SCHEDULE_Distribute:
+      return "distribute";
     case OMP_SCHEDULE_Default:
       return "default";
   }
@@ -6946,6 +6992,16 @@ bool llvm::omp::isAllowedClauseForDirective(llvm::omp::Directive D, llvm::omp::C
           return false;
       }
       break;
+    case OMPD_declare_induction:
+      switch (C) {
+        case OMPC_collector:
+          return 60 <= Version && 2147483647 >= Version;
+        case OMPC_inductor:
+          return 60 <= Version && 2147483647 >= Version;
+        default:
+          return false;
+      }
+      break;
     case OMPD_declare_mapper:
       switch (C) {
         case OMPC_map:
@@ -6956,6 +7012,8 @@ bool llvm::omp::isAllowedClauseForDirective(llvm::omp::Directive D, llvm::omp::C
       break;
     case OMPD_declare_reduction:
       switch (C) {
+        case OMPC_combiner:
+          return 60 <= Version && 2147483647 >= Version;
         case OMPC_initializer:
           return 1 <= Version && 2147483647 >= Version;
         default:
@@ -7016,6 +7074,8 @@ bool llvm::omp::isAllowedClauseForDirective(llvm::omp::Directive D, llvm::omp::C
           return 50 <= Version && 2147483647 >= Version;
         case OMPC_destroy:
           return 50 <= Version && 2147483647 >= Version;
+        case OMPC_init:
+          return 60 <= Version && 2147483647 >= Version;
         case OMPC_update:
           return 50 <= Version && 2147483647 >= Version;
         default:
@@ -10306,6 +10366,8 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
     return Association::None;
   case OMPD_critical:
     return Association::Block;
+  case OMPD_declare_induction:
+    return Association::None;
   case OMPD_declare_mapper:
     return Association::None;
   case OMPD_declare_reduction:
@@ -10319,21 +10381,21 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_depobj:
     return Association::None;
   case OMPD_distribute:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_distribute_parallel_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_distribute_parallel_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_distribute_parallel_for:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_distribute_parallel_for_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_distribute_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_end_assumes:
     return Association::Delimited;
   case OMPD_end_declare_target:
@@ -10341,9 +10403,9 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_end_declare_variant:
     return Association::Delimited;
   case OMPD_end_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_end_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_end_scope:
     return Association::Block;
   case OMPD_end_sections:
@@ -10359,25 +10421,25 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_flush:
     return Association::None;
   case OMPD_for:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_for_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_fuse:
-    return Association::Block;
+    return Association::LoopSeq;
   case OMPD_groupprivate:
     return Association::None;
   case OMPD_interchange:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_masked_taskloop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_masked_taskloop_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_master:
     return Association::Block;
   case OMPD_master_taskloop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_master_taskloop_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_metadirective:
     return Association::None;
   case OMPD_nothing:
@@ -10387,25 +10449,25 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_parallel:
     return Association::Block;
   case OMPD_parallel_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_for:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_for_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_masked:
     return Association::Block;
   case OMPD_parallel_masked_taskloop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_masked_taskloop_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_master:
     return Association::Block;
   case OMPD_parallel_master_taskloop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_master_taskloop_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_parallel_sections:
     return Association::Block;
   case OMPD_parallel_workshare:
@@ -10413,7 +10475,7 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_requires:
     return Association::None;
   case OMPD_reverse:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_scan:
     return Association::Separating;
   case OMPD_scope:
@@ -10423,11 +10485,11 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_sections:
     return Association::Block;
   case OMPD_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_single:
     return Association::Block;
   case OMPD_stripe:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target:
     return Association::Block;
   case OMPD_target_data:
@@ -10439,29 +10501,29 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_target_parallel:
     return Association::Block;
   case OMPD_target_parallel_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_parallel_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_parallel_for:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_parallel_for_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams:
     return Association::Block;
   case OMPD_target_teams_distribute:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_distribute_parallel_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_distribute_parallel_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_distribute_parallel_for:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_distribute_parallel_for_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_distribute_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_workdistribute:
     return Association::Block;
   case OMPD_target_update:
@@ -10471,9 +10533,9 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_taskgroup:
     return Association::Block;
   case OMPD_taskloop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_taskloop_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_taskwait:
     return Association::None;
   case OMPD_taskyield:
@@ -10483,27 +10545,27 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_teams:
     return Association::Block;
   case OMPD_teams_distribute:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_distribute_parallel_do:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_distribute_parallel_do_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_distribute_parallel_for:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_distribute_parallel_for_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_distribute_simd:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_workdistribute:
     return Association::Block;
   case OMPD_threadprivate:
     return Association::None;
   case OMPD_tile:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_unknown:
     return Association::None;
   case OMPD_unroll:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_workdistribute:
     return Association::Block;
   case OMPD_workshare:
@@ -10513,19 +10575,19 @@ llvm::omp::Association llvm::omp::getDirectiveAssociation(llvm::omp::Directive D
   case OMPD_interop:
     return Association::None;
   case OMPD_loop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_masked:
     return Association::Block;
   case OMPD_parallel_loop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_loop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_parallel_loop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_target_teams_loop:
-    return Association::Loop;
+    return Association::LoopNest;
   case OMPD_teams_loop:
-    return Association::Loop;
+    return Association::LoopNest;
   } // switch (Dir)
   llvm_unreachable("Unexpected directive");
 }
@@ -10556,6 +10618,8 @@ llvm::omp::Category llvm::omp::getDirectiveCategory(llvm::omp::Directive Dir) {
     return Category::Executable;
   case OMPD_critical:
     return Category::Executable;
+  case OMPD_declare_induction:
+    return Category::Declarative;
   case OMPD_declare_mapper:
     return Category::Declarative;
   case OMPD_declare_reduction:
@@ -10806,6 +10870,8 @@ llvm::omp::SourceLanguage llvm::omp::getDirectiveLanguages(llvm::omp::Directive 
     return SourceLanguage::C | SourceLanguage::Fortran;
   case OMPD_critical:
     return SourceLanguage::C | SourceLanguage::Fortran;
+  case OMPD_declare_induction:
+    return SourceLanguage::C | SourceLanguage::Fortran;
   case OMPD_declare_mapper:
     return SourceLanguage::C | SourceLanguage::Fortran;
   case OMPD_declare_reduction:
@@ -11044,6 +11110,7 @@ static_assert(sizeof(llvm::omp::Directive) == sizeof(int));
     {llvm::omp::OMPD_cancel, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_cancellation_point, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_critical, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
+    {llvm::omp::OMPD_declare_induction, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_declare_mapper, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_declare_reduction, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
     {llvm::omp::OMPD_declare_simd, static_cast<llvm::omp::Directive>(0), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
@@ -11156,10 +11223,10 @@ static_assert(sizeof(llvm::omp::Directive) == sizeof(int));
     {llvm::omp::OMPD_end_do_simd, static_cast<llvm::omp::Directive>(2), llvm::omp::OMPD_do, llvm::omp::OMPD_simd, static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1), static_cast<llvm::omp::Directive>(-1),},
 };
 
-[[maybe_unused]] static auto LeafConstructTableEndDirective = LeafConstructTable + 112;
+[[maybe_unused]] static auto LeafConstructTableEndDirective = LeafConstructTable + 113;
 
 [[maybe_unused]] static const int LeafConstructTableOrdering[] = {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 62, 63, 64, 65, 66, 19, 67, 112, 113, 114, 115, 121, 116, 117, 118, 119, 120, 20, 21, 22, 68, 23, 24, 25, 110, 111, 26, 69, 70, 27, 28, 29, 30, 71, 72, 73, 74, 81, 82, 83, 75, 76, 77, 78, 79, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 84, 85, 86, 87, 88, 90, 91, 92, 93, 94, 95, 96, 97, 98, 44, 45, 46, 47, 101, 48, 49, 50, 51, 102, 103, 104, 105, 106, 107, 108, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 80, 100, 89, 99, 109,
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 63, 64, 65, 66, 67, 20, 68, 113, 114, 115, 116, 122, 117, 118, 119, 120, 121, 21, 22, 23, 69, 24, 25, 26, 111, 112, 27, 70, 71, 28, 29, 30, 31, 72, 73, 74, 75, 82, 83, 84, 76, 77, 78, 79, 80, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 45, 46, 47, 48, 102, 49, 50, 51, 52, 103, 104, 105, 106, 107, 108, 109, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 81, 101, 90, 100, 110,
 };
 
 #endif // GEN_DIRECTIVES_IMPL

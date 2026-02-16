@@ -11,7 +11,7 @@
 namespace llvm::Intrinsic {
 enum VEIntrinsics : unsigned {
 // Enum values for intrinsics.
-    ve_vl_andm_MMM = 12682,                            // llvm.ve.vl.andm.MMM (IntrinsicsVEVL.gen.td:1236)
+    ve_vl_andm_MMM = 13094,                            // llvm.ve.vl.andm.MMM (IntrinsicsVEVL.gen.td:1236)
     ve_vl_andm_mmm,                            // llvm.ve.vl.andm.mmm (IntrinsicsVEVL.gen.td:1235)
     ve_vl_eqvm_MMM,                            // llvm.ve.vl.eqvm.MMM (IntrinsicsVEVL.gen.td:1242)
     ve_vl_eqvm_mmm,                            // llvm.ve.vl.eqvm.mmm (IntrinsicsVEVL.gen.td:1241)

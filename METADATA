@@ -10,15 +10,15 @@ third_party {
     tag: "NVD-CPE2.3:cpe:/a:llvm:llvm:21.1.0"
   }
   last_upgrade_date {
-    year: 2025
-    month: 11
-    day: 13
+    year: 2026
+    month: 2
+    day: 9
   }
   homepage: "https://llvm.org/"
   identifier {
     type: "Git"
     value: "https://github.com/llvm/llvm-project"
-    version: "42a8ff877d47131ecb1280a1cc7e5e3c3bca6952"
+    version: "d43b29fc545d702b35b20802f92357bc4c4177fe"
     primary_source: true
   }
 }
