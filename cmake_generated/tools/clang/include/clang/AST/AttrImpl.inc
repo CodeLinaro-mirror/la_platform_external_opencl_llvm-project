@@ -72,6 +72,10 @@ AArch64SVEPcsAttr::AArch64SVEPcsAttr(ASTContext &Ctx, const AttributeCommonInfo 
   {
 }
 
+bool AArch64SVEPcsAttr::isEquivalent(const AArch64SVEPcsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 AArch64SVEPcsAttr *AArch64SVEPcsAttr::clone(ASTContext &C) const {
   auto *A = new (C) AArch64SVEPcsAttr(C, *this);
   A->Inherited = Inherited;
@@ -175,6 +179,10 @@ AArch64VectorPcsAttr::AArch64VectorPcsAttr(ASTContext &Ctx, const AttributeCommo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AArch64VectorPcs, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AArch64VectorPcsAttr::isEquivalent(const AArch64VectorPcsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AArch64VectorPcsAttr *AArch64VectorPcsAttr::clone(ASTContext &C) const {
@@ -285,6 +293,14 @@ AMDGPUFlatWorkGroupSizeAttr::AMDGPUFlatWorkGroupSizeAttr(ASTContext &Ctx, const 
 
 
 
+
+bool AMDGPUFlatWorkGroupSizeAttr::isEquivalent(const AMDGPUFlatWorkGroupSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMin(), Other.getMin(), Context))
+    return false;
+  if (!equalAttrArgs(getMax(), Other.getMax(), Context))
+    return false;
+  return true;
+}
 
 AMDGPUFlatWorkGroupSizeAttr *AMDGPUFlatWorkGroupSizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) AMDGPUFlatWorkGroupSizeAttr(C, *this, min, max);
@@ -421,6 +437,16 @@ AMDGPUMaxNumWorkGroupsAttr::AMDGPUMaxNumWorkGroupsAttr(ASTContext &Ctx, const At
 
 
 
+
+bool AMDGPUMaxNumWorkGroupsAttr::isEquivalent(const AMDGPUMaxNumWorkGroupsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMaxNumWorkGroupsX(), Other.getMaxNumWorkGroupsX(), Context))
+    return false;
+  if (!equalAttrArgs(getMaxNumWorkGroupsY(), Other.getMaxNumWorkGroupsY(), Context))
+    return false;
+  if (!equalAttrArgs(getMaxNumWorkGroupsZ(), Other.getMaxNumWorkGroupsZ(), Context))
+    return false;
+  return true;
+}
 
 AMDGPUMaxNumWorkGroupsAttr *AMDGPUMaxNumWorkGroupsAttr::clone(ASTContext &C) const {
   auto *A = new (C) AMDGPUMaxNumWorkGroupsAttr(C, *this, maxNumWorkGroupsX, maxNumWorkGroupsY, maxNumWorkGroupsZ);
@@ -564,6 +590,12 @@ AMDGPUNumSGPRAttr::AMDGPUNumSGPRAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool AMDGPUNumSGPRAttr::isEquivalent(const AMDGPUNumSGPRAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNumSGPR(), Other.getNumSGPR(), Context))
+    return false;
+  return true;
+}
+
 AMDGPUNumSGPRAttr *AMDGPUNumSGPRAttr::clone(ASTContext &C) const {
   auto *A = new (C) AMDGPUNumSGPRAttr(C, *this, numSGPR);
   A->Inherited = Inherited;
@@ -669,6 +701,12 @@ AMDGPUNumVGPRAttr::AMDGPUNumVGPRAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool AMDGPUNumVGPRAttr::isEquivalent(const AMDGPUNumVGPRAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNumVGPR(), Other.getNumVGPR(), Context))
+    return false;
+  return true;
+}
 
 AMDGPUNumVGPRAttr *AMDGPUNumVGPRAttr::clone(ASTContext &C) const {
   auto *A = new (C) AMDGPUNumVGPRAttr(C, *this, numVGPR);
@@ -788,6 +826,14 @@ AMDGPUWavesPerEUAttr::AMDGPUWavesPerEUAttr(ASTContext &Ctx, const AttributeCommo
 
 
 
+
+bool AMDGPUWavesPerEUAttr::isEquivalent(const AMDGPUWavesPerEUAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMin(), Other.getMin(), Context))
+    return false;
+  if (!equalAttrArgs(getMax(), Other.getMax(), Context))
+    return false;
+  return true;
+}
 
 AMDGPUWavesPerEUAttr *AMDGPUWavesPerEUAttr::clone(ASTContext &C) const {
   auto *A = new (C) AMDGPUWavesPerEUAttr(C, *this, min, max);
@@ -953,6 +999,12 @@ const char *ARMInterruptAttr::ConvertInterruptTypeToStr(ARMInterruptAttr::Interr
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ARMInterruptAttr::isEquivalent(const ARMInterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getInterrupt(), Other.getInterrupt(), Context))
+    return false;
+  return true;
+}
+
 ARMInterruptAttr *ARMInterruptAttr::clone(ASTContext &C) const {
   auto *A = new (C) ARMInterruptAttr(C, *this, interrupt);
   A->Inherited = Inherited;
@@ -1084,6 +1136,12 @@ const char *ARMInterruptSaveFPAttr::ConvertInterruptTypeToStr(ARMInterruptSaveFP
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ARMInterruptSaveFPAttr::isEquivalent(const ARMInterruptSaveFPAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getInterrupt(), Other.getInterrupt(), Context))
+    return false;
+  return true;
+}
+
 ARMInterruptSaveFPAttr *ARMInterruptSaveFPAttr::clone(ASTContext &C) const {
   auto *A = new (C) ARMInterruptSaveFPAttr(C, *this, interrupt);
   A->Inherited = Inherited;
@@ -1153,6 +1211,10 @@ ARMSaveFPAttr::ARMSaveFPAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ARMSaveFP, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ARMSaveFPAttr::isEquivalent(const ARMSaveFPAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ARMSaveFPAttr *ARMSaveFPAttr::clone(ASTContext &C) const {
@@ -1226,6 +1288,10 @@ AVRInterruptAttr::AVRInterruptAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AVRInterrupt, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AVRInterruptAttr::isEquivalent(const AVRInterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AVRInterruptAttr *AVRInterruptAttr::clone(ASTContext &C) const {
@@ -1331,6 +1397,10 @@ AVRSignalAttr::AVRSignalAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AVRSignal, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AVRSignalAttr::isEquivalent(const AVRSignalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AVRSignalAttr *AVRSignalAttr::clone(ASTContext &C) const {
@@ -1453,6 +1523,12 @@ AbiTagAttr::AbiTagAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool AbiTagAttr::isEquivalent(const AbiTagAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(tags_begin(), tags_end(), Other.tags_begin(), Other.tags_end(), Context))
+    return false;
+  return true;
+}
 
 AbiTagAttr *AbiTagAttr::clone(ASTContext &C) const {
   auto *A = new (C) AbiTagAttr(C, *this, tags_, tags_Size);
@@ -1664,6 +1740,14 @@ AcquireCapabilityAttr::Spelling AcquireCapabilityAttr::getSemanticSpelling() con
 }
 
 
+bool AcquireCapabilityAttr::isEquivalent(const AcquireCapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
+
 AcquireCapabilityAttr *AcquireCapabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) AcquireCapabilityAttr(C, *this, args_, args_Size);
   A->Inherited = Inherited;
@@ -1845,6 +1929,12 @@ AcquireHandleAttr::AcquireHandleAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool AcquireHandleAttr::isEquivalent(const AcquireHandleAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getHandleType(), Other.getHandleType(), Context))
+    return false;
+  return true;
+}
+
 AcquireHandleAttr *AcquireHandleAttr::clone(ASTContext &C) const {
   auto *A = new (C) AcquireHandleAttr(C, *this, getHandleType());
   A->Inherited = Inherited;
@@ -1979,6 +2069,12 @@ AcquiredAfterAttr::AcquiredAfterAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool AcquiredAfterAttr::isEquivalent(const AcquiredAfterAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
+
 AcquiredAfterAttr *AcquiredAfterAttr::clone(ASTContext &C) const {
   auto *A = new (C) AcquiredAfterAttr(C, *this, args_, args_Size);
   A->Inherited = Inherited;
@@ -2096,6 +2192,12 @@ AcquiredBeforeAttr::AcquiredBeforeAttr(ASTContext &Ctx, const AttributeCommonInf
 
 
 
+bool AcquiredBeforeAttr::isEquivalent(const AcquiredBeforeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
+
 AcquiredBeforeAttr *AcquiredBeforeAttr::clone(ASTContext &C) const {
   auto *A = new (C) AcquiredBeforeAttr(C, *this, args_, args_Size);
   A->Inherited = Inherited;
@@ -2199,6 +2301,12 @@ AddressSpaceAttr::AddressSpaceAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 }
 
 
+
+bool AddressSpaceAttr::isEquivalent(const AddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAddressSpace(), Other.getAddressSpace(), Context))
+    return false;
+  return true;
+}
 
 AddressSpaceAttr *AddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) AddressSpaceAttr(C, *this, addressSpace);
@@ -2323,6 +2431,12 @@ AliasAttr::AliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool AliasAttr::isEquivalent(const AliasAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAliasee(), Other.getAliasee(), Context))
+    return false;
+  return true;
+}
+
 AliasAttr *AliasAttr::clone(ASTContext &C) const {
   auto *A = new (C) AliasAttr(C, *this, getAliasee());
   A->Inherited = Inherited;
@@ -2416,6 +2530,10 @@ AlignMac68kAttr::AlignMac68kAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool AlignMac68kAttr::isEquivalent(const AlignMac68kAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 AlignMac68kAttr *AlignMac68kAttr::clone(ASTContext &C) const {
   auto *A = new (C) AlignMac68kAttr(C, *this);
   A->Inherited = Inherited;
@@ -2463,6 +2581,10 @@ AlignNaturalAttr::AlignNaturalAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AlignNatural, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AlignNaturalAttr::isEquivalent(const AlignNaturalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AlignNaturalAttr *AlignNaturalAttr::clone(ASTContext &C) const {
@@ -2517,6 +2639,12 @@ AlignValueAttr::AlignValueAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 }
 
 
+
+bool AlignValueAttr::isEquivalent(const AlignValueAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAlignment(), Other.getAlignment(), Context))
+    return false;
+  return true;
+}
 
 AlignValueAttr *AlignValueAttr::clone(ASTContext &C) const {
   auto *A = new (C) AlignValueAttr(C, *this, alignment);
@@ -2661,6 +2789,10 @@ bool AlignedAttr::isAlignmentErrorDependent() const {
   return alignmentType->getType()->containsErrors();
 }
 
+
+bool AlignedAttr::isEquivalent(const AlignedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return areAlignedAttrsEqual(*this, Other, Context);
+}
 
 AlignedAttr *AlignedAttr::clone(ASTContext &C) const {
   auto *A = new (C) AlignedAttr(C, *this, isalignmentExpr, isalignmentExpr ? static_cast<void*>(alignmentExpr) : alignmentType);
@@ -2858,6 +2990,12 @@ AllocAlignAttr::AllocAlignAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 
 
 
+bool AllocAlignAttr::isEquivalent(const AllocAlignAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getParamIndex(), Other.getParamIndex(), Context))
+    return false;
+  return true;
+}
+
 AllocAlignAttr *AllocAlignAttr::clone(ASTContext &C) const {
   auto *A = new (C) AllocAlignAttr(C, *this, paramIndex);
   A->Inherited = Inherited;
@@ -2991,6 +3129,14 @@ AllocSizeAttr::AllocSizeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 
 
 
+
+bool AllocSizeAttr::isEquivalent(const AllocSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getElemSizeParam(), Other.getElemSizeParam(), Context))
+    return false;
+  if (!equalAttrArgs(getNumElemsParam(), Other.getNumElemsParam(), Context))
+    return false;
+  return true;
+}
 
 AllocSizeAttr *AllocSizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) AllocSizeAttr(C, *this, elemSizeParam, numElemsParam);
@@ -3127,6 +3273,10 @@ AllocatingAttr::AllocatingAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool AllocatingAttr::isEquivalent(const AllocatingAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 AllocatingAttr *AllocatingAttr::clone(ASTContext &C) const {
   auto *A = new (C) AllocatingAttr(C, *this);
   A->Inherited = Inherited;
@@ -3226,6 +3376,10 @@ AlwaysDestroyAttr::AlwaysDestroyAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AlwaysDestroy, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AlwaysDestroyAttr::isEquivalent(const AlwaysDestroyAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AlwaysDestroyAttr *AlwaysDestroyAttr::clone(ASTContext &C) const {
@@ -3347,6 +3501,12 @@ AlwaysInlineAttr::Spelling AlwaysInlineAttr::getSemanticSpelling() const {
     case 5: return Keyword_forceinline;
   }
 }
+bool AlwaysInlineAttr::isEquivalent(const AlwaysInlineAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 AlwaysInlineAttr *AlwaysInlineAttr::clone(ASTContext &C) const {
   auto *A = new (C) AlwaysInlineAttr(C, *this);
   A->Inherited = Inherited;
@@ -3447,6 +3607,10 @@ AnalyzerNoReturnAttr::AnalyzerNoReturnAttr(ASTContext &Ctx, const AttributeCommo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AnalyzerNoReturn, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AnalyzerNoReturnAttr::isEquivalent(const AnalyzerNoReturnAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AnalyzerNoReturnAttr *AnalyzerNoReturnAttr::clone(ASTContext &C) const {
@@ -3623,6 +3787,14 @@ AnnotateAttr::AnnotateAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 
 
 
+
+bool AnnotateAttr::isEquivalent(const AnnotateAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAnnotation(), Other.getAnnotation(), Context))
+    return false;
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
 
 AnnotateAttr *AnnotateAttr::clone(ASTContext &C) const {
   auto *A = new (C) AnnotateAttr(C, *this, getAnnotation(), args_, args_Size);
@@ -3836,6 +4008,14 @@ AnnotateTypeAttr::AnnotateTypeAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 
 
 
+bool AnnotateTypeAttr::isEquivalent(const AnnotateTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAnnotation(), Other.getAnnotation(), Context))
+    return false;
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
+
 AnnotateTypeAttr *AnnotateTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) AnnotateTypeAttr(C, *this, getAnnotation(), args_, args_Size);
   A->Inherited = Inherited;
@@ -3955,6 +4135,10 @@ AnyX86InterruptAttr::AnyX86InterruptAttr(ASTContext &Ctx, const AttributeCommonI
   {
 }
 
+bool AnyX86InterruptAttr::isEquivalent(const AnyX86InterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 AnyX86InterruptAttr *AnyX86InterruptAttr::clone(ASTContext &C) const {
   auto *A = new (C) AnyX86InterruptAttr(C, *this);
   A->Inherited = Inherited;
@@ -4058,6 +4242,10 @@ AnyX86NoCallerSavedRegistersAttr::AnyX86NoCallerSavedRegistersAttr(ASTContext &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::AnyX86NoCallerSavedRegisters, /*IsLateParsed=*/false, false)
   {
+}
+
+bool AnyX86NoCallerSavedRegistersAttr::isEquivalent(const AnyX86NoCallerSavedRegistersAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 AnyX86NoCallerSavedRegistersAttr *AnyX86NoCallerSavedRegistersAttr::clone(ASTContext &C) const {
@@ -4165,6 +4353,10 @@ AnyX86NoCfCheckAttr::AnyX86NoCfCheckAttr(ASTContext &Ctx, const AttributeCommonI
   {
 }
 
+bool AnyX86NoCfCheckAttr::isEquivalent(const AnyX86NoCfCheckAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 AnyX86NoCfCheckAttr *AnyX86NoCfCheckAttr::clone(ASTContext &C) const {
   auto *A = new (C) AnyX86NoCfCheckAttr(C, *this);
   A->Inherited = Inherited;
@@ -4270,6 +4462,10 @@ ArcWeakrefUnavailableAttr::ArcWeakrefUnavailableAttr(ASTContext &Ctx, const Attr
   {
 }
 
+bool ArcWeakrefUnavailableAttr::isEquivalent(const ArcWeakrefUnavailableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ArcWeakrefUnavailableAttr *ArcWeakrefUnavailableAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArcWeakrefUnavailableAttr(C, *this);
   A->Inherited = Inherited;
@@ -4320,7 +4516,7 @@ const char *ArcWeakrefUnavailableAttr::getSpelling() const {
 
 // ArgumentWithTypeTagAttr implementation
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ArgumentWithTypeTagAttr(Ctx, CommonInfo, ArgumentKind, ArgumentIdx, TypeTagIdx, IsPointer);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -4328,12 +4524,12 @@ ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx
   return A;
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ArgumentWithTypeTagAttr(Ctx, CommonInfo, ArgumentKind, ArgumentIdx, TypeTagIdx, IsPointer);
   return A;
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range, Spelling S) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_argument_with_type_tag:
@@ -4356,7 +4552,7 @@ ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx
   return CreateImplicit(Ctx, ArgumentKind, ArgumentIdx, TypeTagIdx, IsPointer, I);
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range, Spelling S) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, bool IsPointer, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_argument_with_type_tag:
@@ -4379,7 +4575,7 @@ ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, Identi
   return Create(Ctx, ArgumentKind, ArgumentIdx, TypeTagIdx, IsPointer, I);
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ArgumentWithTypeTagAttr(Ctx, CommonInfo, ArgumentKind, ArgumentIdx, TypeTagIdx);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -4387,12 +4583,12 @@ ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx
   return A;
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ArgumentWithTypeTagAttr(Ctx, CommonInfo, ArgumentKind, ArgumentIdx, TypeTagIdx);
   return A;
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range, Spelling S) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_argument_with_type_tag:
@@ -4415,7 +4611,7 @@ ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::CreateImplicit(ASTContext &Ctx
   return CreateImplicit(Ctx, ArgumentKind, ArgumentIdx, TypeTagIdx, I);
 }
 
-ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range, Spelling S) {
+ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, ParamIdx ArgumentIdx, ParamIdx TypeTagIdx, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_argument_with_type_tag:
@@ -4439,7 +4635,7 @@ ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::Create(ASTContext &Ctx, Identi
 }
 
 ArgumentWithTypeTagAttr::ArgumentWithTypeTagAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ArgumentKind
+              , const IdentifierInfo * ArgumentKind
               , ParamIdx ArgumentIdx
               , ParamIdx TypeTagIdx
               , bool IsPointer
@@ -4453,7 +4649,7 @@ ArgumentWithTypeTagAttr::ArgumentWithTypeTagAttr(ASTContext &Ctx, const Attribut
 }
 
 ArgumentWithTypeTagAttr::ArgumentWithTypeTagAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ArgumentKind
+              , const IdentifierInfo * ArgumentKind
               , ParamIdx ArgumentIdx
               , ParamIdx TypeTagIdx
              )
@@ -4483,6 +4679,20 @@ ArgumentWithTypeTagAttr::Spelling ArgumentWithTypeTagAttr::getSemanticSpelling()
 
 
 
+
+bool ArgumentWithTypeTagAttr::isEquivalent(const ArgumentWithTypeTagAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getArgumentKind(), Other.getArgumentKind(), Context))
+    return false;
+  if (!equalAttrArgs(getArgumentIdx(), Other.getArgumentIdx(), Context))
+    return false;
+  if (!equalAttrArgs(getTypeTagIdx(), Other.getTypeTagIdx(), Context))
+    return false;
+  if (!equalAttrArgs(getIsPointer(), Other.getIsPointer(), Context))
+    return false;
+  return true;
+}
 
 ArgumentWithTypeTagAttr *ArgumentWithTypeTagAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArgumentWithTypeTagAttr(C, *this, argumentKind, argumentIdx, typeTagIdx, isPointer);
@@ -4654,6 +4864,12 @@ ArmAgnosticAttr::ArmAgnosticAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 
 
 
+bool ArmAgnosticAttr::isEquivalent(const ArmAgnosticAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(agnosticArgs_begin(), agnosticArgs_end(), Other.agnosticArgs_begin(), Other.agnosticArgs_end(), Context))
+    return false;
+  return true;
+}
+
 ArmAgnosticAttr *ArmAgnosticAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmAgnosticAttr(C, *this, agnosticArgs_, agnosticArgs_Size);
   A->Inherited = Inherited;
@@ -4698,7 +4914,7 @@ const char *ArmAgnosticAttr::getSpelling() const {
 
 // ArmBuiltinAliasAttr implementation
 
-ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
+ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ArmBuiltinAliasAttr(Ctx, CommonInfo, BuiltinName);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -4706,14 +4922,14 @@ ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, Identi
   return A;
 }
 
-ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
+ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ArmBuiltinAliasAttr(Ctx, CommonInfo, BuiltinName);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
+ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_clang_arm_builtin_alias:
@@ -4730,7 +4946,7 @@ ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, Identi
   return CreateImplicit(Ctx, BuiltinName, I);
 }
 
-ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
+ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_clang_arm_builtin_alias:
@@ -4748,7 +4964,7 @@ ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::Create(ASTContext &Ctx, IdentifierInfo
 }
 
 ArmBuiltinAliasAttr::ArmBuiltinAliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BuiltinName
+              , const IdentifierInfo * BuiltinName
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ArmBuiltinAlias, /*IsLateParsed=*/false, false)
               , builtinName(BuiltinName)
@@ -4756,6 +4972,12 @@ ArmBuiltinAliasAttr::ArmBuiltinAliasAttr(ASTContext &Ctx, const AttributeCommonI
 }
 
 
+
+bool ArmBuiltinAliasAttr::isEquivalent(const ArmBuiltinAliasAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBuiltinName(), Other.getBuiltinName(), Context))
+    return false;
+  return true;
+}
 
 ArmBuiltinAliasAttr *ArmBuiltinAliasAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmBuiltinAliasAttr(C, *this, builtinName);
@@ -4870,6 +5092,12 @@ ArmInAttr::ArmInAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool ArmInAttr::isEquivalent(const ArmInAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(inArgs_begin(), inArgs_end(), Other.inArgs_begin(), Other.inArgs_end(), Context))
+    return false;
+  return true;
+}
+
 ArmInAttr *ArmInAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmInAttr(C, *this, inArgs_, inArgs_Size);
   A->Inherited = Inherited;
@@ -4965,6 +5193,12 @@ ArmInOutAttr::ArmInOutAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 
 
 
+bool ArmInOutAttr::isEquivalent(const ArmInOutAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(inOutArgs_begin(), inOutArgs_end(), Other.inOutArgs_begin(), Other.inOutArgs_end(), Context))
+    return false;
+  return true;
+}
+
 ArmInOutAttr *ArmInOutAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmInOutAttr(C, *this, inOutArgs_, inOutArgs_Size);
   A->Inherited = Inherited;
@@ -5038,6 +5272,10 @@ ArmLocallyStreamingAttr::ArmLocallyStreamingAttr(ASTContext &Ctx, const Attribut
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ArmLocallyStreaming, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ArmLocallyStreamingAttr::isEquivalent(const ArmLocallyStreamingAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ArmLocallyStreamingAttr *ArmLocallyStreamingAttr::clone(ASTContext &C) const {
@@ -5129,6 +5367,10 @@ ArmMveStrictPolymorphismAttr::ArmMveStrictPolymorphismAttr(ASTContext &Ctx, cons
              )
   : TypeAttr(Ctx, CommonInfo, attr::ArmMveStrictPolymorphism, /*IsLateParsed=*/false)
   {
+}
+
+bool ArmMveStrictPolymorphismAttr::isEquivalent(const ArmMveStrictPolymorphismAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ArmMveStrictPolymorphismAttr *ArmMveStrictPolymorphismAttr::clone(ASTContext &C) const {
@@ -5232,6 +5474,12 @@ ArmNewAttr::ArmNewAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool ArmNewAttr::isEquivalent(const ArmNewAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(newArgs_begin(), newArgs_end(), Other.newArgs_begin(), Other.newArgs_end(), Context))
+    return false;
+  return true;
+}
+
 ArmNewAttr *ArmNewAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmNewAttr(C, *this, newArgs_, newArgs_Size);
   A->Inherited = Inherited;
@@ -5326,6 +5574,12 @@ ArmOutAttr::ArmOutAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool ArmOutAttr::isEquivalent(const ArmOutAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(outArgs_begin(), outArgs_end(), Other.outArgs_begin(), Other.outArgs_end(), Context))
+    return false;
+  return true;
+}
 
 ArmOutAttr *ArmOutAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmOutAttr(C, *this, outArgs_, outArgs_Size);
@@ -5422,6 +5676,12 @@ ArmPreservesAttr::ArmPreservesAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 
 
 
+bool ArmPreservesAttr::isEquivalent(const ArmPreservesAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(preserveArgs_begin(), preserveArgs_end(), Other.preserveArgs_begin(), Other.preserveArgs_end(), Context))
+    return false;
+  return true;
+}
+
 ArmPreservesAttr *ArmPreservesAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmPreservesAttr(C, *this, preserveArgs_, preserveArgs_Size);
   A->Inherited = Inherited;
@@ -5497,6 +5757,10 @@ ArmStreamingAttr::ArmStreamingAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool ArmStreamingAttr::isEquivalent(const ArmStreamingAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ArmStreamingAttr *ArmStreamingAttr::clone(ASTContext &C) const {
   auto *A = new (C) ArmStreamingAttr(C, *this);
   A->Inherited = Inherited;
@@ -5562,6 +5826,10 @@ ArmStreamingCompatibleAttr::ArmStreamingCompatibleAttr(ASTContext &Ctx, const At
              )
   : TypeAttr(Ctx, CommonInfo, attr::ArmStreamingCompatible, /*IsLateParsed=*/false)
   {
+}
+
+bool ArmStreamingCompatibleAttr::isEquivalent(const ArmStreamingCompatibleAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ArmStreamingCompatibleAttr *ArmStreamingCompatibleAttr::clone(ASTContext &C) const {
@@ -5653,6 +5921,10 @@ ArtificialAttr::ArtificialAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Artificial, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ArtificialAttr::isEquivalent(const ArtificialAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ArtificialAttr *ArtificialAttr::clone(ASTContext &C) const {
@@ -5758,6 +6030,12 @@ AsmLabelAttr::AsmLabelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 
 
 
+bool AsmLabelAttr::isEquivalent(const AsmLabelAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getLabel(), Other.getLabel(), Context))
+    return false;
+  return true;
+}
+
 AsmLabelAttr *AsmLabelAttr::clone(ASTContext &C) const {
   auto *A = new (C) AsmLabelAttr(C, *this, getLabel());
   A->Inherited = Inherited;
@@ -5783,6 +6061,15 @@ void AsmLabelAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) co
     break;
   }
   case 1 : {
+    OS << "__asm";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getLabel() << "\"";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "";
+    break;
+  }
+  case 2 : {
     OS << "__asm__";
     DelimitAttributeArgument(OS, IsFirstArgument);
     OS << "\"" << getLabel() << "\"";
@@ -5802,6 +6089,8 @@ const char *AsmLabelAttr::getSpelling() const {
   case 0:
     return "asm";
   case 1:
+    return "__asm";
+  case 2:
     return "__asm__";
   }
 }
@@ -5959,6 +6248,14 @@ AssertCapabilityAttr::Spelling AssertCapabilityAttr::getSemanticSpelling() const
   }
 }
 
+
+bool AssertCapabilityAttr::isEquivalent(const AssertCapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
 
 AssertCapabilityAttr *AssertCapabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) AssertCapabilityAttr(C, *this, args_, args_Size);
@@ -6152,6 +6449,14 @@ AssumeAlignedAttr::AssumeAlignedAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool AssumeAlignedAttr::isEquivalent(const AssumeAlignedAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAlignment(), Other.getAlignment(), Context))
+    return false;
+  if (!equalAttrArgs(getOffset(), Other.getOffset(), Context))
+    return false;
+  return true;
+}
+
 AssumeAlignedAttr *AssumeAlignedAttr::clone(ASTContext &C) const {
   auto *A = new (C) AssumeAlignedAttr(C, *this, alignment, offset);
   A->Inherited = Inherited;
@@ -6338,6 +6643,12 @@ const char *AtomicAttr::ConvertConsumedOptionToStr(AtomicAttr::ConsumedOption Va
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool AtomicAttr::isEquivalent(const AtomicAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(atomicOptions_begin(), atomicOptions_end(), Other.atomicOptions_begin(), Other.atomicOptions_end(), Context))
+    return false;
+  return true;
+}
+
 AtomicAttr *AtomicAttr::clone(ASTContext &C) const {
   auto *A = new (C) AtomicAttr(C, *this, atomicOptions_, atomicOptions_Size);
   A->Inherited = Inherited;
@@ -6412,7 +6723,7 @@ const char *AtomicAttr::getSpelling() const {
 
 // AvailabilityAttr implementation
 
-AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo) {
+AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) AvailabilityAttr(Ctx, CommonInfo, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -6420,14 +6731,14 @@ AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, IdentifierIn
   return A;
 }
 
-AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo) {
+AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) AvailabilityAttr(Ctx, CommonInfo, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, SourceRange Range, Spelling S) {
+AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_availability:
@@ -6444,7 +6755,7 @@ AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, IdentifierIn
   return CreateImplicit(Ctx, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment, I);
 }
 
-AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, IdentifierInfo * Environment, SourceRange Range, Spelling S) {
+AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_availability:
@@ -6462,7 +6773,7 @@ AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, IdentifierInfo * Pla
 }
 
 AvailabilityAttr::AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Platform
+              , const IdentifierInfo * Platform
               , VersionTuple Introduced
               , VersionTuple Deprecated
               , VersionTuple Obsoleted
@@ -6471,7 +6782,7 @@ AvailabilityAttr::AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &C
               , bool Strict
               , llvm::StringRef Replacement
               , int Priority
-              , IdentifierInfo * Environment
+              , const IdentifierInfo * Environment
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Availability, /*IsLateParsed=*/false, true)
               , platform(Platform)
@@ -6510,6 +6821,30 @@ AvailabilityAttr::AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 
 
 
+
+bool AvailabilityAttr::isEquivalent(const AvailabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getPlatform(), Other.getPlatform(), Context))
+    return false;
+  if (!equalAttrArgs(getIntroduced(), Other.getIntroduced(), Context))
+    return false;
+  if (!equalAttrArgs(getDeprecated(), Other.getDeprecated(), Context))
+    return false;
+  if (!equalAttrArgs(getObsoleted(), Other.getObsoleted(), Context))
+    return false;
+  if (!equalAttrArgs(getUnavailable(), Other.getUnavailable(), Context))
+    return false;
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  if (!equalAttrArgs(getStrict(), Other.getStrict(), Context))
+    return false;
+  if (!equalAttrArgs(getReplacement(), Other.getReplacement(), Context))
+    return false;
+  if (!equalAttrArgs(getPriority(), Other.getPriority(), Context))
+    return false;
+  if (!equalAttrArgs(getEnvironment(), Other.getEnvironment(), Context))
+    return false;
+  return true;
+}
 
 AvailabilityAttr *AvailabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) AvailabilityAttr(C, *this, platform, getIntroduced(), getDeprecated(), getObsoleted(), unavailable, getMessage(), strict, getReplacement(), priority, environment);
@@ -6667,6 +7002,10 @@ AvailableOnlyInDefaultEvalMethodAttr::AvailableOnlyInDefaultEvalMethodAttr(ASTCo
   {
 }
 
+bool AvailableOnlyInDefaultEvalMethodAttr::isEquivalent(const AvailableOnlyInDefaultEvalMethodAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 AvailableOnlyInDefaultEvalMethodAttr *AvailableOnlyInDefaultEvalMethodAttr::clone(ASTContext &C) const {
   auto *A = new (C) AvailableOnlyInDefaultEvalMethodAttr(C, *this);
   A->Inherited = Inherited;
@@ -6770,6 +7109,10 @@ BPFFastCallAttr::BPFFastCallAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
              )
   : InheritableAttr(Ctx, CommonInfo, attr::BPFFastCall, /*IsLateParsed=*/false, false)
   {
+}
+
+bool BPFFastCallAttr::isEquivalent(const BPFFastCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 BPFFastCallAttr *BPFFastCallAttr::clone(ASTContext &C) const {
@@ -6877,6 +7220,10 @@ BPFPreserveAccessIndexAttr::BPFPreserveAccessIndexAttr(ASTContext &Ctx, const At
   {
 }
 
+bool BPFPreserveAccessIndexAttr::isEquivalent(const BPFPreserveAccessIndexAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 BPFPreserveAccessIndexAttr *BPFPreserveAccessIndexAttr::clone(ASTContext &C) const {
   auto *A = new (C) BPFPreserveAccessIndexAttr(C, *this);
   A->Inherited = Inherited;
@@ -6980,6 +7327,10 @@ BPFPreserveStaticOffsetAttr::BPFPreserveStaticOffsetAttr(ASTContext &Ctx, const 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::BPFPreserveStaticOffset, /*IsLateParsed=*/false, false)
   {
+}
+
+bool BPFPreserveStaticOffsetAttr::isEquivalent(const BPFPreserveStaticOffsetAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 BPFPreserveStaticOffsetAttr *BPFPreserveStaticOffsetAttr::clone(ASTContext &C) const {
@@ -7092,6 +7443,12 @@ BTFDeclTagAttr::BTFDeclTagAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 }
 
 
+
+bool BTFDeclTagAttr::isEquivalent(const BTFDeclTagAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBTFDeclTag(), Other.getBTFDeclTag(), Context))
+    return false;
+  return true;
+}
 
 BTFDeclTagAttr *BTFDeclTagAttr::clone(ASTContext &C) const {
   auto *A = new (C) BTFDeclTagAttr(C, *this, getBTFDeclTag());
@@ -7216,6 +7573,12 @@ BTFTypeTagAttr::BTFTypeTagAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 
 
 
+bool BTFTypeTagAttr::isEquivalent(const BTFTypeTagAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBTFTypeTag(), Other.getBTFTypeTag(), Context))
+    return false;
+  return true;
+}
+
 BTFTypeTagAttr *BTFTypeTagAttr::clone(ASTContext &C) const {
   auto *A = new (C) BTFTypeTagAttr(C, *this, getBTFTypeTag());
   A->Inherited = Inherited;
@@ -7331,6 +7694,10 @@ BlockingAttr::BlockingAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : TypeAttr(Ctx, CommonInfo, attr::Blocking, /*IsLateParsed=*/false)
   {
+}
+
+bool BlockingAttr::isEquivalent(const BlockingAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 BlockingAttr *BlockingAttr::clone(ASTContext &C) const {
@@ -7459,6 +7826,12 @@ const char *BlocksAttr::ConvertBlockTypeToStr(BlocksAttr::BlockType Val) {
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool BlocksAttr::isEquivalent(const BlocksAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  return true;
+}
+
 BlocksAttr *BlocksAttr::clone(ASTContext &C) const {
   auto *A = new (C) BlocksAttr(C, *this, type);
   A->Inherited = Inherited;
@@ -7556,6 +7929,12 @@ BuiltinAttr::BuiltinAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool BuiltinAttr::isEquivalent(const BuiltinAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getID(), Other.getID(), Context))
+    return false;
+  return true;
+}
+
 BuiltinAttr *BuiltinAttr::clone(ASTContext &C) const {
   auto *A = new (C) BuiltinAttr(C, *this, iD);
   A->Inherited = Inherited;
@@ -7574,7 +7953,7 @@ const char *BuiltinAttr::getSpelling() const {
 
 // BuiltinAliasAttr implementation
 
-BuiltinAliasAttr *BuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
+BuiltinAliasAttr *BuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) BuiltinAliasAttr(Ctx, CommonInfo, BuiltinName);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -7582,12 +7961,12 @@ BuiltinAliasAttr *BuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, IdentifierIn
   return A;
 }
 
-BuiltinAliasAttr *BuiltinAliasAttr::Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
+BuiltinAliasAttr *BuiltinAliasAttr::Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) BuiltinAliasAttr(Ctx, CommonInfo, BuiltinName);
   return A;
 }
 
-BuiltinAliasAttr *BuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
+BuiltinAliasAttr *BuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case CXX11_clang_builtin_alias:
@@ -7604,7 +7983,7 @@ BuiltinAliasAttr *BuiltinAliasAttr::CreateImplicit(ASTContext &Ctx, IdentifierIn
   return CreateImplicit(Ctx, BuiltinName, I);
 }
 
-BuiltinAliasAttr *BuiltinAliasAttr::Create(ASTContext &Ctx, IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
+BuiltinAliasAttr *BuiltinAliasAttr::Create(ASTContext &Ctx, const IdentifierInfo * BuiltinName, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case CXX11_clang_builtin_alias:
@@ -7622,7 +8001,7 @@ BuiltinAliasAttr *BuiltinAliasAttr::Create(ASTContext &Ctx, IdentifierInfo * Bui
 }
 
 BuiltinAliasAttr::BuiltinAliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BuiltinName
+              , const IdentifierInfo * BuiltinName
              )
   : Attr(Ctx, CommonInfo, attr::BuiltinAlias, /*IsLateParsed=*/false)
               , builtinName(BuiltinName)
@@ -7638,6 +8017,14 @@ BuiltinAliasAttr::Spelling BuiltinAliasAttr::getSemanticSpelling() const {
   }
 }
 
+
+bool BuiltinAliasAttr::isEquivalent(const BuiltinAliasAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getBuiltinName(), Other.getBuiltinName(), Context))
+    return false;
+  return true;
+}
 
 BuiltinAliasAttr *BuiltinAliasAttr::clone(ASTContext &C) const {
   auto *A = new (C) BuiltinAliasAttr(C, *this, builtinName);
@@ -7730,6 +8117,10 @@ C11NoReturnAttr::C11NoReturnAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
              )
   : InheritableAttr(Ctx, CommonInfo, attr::C11NoReturn, /*IsLateParsed=*/false, false)
   {
+}
+
+bool C11NoReturnAttr::isEquivalent(const C11NoReturnAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 C11NoReturnAttr *C11NoReturnAttr::clone(ASTContext &C) const {
@@ -7825,6 +8216,10 @@ CDeclAttr::CDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CDecl, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CDeclAttr::isEquivalent(const CDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CDeclAttr *CDeclAttr::clone(ASTContext &C) const {
@@ -7946,6 +8341,10 @@ CFAuditedTransferAttr::CFAuditedTransferAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool CFAuditedTransferAttr::isEquivalent(const CFAuditedTransferAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CFAuditedTransferAttr *CFAuditedTransferAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFAuditedTransferAttr(C, *this);
   A->Inherited = Inherited;
@@ -8049,6 +8448,10 @@ CFConsumedAttr::CFConsumedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableParamAttr(Ctx, CommonInfo, attr::CFConsumed, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CFConsumedAttr::isEquivalent(const CFConsumedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CFConsumedAttr *CFConsumedAttr::clone(ASTContext &C) const {
@@ -8181,6 +8584,12 @@ const char *CFGuardAttr::ConvertGuardArgToStr(CFGuardAttr::GuardArg Val) {
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool CFGuardAttr::isEquivalent(const CFGuardAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getGuard(), Other.getGuard(), Context))
+    return false;
+  return true;
+}
+
 CFGuardAttr *CFGuardAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFGuardAttr(C, *this, guard);
   A->Inherited = Inherited;
@@ -8309,6 +8718,10 @@ CFICanonicalJumpTableAttr::CFICanonicalJumpTableAttr(ASTContext &Ctx, const Attr
   {
 }
 
+bool CFICanonicalJumpTableAttr::isEquivalent(const CFICanonicalJumpTableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CFICanonicalJumpTableAttr *CFICanonicalJumpTableAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFICanonicalJumpTableAttr(C, *this);
   A->Inherited = Inherited;
@@ -8419,6 +8832,12 @@ CFISaltAttr::CFISaltAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool CFISaltAttr::isEquivalent(const CFISaltAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSalt(), Other.getSalt(), Context))
+    return false;
+  return true;
+}
 
 CFISaltAttr *CFISaltAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFISaltAttr(C, *this, getSalt());
@@ -8537,6 +8956,10 @@ CFIUncheckedCalleeAttr::CFIUncheckedCalleeAttr(ASTContext &Ctx, const AttributeC
   {
 }
 
+bool CFIUncheckedCalleeAttr::isEquivalent(const CFIUncheckedCalleeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CFIUncheckedCalleeAttr *CFIUncheckedCalleeAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFIUncheckedCalleeAttr(C, *this);
   A->Inherited = Inherited;
@@ -8640,6 +9063,10 @@ CFReturnsNotRetainedAttr::CFReturnsNotRetainedAttr(ASTContext &Ctx, const Attrib
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CFReturnsNotRetained, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CFReturnsNotRetainedAttr::isEquivalent(const CFReturnsNotRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CFReturnsNotRetainedAttr *CFReturnsNotRetainedAttr::clone(ASTContext &C) const {
@@ -8747,6 +9174,10 @@ CFReturnsRetainedAttr::CFReturnsRetainedAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool CFReturnsRetainedAttr::isEquivalent(const CFReturnsRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CFReturnsRetainedAttr *CFReturnsRetainedAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFReturnsRetainedAttr(C, *this);
   A->Inherited = Inherited;
@@ -8852,6 +9283,10 @@ CFUnknownTransferAttr::CFUnknownTransferAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool CFUnknownTransferAttr::isEquivalent(const CFUnknownTransferAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CFUnknownTransferAttr *CFUnknownTransferAttr::clone(ASTContext &C) const {
   auto *A = new (C) CFUnknownTransferAttr(C, *this);
   A->Inherited = Inherited;
@@ -8902,7 +9337,7 @@ const char *CFUnknownTransferAttr::getSpelling() const {
 
 // CPUDispatchAttr implementation
 
-CPUDispatchAttr *CPUDispatchAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
+CPUDispatchAttr *CPUDispatchAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) CPUDispatchAttr(Ctx, CommonInfo, Cpus, CpusSize);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -8910,14 +9345,14 @@ CPUDispatchAttr *CPUDispatchAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo
   return A;
 }
 
-CPUDispatchAttr *CPUDispatchAttr::Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
+CPUDispatchAttr *CPUDispatchAttr::Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) CPUDispatchAttr(Ctx, CommonInfo, Cpus, CpusSize);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-CPUDispatchAttr *CPUDispatchAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
+CPUDispatchAttr *CPUDispatchAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_cpu_dispatch:
@@ -8936,7 +9371,7 @@ CPUDispatchAttr *CPUDispatchAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo
   return CreateImplicit(Ctx, Cpus, CpusSize, I);
 }
 
-CPUDispatchAttr *CPUDispatchAttr::Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
+CPUDispatchAttr *CPUDispatchAttr::Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_cpu_dispatch:
@@ -8956,10 +9391,10 @@ CPUDispatchAttr *CPUDispatchAttr::Create(ASTContext &Ctx, IdentifierInfo * *Cpus
 }
 
 CPUDispatchAttr::CPUDispatchAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * *Cpus, unsigned CpusSize
+              , const IdentifierInfo * *Cpus, unsigned CpusSize
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CPUDispatch, /*IsLateParsed=*/false, false)
-              , cpus_Size(CpusSize), cpus_(new (Ctx, 16) IdentifierInfo *[cpus_Size])
+              , cpus_Size(CpusSize), cpus_(new (Ctx, 16) const IdentifierInfo *[cpus_Size])
   {
   std::copy(Cpus, Cpus + cpus_Size, cpus_);
 }
@@ -8972,6 +9407,12 @@ CPUDispatchAttr::CPUDispatchAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool CPUDispatchAttr::isEquivalent(const CPUDispatchAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(cpus_begin(), cpus_end(), Other.cpus_begin(), Other.cpus_end(), Context))
+    return false;
+  return true;
+}
 
 CPUDispatchAttr *CPUDispatchAttr::clone(ASTContext &C) const {
   auto *A = new (C) CPUDispatchAttr(C, *this, cpus_, cpus_Size);
@@ -9062,7 +9503,7 @@ const char *CPUDispatchAttr::getSpelling() const {
 
 // CPUSpecificAttr implementation
 
-CPUSpecificAttr *CPUSpecificAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
+CPUSpecificAttr *CPUSpecificAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) CPUSpecificAttr(Ctx, CommonInfo, Cpus, CpusSize);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -9070,14 +9511,14 @@ CPUSpecificAttr *CPUSpecificAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo
   return A;
 }
 
-CPUSpecificAttr *CPUSpecificAttr::Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
+CPUSpecificAttr *CPUSpecificAttr::Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) CPUSpecificAttr(Ctx, CommonInfo, Cpus, CpusSize);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-CPUSpecificAttr *CPUSpecificAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
+CPUSpecificAttr *CPUSpecificAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_cpu_specific:
@@ -9096,7 +9537,7 @@ CPUSpecificAttr *CPUSpecificAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo
   return CreateImplicit(Ctx, Cpus, CpusSize, I);
 }
 
-CPUSpecificAttr *CPUSpecificAttr::Create(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
+CPUSpecificAttr *CPUSpecificAttr::Create(ASTContext &Ctx, const IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_cpu_specific:
@@ -9116,10 +9557,10 @@ CPUSpecificAttr *CPUSpecificAttr::Create(ASTContext &Ctx, IdentifierInfo * *Cpus
 }
 
 CPUSpecificAttr::CPUSpecificAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * *Cpus, unsigned CpusSize
+              , const IdentifierInfo * *Cpus, unsigned CpusSize
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CPUSpecific, /*IsLateParsed=*/false, false)
-              , cpus_Size(CpusSize), cpus_(new (Ctx, 16) IdentifierInfo *[cpus_Size])
+              , cpus_Size(CpusSize), cpus_(new (Ctx, 16) const IdentifierInfo *[cpus_Size])
   {
   std::copy(Cpus, Cpus + cpus_Size, cpus_);
 }
@@ -9132,6 +9573,12 @@ CPUSpecificAttr::CPUSpecificAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool CPUSpecificAttr::isEquivalent(const CPUSpecificAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(cpus_begin(), cpus_end(), Other.cpus_begin(), Other.cpus_end(), Context))
+    return false;
+  return true;
+}
 
 CPUSpecificAttr *CPUSpecificAttr::clone(ASTContext &C) const {
   auto *A = new (C) CPUSpecificAttr(C, *this, cpus_, cpus_Size);
@@ -9275,6 +9722,16 @@ CUDAClusterDimsAttr::CUDAClusterDimsAttr(ASTContext &Ctx, const AttributeCommonI
 
 
 
+bool CUDAClusterDimsAttr::isEquivalent(const CUDAClusterDimsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getX(), Other.getX(), Context))
+    return false;
+  if (!equalAttrArgs(getY(), Other.getY(), Context))
+    return false;
+  if (!equalAttrArgs(getZ(), Other.getZ(), Context))
+    return false;
+  return true;
+}
+
 CUDAClusterDimsAttr *CUDAClusterDimsAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDAClusterDimsAttr(C, *this, x, y, z);
   A->Inherited = Inherited;
@@ -9384,6 +9841,10 @@ CUDAConstantAttr::CUDAConstantAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool CUDAConstantAttr::isEquivalent(const CUDAConstantAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CUDAConstantAttr *CUDAConstantAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDAConstantAttr(C, *this);
   A->Inherited = Inherited;
@@ -9476,6 +9937,10 @@ CUDADeviceAttr::CUDADeviceAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CUDADevice, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CUDADeviceAttr::isEquivalent(const CUDADeviceAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CUDADeviceAttr *CUDADeviceAttr::clone(ASTContext &C) const {
@@ -9572,6 +10037,10 @@ CUDADeviceBuiltinSurfaceTypeAttr::CUDADeviceBuiltinSurfaceTypeAttr(ASTContext &C
   {
 }
 
+bool CUDADeviceBuiltinSurfaceTypeAttr::isEquivalent(const CUDADeviceBuiltinSurfaceTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CUDADeviceBuiltinSurfaceTypeAttr *CUDADeviceBuiltinSurfaceTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDADeviceBuiltinSurfaceTypeAttr(C, *this);
   A->Inherited = Inherited;
@@ -9664,6 +10133,10 @@ CUDADeviceBuiltinTextureTypeAttr::CUDADeviceBuiltinTextureTypeAttr(ASTContext &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CUDADeviceBuiltinTextureType, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CUDADeviceBuiltinTextureTypeAttr::isEquivalent(const CUDADeviceBuiltinTextureTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CUDADeviceBuiltinTextureTypeAttr *CUDADeviceBuiltinTextureTypeAttr::clone(ASTContext &C) const {
@@ -9760,6 +10233,10 @@ CUDAGlobalAttr::CUDAGlobalAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool CUDAGlobalAttr::isEquivalent(const CUDAGlobalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CUDAGlobalAttr *CUDAGlobalAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDAGlobalAttr(C, *this);
   A->Inherited = Inherited;
@@ -9852,6 +10329,10 @@ CUDAGridConstantAttr::CUDAGridConstantAttr(ASTContext &Ctx, const AttributeCommo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CUDAGridConstant, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CUDAGridConstantAttr::isEquivalent(const CUDAGridConstantAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CUDAGridConstantAttr *CUDAGridConstantAttr::clone(ASTContext &C) const {
@@ -9948,6 +10429,10 @@ CUDAHostAttr::CUDAHostAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool CUDAHostAttr::isEquivalent(const CUDAHostAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CUDAHostAttr *CUDAHostAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDAHostAttr(C, *this);
   A->Inherited = Inherited;
@@ -10020,6 +10505,10 @@ CUDAInvalidTargetAttr::CUDAInvalidTargetAttr(ASTContext &Ctx, const AttributeCom
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CUDAInvalidTarget, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CUDAInvalidTargetAttr::isEquivalent(const CUDAInvalidTargetAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CUDAInvalidTargetAttr *CUDAInvalidTargetAttr::clone(ASTContext &C) const {
@@ -10112,6 +10601,16 @@ CUDALaunchBoundsAttr::CUDALaunchBoundsAttr(ASTContext &Ctx, const AttributeCommo
 
 
 
+
+bool CUDALaunchBoundsAttr::isEquivalent(const CUDALaunchBoundsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMaxThreads(), Other.getMaxThreads(), Context))
+    return false;
+  if (!equalAttrArgs(getMinBlocks(), Other.getMinBlocks(), Context))
+    return false;
+  if (!equalAttrArgs(getMaxBlocks(), Other.getMaxBlocks(), Context))
+    return false;
+  return true;
+}
 
 CUDALaunchBoundsAttr *CUDALaunchBoundsAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDALaunchBoundsAttr(C, *this, maxThreads, minBlocks, maxBlocks);
@@ -10231,6 +10730,10 @@ CUDANoClusterAttr::CUDANoClusterAttr(ASTContext &Ctx, const AttributeCommonInfo 
   {
 }
 
+bool CUDANoClusterAttr::isEquivalent(const CUDANoClusterAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CUDANoClusterAttr *CUDANoClusterAttr::clone(ASTContext &C) const {
   auto *A = new (C) CUDANoClusterAttr(C, *this);
   A->Inherited = Inherited;
@@ -10316,6 +10819,10 @@ CUDASharedAttr::CUDASharedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CUDAShared, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CUDASharedAttr::isEquivalent(const CUDASharedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CUDASharedAttr *CUDASharedAttr::clone(ASTContext &C) const {
@@ -10422,6 +10929,12 @@ CXX11NoReturnAttr::Spelling CXX11NoReturnAttr::getSemanticSpelling() const {
     case 2: return C23_Noreturn;
   }
 }
+bool CXX11NoReturnAttr::isEquivalent(const CXX11NoReturnAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 CXX11NoReturnAttr *CXX11NoReturnAttr::clone(ASTContext &C) const {
   auto *A = new (C) CXX11NoReturnAttr(C, *this);
   A->Inherited = Inherited;
@@ -10534,6 +11047,12 @@ CXXAssumeAttr::CXXAssumeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool CXXAssumeAttr::isEquivalent(const CXXAssumeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAssumption(), Other.getAssumption(), Context))
+    return false;
+  return true;
+}
 
 CXXAssumeAttr *CXXAssumeAttr::clone(ASTContext &C) const {
   auto *A = new (C) CXXAssumeAttr(C, *this, assumption);
@@ -10700,6 +11219,12 @@ const char *CallableWhenAttr::ConvertConsumedStateToStr(CallableWhenAttr::Consum
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool CallableWhenAttr::isEquivalent(const CallableWhenAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(callableStates_begin(), callableStates_end(), Other.callableStates_begin(), Other.callableStates_end(), Context))
+    return false;
+  return true;
+}
+
 CallableWhenAttr *CallableWhenAttr::clone(ASTContext &C) const {
   auto *A = new (C) CallableWhenAttr(C, *this, callableStates_, callableStates_Size);
   A->Inherited = Inherited;
@@ -10825,6 +11350,12 @@ CallbackAttr::CallbackAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 }
 
 
+
+bool CallbackAttr::isEquivalent(const CallbackAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(encoding_begin(), encoding_end(), Other.encoding_begin(), Other.encoding_end(), Context))
+    return false;
+  return true;
+}
 
 CallbackAttr *CallbackAttr::clone(ASTContext &C) const {
   auto *A = new (C) CallbackAttr(C, *this, encoding_, encoding_Size);
@@ -10955,6 +11486,10 @@ CalledOnceAttr::CalledOnceAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool CalledOnceAttr::isEquivalent(const CalledOnceAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CalledOnceAttr *CalledOnceAttr::clone(ASTContext &C) const {
   auto *A = new (C) CalledOnceAttr(C, *this);
   A->Inherited = Inherited;
@@ -11077,6 +11612,14 @@ CapabilityAttr::Spelling CapabilityAttr::getSemanticSpelling() const {
 }
 
 
+bool CapabilityAttr::isEquivalent(const CapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
+
 CapabilityAttr *CapabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) CapabilityAttr(C, *this, getName());
   A->Inherited = Inherited;
@@ -11181,6 +11724,10 @@ CapturedRecordAttr::CapturedRecordAttr(ASTContext &Ctx, const AttributeCommonInf
   {
 }
 
+bool CapturedRecordAttr::isEquivalent(const CapturedRecordAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CapturedRecordAttr *CapturedRecordAttr::clone(ASTContext &C) const {
   auto *A = new (C) CapturedRecordAttr(C, *this);
   A->Inherited = Inherited;
@@ -11248,6 +11795,10 @@ CarriesDependencyAttr::CarriesDependencyAttr(ASTContext &Ctx, const AttributeCom
              )
   : InheritableParamAttr(Ctx, CommonInfo, attr::CarriesDependency, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CarriesDependencyAttr::isEquivalent(const CarriesDependencyAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CarriesDependencyAttr *CarriesDependencyAttr::clone(ASTContext &C) const {
@@ -11351,6 +11902,12 @@ CleanupAttr::CleanupAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool CleanupAttr::isEquivalent(const CleanupAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getFunctionDecl(), Other.getFunctionDecl(), Context))
+    return false;
+  return true;
+}
 
 CleanupAttr *CleanupAttr::clone(ASTContext &C) const {
   auto *A = new (C) CleanupAttr(C, *this, functionDecl);
@@ -11469,6 +12026,10 @@ ClspvLibclcBuiltinAttr::ClspvLibclcBuiltinAttr(ASTContext &Ctx, const AttributeC
   {
 }
 
+bool ClspvLibclcBuiltinAttr::isEquivalent(const ClspvLibclcBuiltinAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ClspvLibclcBuiltinAttr *ClspvLibclcBuiltinAttr::clone(ASTContext &C) const {
   auto *A = new (C) ClspvLibclcBuiltinAttr(C, *this);
   A->Inherited = Inherited;
@@ -11550,6 +12111,10 @@ CmseNSCallAttr::CmseNSCallAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool CmseNSCallAttr::isEquivalent(const CmseNSCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CmseNSCallAttr *CmseNSCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) CmseNSCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -11615,6 +12180,10 @@ CmseNSEntryAttr::CmseNSEntryAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CmseNSEntry, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CmseNSEntryAttr::isEquivalent(const CmseNSEntryAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CmseNSEntryAttr *CmseNSEntryAttr::clone(ASTContext &C) const {
@@ -11711,6 +12280,12 @@ CodeAlignAttr::CodeAlignAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool CodeAlignAttr::isEquivalent(const CodeAlignAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAlignment(), Other.getAlignment(), Context))
+    return false;
+  return true;
+}
 
 CodeAlignAttr *CodeAlignAttr::clone(ASTContext &C) const {
   auto *A = new (C) CodeAlignAttr(C, *this, alignment);
@@ -11863,6 +12438,12 @@ const char *CodeModelAttr::ConvertModelToStr(llvm::CodeModel::Model Val) {
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool CodeModelAttr::isEquivalent(const CodeModelAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getModel(), Other.getModel(), Context))
+    return false;
+  return true;
+}
+
 CodeModelAttr *CodeModelAttr::clone(ASTContext &C) const {
   auto *A = new (C) CodeModelAttr(C, *this, model);
   A->Inherited = Inherited;
@@ -11962,6 +12543,12 @@ CodeSegAttr::CodeSegAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool CodeSegAttr::isEquivalent(const CodeSegAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
+
 CodeSegAttr *CodeSegAttr::clone(ASTContext &C) const {
   auto *A = new (C) CodeSegAttr(C, *this, getName());
   A->Inherited = Inherited;
@@ -12055,6 +12642,10 @@ ColdAttr::ColdAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Cold, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ColdAttr::isEquivalent(const ColdAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ColdAttr *ColdAttr::clone(ASTContext &C) const {
@@ -12162,6 +12753,10 @@ CommonAttr::CommonAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool CommonAttr::isEquivalent(const CommonAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CommonAttr *CommonAttr::clone(ASTContext &C) const {
   auto *A = new (C) CommonAttr(C, *this);
   A->Inherited = Inherited;
@@ -12265,6 +12860,10 @@ ConstAttr::ConstAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Const, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ConstAttr::isEquivalent(const ConstAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ConstAttr *ConstAttr::clone(ASTContext &C) const {
@@ -12399,6 +12998,12 @@ ConstInitAttr::Spelling ConstInitAttr::getSemanticSpelling() const {
     case 2: return CXX11_clang_require_constant_initialization;
   }
 }
+bool ConstInitAttr::isEquivalent(const ConstInitAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 ConstInitAttr *ConstInitAttr::clone(ASTContext &C) const {
   auto *A = new (C) ConstInitAttr(C, *this);
   A->Inherited = Inherited;
@@ -12514,6 +13119,12 @@ ConstructorAttr::ConstructorAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool ConstructorAttr::isEquivalent(const ConstructorAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getPriority(), Other.getPriority(), Context))
+    return false;
+  return true;
+}
 
 ConstructorAttr *ConstructorAttr::clone(ASTContext &C) const {
   auto *A = new (C) ConstructorAttr(C, *this, priority);
@@ -12671,6 +13282,12 @@ const char *ConsumableAttr::ConvertConsumedStateToStr(ConsumableAttr::ConsumedSt
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ConsumableAttr::isEquivalent(const ConsumableAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getDefaultState(), Other.getDefaultState(), Context))
+    return false;
+  return true;
+}
+
 ConsumableAttr *ConsumableAttr::clone(ASTContext &C) const {
   auto *A = new (C) ConsumableAttr(C, *this, defaultState);
   A->Inherited = Inherited;
@@ -12773,6 +13390,10 @@ ConsumableAutoCastAttr::ConsumableAutoCastAttr(ASTContext &Ctx, const AttributeC
   {
 }
 
+bool ConsumableAutoCastAttr::isEquivalent(const ConsumableAutoCastAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ConsumableAutoCastAttr *ConsumableAutoCastAttr::clone(ASTContext &C) const {
   auto *A = new (C) ConsumableAutoCastAttr(C, *this);
   A->Inherited = Inherited;
@@ -12865,6 +13486,10 @@ ConsumableSetOnReadAttr::ConsumableSetOnReadAttr(ASTContext &Ctx, const Attribut
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ConsumableSetOnRead, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ConsumableSetOnReadAttr::isEquivalent(const ConsumableSetOnReadAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ConsumableSetOnReadAttr *ConsumableSetOnReadAttr::clone(ASTContext &C) const {
@@ -12963,6 +13588,10 @@ ConvergentAttr::ConvergentAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Convergent, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ConvergentAttr::isEquivalent(const ConvergentAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ConvergentAttr *ConvergentAttr::clone(ASTContext &C) const {
@@ -13070,6 +13699,10 @@ CoroAwaitElidableAttr::CoroAwaitElidableAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool CoroAwaitElidableAttr::isEquivalent(const CoroAwaitElidableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CoroAwaitElidableAttr *CoroAwaitElidableAttr::clone(ASTContext &C) const {
   auto *A = new (C) CoroAwaitElidableAttr(C, *this);
   A->Inherited = Inherited;
@@ -13173,6 +13806,10 @@ CoroAwaitElidableArgumentAttr::CoroAwaitElidableArgumentAttr(ASTContext &Ctx, co
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CoroAwaitElidableArgument, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CoroAwaitElidableArgumentAttr::isEquivalent(const CoroAwaitElidableArgumentAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CoroAwaitElidableArgumentAttr *CoroAwaitElidableArgumentAttr::clone(ASTContext &C) const {
@@ -13280,6 +13917,10 @@ CoroDisableLifetimeBoundAttr::CoroDisableLifetimeBoundAttr(ASTContext &Ctx, cons
   {
 }
 
+bool CoroDisableLifetimeBoundAttr::isEquivalent(const CoroDisableLifetimeBoundAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CoroDisableLifetimeBoundAttr *CoroDisableLifetimeBoundAttr::clone(ASTContext &C) const {
   auto *A = new (C) CoroDisableLifetimeBoundAttr(C, *this);
   A->Inherited = Inherited;
@@ -13383,6 +14024,10 @@ CoroLifetimeBoundAttr::CoroLifetimeBoundAttr(ASTContext &Ctx, const AttributeCom
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CoroLifetimeBound, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CoroLifetimeBoundAttr::isEquivalent(const CoroLifetimeBoundAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CoroLifetimeBoundAttr *CoroLifetimeBoundAttr::clone(ASTContext &C) const {
@@ -13490,6 +14135,10 @@ CoroOnlyDestroyWhenCompleteAttr::CoroOnlyDestroyWhenCompleteAttr(ASTContext &Ctx
   {
 }
 
+bool CoroOnlyDestroyWhenCompleteAttr::isEquivalent(const CoroOnlyDestroyWhenCompleteAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CoroOnlyDestroyWhenCompleteAttr *CoroOnlyDestroyWhenCompleteAttr::clone(ASTContext &C) const {
   auto *A = new (C) CoroOnlyDestroyWhenCompleteAttr(C, *this);
   A->Inherited = Inherited;
@@ -13595,6 +14244,10 @@ CoroReturnTypeAttr::CoroReturnTypeAttr(ASTContext &Ctx, const AttributeCommonInf
   {
 }
 
+bool CoroReturnTypeAttr::isEquivalent(const CoroReturnTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 CoroReturnTypeAttr *CoroReturnTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) CoroReturnTypeAttr(C, *this);
   A->Inherited = Inherited;
@@ -13698,6 +14351,10 @@ CoroWrapperAttr::CoroWrapperAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
              )
   : InheritableAttr(Ctx, CommonInfo, attr::CoroWrapper, /*IsLateParsed=*/false, false)
   {
+}
+
+bool CoroWrapperAttr::isEquivalent(const CoroWrapperAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 CoroWrapperAttr *CoroWrapperAttr::clone(ASTContext &C) const {
@@ -13821,6 +14478,14 @@ CountedByAttr::CountedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 
 
 
+
+bool CountedByAttr::isEquivalent(const CountedByAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCount(), Other.getCount(), Context))
+    return false;
+  if (!equalAttrArgs(getNestedLevel(), Other.getNestedLevel(), Context))
+    return false;
+  return true;
+}
 
 CountedByAttr *CountedByAttr::clone(ASTContext &C) const {
   auto *A = new (C) CountedByAttr(C, *this, count, nestedLevel);
@@ -13968,6 +14633,14 @@ CountedByOrNullAttr::CountedByOrNullAttr(ASTContext &Ctx, const AttributeCommonI
 
 
 
+bool CountedByOrNullAttr::isEquivalent(const CountedByOrNullAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCount(), Other.getCount(), Context))
+    return false;
+  if (!equalAttrArgs(getNestedLevel(), Other.getNestedLevel(), Context))
+    return false;
+  return true;
+}
+
 CountedByOrNullAttr *CountedByOrNullAttr::clone(ASTContext &C) const {
   auto *A = new (C) CountedByOrNullAttr(C, *this, count, nestedLevel);
   A->Inherited = Inherited;
@@ -14101,6 +14774,10 @@ DLLExportAttr::DLLExportAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
   {
 }
 
+bool DLLExportAttr::isEquivalent(const DLLExportAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 DLLExportAttr *DLLExportAttr::clone(ASTContext &C) const {
   auto *A = new (C) DLLExportAttr(C, *this);
   A->Inherited = Inherited;
@@ -14156,6 +14833,59 @@ const char *DLLExportAttr::getSpelling() const {
 }
 
 
+// DLLExportOnDeclAttr implementation
+
+DLLExportOnDeclAttr *DLLExportOnDeclAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) DLLExportOnDeclAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+DLLExportOnDeclAttr *DLLExportOnDeclAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) DLLExportOnDeclAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+DLLExportOnDeclAttr *DLLExportOnDeclAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return CreateImplicit(Ctx, I);
+}
+
+DLLExportOnDeclAttr *DLLExportOnDeclAttr::Create(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return Create(Ctx, I);
+}
+
+DLLExportOnDeclAttr::DLLExportOnDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::DLLExportOnDecl, /*IsLateParsed=*/false, false)
+  {
+}
+
+bool DLLExportOnDeclAttr::isEquivalent(const DLLExportOnDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
+DLLExportOnDeclAttr *DLLExportOnDeclAttr::clone(ASTContext &C) const {
+  auto *A = new (C) DLLExportOnDeclAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void DLLExportOnDeclAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+}
+
+const char *DLLExportOnDeclAttr::getSpelling() const {
+  return "(No spelling)";
+}
+
+
 // DLLExportStaticLocalAttr implementation
 
 DLLExportStaticLocalAttr *DLLExportStaticLocalAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -14187,6 +14917,10 @@ DLLExportStaticLocalAttr::DLLExportStaticLocalAttr(ASTContext &Ctx, const Attrib
              )
   : InheritableAttr(Ctx, CommonInfo, attr::DLLExportStaticLocal, /*IsLateParsed=*/false, false)
   {
+}
+
+bool DLLExportStaticLocalAttr::isEquivalent(const DLLExportStaticLocalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 DLLExportStaticLocalAttr *DLLExportStaticLocalAttr::clone(ASTContext &C) const {
@@ -14264,6 +14998,10 @@ DLLImportAttr::DLLImportAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::DLLImport, /*IsLateParsed=*/false, false)
   {
+}
+
+bool DLLImportAttr::isEquivalent(const DLLImportAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 DLLImportAttr *DLLImportAttr::clone(ASTContext &C) const {
@@ -14352,6 +15090,10 @@ DLLImportStaticLocalAttr::DLLImportStaticLocalAttr(ASTContext &Ctx, const Attrib
              )
   : InheritableAttr(Ctx, CommonInfo, attr::DLLImportStaticLocal, /*IsLateParsed=*/false, false)
   {
+}
+
+bool DLLImportStaticLocalAttr::isEquivalent(const DLLImportStaticLocalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 DLLImportStaticLocalAttr *DLLImportStaticLocalAttr::clone(ASTContext &C) const {
@@ -14458,6 +15200,14 @@ DeprecatedAttr::DeprecatedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 
 
 
+
+bool DeprecatedAttr::isEquivalent(const DeprecatedAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  if (!equalAttrArgs(getReplacement(), Other.getReplacement(), Context))
+    return false;
+  return true;
+}
 
 DeprecatedAttr *DeprecatedAttr::clone(ASTContext &C) const {
   auto *A = new (C) DeprecatedAttr(C, *this, getMessage(), getReplacement());
@@ -14608,6 +15358,12 @@ DestructorAttr::DestructorAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 }
 
 
+
+bool DestructorAttr::isEquivalent(const DestructorAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getPriority(), Other.getPriority(), Context))
+    return false;
+  return true;
+}
 
 DestructorAttr *DestructorAttr::clone(ASTContext &C) const {
   auto *A = new (C) DestructorAttr(C, *this, priority);
@@ -14786,6 +15542,12 @@ DeviceKernelAttr::Spelling DeviceKernelAttr::getSemanticSpelling() const {
     case 10: return Keyword_kernel;
   }
 }
+bool DeviceKernelAttr::isEquivalent(const DeviceKernelAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 DeviceKernelAttr *DeviceKernelAttr::clone(ASTContext &C) const {
   auto *A = new (C) DeviceKernelAttr(C, *this);
   A->Inherited = Inherited;
@@ -14964,6 +15726,14 @@ DiagnoseAsBuiltinAttr::DiagnoseAsBuiltinAttr(ASTContext &Ctx, const AttributeCom
 
 
 
+
+bool DiagnoseAsBuiltinAttr::isEquivalent(const DiagnoseAsBuiltinAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getFunction(), Other.getFunction(), Context))
+    return false;
+  if (!equalAttrArgs(argIndices_begin(), argIndices_end(), Other.argIndices_begin(), Other.argIndices_end(), Context))
+    return false;
+  return true;
+}
 
 DiagnoseAsBuiltinAttr *DiagnoseAsBuiltinAttr::clone(ASTContext &C) const {
   auto *A = new (C) DiagnoseAsBuiltinAttr(C, *this, function, argIndices_, argIndices_Size);
@@ -15185,6 +15955,22 @@ const char *DiagnoseIfAttr::ConvertDefaultSeverityToStr(DiagnoseIfAttr::DefaultS
 
 
 
+bool DiagnoseIfAttr::isEquivalent(const DiagnoseIfAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCond(), Other.getCond(), Context))
+    return false;
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  if (!equalAttrArgs(getDefaultSeverity(), Other.getDefaultSeverity(), Context))
+    return false;
+  if (!equalAttrArgs(getWarningGroup(), Other.getWarningGroup(), Context))
+    return false;
+  if (!equalAttrArgs(getArgDependent(), Other.getArgDependent(), Context))
+    return false;
+  if (!equalAttrArgs(getParent(), Other.getParent(), Context))
+    return false;
+  return true;
+}
+
 DiagnoseIfAttr *DiagnoseIfAttr::clone(ASTContext &C) const {
   auto *A = new (C) DiagnoseIfAttr(C, *this, cond, getMessage(), defaultSeverity, getWarningGroup(), argDependent, parent);
   A->Inherited = Inherited;
@@ -15286,6 +16072,10 @@ DisableSanitizerInstrumentationAttr::DisableSanitizerInstrumentationAttr(ASTCont
              )
   : InheritableAttr(Ctx, CommonInfo, attr::DisableSanitizerInstrumentation, /*IsLateParsed=*/false, false)
   {
+}
+
+bool DisableSanitizerInstrumentationAttr::isEquivalent(const DisableSanitizerInstrumentationAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 DisableSanitizerInstrumentationAttr *DisableSanitizerInstrumentationAttr::clone(ASTContext &C) const {
@@ -15393,6 +16183,10 @@ DisableTailCallsAttr::DisableTailCallsAttr(ASTContext &Ctx, const AttributeCommo
   {
 }
 
+bool DisableTailCallsAttr::isEquivalent(const DisableTailCallsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 DisableTailCallsAttr *DisableTailCallsAttr::clone(ASTContext &C) const {
   auto *A = new (C) DisableTailCallsAttr(C, *this);
   A->Inherited = Inherited;
@@ -15474,6 +16268,10 @@ EmptyBasesAttr::EmptyBasesAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool EmptyBasesAttr::isEquivalent(const EmptyBasesAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 EmptyBasesAttr *EmptyBasesAttr::clone(ASTContext &C) const {
   auto *A = new (C) EmptyBasesAttr(C, *this);
   A->Inherited = Inherited;
@@ -15550,6 +16348,14 @@ EnableIfAttr::EnableIfAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 
 
 
+
+bool EnableIfAttr::isEquivalent(const EnableIfAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCond(), Other.getCond(), Context))
+    return false;
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  return true;
+}
 
 EnableIfAttr *EnableIfAttr::clone(ASTContext &C) const {
   auto *A = new (C) EnableIfAttr(C, *this, cond, getMessage());
@@ -15655,6 +16461,12 @@ EnforceTCBAttr::EnforceTCBAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 }
 
 
+
+bool EnforceTCBAttr::isEquivalent(const EnforceTCBAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getTCBName(), Other.getTCBName(), Context))
+    return false;
+  return true;
+}
 
 EnforceTCBAttr *EnforceTCBAttr::clone(ASTContext &C) const {
   auto *A = new (C) EnforceTCBAttr(C, *this, getTCBName());
@@ -15778,6 +16590,12 @@ EnforceTCBLeafAttr::EnforceTCBLeafAttr(ASTContext &Ctx, const AttributeCommonInf
 }
 
 
+
+bool EnforceTCBLeafAttr::isEquivalent(const EnforceTCBLeafAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getTCBName(), Other.getTCBName(), Context))
+    return false;
+  return true;
+}
 
 EnforceTCBLeafAttr *EnforceTCBLeafAttr::clone(ASTContext &C) const {
   auto *A = new (C) EnforceTCBLeafAttr(C, *this, getTCBName());
@@ -15919,6 +16737,12 @@ const char *EnumExtensibilityAttr::ConvertKindToStr(EnumExtensibilityAttr::Kind 
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool EnumExtensibilityAttr::isEquivalent(const EnumExtensibilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getExtensibility(), Other.getExtensibility(), Context))
+    return false;
+  return true;
+}
+
 EnumExtensibilityAttr *EnumExtensibilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) EnumExtensibilityAttr(C, *this, extensibility);
   A->Inherited = Inherited;
@@ -16062,6 +16886,14 @@ ErrorAttr::Spelling ErrorAttr::getSemanticSpelling() const {
   }
 }
 
+
+bool ErrorAttr::isEquivalent(const ErrorAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getUserDiagnostic(), Other.getUserDiagnostic(), Context))
+    return false;
+  return true;
+}
 
 ErrorAttr *ErrorAttr::clone(ASTContext &C) const {
   auto *A = new (C) ErrorAttr(C, *this, getUserDiagnostic());
@@ -16213,6 +17045,10 @@ ExcludeFromExplicitInstantiationAttr::ExcludeFromExplicitInstantiationAttr(ASTCo
   {
 }
 
+bool ExcludeFromExplicitInstantiationAttr::isEquivalent(const ExcludeFromExplicitInstantiationAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ExcludeFromExplicitInstantiationAttr *ExcludeFromExplicitInstantiationAttr::clone(ASTContext &C) const {
   auto *A = new (C) ExcludeFromExplicitInstantiationAttr(C, *this);
   A->Inherited = Inherited;
@@ -16316,6 +17152,10 @@ ExplicitInitAttr::ExplicitInitAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ExplicitInit, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ExplicitInitAttr::isEquivalent(const ExplicitInitAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ExplicitInitAttr *ExplicitInitAttr::clone(ASTContext &C) const {
@@ -16426,6 +17266,12 @@ ExtVectorTypeAttr::ExtVectorTypeAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool ExtVectorTypeAttr::isEquivalent(const ExtVectorTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNumElements(), Other.getNumElements(), Context))
+    return false;
+  return true;
+}
 
 ExtVectorTypeAttr *ExtVectorTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) ExtVectorTypeAttr(C, *this, numElements);
@@ -16582,6 +17428,18 @@ ExternalSourceSymbolAttr::ExternalSourceSymbolAttr(ASTContext &Ctx, const Attrib
 
 
 
+bool ExternalSourceSymbolAttr::isEquivalent(const ExternalSourceSymbolAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getLanguage(), Other.getLanguage(), Context))
+    return false;
+  if (!equalAttrArgs(getDefinedIn(), Other.getDefinedIn(), Context))
+    return false;
+  if (!equalAttrArgs(getGeneratedDeclaration(), Other.getGeneratedDeclaration(), Context))
+    return false;
+  if (!equalAttrArgs(getUSR(), Other.getUSR(), Context))
+    return false;
+  return true;
+}
+
 ExternalSourceSymbolAttr *ExternalSourceSymbolAttr::clone(ASTContext &C) const {
   auto *A = new (C) ExternalSourceSymbolAttr(C, *this, getLanguage(), getDefinedIn(), generatedDeclaration, getUSR());
   A->Inherited = Inherited;
@@ -16729,6 +17587,10 @@ FallThroughAttr::FallThroughAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool FallThroughAttr::isEquivalent(const FallThroughAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 FallThroughAttr *FallThroughAttr::clone(ASTContext &C) const {
   auto *A = new (C) FallThroughAttr(C, *this);
   A->Inherited = Inherited;
@@ -16859,6 +17721,10 @@ FastCallAttr::FastCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool FastCallAttr::isEquivalent(const FastCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 FastCallAttr *FastCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) FastCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -16979,6 +17845,12 @@ FinalAttr::Spelling FinalAttr::getSemanticSpelling() const {
     case 1: return Keyword_sealed;
   }
 }
+bool FinalAttr::isEquivalent(const FinalAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 FinalAttr *FinalAttr::clone(ASTContext &C) const {
   auto *A = new (C) FinalAttr(C, *this);
   A->Inherited = Inherited;
@@ -17075,6 +17947,10 @@ FlagEnumAttr::FlagEnumAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::FlagEnum, /*IsLateParsed=*/false, false)
   {
+}
+
+bool FlagEnumAttr::isEquivalent(const FlagEnumAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 FlagEnumAttr *FlagEnumAttr::clone(ASTContext &C) const {
@@ -17182,6 +18058,10 @@ FlattenAttr::FlattenAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool FlattenAttr::isEquivalent(const FlattenAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 FlattenAttr *FlattenAttr::clone(ASTContext &C) const {
   auto *A = new (C) FlattenAttr(C, *this);
   A->Inherited = Inherited;
@@ -17232,7 +18112,7 @@ const char *FlattenAttr::getSpelling() const {
 
 // FormatAttr implementation
 
-FormatAttr *FormatAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo) {
+FormatAttr *FormatAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) FormatAttr(Ctx, CommonInfo, Type, FormatIdx, FirstArg);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -17240,14 +18120,14 @@ FormatAttr *FormatAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, i
   return A;
 }
 
-FormatAttr *FormatAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo) {
+FormatAttr *FormatAttr::Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) FormatAttr(Ctx, CommonInfo, Type, FormatIdx, FirstArg);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-FormatAttr *FormatAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range, Spelling S) {
+FormatAttr *FormatAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_format:
@@ -17264,7 +18144,7 @@ FormatAttr *FormatAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, i
   return CreateImplicit(Ctx, Type, FormatIdx, FirstArg, I);
 }
 
-FormatAttr *FormatAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range, Spelling S) {
+FormatAttr *FormatAttr::Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, int FirstArg, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_format:
@@ -17282,7 +18162,7 @@ FormatAttr *FormatAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int Forma
 }
 
 FormatAttr::FormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Type
+              , const IdentifierInfo * Type
               , int FormatIdx
               , int FirstArg
              )
@@ -17298,6 +18178,16 @@ FormatAttr::FormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+
+bool FormatAttr::isEquivalent(const FormatAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  if (!equalAttrArgs(getFormatIdx(), Other.getFormatIdx(), Context))
+    return false;
+  if (!equalAttrArgs(getFirstArg(), Other.getFirstArg(), Context))
+    return false;
+  return true;
+}
 
 FormatAttr *FormatAttr::clone(ASTContext &C) const {
   auto *A = new (C) FormatAttr(C, *this, type, formatIdx, firstArg);
@@ -17432,6 +18322,12 @@ FormatArgAttr::FormatArgAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 
 
 
+bool FormatArgAttr::isEquivalent(const FormatArgAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getFormatIdx(), Other.getFormatIdx(), Context))
+    return false;
+  return true;
+}
+
 FormatArgAttr *FormatArgAttr::clone(ASTContext &C) const {
   auto *A = new (C) FormatArgAttr(C, *this, formatIdx);
   A->Inherited = Inherited;
@@ -17494,7 +18390,7 @@ const char *FormatArgAttr::getSpelling() const {
 
 // FormatMatchesAttr implementation
 
-FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo) {
+FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) FormatMatchesAttr(Ctx, CommonInfo, Type, FormatIdx, ExpectedFormat);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -17502,14 +18398,14 @@ FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return A;
 }
 
-FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo) {
+FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) FormatMatchesAttr(Ctx, CommonInfo, Type, FormatIdx, ExpectedFormat);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range, Spelling S) {
+FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_format_matches:
@@ -17526,7 +18422,7 @@ FormatMatchesAttr *FormatMatchesAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return CreateImplicit(Ctx, Type, FormatIdx, ExpectedFormat, I);
 }
 
-FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range, Spelling S) {
+FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, const IdentifierInfo * Type, int FormatIdx, Expr * ExpectedFormat, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_format_matches:
@@ -17544,7 +18440,7 @@ FormatMatchesAttr *FormatMatchesAttr::Create(ASTContext &Ctx, IdentifierInfo * T
 }
 
 FormatMatchesAttr::FormatMatchesAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Type
+              , const IdentifierInfo * Type
               , int FormatIdx
               , Expr * ExpectedFormat
              )
@@ -17560,6 +18456,16 @@ FormatMatchesAttr::FormatMatchesAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+
+bool FormatMatchesAttr::isEquivalent(const FormatMatchesAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  if (!equalAttrArgs(getFormatIdx(), Other.getFormatIdx(), Context))
+    return false;
+  if (!equalAttrArgs(getExpectedFormat(), Other.getExpectedFormat(), Context))
+    return false;
+  return true;
+}
 
 FormatMatchesAttr *FormatMatchesAttr::clone(ASTContext &C) const {
   auto *A = new (C) FormatMatchesAttr(C, *this, type, formatIdx, expectedFormat);
@@ -17719,6 +18625,12 @@ const char *FunctionReturnThunksAttr::ConvertKindToStr(FunctionReturnThunksAttr:
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool FunctionReturnThunksAttr::isEquivalent(const FunctionReturnThunksAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getThunkType(), Other.getThunkType(), Context))
+    return false;
+  return true;
+}
+
 FunctionReturnThunksAttr *FunctionReturnThunksAttr::clone(ASTContext &C) const {
   auto *A = new (C) FunctionReturnThunksAttr(C, *this, thunkType);
   A->Inherited = Inherited;
@@ -17779,6 +18691,115 @@ const char *FunctionReturnThunksAttr::getSpelling() const {
 }
 
 
+// GCCStructAttr implementation
+
+GCCStructAttr *GCCStructAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) GCCStructAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+GCCStructAttr *GCCStructAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) GCCStructAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+GCCStructAttr *GCCStructAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_gcc_struct:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_gcc_struct, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_gnu_gcc_struct:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_gnu_gcc_struct, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_gnu_gcc_struct:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_gnu_gcc_struct, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, I);
+}
+
+GCCStructAttr *GCCStructAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_gcc_struct:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_gcc_struct, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_gnu_gcc_struct:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_gnu_gcc_struct, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_gnu_gcc_struct:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_gnu_gcc_struct, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, I);
+}
+
+GCCStructAttr::GCCStructAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::GCCStruct, /*IsLateParsed=*/false, false)
+  {
+}
+
+bool GCCStructAttr::isEquivalent(const GCCStructAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
+GCCStructAttr *GCCStructAttr::clone(ASTContext &C) const {
+  auto *A = new (C) GCCStructAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void GCCStructAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((gcc_struct";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[gnu::gcc_struct";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[gnu::gcc_struct";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *GCCStructAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "gcc_struct";
+  case 1:
+    return "gcc_struct";
+  case 2:
+    return "gcc_struct";
+  }
+}
+
+
 // GNUInlineAttr implementation
 
 GNUInlineAttr *GNUInlineAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -17834,6 +18855,10 @@ GNUInlineAttr::GNUInlineAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::GNUInline, /*IsLateParsed=*/false, false)
   {
+}
+
+bool GNUInlineAttr::isEquivalent(const GNUInlineAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 GNUInlineAttr *GNUInlineAttr::clone(ASTContext &C) const {
@@ -17920,6 +18945,12 @@ GuardedByAttr::GuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool GuardedByAttr::isEquivalent(const GuardedByAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getArg(), Other.getArg(), Context))
+    return false;
+  return true;
+}
 
 GuardedByAttr *GuardedByAttr::clone(ASTContext &C) const {
   auto *A = new (C) GuardedByAttr(C, *this, arg);
@@ -18012,6 +19043,10 @@ GuardedVarAttr::GuardedVarAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::GuardedVar, /*IsLateParsed=*/false, false)
   {
+}
+
+bool GuardedVarAttr::isEquivalent(const GuardedVarAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 GuardedVarAttr *GuardedVarAttr::clone(ASTContext &C) const {
@@ -18108,6 +19143,10 @@ HIPManagedAttr::HIPManagedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool HIPManagedAttr::isEquivalent(const HIPManagedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 HIPManagedAttr *HIPManagedAttr::clone(ASTContext &C) const {
   auto *A = new (C) HIPManagedAttr(C, *this);
   A->Inherited = Inherited;
@@ -18149,6 +19188,73 @@ const char *HIPManagedAttr::getSpelling() const {
 }
 
 
+// HLSLAppliedSemanticAttr implementation
+
+HLSLAppliedSemanticAttr *HLSLAppliedSemanticAttr::CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLAppliedSemanticAttr(Ctx, CommonInfo, SemanticName, SemanticIndex);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLAppliedSemanticAttr *HLSLAppliedSemanticAttr::Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLAppliedSemanticAttr(Ctx, CommonInfo, SemanticName, SemanticIndex);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLAppliedSemanticAttr *HLSLAppliedSemanticAttr::CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return CreateImplicit(Ctx, SemanticName, SemanticIndex, I);
+}
+
+HLSLAppliedSemanticAttr *HLSLAppliedSemanticAttr::Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return Create(Ctx, SemanticName, SemanticIndex, I);
+}
+
+HLSLAppliedSemanticAttr::HLSLAppliedSemanticAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , llvm::StringRef SemanticName
+              , int SemanticIndex
+             )
+  : HLSLSemanticBaseAttr(Ctx, CommonInfo, attr::HLSLAppliedSemantic, /*IsLateParsed=*/false, false)
+              , semanticNameLength(SemanticName.size()),semanticName(new (Ctx, 1) char[semanticNameLength])
+              , semanticIndex(SemanticIndex)
+  {
+    if (!SemanticName.empty())
+      std::memcpy(semanticName, SemanticName.data(), semanticNameLength);
+}
+
+
+
+
+
+bool HLSLAppliedSemanticAttr::isEquivalent(const HLSLAppliedSemanticAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSemanticName(), Other.getSemanticName(), Context))
+    return false;
+  if (!equalAttrArgs(getSemanticIndex(), Other.getSemanticIndex(), Context))
+    return false;
+  return true;
+}
+
+HLSLAppliedSemanticAttr *HLSLAppliedSemanticAttr::clone(ASTContext &C) const {
+  auto *A = new (C) HLSLAppliedSemanticAttr(C, *this, getSemanticName(), semanticIndex);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void HLSLAppliedSemanticAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+}
+
+const char *HLSLAppliedSemanticAttr::getSpelling() const {
+  return "(No spelling)";
+}
+
+
 // HLSLContainedTypeAttr implementation
 
 HLSLContainedTypeAttr *HLSLContainedTypeAttr::CreateImplicit(ASTContext &Ctx, TypeSourceInfo * Type, const AttributeCommonInfo &CommonInfo) {
@@ -18185,6 +19291,12 @@ HLSLContainedTypeAttr::HLSLContainedTypeAttr(ASTContext &Ctx, const AttributeCom
 }
 
 
+
+bool HLSLContainedTypeAttr::isEquivalent(const HLSLContainedTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  return true;
+}
 
 HLSLContainedTypeAttr *HLSLContainedTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLContainedTypeAttr(C, *this, type);
@@ -18282,6 +19394,12 @@ HLSLControlFlowHintAttr::Spelling HLSLControlFlowHintAttr::getSemanticSpelling()
     case 1: return Microsoft_flatten;
   }
 }
+bool HLSLControlFlowHintAttr::isEquivalent(const HLSLControlFlowHintAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 HLSLControlFlowHintAttr *HLSLControlFlowHintAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLControlFlowHintAttr(C, *this);
   A->Inherited = Inherited;
@@ -18356,6 +19474,10 @@ HLSLGroupSharedAddressSpaceAttr::HLSLGroupSharedAddressSpaceAttr(ASTContext &Ctx
   {
 }
 
+bool HLSLGroupSharedAddressSpaceAttr::isEquivalent(const HLSLGroupSharedAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 HLSLGroupSharedAddressSpaceAttr *HLSLGroupSharedAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLGroupSharedAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -18421,6 +19543,10 @@ HLSLIsCounterAttr::HLSLIsCounterAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : TypeAttr(Ctx, CommonInfo, attr::HLSLIsCounter, /*IsLateParsed=*/false)
   {
+}
+
+bool HLSLIsCounterAttr::isEquivalent(const HLSLIsCounterAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 HLSLIsCounterAttr *HLSLIsCounterAttr::clone(ASTContext &C) const {
@@ -18526,6 +19652,14 @@ HLSLLoopHintAttr::Spelling HLSLLoopHintAttr::getSemanticSpelling() const {
 }
 
 
+bool HLSLLoopHintAttr::isEquivalent(const HLSLLoopHintAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getDirective(), Other.getDirective(), Context))
+    return false;
+  return true;
+}
+
 HLSLLoopHintAttr *HLSLLoopHintAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLLoopHintAttr(C, *this, directive);
   A->Inherited = Inherited;
@@ -18620,6 +19754,16 @@ HLSLNumThreadsAttr::HLSLNumThreadsAttr(ASTContext &Ctx, const AttributeCommonInf
 
 
 
+bool HLSLNumThreadsAttr::isEquivalent(const HLSLNumThreadsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getX(), Other.getX(), Context))
+    return false;
+  if (!equalAttrArgs(getY(), Other.getY(), Context))
+    return false;
+  if (!equalAttrArgs(getZ(), Other.getZ(), Context))
+    return false;
+  return true;
+}
+
 HLSLNumThreadsAttr *HLSLNumThreadsAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLNumThreadsAttr(C, *this, x, y, z);
   A->Inherited = Inherited;
@@ -18702,6 +19846,14 @@ HLSLPackOffsetAttr::HLSLPackOffsetAttr(ASTContext &Ctx, const AttributeCommonInf
 
 
 
+
+bool HLSLPackOffsetAttr::isEquivalent(const HLSLPackOffsetAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSubcomponent(), Other.getSubcomponent(), Context))
+    return false;
+  if (!equalAttrArgs(getComponent(), Other.getComponent(), Context))
+    return false;
+  return true;
+}
 
 HLSLPackOffsetAttr *HLSLPackOffsetAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLPackOffsetAttr(C, *this, subcomponent, component);
@@ -18864,6 +20016,14 @@ HLSLParamModifierAttr::Spelling HLSLParamModifierAttr::getSemanticSpelling() con
 }
 
 
+bool HLSLParamModifierAttr::isEquivalent(const HLSLParamModifierAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getMergedSpelling(), Other.getMergedSpelling(), Context))
+    return false;
+  return true;
+}
+
 HLSLParamModifierAttr *HLSLParamModifierAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLParamModifierAttr(C, *this, mergedSpelling);
   A->Inherited = Inherited;
@@ -18912,6 +20072,73 @@ const char *HLSLParamModifierAttr::getSpelling() const {
 }
 
 
+// HLSLParsedSemanticAttr implementation
+
+HLSLParsedSemanticAttr *HLSLParsedSemanticAttr::CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLParsedSemanticAttr(Ctx, CommonInfo, SemanticName, SemanticIndex);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLParsedSemanticAttr *HLSLParsedSemanticAttr::Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLParsedSemanticAttr(Ctx, CommonInfo, SemanticName, SemanticIndex);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLParsedSemanticAttr *HLSLParsedSemanticAttr::CreateImplicit(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return CreateImplicit(Ctx, SemanticName, SemanticIndex, I);
+}
+
+HLSLParsedSemanticAttr *HLSLParsedSemanticAttr::Create(ASTContext &Ctx, llvm::StringRef SemanticName, int SemanticIndex, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
+  return Create(Ctx, SemanticName, SemanticIndex, I);
+}
+
+HLSLParsedSemanticAttr::HLSLParsedSemanticAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , llvm::StringRef SemanticName
+              , int SemanticIndex
+             )
+  : HLSLSemanticBaseAttr(Ctx, CommonInfo, attr::HLSLParsedSemantic, /*IsLateParsed=*/false, false)
+              , semanticNameLength(SemanticName.size()),semanticName(new (Ctx, 1) char[semanticNameLength])
+              , semanticIndex(SemanticIndex)
+  {
+    if (!SemanticName.empty())
+      std::memcpy(semanticName, SemanticName.data(), semanticNameLength);
+}
+
+
+
+
+
+bool HLSLParsedSemanticAttr::isEquivalent(const HLSLParsedSemanticAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSemanticName(), Other.getSemanticName(), Context))
+    return false;
+  if (!equalAttrArgs(getSemanticIndex(), Other.getSemanticIndex(), Context))
+    return false;
+  return true;
+}
+
+HLSLParsedSemanticAttr *HLSLParsedSemanticAttr::clone(ASTContext &C) const {
+  auto *A = new (C) HLSLParsedSemanticAttr(C, *this, getSemanticName(), semanticIndex);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void HLSLParsedSemanticAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+}
+
+const char *HLSLParsedSemanticAttr::getSpelling() const {
+  return "(No spelling)";
+}
+
+
 // HLSLROVAttr implementation
 
 HLSLROVAttr *HLSLROVAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -18943,6 +20170,10 @@ HLSLROVAttr::HLSLROVAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : TypeAttr(Ctx, CommonInfo, attr::HLSLROV, /*IsLateParsed=*/false)
   {
+}
+
+bool HLSLROVAttr::isEquivalent(const HLSLROVAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 HLSLROVAttr *HLSLROVAttr::clone(ASTContext &C) const {
@@ -19010,6 +20241,10 @@ HLSLRawBufferAttr::HLSLRawBufferAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : TypeAttr(Ctx, CommonInfo, attr::HLSLRawBuffer, /*IsLateParsed=*/false)
   {
+}
+
+bool HLSLRawBufferAttr::isEquivalent(const HLSLRawBufferAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 HLSLRawBufferAttr *HLSLRawBufferAttr::clone(ASTContext &C) const {
@@ -19101,6 +20336,14 @@ HLSLResourceBindingAttr::HLSLResourceBindingAttr(ASTContext &Ctx, const Attribut
 
 
 
+
+bool HLSLResourceBindingAttr::isEquivalent(const HLSLResourceBindingAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSlot(), Other.getSlot(), Context))
+    return false;
+  if (!equalAttrArgs(getSpace(), Other.getSpace(), Context))
+    return false;
+  return true;
+}
 
 HLSLResourceBindingAttr *HLSLResourceBindingAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLResourceBindingAttr(C, *this, getSlot(), getSpace());
@@ -19202,6 +20445,12 @@ const char *HLSLResourceClassAttr::ConvertResourceClassToStr(llvm::hlsl::Resourc
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool HLSLResourceClassAttr::isEquivalent(const HLSLResourceClassAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getResourceClass(), Other.getResourceClass(), Context))
+    return false;
+  return true;
+}
+
 HLSLResourceClassAttr *HLSLResourceClassAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLResourceClassAttr(C, *this, resourceClass);
   A->Inherited = Inherited;
@@ -19237,326 +20486,6 @@ const char *HLSLResourceClassAttr::getSpelling() const {
   case 0:
     return "resource_class";
   }
-}
-
-
-// HLSLSV_DispatchThreadIDAttr implementation
-
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_DispatchThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_DispatchThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_DispatchThreadIDAttr::HLSLSV_DispatchThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             )
-  : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_DispatchThreadID, /*IsLateParsed=*/false, false, false)
-              , target(Target)
-              , semanticIndex(SemanticIndex)
-              , semanticExplicitIndex(SemanticExplicitIndex)
-  {
-  if (SemanticExplicitIndex)
-    setSemanticIndex(SemanticIndex);
-  setTargetDecl(Target);
-}
-
-
-
-
-
-
-
-HLSLSV_DispatchThreadIDAttr *HLSLSV_DispatchThreadIDAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_DispatchThreadIDAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLSV_DispatchThreadIDAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLSV_DispatchThreadIDAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
-// HLSLSV_GroupIDAttr implementation
-
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_GroupIDAttr::HLSLSV_GroupIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             )
-  : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_GroupID, /*IsLateParsed=*/false, false, false)
-              , target(Target)
-              , semanticIndex(SemanticIndex)
-              , semanticExplicitIndex(SemanticExplicitIndex)
-  {
-  if (SemanticExplicitIndex)
-    setSemanticIndex(SemanticIndex);
-  setTargetDecl(Target);
-}
-
-
-
-
-
-
-
-HLSLSV_GroupIDAttr *HLSLSV_GroupIDAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_GroupIDAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLSV_GroupIDAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLSV_GroupIDAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
-// HLSLSV_GroupIndexAttr implementation
-
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIndexAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupIndexAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_GroupIndexAttr::HLSLSV_GroupIndexAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             )
-  : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_GroupIndex, /*IsLateParsed=*/false, false, false)
-              , target(Target)
-              , semanticIndex(SemanticIndex)
-              , semanticExplicitIndex(SemanticExplicitIndex)
-  {
-  if (SemanticExplicitIndex)
-    setSemanticIndex(SemanticIndex);
-  setTargetDecl(Target);
-}
-
-
-
-
-
-
-
-HLSLSV_GroupIndexAttr *HLSLSV_GroupIndexAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_GroupIndexAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLSV_GroupIndexAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLSV_GroupIndexAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
-// HLSLSV_GroupThreadIDAttr implementation
-
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_GroupThreadIDAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_GroupThreadIDAttr::HLSLSV_GroupThreadIDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             )
-  : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_GroupThreadID, /*IsLateParsed=*/false, false, false)
-              , target(Target)
-              , semanticIndex(SemanticIndex)
-              , semanticExplicitIndex(SemanticExplicitIndex)
-  {
-  if (SemanticExplicitIndex)
-    setSemanticIndex(SemanticIndex);
-  setTargetDecl(Target);
-}
-
-
-
-
-
-
-
-HLSLSV_GroupThreadIDAttr *HLSLSV_GroupThreadIDAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_GroupThreadIDAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLSV_GroupThreadIDAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLSV_GroupThreadIDAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
-// HLSLSV_PositionAttr implementation
-
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_PositionAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLSV_PositionAttr(Ctx, CommonInfo, Target, SemanticIndex, SemanticExplicitIndex);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::CreateImplicit(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::Create(ASTContext &Ctx, NamedDecl * Target, int SemanticIndex, bool SemanticExplicitIndex, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, Target, SemanticIndex, SemanticExplicitIndex, I);
-}
-
-HLSLSV_PositionAttr::HLSLSV_PositionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , NamedDecl * Target
-              , int SemanticIndex
-              , bool SemanticExplicitIndex
-             )
-  : HLSLSemanticAttr(Ctx, CommonInfo, attr::HLSLSV_Position, /*IsLateParsed=*/false, false, true)
-              , target(Target)
-              , semanticIndex(SemanticIndex)
-              , semanticExplicitIndex(SemanticExplicitIndex)
-  {
-  if (SemanticExplicitIndex)
-    setSemanticIndex(SemanticIndex);
-  setTargetDecl(Target);
-}
-
-
-
-
-
-
-
-HLSLSV_PositionAttr *HLSLSV_PositionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLSV_PositionAttr(C, *this, target, semanticIndex, semanticExplicitIndex);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLSV_PositionAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLSV_PositionAttr::getSpelling() const {
-  return "(No spelling)";
 }
 
 
@@ -19641,6 +20570,12 @@ const char *HLSLShaderAttr::ConvertEnvironmentTypeToStr(llvm::Triple::Environmen
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool HLSLShaderAttr::isEquivalent(const HLSLShaderAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  return true;
+}
+
 HLSLShaderAttr *HLSLShaderAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLShaderAttr(C, *this, type);
   A->Inherited = Inherited;
@@ -19728,6 +20663,14 @@ HLSLUnparsedSemanticAttr::HLSLUnparsedSemanticAttr(ASTContext &Ctx, const Attrib
 
 
 
+bool HLSLUnparsedSemanticAttr::isEquivalent(const HLSLUnparsedSemanticAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getIndex(), Other.getIndex(), Context))
+    return false;
+  if (!equalAttrArgs(getExplicitIndex(), Other.getExplicitIndex(), Context))
+    return false;
+  return true;
+}
+
 HLSLUnparsedSemanticAttr *HLSLUnparsedSemanticAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLUnparsedSemanticAttr(C, *this, index, explicitIndex);
   A->Inherited = Inherited;
@@ -19793,6 +20736,14 @@ HLSLVkBindingAttr::HLSLVkBindingAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+
+bool HLSLVkBindingAttr::isEquivalent(const HLSLVkBindingAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBinding(), Other.getBinding(), Context))
+    return false;
+  if (!equalAttrArgs(getSet(), Other.getSet(), Context))
+    return false;
+  return true;
+}
 
 HLSLVkBindingAttr *HLSLVkBindingAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLVkBindingAttr(C, *this, binding, set);
@@ -19871,6 +20822,12 @@ HLSLVkConstantIdAttr::HLSLVkConstantIdAttr(ASTContext &Ctx, const AttributeCommo
 
 
 
+bool HLSLVkConstantIdAttr::isEquivalent(const HLSLVkConstantIdAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getId(), Other.getId(), Context))
+    return false;
+  return true;
+}
+
 HLSLVkConstantIdAttr *HLSLVkConstantIdAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLVkConstantIdAttr(C, *this, id);
   A->Inherited = Inherited;
@@ -19946,6 +20903,12 @@ HLSLVkExtBuiltinInputAttr::HLSLVkExtBuiltinInputAttr(ASTContext &Ctx, const Attr
 
 
 
+bool HLSLVkExtBuiltinInputAttr::isEquivalent(const HLSLVkExtBuiltinInputAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBuiltIn(), Other.getBuiltIn(), Context))
+    return false;
+  return true;
+}
+
 HLSLVkExtBuiltinInputAttr *HLSLVkExtBuiltinInputAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLVkExtBuiltinInputAttr(C, *this, builtIn);
   A->Inherited = Inherited;
@@ -19980,6 +20943,158 @@ const char *HLSLVkExtBuiltinInputAttr::getSpelling() const {
     return "(No spelling)";
   case 0:
     return "ext_builtin_input";
+  }
+}
+
+
+// HLSLVkLocationAttr implementation
+
+HLSLVkLocationAttr *HLSLVkLocationAttr::CreateImplicit(ASTContext &Ctx, int Location, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLVkLocationAttr(Ctx, CommonInfo, Location);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLVkLocationAttr *HLSLVkLocationAttr::Create(ASTContext &Ctx, int Location, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLVkLocationAttr(Ctx, CommonInfo, Location);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLVkLocationAttr *HLSLVkLocationAttr::CreateImplicit(ASTContext &Ctx, int Location, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return CreateImplicit(Ctx, Location, I);
+}
+
+HLSLVkLocationAttr *HLSLVkLocationAttr::Create(ASTContext &Ctx, int Location, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return Create(Ctx, Location, I);
+}
+
+HLSLVkLocationAttr::HLSLVkLocationAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , int Location
+             )
+  : HLSLAnnotationAttr(Ctx, CommonInfo, attr::HLSLVkLocation, /*IsLateParsed=*/false, false)
+              , location(Location)
+  {
+}
+
+
+
+bool HLSLVkLocationAttr::isEquivalent(const HLSLVkLocationAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getLocation(), Other.getLocation(), Context))
+    return false;
+  return true;
+}
+
+HLSLVkLocationAttr *HLSLVkLocationAttr::clone(ASTContext &C) const {
+  auto *A = new (C) HLSLVkLocationAttr(C, *this, location);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void HLSLVkLocationAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "[[vk::location";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << getLocation() << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *HLSLVkLocationAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "location";
+  }
+}
+
+
+// HLSLVkPushConstantAttr implementation
+
+HLSLVkPushConstantAttr *HLSLVkPushConstantAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLVkPushConstantAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLVkPushConstantAttr *HLSLVkPushConstantAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) HLSLVkPushConstantAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+HLSLVkPushConstantAttr *HLSLVkPushConstantAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return CreateImplicit(Ctx, I);
+}
+
+HLSLVkPushConstantAttr *HLSLVkPushConstantAttr::Create(ASTContext &Ctx, SourceRange Range) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
+  return Create(Ctx, I);
+}
+
+HLSLVkPushConstantAttr::HLSLVkPushConstantAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::HLSLVkPushConstant, /*IsLateParsed=*/false, false)
+  {
+}
+
+bool HLSLVkPushConstantAttr::isEquivalent(const HLSLVkPushConstantAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
+HLSLVkPushConstantAttr *HLSLVkPushConstantAttr::clone(ASTContext &C) const {
+  auto *A = new (C) HLSLVkPushConstantAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void HLSLVkPushConstantAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "[[vk::push_constant";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *HLSLVkPushConstantAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "push_constant";
   }
 }
 
@@ -20038,6 +21153,16 @@ HLSLWaveSizeAttr::HLSLWaveSizeAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 
 
 
+
+bool HLSLWaveSizeAttr::isEquivalent(const HLSLWaveSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMin(), Other.getMin(), Context))
+    return false;
+  if (!equalAttrArgs(getMax(), Other.getMax(), Context))
+    return false;
+  if (!equalAttrArgs(getPreferred(), Other.getPreferred(), Context))
+    return false;
+  return true;
+}
 
 HLSLWaveSizeAttr *HLSLWaveSizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) HLSLWaveSizeAttr(C, *this, min, max, preferred);
@@ -20136,6 +21261,10 @@ HotAttr::HotAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Hot, /*IsLateParsed=*/false, false)
   {
+}
+
+bool HotAttr::isEquivalent(const HotAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 HotAttr *HotAttr::clone(ASTContext &C) const {
@@ -20245,6 +21374,10 @@ HybridPatchableAttr::HybridPatchableAttr(ASTContext &Ctx, const AttributeCommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::HybridPatchable, /*IsLateParsed=*/false, false)
   {
+}
+
+bool HybridPatchableAttr::isEquivalent(const HybridPatchableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 HybridPatchableAttr *HybridPatchableAttr::clone(ASTContext &C) const {
@@ -20359,6 +21492,10 @@ IBActionAttr::IBActionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool IBActionAttr::isEquivalent(const IBActionAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 IBActionAttr *IBActionAttr::clone(ASTContext &C) const {
   auto *A = new (C) IBActionAttr(C, *this);
   A->Inherited = Inherited;
@@ -20462,6 +21599,10 @@ IBOutletAttr::IBOutletAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::IBOutlet, /*IsLateParsed=*/false, false)
   {
+}
+
+bool IBOutletAttr::isEquivalent(const IBOutletAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 IBOutletAttr *IBOutletAttr::clone(ASTContext &C) const {
@@ -20579,6 +21720,12 @@ IBOutletCollectionAttr::IBOutletCollectionAttr(ASTContext &Ctx, const AttributeC
 }
 
 
+
+bool IBOutletCollectionAttr::isEquivalent(const IBOutletCollectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getInterface(), Other.getInterface(), Context))
+    return false;
+  return true;
+}
 
 IBOutletCollectionAttr *IBOutletCollectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) IBOutletCollectionAttr(C, *this, interface_);
@@ -20715,6 +21862,12 @@ IFuncAttr::IFuncAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool IFuncAttr::isEquivalent(const IFuncAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getResolver(), Other.getResolver(), Context))
+    return false;
+  return true;
+}
+
 IFuncAttr *IFuncAttr::clone(ASTContext &C) const {
   auto *A = new (C) IFuncAttr(C, *this, getResolver());
   A->Inherited = Inherited;
@@ -20808,6 +21961,10 @@ InferredNoReturnAttr::InferredNoReturnAttr(ASTContext &Ctx, const AttributeCommo
   {
 }
 
+bool InferredNoReturnAttr::isEquivalent(const InferredNoReturnAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 InferredNoReturnAttr *InferredNoReturnAttr::clone(ASTContext &C) const {
   auto *A = new (C) InferredNoReturnAttr(C, *this);
   A->Inherited = Inherited;
@@ -20880,6 +22037,12 @@ InitPriorityAttr::InitPriorityAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 }
 
 
+
+bool InitPriorityAttr::isEquivalent(const InitPriorityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getPriority(), Other.getPriority(), Context))
+    return false;
+  return true;
+}
 
 InitPriorityAttr *InitPriorityAttr::clone(ASTContext &C) const {
   auto *A = new (C) InitPriorityAttr(C, *this, priority);
@@ -20969,6 +22132,12 @@ InitSegAttr::InitSegAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool InitSegAttr::isEquivalent(const InitSegAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSection(), Other.getSection(), Context))
+    return false;
+  return true;
+}
+
 InitSegAttr *InitSegAttr::clone(ASTContext &C) const {
   auto *A = new (C) InitSegAttr(C, *this, getSection());
   A->Inherited = Inherited;
@@ -21054,6 +22223,10 @@ IntelOclBiccAttr::IntelOclBiccAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::IntelOclBicc, /*IsLateParsed=*/false, false)
   {
+}
+
+bool IntelOclBiccAttr::isEquivalent(const IntelOclBiccAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 IntelOclBiccAttr *IntelOclBiccAttr::clone(ASTContext &C) const {
@@ -21152,6 +22325,10 @@ InternalLinkageAttr::InternalLinkageAttr(ASTContext &Ctx, const AttributeCommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::InternalLinkage, /*IsLateParsed=*/false, false)
   {
+}
+
+bool InternalLinkageAttr::isEquivalent(const InternalLinkageAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 InternalLinkageAttr *InternalLinkageAttr::clone(ASTContext &C) const {
@@ -21259,6 +22436,10 @@ LTOVisibilityPublicAttr::LTOVisibilityPublicAttr(ASTContext &Ctx, const Attribut
   {
 }
 
+bool LTOVisibilityPublicAttr::isEquivalent(const LTOVisibilityPublicAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 LTOVisibilityPublicAttr *LTOVisibilityPublicAttr::clone(ASTContext &C) const {
   auto *A = new (C) LTOVisibilityPublicAttr(C, *this);
   A->Inherited = Inherited;
@@ -21343,6 +22524,12 @@ LayoutVersionAttr::LayoutVersionAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool LayoutVersionAttr::isEquivalent(const LayoutVersionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVersion(), Other.getVersion(), Context))
+    return false;
+  return true;
+}
 
 LayoutVersionAttr *LayoutVersionAttr::clone(ASTContext &C) const {
   auto *A = new (C) LayoutVersionAttr(C, *this, version);
@@ -21437,6 +22624,10 @@ LeafAttr::LeafAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Leaf, /*IsLateParsed=*/false, false)
   {
+}
+
+bool LeafAttr::isEquivalent(const LeafAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 LeafAttr *LeafAttr::clone(ASTContext &C) const {
@@ -21538,6 +22729,10 @@ LifetimeBoundAttr::LifetimeBoundAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::LifetimeBound, /*IsLateParsed=*/false, false)
   {
+}
+
+bool LifetimeBoundAttr::isEquivalent(const LifetimeBoundAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 LifetimeBoundAttr *LifetimeBoundAttr::clone(ASTContext &C) const {
@@ -21645,6 +22840,12 @@ LifetimeCaptureByAttr::LifetimeCaptureByAttr(ASTContext &Ctx, const AttributeCom
 }
 
 
+
+bool LifetimeCaptureByAttr::isEquivalent(const LifetimeCaptureByAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(params_begin(), params_end(), Other.params_begin(), Other.params_end(), Context))
+    return false;
+  return true;
+}
 
 LifetimeCaptureByAttr *LifetimeCaptureByAttr::clone(ASTContext &C) const {
   auto *A = new (C) LifetimeCaptureByAttr(C, *this, params_, params_Size);
@@ -21756,6 +22957,10 @@ LikelyAttr::LikelyAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool LikelyAttr::isEquivalent(const LikelyAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 LikelyAttr *LikelyAttr::clone(ASTContext &C) const {
   auto *A = new (C) LikelyAttr(C, *this);
   A->Inherited = Inherited;
@@ -21854,6 +23059,10 @@ LoaderUninitializedAttr::LoaderUninitializedAttr(ASTContext &Ctx, const Attribut
   {
 }
 
+bool LoaderUninitializedAttr::isEquivalent(const LoaderUninitializedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 LoaderUninitializedAttr *LoaderUninitializedAttr::clone(ASTContext &C) const {
   auto *A = new (C) LoaderUninitializedAttr(C, *this);
   A->Inherited = Inherited;
@@ -21938,6 +23147,12 @@ LockReturnedAttr::LockReturnedAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 }
 
 
+
+bool LockReturnedAttr::isEquivalent(const LockReturnedAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getArg(), Other.getArg(), Context))
+    return false;
+  return true;
+}
 
 LockReturnedAttr *LockReturnedAttr::clone(ASTContext &C) const {
   auto *A = new (C) LockReturnedAttr(C, *this, arg);
@@ -22052,6 +23267,12 @@ LocksExcludedAttr::LocksExcludedAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool LocksExcludedAttr::isEquivalent(const LocksExcludedAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
 
 LocksExcludedAttr *LocksExcludedAttr::clone(ASTContext &C) const {
   auto *A = new (C) LocksExcludedAttr(C, *this, args_, args_Size);
@@ -22249,6 +23470,18 @@ const char *LoopHintAttr::ConvertLoopHintStateToStr(LoopHintAttr::LoopHintState 
 }
 
 
+bool LoopHintAttr::isEquivalent(const LoopHintAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getOption(), Other.getOption(), Context))
+    return false;
+  if (!equalAttrArgs(getState(), Other.getState(), Context))
+    return false;
+  if (!equalAttrArgs(getValue(), Other.getValue(), Context))
+    return false;
+  return true;
+}
+
 LoopHintAttr *LoopHintAttr::clone(ASTContext &C) const {
   auto *A = new (C) LoopHintAttr(C, *this, option, state, value);
   A->Inherited = Inherited;
@@ -22348,6 +23581,12 @@ M68kInterruptAttr::M68kInterruptAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool M68kInterruptAttr::isEquivalent(const M68kInterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNumber(), Other.getNumber(), Context))
+    return false;
+  return true;
+}
+
 M68kInterruptAttr *M68kInterruptAttr::clone(ASTContext &C) const {
   auto *A = new (C) M68kInterruptAttr(C, *this, number);
   A->Inherited = Inherited;
@@ -22441,6 +23680,10 @@ M68kRTDAttr::M68kRTDAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::M68kRTD, /*IsLateParsed=*/false, false)
   {
+}
+
+bool M68kRTDAttr::isEquivalent(const M68kRTDAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 M68kRTDAttr *M68kRTDAttr::clone(ASTContext &C) const {
@@ -22548,6 +23791,10 @@ MIGServerRoutineAttr::MIGServerRoutineAttr(ASTContext &Ctx, const AttributeCommo
   {
 }
 
+bool MIGServerRoutineAttr::isEquivalent(const MIGServerRoutineAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 MIGServerRoutineAttr *MIGServerRoutineAttr::clone(ASTContext &C) const {
   auto *A = new (C) MIGServerRoutineAttr(C, *this);
   A->Inherited = Inherited;
@@ -22653,6 +23900,10 @@ MSABIAttr::MSABIAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool MSABIAttr::isEquivalent(const MSABIAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 MSABIAttr *MSABIAttr::clone(ASTContext &C) const {
   auto *A = new (C) MSABIAttr(C, *this);
   A->Inherited = Inherited;
@@ -22734,6 +23985,10 @@ MSAllocatorAttr::MSAllocatorAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool MSAllocatorAttr::isEquivalent(const MSAllocatorAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 MSAllocatorAttr *MSAllocatorAttr::clone(ASTContext &C) const {
   auto *A = new (C) MSAllocatorAttr(C, *this);
   A->Inherited = Inherited;
@@ -22799,6 +24054,10 @@ MSConstexprAttr::MSConstexprAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
              )
   : InheritableAttr(Ctx, CommonInfo, attr::MSConstexpr, /*IsLateParsed=*/false, false)
   {
+}
+
+bool MSConstexprAttr::isEquivalent(const MSConstexprAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 MSConstexprAttr *MSConstexprAttr::clone(ASTContext &C) const {
@@ -22965,6 +24224,14 @@ MSInheritanceAttr::Spelling MSInheritanceAttr::getSemanticSpelling() const {
 }
 
 
+bool MSInheritanceAttr::isEquivalent(const MSInheritanceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getBestCase(), Other.getBestCase(), Context))
+    return false;
+  return true;
+}
+
 MSInheritanceAttr *MSInheritanceAttr::clone(ASTContext &C) const {
   auto *A = new (C) MSInheritanceAttr(C, *this, bestCase);
   A->Inherited = Inherited;
@@ -23051,6 +24318,10 @@ MSNoVTableAttr::MSNoVTableAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::MSNoVTable, /*IsLateParsed=*/false, false)
   {
+}
+
+bool MSNoVTableAttr::isEquivalent(const MSNoVTableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 MSNoVTableAttr *MSNoVTableAttr::clone(ASTContext &C) const {
@@ -23147,6 +24418,12 @@ MSP430InterruptAttr::MSP430InterruptAttr(ASTContext &Ctx, const AttributeCommonI
 }
 
 
+
+bool MSP430InterruptAttr::isEquivalent(const MSP430InterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNumber(), Other.getNumber(), Context))
+    return false;
+  return true;
+}
 
 MSP430InterruptAttr *MSP430InterruptAttr::clone(ASTContext &C) const {
   auto *A = new (C) MSP430InterruptAttr(C, *this, number);
@@ -23265,6 +24542,10 @@ MSStructAttr::MSStructAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool MSStructAttr::isEquivalent(const MSStructAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 MSStructAttr *MSStructAttr::clone(ASTContext &C) const {
   auto *A = new (C) MSStructAttr(C, *this);
   A->Inherited = Inherited;
@@ -23350,6 +24631,12 @@ MSVtorDispAttr::MSVtorDispAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 
 
 
+bool MSVtorDispAttr::isEquivalent(const MSVtorDispAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVdm(), Other.getVdm(), Context))
+    return false;
+  return true;
+}
+
 MSVtorDispAttr *MSVtorDispAttr::clone(ASTContext &C) const {
   auto *A = new (C) MSVtorDispAttr(C, *this, vdm);
   A->Inherited = Inherited;
@@ -23363,6 +24650,115 @@ void MSVtorDispAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) 
 
 const char *MSVtorDispAttr::getSpelling() const {
   return "(No spelling)";
+}
+
+
+// MallocSpanAttr implementation
+
+MallocSpanAttr *MallocSpanAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) MallocSpanAttr(Ctx, CommonInfo);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+MallocSpanAttr *MallocSpanAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) MallocSpanAttr(Ctx, CommonInfo);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+MallocSpanAttr *MallocSpanAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_malloc_span:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_malloc_span, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_malloc_span:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_malloc_span, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_malloc_span:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_malloc_span, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, I);
+}
+
+MallocSpanAttr *MallocSpanAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_malloc_span:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_malloc_span, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_malloc_span:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_malloc_span, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_malloc_span:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_malloc_span, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, I);
+}
+
+MallocSpanAttr::MallocSpanAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::MallocSpan, /*IsLateParsed=*/false, false)
+  {
+}
+
+bool MallocSpanAttr::isEquivalent(const MallocSpanAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
+MallocSpanAttr *MallocSpanAttr::clone(ASTContext &C) const {
+  auto *A = new (C) MallocSpanAttr(C, *this);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void MallocSpanAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((malloc_span";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[clang::malloc_span";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[clang::malloc_span";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *MallocSpanAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "malloc_span";
+  case 1:
+    return "malloc_span";
+  case 2:
+    return "malloc_span";
+  }
 }
 
 
@@ -23402,6 +24798,12 @@ MaxFieldAlignmentAttr::MaxFieldAlignmentAttr(ASTContext &Ctx, const AttributeCom
 }
 
 
+
+bool MaxFieldAlignmentAttr::isEquivalent(const MaxFieldAlignmentAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAlignment(), Other.getAlignment(), Context))
+    return false;
+  return true;
+}
 
 MaxFieldAlignmentAttr *MaxFieldAlignmentAttr::clone(ASTContext &C) const {
   auto *A = new (C) MaxFieldAlignmentAttr(C, *this, alignment);
@@ -23474,6 +24876,10 @@ MayAliasAttr::MayAliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::MayAlias, /*IsLateParsed=*/false, false)
   {
+}
+
+bool MayAliasAttr::isEquivalent(const MayAliasAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 MayAliasAttr *MayAliasAttr::clone(ASTContext &C) const {
@@ -23581,6 +24987,10 @@ MaybeUndefAttr::MaybeUndefAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool MaybeUndefAttr::isEquivalent(const MaybeUndefAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 MaybeUndefAttr *MaybeUndefAttr::clone(ASTContext &C) const {
   auto *A = new (C) MaybeUndefAttr(C, *this);
   A->Inherited = Inherited;
@@ -23686,6 +25096,10 @@ MicroMipsAttr::MicroMipsAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
   {
 }
 
+bool MicroMipsAttr::isEquivalent(const MicroMipsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 MicroMipsAttr *MicroMipsAttr::clone(ASTContext &C) const {
   auto *A = new (C) MicroMipsAttr(C, *this);
   A->Inherited = Inherited;
@@ -23789,6 +25203,10 @@ MinSizeAttr::MinSizeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::MinSize, /*IsLateParsed=*/false, false)
   {
+}
+
+bool MinSizeAttr::isEquivalent(const MinSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 MinSizeAttr *MinSizeAttr::clone(ASTContext &C) const {
@@ -23899,6 +25317,12 @@ MinVectorWidthAttr::MinVectorWidthAttr(ASTContext &Ctx, const AttributeCommonInf
 }
 
 
+
+bool MinVectorWidthAttr::isEquivalent(const MinVectorWidthAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVectorWidth(), Other.getVectorWidth(), Context))
+    return false;
+  return true;
+}
 
 MinVectorWidthAttr *MinVectorWidthAttr::clone(ASTContext &C) const {
   auto *A = new (C) MinVectorWidthAttr(C, *this, vectorWidth);
@@ -24015,6 +25439,10 @@ Mips16Attr::Mips16Attr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Mips16, /*IsLateParsed=*/false, false)
   {
+}
+
+bool Mips16Attr::isEquivalent(const Mips16Attr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 Mips16Attr *Mips16Attr::clone(ASTContext &C) const {
@@ -24160,6 +25588,12 @@ const char *MipsInterruptAttr::ConvertInterruptTypeToStr(MipsInterruptAttr::Inte
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool MipsInterruptAttr::isEquivalent(const MipsInterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getInterrupt(), Other.getInterrupt(), Context))
+    return false;
+  return true;
+}
+
 MipsInterruptAttr *MipsInterruptAttr::clone(ASTContext &C) const {
   auto *A = new (C) MipsInterruptAttr(C, *this, interrupt);
   A->Inherited = Inherited;
@@ -24298,6 +25732,12 @@ MipsLongCallAttr::Spelling MipsLongCallAttr::getSemanticSpelling() const {
     case 5: return C23_gnu_far;
   }
 }
+bool MipsLongCallAttr::isEquivalent(const MipsLongCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 MipsLongCallAttr *MipsLongCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) MipsLongCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -24445,6 +25885,12 @@ MipsShortCallAttr::Spelling MipsShortCallAttr::getSemanticSpelling() const {
     case 5: return C23_gnu_near;
   }
 }
+bool MipsShortCallAttr::isEquivalent(const MipsShortCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 MipsShortCallAttr *MipsShortCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) MipsShortCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -24516,7 +25962,7 @@ const char *MipsShortCallAttr::getSpelling() const {
 
 // ModeAttr implementation
 
-ModeAttr *ModeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo) {
+ModeAttr *ModeAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ModeAttr(Ctx, CommonInfo, Mode);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -24524,14 +25970,14 @@ ModeAttr *ModeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Mode, const
   return A;
 }
 
-ModeAttr *ModeAttr::Create(ASTContext &Ctx, IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo) {
+ModeAttr *ModeAttr::Create(ASTContext &Ctx, const IdentifierInfo * Mode, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ModeAttr(Ctx, CommonInfo, Mode);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ModeAttr *ModeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Mode, SourceRange Range, Spelling S) {
+ModeAttr *ModeAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Mode, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_mode:
@@ -24548,7 +25994,7 @@ ModeAttr *ModeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Mode, Sourc
   return CreateImplicit(Ctx, Mode, I);
 }
 
-ModeAttr *ModeAttr::Create(ASTContext &Ctx, IdentifierInfo * Mode, SourceRange Range, Spelling S) {
+ModeAttr *ModeAttr::Create(ASTContext &Ctx, const IdentifierInfo * Mode, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_mode:
@@ -24566,7 +26012,7 @@ ModeAttr *ModeAttr::Create(ASTContext &Ctx, IdentifierInfo * Mode, SourceRange R
 }
 
 ModeAttr::ModeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Mode
+              , const IdentifierInfo * Mode
              )
   : Attr(Ctx, CommonInfo, attr::Mode, /*IsLateParsed=*/false)
               , mode(Mode)
@@ -24574,6 +26020,12 @@ ModeAttr::ModeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool ModeAttr::isEquivalent(const ModeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMode(), Other.getMode(), Context))
+    return false;
+  return true;
+}
 
 ModeAttr *ModeAttr::clone(ASTContext &C) const {
   auto *A = new (C) ModeAttr(C, *this, mode);
@@ -24635,6 +26087,193 @@ const char *ModeAttr::getSpelling() const {
 }
 
 
+// ModularFormatAttr implementation
+
+ModularFormatAttr *ModularFormatAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) ModularFormatAttr(Ctx, CommonInfo, ModularImplFn, ImplName, Aspects, AspectsSize);
+  A->setImplicit(true);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+ModularFormatAttr *ModularFormatAttr::Create(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) ModularFormatAttr(Ctx, CommonInfo, ModularImplFn, ImplName, Aspects, AspectsSize);
+  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
+    A->setAttributeSpellingListIndex(0);
+  return A;
+}
+
+ModularFormatAttr *ModularFormatAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_modular_format:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_modular_format, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_modular_format:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_modular_format, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_modular_format:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_modular_format, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return CreateImplicit(Ctx, ModularImplFn, ImplName, Aspects, AspectsSize, I);
+}
+
+ModularFormatAttr *ModularFormatAttr::Create(ASTContext &Ctx, const IdentifierInfo * ModularImplFn, llvm::StringRef ImplName, StringRef *Aspects, unsigned AspectsSize, SourceRange Range, Spelling S) {
+  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
+    switch (S) {
+    case GNU_modular_format:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_modular_format, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case CXX11_clang_modular_format:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_modular_format, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    case C23_clang_modular_format:
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_modular_format, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    default:
+      llvm_unreachable("Unknown attribute spelling!");
+      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
+    }
+  }());
+  return Create(Ctx, ModularImplFn, ImplName, Aspects, AspectsSize, I);
+}
+
+ModularFormatAttr::ModularFormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , const IdentifierInfo * ModularImplFn
+              , llvm::StringRef ImplName
+              , StringRef *Aspects, unsigned AspectsSize
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::ModularFormat, /*IsLateParsed=*/false, false)
+              , modularImplFn(ModularImplFn)
+              , implNameLength(ImplName.size()),implName(new (Ctx, 1) char[implNameLength])
+              , aspects_Size(AspectsSize), aspects_(new (Ctx, 16) StringRef[aspects_Size])
+  {
+    if (!ImplName.empty())
+      std::memcpy(implName, ImplName.data(), implNameLength);
+  for (size_t I = 0, E = aspects_Size; I != E;
+       ++I) {
+    StringRef Ref = Aspects[I];
+    if (!Ref.empty()) {
+      char *Mem = new (Ctx, 1) char[Ref.size()];
+      std::memcpy(Mem, Ref.data(), Ref.size());
+      aspects_[I] = StringRef(Mem, Ref.size());
+    }
+  }
+}
+
+ModularFormatAttr::ModularFormatAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , const IdentifierInfo * ModularImplFn
+              , llvm::StringRef ImplName
+             )
+  : InheritableAttr(Ctx, CommonInfo, attr::ModularFormat, /*IsLateParsed=*/false, false)
+              , modularImplFn(ModularImplFn)
+              , implNameLength(ImplName.size()),implName(new (Ctx, 1) char[implNameLength])
+              , aspects_Size(0), aspects_(nullptr)
+  {
+    if (!ImplName.empty())
+      std::memcpy(implName, ImplName.data(), implNameLength);
+}
+
+
+
+
+
+
+
+bool ModularFormatAttr::isEquivalent(const ModularFormatAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getModularImplFn(), Other.getModularImplFn(), Context))
+    return false;
+  if (!equalAttrArgs(getImplName(), Other.getImplName(), Context))
+    return false;
+  if (!equalAttrArgs(aspects_begin(), aspects_end(), Other.aspects_begin(), Other.aspects_end(), Context))
+    return false;
+  return true;
+}
+
+ModularFormatAttr *ModularFormatAttr::clone(ASTContext &C) const {
+  auto *A = new (C) ModularFormatAttr(C, *this, modularImplFn, getImplName(), aspects_, aspects_Size);
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->setImplicit(Implicit);
+  return A;
+}
+
+void ModularFormatAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  bool IsFirstArgument = true; (void)IsFirstArgument;
+  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << "__attribute__((modular_format";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << (getModularImplFn() ? getModularImplFn()->getName() : "") << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getImplName() << "\"";
+    OS << "";
+  for (const auto &Val : aspects()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << Val << "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "))";
+    break;
+  }
+  case 1 : {
+    OS << "[[clang::modular_format";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << (getModularImplFn() ? getModularImplFn()->getName() : "") << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getImplName() << "\"";
+    OS << "";
+  for (const auto &Val : aspects()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << Val << "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+  case 2 : {
+    OS << "[[clang::modular_format";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "" << (getModularImplFn() ? getModularImplFn()->getName() : "") << "";
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << getImplName() << "\"";
+    OS << "";
+  for (const auto &Val : aspects()) {
+    DelimitAttributeArgument(OS, IsFirstArgument);
+    OS << "\"" << Val << "\"";
+  }
+  OS << "";
+    if (!IsFirstArgument)
+      OS << ")";
+    OS << "]]";
+    break;
+  }
+}
+}
+
+const char *ModularFormatAttr::getSpelling() const {
+  switch (getAttributeSpellingListIndex()) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "modular_format";
+  case 1:
+    return "modular_format";
+  case 2:
+    return "modular_format";
+  }
+}
+
+
 // MustTailAttr implementation
 
 MustTailAttr *MustTailAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -24690,6 +26329,10 @@ MustTailAttr::MustTailAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : StmtAttr(Ctx, CommonInfo, attr::MustTail, /*IsLateParsed=*/false)
   {
+}
+
+bool MustTailAttr::isEquivalent(const MustTailAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 MustTailAttr *MustTailAttr::clone(ASTContext &C) const {
@@ -24797,6 +26440,10 @@ NSConsumedAttr::NSConsumedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool NSConsumedAttr::isEquivalent(const NSConsumedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NSConsumedAttr *NSConsumedAttr::clone(ASTContext &C) const {
   auto *A = new (C) NSConsumedAttr(C, *this);
   A->Inherited = Inherited;
@@ -24902,6 +26549,10 @@ NSConsumesSelfAttr::NSConsumesSelfAttr(ASTContext &Ctx, const AttributeCommonInf
   {
 }
 
+bool NSConsumesSelfAttr::isEquivalent(const NSConsumesSelfAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NSConsumesSelfAttr *NSConsumesSelfAttr::clone(ASTContext &C) const {
   auto *A = new (C) NSConsumesSelfAttr(C, *this);
   A->Inherited = Inherited;
@@ -24952,7 +26603,7 @@ const char *NSConsumesSelfAttr::getSpelling() const {
 
 // NSErrorDomainAttr implementation
 
-NSErrorDomainAttr *NSErrorDomainAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo) {
+NSErrorDomainAttr *NSErrorDomainAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) NSErrorDomainAttr(Ctx, CommonInfo, ErrorDomain);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -24960,25 +26611,25 @@ NSErrorDomainAttr *NSErrorDomainAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return A;
 }
 
-NSErrorDomainAttr *NSErrorDomainAttr::Create(ASTContext &Ctx, IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo) {
+NSErrorDomainAttr *NSErrorDomainAttr::Create(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) NSErrorDomainAttr(Ctx, CommonInfo, ErrorDomain);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-NSErrorDomainAttr *NSErrorDomainAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ErrorDomain, SourceRange Range) {
+NSErrorDomainAttr *NSErrorDomainAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return CreateImplicit(Ctx, ErrorDomain, I);
 }
 
-NSErrorDomainAttr *NSErrorDomainAttr::Create(ASTContext &Ctx, IdentifierInfo * ErrorDomain, SourceRange Range) {
+NSErrorDomainAttr *NSErrorDomainAttr::Create(ASTContext &Ctx, const IdentifierInfo * ErrorDomain, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return Create(Ctx, ErrorDomain, I);
 }
 
 NSErrorDomainAttr::NSErrorDomainAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ErrorDomain
+              , const IdentifierInfo * ErrorDomain
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NSErrorDomain, /*IsLateParsed=*/false, false)
               , errorDomain(ErrorDomain)
@@ -24986,6 +26637,12 @@ NSErrorDomainAttr::NSErrorDomainAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool NSErrorDomainAttr::isEquivalent(const NSErrorDomainAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getErrorDomain(), Other.getErrorDomain(), Context))
+    return false;
+  return true;
+}
 
 NSErrorDomainAttr *NSErrorDomainAttr::clone(ASTContext &C) const {
   auto *A = new (C) NSErrorDomainAttr(C, *this, errorDomain);
@@ -25080,6 +26737,10 @@ NSReturnsAutoreleasedAttr::NSReturnsAutoreleasedAttr(ASTContext &Ctx, const Attr
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NSReturnsAutoreleased, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NSReturnsAutoreleasedAttr::isEquivalent(const NSReturnsAutoreleasedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NSReturnsAutoreleasedAttr *NSReturnsAutoreleasedAttr::clone(ASTContext &C) const {
@@ -25187,6 +26848,10 @@ NSReturnsNotRetainedAttr::NSReturnsNotRetainedAttr(ASTContext &Ctx, const Attrib
   {
 }
 
+bool NSReturnsNotRetainedAttr::isEquivalent(const NSReturnsNotRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NSReturnsNotRetainedAttr *NSReturnsNotRetainedAttr::clone(ASTContext &C) const {
   auto *A = new (C) NSReturnsNotRetainedAttr(C, *this);
   A->Inherited = Inherited;
@@ -25290,6 +26955,10 @@ NSReturnsRetainedAttr::NSReturnsRetainedAttr(ASTContext &Ctx, const AttributeCom
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NSReturnsRetained, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NSReturnsRetainedAttr::isEquivalent(const NSReturnsRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NSReturnsRetainedAttr *NSReturnsRetainedAttr::clone(ASTContext &C) const {
@@ -25401,6 +27070,10 @@ NakedAttr::NakedAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool NakedAttr::isEquivalent(const NakedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NakedAttr *NakedAttr::clone(ASTContext &C) const {
   auto *A = new (C) NakedAttr(C, *this);
   A->Inherited = Inherited;
@@ -25487,6 +27160,10 @@ NoAliasAttr::NoAliasAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoAlias, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoAliasAttr::isEquivalent(const NoAliasAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoAliasAttr *NoAliasAttr::clone(ASTContext &C) const {
@@ -25599,6 +27276,12 @@ NoBuiltinAttr::NoBuiltinAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool NoBuiltinAttr::isEquivalent(const NoBuiltinAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(builtinNames_begin(), builtinNames_end(), Other.builtinNames_begin(), Other.builtinNames_end(), Context))
+    return false;
+  return true;
+}
 
 NoBuiltinAttr *NoBuiltinAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoBuiltinAttr(C, *this, builtinNames_, builtinNames_Size);
@@ -25729,6 +27412,10 @@ NoCommonAttr::NoCommonAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool NoCommonAttr::isEquivalent(const NoCommonAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoCommonAttr *NoCommonAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoCommonAttr(C, *this);
   A->Inherited = Inherited;
@@ -25836,6 +27523,10 @@ NoConvergentAttr::NoConvergentAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoConvergent, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoConvergentAttr::isEquivalent(const NoConvergentAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoConvergentAttr *NoConvergentAttr::clone(ASTContext &C) const {
@@ -25950,6 +27641,10 @@ NoDebugAttr::NoDebugAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool NoDebugAttr::isEquivalent(const NoDebugAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoDebugAttr *NoDebugAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoDebugAttr(C, *this);
   A->Inherited = Inherited;
@@ -26055,6 +27750,10 @@ NoDerefAttr::NoDerefAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool NoDerefAttr::isEquivalent(const NoDerefAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoDerefAttr *NoDerefAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoDerefAttr(C, *this);
   A->Inherited = Inherited;
@@ -26156,6 +27855,10 @@ NoDestroyAttr::NoDestroyAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
   {
 }
 
+bool NoDestroyAttr::isEquivalent(const NoDestroyAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoDestroyAttr *NoDestroyAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoDestroyAttr(C, *this);
   A->Inherited = Inherited;
@@ -26252,6 +27955,10 @@ NoDuplicateAttr::NoDuplicateAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoDuplicate, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoDuplicateAttr::isEquivalent(const NoDuplicateAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoDuplicateAttr *NoDuplicateAttr::clone(ASTContext &C) const {
@@ -26357,6 +28064,10 @@ NoEscapeAttr::NoEscapeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : Attr(Ctx, CommonInfo, attr::NoEscape, /*IsLateParsed=*/false)
   {
+}
+
+bool NoEscapeAttr::isEquivalent(const NoEscapeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoEscapeAttr *NoEscapeAttr::clone(ASTContext &C) const {
@@ -26486,6 +28197,10 @@ NoInlineAttr::NoInlineAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : DeclOrStmtAttr(Ctx, CommonInfo, attr::NoInline, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoInlineAttr::isEquivalent(const NoInlineAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoInlineAttr *NoInlineAttr::clone(ASTContext &C) const {
@@ -26635,6 +28350,10 @@ NoInstrumentFunctionAttr::NoInstrumentFunctionAttr(ASTContext &Ctx, const Attrib
   {
 }
 
+bool NoInstrumentFunctionAttr::isEquivalent(const NoInstrumentFunctionAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoInstrumentFunctionAttr *NoInstrumentFunctionAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoInstrumentFunctionAttr(C, *this);
   A->Inherited = Inherited;
@@ -26738,6 +28457,10 @@ NoMergeAttr::NoMergeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : DeclOrStmtAttr(Ctx, CommonInfo, attr::NoMerge, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoMergeAttr::isEquivalent(const NoMergeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoMergeAttr *NoMergeAttr::clone(ASTContext &C) const {
@@ -26845,6 +28568,10 @@ NoMicroMipsAttr::NoMicroMipsAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool NoMicroMipsAttr::isEquivalent(const NoMicroMipsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoMicroMipsAttr *NoMicroMipsAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoMicroMipsAttr(C, *this);
   A->Inherited = Inherited;
@@ -26948,6 +28675,10 @@ NoMips16Attr::NoMips16Attr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoMips16, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoMips16Attr::isEquivalent(const NoMips16Attr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoMips16Attr *NoMips16Attr::clone(ASTContext &C) const {
@@ -27055,6 +28786,10 @@ NoProfileFunctionAttr::NoProfileFunctionAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool NoProfileFunctionAttr::isEquivalent(const NoProfileFunctionAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoProfileFunctionAttr *NoProfileFunctionAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoProfileFunctionAttr(C, *this);
   A->Inherited = Inherited;
@@ -27158,6 +28893,10 @@ NoRandomizeLayoutAttr::NoRandomizeLayoutAttr(ASTContext &Ctx, const AttributeCom
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoRandomizeLayout, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoRandomizeLayoutAttr::isEquivalent(const NoRandomizeLayoutAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoRandomizeLayoutAttr *NoRandomizeLayoutAttr::clone(ASTContext &C) const {
@@ -27267,6 +29006,10 @@ NoReturnAttr::NoReturnAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoReturn, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoReturnAttr::isEquivalent(const NoReturnAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoReturnAttr *NoReturnAttr::clone(ASTContext &C) const {
@@ -27408,6 +29151,12 @@ NoSanitizeAttr::NoSanitizeAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 }
 
 
+
+bool NoSanitizeAttr::isEquivalent(const NoSanitizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(sanitizers_begin(), sanitizers_end(), Other.sanitizers_begin(), Other.sanitizers_end(), Context))
+    return false;
+  return true;
+}
 
 NoSanitizeAttr *NoSanitizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoSanitizeAttr(C, *this, sanitizers_, sanitizers_Size);
@@ -27577,6 +29326,12 @@ NoSpecializationsAttr::NoSpecializationsAttr(ASTContext &Ctx, const AttributeCom
 
 
 
+bool NoSpecializationsAttr::isEquivalent(const NoSpecializationsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  return true;
+}
+
 NoSpecializationsAttr *NoSpecializationsAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoSpecializationsAttr(C, *this, getMessage());
   A->Inherited = Inherited;
@@ -27683,6 +29438,10 @@ NoSpeculativeLoadHardeningAttr::NoSpeculativeLoadHardeningAttr(ASTContext &Ctx, 
   {
 }
 
+bool NoSpeculativeLoadHardeningAttr::isEquivalent(const NoSpeculativeLoadHardeningAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoSpeculativeLoadHardeningAttr *NoSpeculativeLoadHardeningAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoSpeculativeLoadHardeningAttr(C, *this);
   A->Inherited = Inherited;
@@ -27786,6 +29545,10 @@ NoSplitStackAttr::NoSplitStackAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoSplitStack, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoSplitStackAttr::isEquivalent(const NoSplitStackAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoSplitStackAttr *NoSplitStackAttr::clone(ASTContext &C) const {
@@ -27914,6 +29677,12 @@ NoStackProtectorAttr::Spelling NoStackProtectorAttr::getSemanticSpelling() const
     case 5: return Declspec_safebuffers;
   }
 }
+bool NoStackProtectorAttr::isEquivalent(const NoStackProtectorAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 NoStackProtectorAttr *NoStackProtectorAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoStackProtectorAttr(C, *this);
   A->Inherited = Inherited;
@@ -28040,6 +29809,10 @@ NoThreadSafetyAnalysisAttr::NoThreadSafetyAnalysisAttr(ASTContext &Ctx, const At
   {
 }
 
+bool NoThreadSafetyAnalysisAttr::isEquivalent(const NoThreadSafetyAnalysisAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoThreadSafetyAnalysisAttr *NoThreadSafetyAnalysisAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoThreadSafetyAnalysisAttr(C, *this);
   A->Inherited = Inherited;
@@ -28149,6 +29922,10 @@ NoThrowAttr::NoThrowAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool NoThrowAttr::isEquivalent(const NoThrowAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoThrowAttr *NoThrowAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoThrowAttr(C, *this);
   A->Inherited = Inherited;
@@ -28237,6 +30014,10 @@ NoTrivialAutoVarInitAttr::NoTrivialAutoVarInitAttr(ASTContext &Ctx, const Attrib
   {
 }
 
+bool NoTrivialAutoVarInitAttr::isEquivalent(const NoTrivialAutoVarInitAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NoTrivialAutoVarInitAttr *NoTrivialAutoVarInitAttr::clone(ASTContext &C) const {
   auto *A = new (C) NoTrivialAutoVarInitAttr(C, *this);
   A->Inherited = Inherited;
@@ -28322,6 +30103,10 @@ NoUniqueAddressAttr::NoUniqueAddressAttr(ASTContext &Ctx, const AttributeCommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoUniqueAddress, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoUniqueAddressAttr::isEquivalent(const NoUniqueAddressAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoUniqueAddressAttr *NoUniqueAddressAttr::clone(ASTContext &C) const {
@@ -28420,6 +30205,10 @@ NoUwtableAttr::NoUwtableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NoUwtable, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NoUwtableAttr::isEquivalent(const NoUwtableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NoUwtableAttr *NoUwtableAttr::clone(ASTContext &C) const {
@@ -28537,6 +30326,12 @@ NonAllocatingAttr::NonAllocatingAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool NonAllocatingAttr::isEquivalent(const NonAllocatingAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCond(), Other.getCond(), Context))
+    return false;
+  return true;
+}
 
 NonAllocatingAttr *NonAllocatingAttr::clone(ASTContext &C) const {
   auto *A = new (C) NonAllocatingAttr(C, *this, cond);
@@ -28683,6 +30478,12 @@ NonBlockingAttr::NonBlockingAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool NonBlockingAttr::isEquivalent(const NonBlockingAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCond(), Other.getCond(), Context))
+    return false;
+  return true;
+}
 
 NonBlockingAttr *NonBlockingAttr::clone(ASTContext &C) const {
   auto *A = new (C) NonBlockingAttr(C, *this, cond);
@@ -28831,6 +30632,12 @@ NonNullAttr::NonNullAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool NonNullAttr::isEquivalent(const NonNullAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
+
 NonNullAttr *NonNullAttr::clone(ASTContext &C) const {
   auto *A = new (C) NonNullAttr(C, *this, args_, args_Size);
   A->Inherited = Inherited;
@@ -28960,6 +30767,10 @@ NonStringAttr::NonStringAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
   {
 }
 
+bool NonStringAttr::isEquivalent(const NonStringAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 NonStringAttr *NonStringAttr::clone(ASTContext &C) const {
   auto *A = new (C) NonStringAttr(C, *this);
   A->Inherited = Inherited;
@@ -29063,6 +30874,10 @@ NotTailCalledAttr::NotTailCalledAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::NotTailCalled, /*IsLateParsed=*/false, false)
   {
+}
+
+bool NotTailCalledAttr::isEquivalent(const NotTailCalledAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 NotTailCalledAttr *NotTailCalledAttr::clone(ASTContext &C) const {
@@ -29193,6 +31008,16 @@ const char *OMPAllocateDeclAttr::ConvertAllocatorTypeTyToStr(OMPAllocateDeclAttr
 
 
 
+bool OMPAllocateDeclAttr::isEquivalent(const OMPAllocateDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAllocatorType(), Other.getAllocatorType(), Context))
+    return false;
+  if (!equalAttrArgs(getAllocator(), Other.getAllocator(), Context))
+    return false;
+  if (!equalAttrArgs(getAlignment(), Other.getAlignment(), Context))
+    return false;
+  return true;
+}
+
 OMPAllocateDeclAttr *OMPAllocateDeclAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPAllocateDeclAttr(C, *this, allocatorType, allocator, alignment);
   A->Inherited = Inherited;
@@ -29247,6 +31072,12 @@ OMPAssumeAttr::OMPAssumeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool OMPAssumeAttr::isEquivalent(const OMPAssumeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAssumption(), Other.getAssumption(), Context))
+    return false;
+  return true;
+}
 
 OMPAssumeAttr *OMPAssumeAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPAssumeAttr(C, *this, getAssumption());
@@ -29323,6 +31154,12 @@ OMPCaptureKindAttr::OMPCaptureKindAttr(ASTContext &Ctx, const AttributeCommonInf
 
 
 
+bool OMPCaptureKindAttr::isEquivalent(const OMPCaptureKindAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCaptureKindVal(), Other.getCaptureKindVal(), Context))
+    return false;
+  return true;
+}
+
 OMPCaptureKindAttr *OMPCaptureKindAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPCaptureKindAttr(C, *this, captureKindVal);
   A->Inherited = Inherited;
@@ -29370,6 +31207,10 @@ OMPCaptureNoInitAttr::OMPCaptureNoInitAttr(ASTContext &Ctx, const AttributeCommo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::OMPCaptureNoInit, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OMPCaptureNoInitAttr::isEquivalent(const OMPCaptureNoInitAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OMPCaptureNoInitAttr *OMPCaptureNoInitAttr::clone(ASTContext &C) const {
@@ -29495,6 +31336,26 @@ const char *OMPDeclareSimdDeclAttr::ConvertBranchStateTyToStr(OMPDeclareSimdDecl
 
 
 
+
+bool OMPDeclareSimdDeclAttr::isEquivalent(const OMPDeclareSimdDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBranchState(), Other.getBranchState(), Context))
+    return false;
+  if (!equalAttrArgs(getSimdlen(), Other.getSimdlen(), Context))
+    return false;
+  if (!equalAttrArgs(uniforms_begin(), uniforms_end(), Other.uniforms_begin(), Other.uniforms_end(), Context))
+    return false;
+  if (!equalAttrArgs(aligneds_begin(), aligneds_end(), Other.aligneds_begin(), Other.aligneds_end(), Context))
+    return false;
+  if (!equalAttrArgs(alignments_begin(), alignments_end(), Other.alignments_begin(), Other.alignments_end(), Context))
+    return false;
+  if (!equalAttrArgs(linears_begin(), linears_end(), Other.linears_begin(), Other.linears_end(), Context))
+    return false;
+  if (!equalAttrArgs(modifiers_begin(), modifiers_end(), Other.modifiers_begin(), Other.modifiers_end(), Context))
+    return false;
+  if (!equalAttrArgs(steps_begin(), steps_end(), Other.steps_begin(), Other.steps_end(), Context))
+    return false;
+  return true;
+}
 
 OMPDeclareSimdDeclAttr *OMPDeclareSimdDeclAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPDeclareSimdDeclAttr(C, *this, branchState, simdlen, uniforms_, uniforms_Size, aligneds_, aligneds_Size, alignments_, alignments_Size, linears_, linears_Size, modifiers_, modifiers_Size, steps_, steps_Size);
@@ -29625,6 +31486,20 @@ const char *OMPDeclareTargetDeclAttr::ConvertDevTypeTyToStr(OMPDeclareTargetDecl
 
 
 
+bool OMPDeclareTargetDeclAttr::isEquivalent(const OMPDeclareTargetDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMapType(), Other.getMapType(), Context))
+    return false;
+  if (!equalAttrArgs(getDevType(), Other.getDevType(), Context))
+    return false;
+  if (!equalAttrArgs(getIndirectExpr(), Other.getIndirectExpr(), Context))
+    return false;
+  if (!equalAttrArgs(getIndirect(), Other.getIndirect(), Context))
+    return false;
+  if (!equalAttrArgs(getLevel(), Other.getLevel(), Context))
+    return false;
+  return true;
+}
+
 OMPDeclareTargetDeclAttr *OMPDeclareTargetDeclAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPDeclareTargetDeclAttr(C, *this, mapType, devType, indirectExpr, indirect, level);
   A->Inherited = Inherited;
@@ -29736,6 +31611,22 @@ OMPDeclareVariantAttr::OMPDeclareVariantAttr(ASTContext &Ctx, const AttributeCom
 
 
 
+bool OMPDeclareVariantAttr::isEquivalent(const OMPDeclareVariantAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVariantFuncRef(), Other.getVariantFuncRef(), Context))
+    return false;
+  if (!equalAttrArgs(getTraitInfos(), Other.getTraitInfos(), Context))
+    return false;
+  if (!equalAttrArgs(adjustArgsNothing_begin(), adjustArgsNothing_end(), Other.adjustArgsNothing_begin(), Other.adjustArgsNothing_end(), Context))
+    return false;
+  if (!equalAttrArgs(adjustArgsNeedDevicePtr_begin(), adjustArgsNeedDevicePtr_end(), Other.adjustArgsNeedDevicePtr_begin(), Other.adjustArgsNeedDevicePtr_end(), Context))
+    return false;
+  if (!equalAttrArgs(adjustArgsNeedDeviceAddr_begin(), adjustArgsNeedDeviceAddr_end(), Other.adjustArgsNeedDeviceAddr_begin(), Other.adjustArgsNeedDeviceAddr_end(), Context))
+    return false;
+  if (!equalAttrArgs(appendArgs_begin(), appendArgs_end(), Other.appendArgs_begin(), Other.appendArgs_end(), Context))
+    return false;
+  return true;
+}
+
 OMPDeclareVariantAttr *OMPDeclareVariantAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPDeclareVariantAttr(C, *this, variantFuncRef, traitInfos, adjustArgsNothing_, adjustArgsNothing_Size, adjustArgsNeedDevicePtr_, adjustArgsNeedDevicePtr_Size, adjustArgsNeedDeviceAddr_, adjustArgsNeedDeviceAddr_Size, appendArgs_, appendArgs_Size);
   A->Inherited = Inherited;
@@ -29803,6 +31694,10 @@ OMPGroupPrivateDeclAttr::OMPGroupPrivateDeclAttr(ASTContext &Ctx, const Attribut
   {
 }
 
+bool OMPGroupPrivateDeclAttr::isEquivalent(const OMPGroupPrivateDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OMPGroupPrivateDeclAttr *OMPGroupPrivateDeclAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPGroupPrivateDeclAttr(C, *this);
   A->Inherited = Inherited;
@@ -29856,6 +31751,12 @@ OMPReferencedVarAttr::OMPReferencedVarAttr(ASTContext &Ctx, const AttributeCommo
 
 
 
+bool OMPReferencedVarAttr::isEquivalent(const OMPReferencedVarAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getRef(), Other.getRef(), Context))
+    return false;
+  return true;
+}
+
 OMPReferencedVarAttr *OMPReferencedVarAttr::clone(ASTContext &C) const {
   auto *A = new (C) OMPReferencedVarAttr(C, *this, ref);
   A->Inherited = Inherited;
@@ -29903,6 +31804,10 @@ OMPThreadPrivateDeclAttr::OMPThreadPrivateDeclAttr(ASTContext &Ctx, const Attrib
              )
   : InheritableAttr(Ctx, CommonInfo, attr::OMPThreadPrivateDecl, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OMPThreadPrivateDeclAttr::isEquivalent(const OMPThreadPrivateDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OMPThreadPrivateDeclAttr *OMPThreadPrivateDeclAttr::clone(ASTContext &C) const {
@@ -29976,6 +31881,10 @@ OSConsumedAttr::OSConsumedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableParamAttr(Ctx, CommonInfo, attr::OSConsumed, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OSConsumedAttr::isEquivalent(const OSConsumedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OSConsumedAttr *OSConsumedAttr::clone(ASTContext &C) const {
@@ -30083,6 +31992,10 @@ OSConsumesThisAttr::OSConsumesThisAttr(ASTContext &Ctx, const AttributeCommonInf
   {
 }
 
+bool OSConsumesThisAttr::isEquivalent(const OSConsumesThisAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OSConsumesThisAttr *OSConsumesThisAttr::clone(ASTContext &C) const {
   auto *A = new (C) OSConsumesThisAttr(C, *this);
   A->Inherited = Inherited;
@@ -30186,6 +32099,10 @@ OSReturnsNotRetainedAttr::OSReturnsNotRetainedAttr(ASTContext &Ctx, const Attrib
              )
   : InheritableAttr(Ctx, CommonInfo, attr::OSReturnsNotRetained, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OSReturnsNotRetainedAttr::isEquivalent(const OSReturnsNotRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OSReturnsNotRetainedAttr *OSReturnsNotRetainedAttr::clone(ASTContext &C) const {
@@ -30293,6 +32210,10 @@ OSReturnsRetainedAttr::OSReturnsRetainedAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool OSReturnsRetainedAttr::isEquivalent(const OSReturnsRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OSReturnsRetainedAttr *OSReturnsRetainedAttr::clone(ASTContext &C) const {
   auto *A = new (C) OSReturnsRetainedAttr(C, *this);
   A->Inherited = Inherited;
@@ -30396,6 +32317,10 @@ OSReturnsRetainedOnNonZeroAttr::OSReturnsRetainedOnNonZeroAttr(ASTContext &Ctx, 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::OSReturnsRetainedOnNonZero, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OSReturnsRetainedOnNonZeroAttr::isEquivalent(const OSReturnsRetainedOnNonZeroAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OSReturnsRetainedOnNonZeroAttr *OSReturnsRetainedOnNonZeroAttr::clone(ASTContext &C) const {
@@ -30503,6 +32428,10 @@ OSReturnsRetainedOnZeroAttr::OSReturnsRetainedOnZeroAttr(ASTContext &Ctx, const 
   {
 }
 
+bool OSReturnsRetainedOnZeroAttr::isEquivalent(const OSReturnsRetainedOnZeroAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OSReturnsRetainedOnZeroAttr *OSReturnsRetainedOnZeroAttr::clone(ASTContext &C) const {
   auto *A = new (C) OSReturnsRetainedOnZeroAttr(C, *this);
   A->Inherited = Inherited;
@@ -30608,6 +32537,10 @@ ObjCBoxableAttr::ObjCBoxableAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool ObjCBoxableAttr::isEquivalent(const ObjCBoxableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCBoxableAttr *ObjCBoxableAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCBoxableAttr(C, *this);
   A->Inherited = Inherited;
@@ -30658,7 +32591,7 @@ const char *ObjCBoxableAttr::getSpelling() const {
 
 // ObjCBridgeAttr implementation
 
-ObjCBridgeAttr *ObjCBridgeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
+ObjCBridgeAttr *ObjCBridgeAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCBridgeAttr(Ctx, CommonInfo, BridgedType);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -30666,14 +32599,14 @@ ObjCBridgeAttr *ObjCBridgeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo *
   return A;
 }
 
-ObjCBridgeAttr *ObjCBridgeAttr::Create(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
+ObjCBridgeAttr *ObjCBridgeAttr::Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCBridgeAttr(Ctx, CommonInfo, BridgedType);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ObjCBridgeAttr *ObjCBridgeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
+ObjCBridgeAttr *ObjCBridgeAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_bridge:
@@ -30690,7 +32623,7 @@ ObjCBridgeAttr *ObjCBridgeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo *
   return CreateImplicit(Ctx, BridgedType, I);
 }
 
-ObjCBridgeAttr *ObjCBridgeAttr::Create(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
+ObjCBridgeAttr *ObjCBridgeAttr::Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_bridge:
@@ -30708,7 +32641,7 @@ ObjCBridgeAttr *ObjCBridgeAttr::Create(ASTContext &Ctx, IdentifierInfo * Bridged
 }
 
 ObjCBridgeAttr::ObjCBridgeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BridgedType
+              , const IdentifierInfo * BridgedType
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCBridge, /*IsLateParsed=*/false, false)
               , bridgedType(BridgedType)
@@ -30716,6 +32649,12 @@ ObjCBridgeAttr::ObjCBridgeAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
 }
 
 
+
+bool ObjCBridgeAttr::isEquivalent(const ObjCBridgeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBridgedType(), Other.getBridgedType(), Context))
+    return false;
+  return true;
+}
 
 ObjCBridgeAttr *ObjCBridgeAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCBridgeAttr(C, *this, bridgedType);
@@ -30779,7 +32718,7 @@ const char *ObjCBridgeAttr::getSpelling() const {
 
 // ObjCBridgeMutableAttr implementation
 
-ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
+ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCBridgeMutableAttr(Ctx, CommonInfo, BridgedType);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -30787,14 +32726,14 @@ ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::CreateImplicit(ASTContext &Ctx, Id
   return A;
 }
 
-ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::Create(ASTContext &Ctx, IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
+ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCBridgeMutableAttr(Ctx, CommonInfo, BridgedType);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
+ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_bridge_mutable:
@@ -30811,7 +32750,7 @@ ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::CreateImplicit(ASTContext &Ctx, Id
   return CreateImplicit(Ctx, BridgedType, I);
 }
 
-ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::Create(ASTContext &Ctx, IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
+ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::Create(ASTContext &Ctx, const IdentifierInfo * BridgedType, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_bridge_mutable:
@@ -30829,7 +32768,7 @@ ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::Create(ASTContext &Ctx, Identifier
 }
 
 ObjCBridgeMutableAttr::ObjCBridgeMutableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * BridgedType
+              , const IdentifierInfo * BridgedType
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCBridgeMutable, /*IsLateParsed=*/false, false)
               , bridgedType(BridgedType)
@@ -30837,6 +32776,12 @@ ObjCBridgeMutableAttr::ObjCBridgeMutableAttr(ASTContext &Ctx, const AttributeCom
 }
 
 
+
+bool ObjCBridgeMutableAttr::isEquivalent(const ObjCBridgeMutableAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getBridgedType(), Other.getBridgedType(), Context))
+    return false;
+  return true;
+}
 
 ObjCBridgeMutableAttr *ObjCBridgeMutableAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCBridgeMutableAttr(C, *this, bridgedType);
@@ -30900,7 +32845,7 @@ const char *ObjCBridgeMutableAttr::getSpelling() const {
 
 // ObjCBridgeRelatedAttr implementation
 
-ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo) {
+ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCBridgeRelatedAttr(Ctx, CommonInfo, RelatedClass, ClassMethod, InstanceMethod);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -30908,14 +32853,14 @@ ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::CreateImplicit(ASTContext &Ctx, Id
   return A;
 }
 
-ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::Create(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo) {
+ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::Create(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCBridgeRelatedAttr(Ctx, CommonInfo, RelatedClass, ClassMethod, InstanceMethod);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, SourceRange Range, Spelling S) {
+ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_bridge_related:
@@ -30932,7 +32877,7 @@ ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::CreateImplicit(ASTContext &Ctx, Id
   return CreateImplicit(Ctx, RelatedClass, ClassMethod, InstanceMethod, I);
 }
 
-ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::Create(ASTContext &Ctx, IdentifierInfo * RelatedClass, IdentifierInfo * ClassMethod, IdentifierInfo * InstanceMethod, SourceRange Range, Spelling S) {
+ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::Create(ASTContext &Ctx, const IdentifierInfo * RelatedClass, const IdentifierInfo * ClassMethod, const IdentifierInfo * InstanceMethod, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_bridge_related:
@@ -30950,9 +32895,9 @@ ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::Create(ASTContext &Ctx, Identifier
 }
 
 ObjCBridgeRelatedAttr::ObjCBridgeRelatedAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * RelatedClass
-              , IdentifierInfo * ClassMethod
-              , IdentifierInfo * InstanceMethod
+              , const IdentifierInfo * RelatedClass
+              , const IdentifierInfo * ClassMethod
+              , const IdentifierInfo * InstanceMethod
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCBridgeRelated, /*IsLateParsed=*/false, false)
               , relatedClass(RelatedClass)
@@ -30966,6 +32911,16 @@ ObjCBridgeRelatedAttr::ObjCBridgeRelatedAttr(ASTContext &Ctx, const AttributeCom
 
 
 
+
+bool ObjCBridgeRelatedAttr::isEquivalent(const ObjCBridgeRelatedAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getRelatedClass(), Other.getRelatedClass(), Context))
+    return false;
+  if (!equalAttrArgs(getClassMethod(), Other.getClassMethod(), Context))
+    return false;
+  if (!equalAttrArgs(getInstanceMethod(), Other.getInstanceMethod(), Context))
+    return false;
+  return true;
+}
 
 ObjCBridgeRelatedAttr *ObjCBridgeRelatedAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCBridgeRelatedAttr(C, *this, relatedClass, classMethod, instanceMethod);
@@ -31096,6 +33051,10 @@ ObjCClassStubAttr::ObjCClassStubAttr(ASTContext &Ctx, const AttributeCommonInfo 
   {
 }
 
+bool ObjCClassStubAttr::isEquivalent(const ObjCClassStubAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCClassStubAttr *ObjCClassStubAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCClassStubAttr(C, *this);
   A->Inherited = Inherited;
@@ -31199,6 +33158,10 @@ ObjCDesignatedInitializerAttr::ObjCDesignatedInitializerAttr(ASTContext &Ctx, co
              )
   : Attr(Ctx, CommonInfo, attr::ObjCDesignatedInitializer, /*IsLateParsed=*/false)
   {
+}
+
+bool ObjCDesignatedInitializerAttr::isEquivalent(const ObjCDesignatedInitializerAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCDesignatedInitializerAttr *ObjCDesignatedInitializerAttr::clone(ASTContext &C) const {
@@ -31306,6 +33269,10 @@ ObjCDirectAttr::ObjCDirectAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool ObjCDirectAttr::isEquivalent(const ObjCDirectAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCDirectAttr *ObjCDirectAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCDirectAttr(C, *this);
   A->Inherited = Inherited;
@@ -31409,6 +33376,10 @@ ObjCDirectMembersAttr::ObjCDirectMembersAttr(ASTContext &Ctx, const AttributeCom
              )
   : Attr(Ctx, CommonInfo, attr::ObjCDirectMembers, /*IsLateParsed=*/false)
   {
+}
+
+bool ObjCDirectMembersAttr::isEquivalent(const ObjCDirectMembersAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCDirectMembersAttr *ObjCDirectMembersAttr::clone(ASTContext &C) const {
@@ -31516,6 +33487,10 @@ ObjCExceptionAttr::ObjCExceptionAttr(ASTContext &Ctx, const AttributeCommonInfo 
   {
 }
 
+bool ObjCExceptionAttr::isEquivalent(const ObjCExceptionAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCExceptionAttr *ObjCExceptionAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCExceptionAttr(C, *this);
   A->Inherited = Inherited;
@@ -31619,6 +33594,10 @@ ObjCExplicitProtocolImplAttr::ObjCExplicitProtocolImplAttr(ASTContext &Ctx, cons
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCExplicitProtocolImpl, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ObjCExplicitProtocolImplAttr::isEquivalent(const ObjCExplicitProtocolImplAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCExplicitProtocolImplAttr *ObjCExplicitProtocolImplAttr::clone(ASTContext &C) const {
@@ -31726,6 +33705,10 @@ ObjCExternallyRetainedAttr::ObjCExternallyRetainedAttr(ASTContext &Ctx, const At
   {
 }
 
+bool ObjCExternallyRetainedAttr::isEquivalent(const ObjCExternallyRetainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCExternallyRetainedAttr *ObjCExternallyRetainedAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCExternallyRetainedAttr(C, *this);
   A->Inherited = Inherited;
@@ -31776,7 +33759,7 @@ const char *ObjCExternallyRetainedAttr::getSpelling() const {
 
 // ObjCGCAttr implementation
 
-ObjCGCAttr *ObjCGCAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
+ObjCGCAttr *ObjCGCAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCGCAttr(Ctx, CommonInfo, Kind);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -31784,14 +33767,14 @@ ObjCGCAttr *ObjCGCAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, c
   return A;
 }
 
-ObjCGCAttr *ObjCGCAttr::Create(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
+ObjCGCAttr *ObjCGCAttr::Create(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCGCAttr(Ctx, CommonInfo, Kind);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ObjCGCAttr *ObjCGCAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range, Spelling S) {
+ObjCGCAttr *ObjCGCAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_gc:
@@ -31808,7 +33791,7 @@ ObjCGCAttr *ObjCGCAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, S
   return CreateImplicit(Ctx, Kind, I);
 }
 
-ObjCGCAttr *ObjCGCAttr::Create(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range, Spelling S) {
+ObjCGCAttr *ObjCGCAttr::Create(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_gc:
@@ -31826,7 +33809,7 @@ ObjCGCAttr *ObjCGCAttr::Create(ASTContext &Ctx, IdentifierInfo * Kind, SourceRan
 }
 
 ObjCGCAttr::ObjCGCAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Kind
+              , const IdentifierInfo * Kind
              )
   : TypeAttr(Ctx, CommonInfo, attr::ObjCGC, /*IsLateParsed=*/false)
               , kind(Kind)
@@ -31834,6 +33817,12 @@ ObjCGCAttr::ObjCGCAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool ObjCGCAttr::isEquivalent(const ObjCGCAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKind(), Other.getKind(), Context))
+    return false;
+  return true;
+}
 
 ObjCGCAttr *ObjCGCAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCGCAttr(C, *this, kind);
@@ -31952,6 +33941,10 @@ ObjCIndependentClassAttr::ObjCIndependentClassAttr(ASTContext &Ctx, const Attrib
   {
 }
 
+bool ObjCIndependentClassAttr::isEquivalent(const ObjCIndependentClassAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCIndependentClassAttr *ObjCIndependentClassAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCIndependentClassAttr(C, *this);
   A->Inherited = Inherited;
@@ -32033,6 +34026,10 @@ ObjCInertUnsafeUnretainedAttr::ObjCInertUnsafeUnretainedAttr(ASTContext &Ctx, co
   {
 }
 
+bool ObjCInertUnsafeUnretainedAttr::isEquivalent(const ObjCInertUnsafeUnretainedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCInertUnsafeUnretainedAttr *ObjCInertUnsafeUnretainedAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCInertUnsafeUnretainedAttr(C, *this);
   A->Inherited = Inherited;
@@ -32098,6 +34095,10 @@ ObjCKindOfAttr::ObjCKindOfAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : TypeAttr(Ctx, CommonInfo, attr::ObjCKindOf, /*IsLateParsed=*/false)
   {
+}
+
+bool ObjCKindOfAttr::isEquivalent(const ObjCKindOfAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCKindOfAttr *ObjCKindOfAttr::clone(ASTContext &C) const {
@@ -32222,6 +34223,12 @@ const char *ObjCMethodFamilyAttr::ConvertFamilyKindToStr(ObjCMethodFamilyAttr::F
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ObjCMethodFamilyAttr::isEquivalent(const ObjCMethodFamilyAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getFamily(), Other.getFamily(), Context))
+    return false;
+  return true;
+}
+
 ObjCMethodFamilyAttr *ObjCMethodFamilyAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCMethodFamilyAttr(C, *this, family);
   A->Inherited = Inherited;
@@ -32339,6 +34346,10 @@ ObjCNSObjectAttr::ObjCNSObjectAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool ObjCNSObjectAttr::isEquivalent(const ObjCNSObjectAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCNSObjectAttr *ObjCNSObjectAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCNSObjectAttr(C, *this);
   A->Inherited = Inherited;
@@ -32442,6 +34453,10 @@ ObjCNonLazyClassAttr::ObjCNonLazyClassAttr(ASTContext &Ctx, const AttributeCommo
              )
   : Attr(Ctx, CommonInfo, attr::ObjCNonLazyClass, /*IsLateParsed=*/false)
   {
+}
+
+bool ObjCNonLazyClassAttr::isEquivalent(const ObjCNonLazyClassAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCNonLazyClassAttr *ObjCNonLazyClassAttr::clone(ASTContext &C) const {
@@ -32549,6 +34564,10 @@ ObjCNonRuntimeProtocolAttr::ObjCNonRuntimeProtocolAttr(ASTContext &Ctx, const At
   {
 }
 
+bool ObjCNonRuntimeProtocolAttr::isEquivalent(const ObjCNonRuntimeProtocolAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCNonRuntimeProtocolAttr *ObjCNonRuntimeProtocolAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCNonRuntimeProtocolAttr(C, *this);
   A->Inherited = Inherited;
@@ -32599,7 +34618,7 @@ const char *ObjCNonRuntimeProtocolAttr::getSpelling() const {
 
 // ObjCOwnershipAttr implementation
 
-ObjCOwnershipAttr *ObjCOwnershipAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
+ObjCOwnershipAttr *ObjCOwnershipAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCOwnershipAttr(Ctx, CommonInfo, Kind);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -32607,14 +34626,14 @@ ObjCOwnershipAttr *ObjCOwnershipAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return A;
 }
 
-ObjCOwnershipAttr *ObjCOwnershipAttr::Create(ASTContext &Ctx, IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
+ObjCOwnershipAttr *ObjCOwnershipAttr::Create(ASTContext &Ctx, const IdentifierInfo * Kind, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) ObjCOwnershipAttr(Ctx, CommonInfo, Kind);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-ObjCOwnershipAttr *ObjCOwnershipAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range, Spelling S) {
+ObjCOwnershipAttr *ObjCOwnershipAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_ownership:
@@ -32631,7 +34650,7 @@ ObjCOwnershipAttr *ObjCOwnershipAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return CreateImplicit(Ctx, Kind, I);
 }
 
-ObjCOwnershipAttr *ObjCOwnershipAttr::Create(ASTContext &Ctx, IdentifierInfo * Kind, SourceRange Range, Spelling S) {
+ObjCOwnershipAttr *ObjCOwnershipAttr::Create(ASTContext &Ctx, const IdentifierInfo * Kind, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_objc_ownership:
@@ -32649,7 +34668,7 @@ ObjCOwnershipAttr *ObjCOwnershipAttr::Create(ASTContext &Ctx, IdentifierInfo * K
 }
 
 ObjCOwnershipAttr::ObjCOwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Kind
+              , const IdentifierInfo * Kind
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCOwnership, /*IsLateParsed=*/false, false)
               , kind(Kind)
@@ -32657,6 +34676,12 @@ ObjCOwnershipAttr::ObjCOwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool ObjCOwnershipAttr::isEquivalent(const ObjCOwnershipAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKind(), Other.getKind(), Context))
+    return false;
+  return true;
+}
 
 ObjCOwnershipAttr *ObjCOwnershipAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCOwnershipAttr(C, *this, kind);
@@ -32775,6 +34800,10 @@ ObjCPreciseLifetimeAttr::ObjCPreciseLifetimeAttr(ASTContext &Ctx, const Attribut
   {
 }
 
+bool ObjCPreciseLifetimeAttr::isEquivalent(const ObjCPreciseLifetimeAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCPreciseLifetimeAttr *ObjCPreciseLifetimeAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCPreciseLifetimeAttr(C, *this);
   A->Inherited = Inherited;
@@ -32878,6 +34907,10 @@ ObjCRequiresPropertyDefsAttr::ObjCRequiresPropertyDefsAttr(ASTContext &Ctx, cons
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCRequiresPropertyDefs, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ObjCRequiresPropertyDefsAttr::isEquivalent(const ObjCRequiresPropertyDefsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCRequiresPropertyDefsAttr *ObjCRequiresPropertyDefsAttr::clone(ASTContext &C) const {
@@ -32985,6 +35018,10 @@ ObjCRequiresSuperAttr::ObjCRequiresSuperAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool ObjCRequiresSuperAttr::isEquivalent(const ObjCRequiresSuperAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCRequiresSuperAttr *ObjCRequiresSuperAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCRequiresSuperAttr(C, *this);
   A->Inherited = Inherited;
@@ -33090,6 +35127,10 @@ ObjCReturnsInnerPointerAttr::ObjCReturnsInnerPointerAttr(ASTContext &Ctx, const 
   {
 }
 
+bool ObjCReturnsInnerPointerAttr::isEquivalent(const ObjCReturnsInnerPointerAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCReturnsInnerPointerAttr *ObjCReturnsInnerPointerAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCReturnsInnerPointerAttr(C, *this);
   A->Inherited = Inherited;
@@ -33193,6 +35234,10 @@ ObjCRootClassAttr::ObjCRootClassAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ObjCRootClass, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ObjCRootClassAttr::isEquivalent(const ObjCRootClassAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ObjCRootClassAttr *ObjCRootClassAttr::clone(ASTContext &C) const {
@@ -33305,6 +35350,12 @@ ObjCRuntimeNameAttr::ObjCRuntimeNameAttr(ASTContext &Ctx, const AttributeCommonI
 }
 
 
+
+bool ObjCRuntimeNameAttr::isEquivalent(const ObjCRuntimeNameAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMetadataName(), Other.getMetadataName(), Context))
+    return false;
+  return true;
+}
 
 ObjCRuntimeNameAttr *ObjCRuntimeNameAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCRuntimeNameAttr(C, *this, getMetadataName());
@@ -33423,6 +35474,10 @@ ObjCRuntimeVisibleAttr::ObjCRuntimeVisibleAttr(ASTContext &Ctx, const AttributeC
   {
 }
 
+bool ObjCRuntimeVisibleAttr::isEquivalent(const ObjCRuntimeVisibleAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCRuntimeVisibleAttr *ObjCRuntimeVisibleAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCRuntimeVisibleAttr(C, *this);
   A->Inherited = Inherited;
@@ -33528,6 +35583,10 @@ ObjCSubclassingRestrictedAttr::ObjCSubclassingRestrictedAttr(ASTContext &Ctx, co
   {
 }
 
+bool ObjCSubclassingRestrictedAttr::isEquivalent(const ObjCSubclassingRestrictedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ObjCSubclassingRestrictedAttr *ObjCSubclassingRestrictedAttr::clone(ASTContext &C) const {
   auto *A = new (C) ObjCSubclassingRestrictedAttr(C, *this);
   A->Inherited = Inherited;
@@ -33609,6 +35668,10 @@ OpenACCRoutineAnnotAttr::OpenACCRoutineAnnotAttr(ASTContext &Ctx, const Attribut
   {
 }
 
+bool OpenACCRoutineAnnotAttr::isEquivalent(const OpenACCRoutineAnnotAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OpenACCRoutineAnnotAttr *OpenACCRoutineAnnotAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenACCRoutineAnnotAttr(C, *this);
   A->Inherited = Inherited;
@@ -33656,6 +35719,10 @@ OpenACCRoutineDeclAttr::OpenACCRoutineDeclAttr(ASTContext &Ctx, const AttributeC
              )
   : InheritableAttr(Ctx, CommonInfo, attr::OpenACCRoutineDecl, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OpenACCRoutineDeclAttr::isEquivalent(const OpenACCRoutineDeclAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OpenACCRoutineDeclAttr *OpenACCRoutineDeclAttr::clone(ASTContext &C) const {
@@ -33758,6 +35825,12 @@ OpenCLAccessAttr::Spelling OpenCLAccessAttr::getSemanticSpelling() const {
     case 5: return Keyword_read_write;
   }
 }
+bool OpenCLAccessAttr::isEquivalent(const OpenCLAccessAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 OpenCLAccessAttr *OpenCLAccessAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLAccessAttr(C, *this);
   A->Inherited = Inherited;
@@ -33896,6 +35969,12 @@ OpenCLConstantAddressSpaceAttr::Spelling OpenCLConstantAddressSpaceAttr::getSema
     case 4: return C23_clang_opencl_constant;
   }
 }
+bool OpenCLConstantAddressSpaceAttr::isEquivalent(const OpenCLConstantAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 OpenCLConstantAddressSpaceAttr *OpenCLConstantAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLConstantAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34027,6 +36106,12 @@ OpenCLGenericAddressSpaceAttr::Spelling OpenCLGenericAddressSpaceAttr::getSemant
     case 4: return C23_clang_opencl_generic;
   }
 }
+bool OpenCLGenericAddressSpaceAttr::isEquivalent(const OpenCLGenericAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 OpenCLGenericAddressSpaceAttr *OpenCLGenericAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLGenericAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34158,6 +36243,12 @@ OpenCLGlobalAddressSpaceAttr::Spelling OpenCLGlobalAddressSpaceAttr::getSemantic
     case 4: return C23_clang_opencl_global;
   }
 }
+bool OpenCLGlobalAddressSpaceAttr::isEquivalent(const OpenCLGlobalAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 OpenCLGlobalAddressSpaceAttr *OpenCLGlobalAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLGlobalAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34277,6 +36368,10 @@ OpenCLGlobalDeviceAddressSpaceAttr::OpenCLGlobalDeviceAddressSpaceAttr(ASTContex
   {
 }
 
+bool OpenCLGlobalDeviceAddressSpaceAttr::isEquivalent(const OpenCLGlobalDeviceAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OpenCLGlobalDeviceAddressSpaceAttr *OpenCLGlobalDeviceAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLGlobalDeviceAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34382,6 +36477,10 @@ OpenCLGlobalHostAddressSpaceAttr::OpenCLGlobalHostAddressSpaceAttr(ASTContext &C
   {
 }
 
+bool OpenCLGlobalHostAddressSpaceAttr::isEquivalent(const OpenCLGlobalHostAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OpenCLGlobalHostAddressSpaceAttr *OpenCLGlobalHostAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLGlobalHostAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34466,6 +36565,12 @@ OpenCLIntelReqdSubGroupSizeAttr::OpenCLIntelReqdSubGroupSizeAttr(ASTContext &Ctx
 }
 
 
+
+bool OpenCLIntelReqdSubGroupSizeAttr::isEquivalent(const OpenCLIntelReqdSubGroupSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSubGroupSize(), Other.getSubGroupSize(), Context))
+    return false;
+  return true;
+}
 
 OpenCLIntelReqdSubGroupSizeAttr *OpenCLIntelReqdSubGroupSizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLIntelReqdSubGroupSizeAttr(C, *this, subGroupSize);
@@ -34574,6 +36679,12 @@ OpenCLLocalAddressSpaceAttr::Spelling OpenCLLocalAddressSpaceAttr::getSemanticSp
     case 4: return C23_clang_opencl_local;
   }
 }
+bool OpenCLLocalAddressSpaceAttr::isEquivalent(const OpenCLLocalAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 OpenCLLocalAddressSpaceAttr *OpenCLLocalAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLLocalAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34705,6 +36816,12 @@ OpenCLPrivateAddressSpaceAttr::Spelling OpenCLPrivateAddressSpaceAttr::getSemant
     case 4: return C23_clang_opencl_private;
   }
 }
+bool OpenCLPrivateAddressSpaceAttr::isEquivalent(const OpenCLPrivateAddressSpaceAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 OpenCLPrivateAddressSpaceAttr *OpenCLPrivateAddressSpaceAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLPrivateAddressSpaceAttr(C, *this);
   A->Inherited = Inherited;
@@ -34811,6 +36928,12 @@ OpenCLUnrollHintAttr::OpenCLUnrollHintAttr(ASTContext &Ctx, const AttributeCommo
 
 
 
+bool OpenCLUnrollHintAttr::isEquivalent(const OpenCLUnrollHintAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getUnrollHint(), Other.getUnrollHint(), Context))
+    return false;
+  return true;
+}
+
 OpenCLUnrollHintAttr *OpenCLUnrollHintAttr::clone(ASTContext &C) const {
   auto *A = new (C) OpenCLUnrollHintAttr(C, *this, unrollHint);
   A->Inherited = Inherited;
@@ -34904,6 +37027,10 @@ OptimizeNoneAttr::OptimizeNoneAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::OptimizeNone, /*IsLateParsed=*/false, false)
   {
+}
+
+bool OptimizeNoneAttr::isEquivalent(const OptimizeNoneAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 OptimizeNoneAttr *OptimizeNoneAttr::clone(ASTContext &C) const {
@@ -35011,6 +37138,10 @@ OverloadableAttr::OverloadableAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool OverloadableAttr::isEquivalent(const OverloadableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OverloadableAttr *OverloadableAttr::clone(ASTContext &C) const {
   auto *A = new (C) OverloadableAttr(C, *this);
   A->Inherited = Inherited;
@@ -35092,6 +37223,10 @@ OverrideAttr::OverrideAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool OverrideAttr::isEquivalent(const OverrideAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 OverrideAttr *OverrideAttr::clone(ASTContext &C) const {
   auto *A = new (C) OverrideAttr(C, *this);
   A->Inherited = Inherited;
@@ -35170,6 +37305,12 @@ OwnerAttr::OwnerAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool OwnerAttr::isEquivalent(const OwnerAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getDerefType(), Other.getDerefType(), Context))
+    return false;
+  return true;
+}
+
 OwnerAttr *OwnerAttr::clone(ASTContext &C) const {
   auto *A = new (C) OwnerAttr(C, *this, derefType);
   A->Inherited = Inherited;
@@ -35214,7 +37355,7 @@ const char *OwnerAttr::getSpelling() const {
 
 // OwnershipAttr implementation
 
-OwnershipAttr *OwnershipAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
+OwnershipAttr *OwnershipAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) OwnershipAttr(Ctx, CommonInfo, Module, Args, ArgsSize);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -35222,12 +37363,12 @@ OwnershipAttr *OwnershipAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * M
   return A;
 }
 
-OwnershipAttr *OwnershipAttr::Create(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
+OwnershipAttr *OwnershipAttr::Create(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) OwnershipAttr(Ctx, CommonInfo, Module, Args, ArgsSize);
   return A;
 }
 
-OwnershipAttr *OwnershipAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range, Spelling S) {
+OwnershipAttr *OwnershipAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_ownership_holds:
@@ -35256,7 +37397,7 @@ OwnershipAttr *OwnershipAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * M
   return CreateImplicit(Ctx, Module, Args, ArgsSize, I);
 }
 
-OwnershipAttr *OwnershipAttr::Create(ASTContext &Ctx, IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range, Spelling S) {
+OwnershipAttr *OwnershipAttr::Create(ASTContext &Ctx, const IdentifierInfo * Module, ParamIdx *Args, unsigned ArgsSize, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_ownership_holds:
@@ -35286,7 +37427,7 @@ OwnershipAttr *OwnershipAttr::Create(ASTContext &Ctx, IdentifierInfo * Module, P
 }
 
 OwnershipAttr::OwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Module
+              , const IdentifierInfo * Module
               , ParamIdx *Args, unsigned ArgsSize
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Ownership, /*IsLateParsed=*/false, false)
@@ -35297,7 +37438,7 @@ OwnershipAttr::OwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 OwnershipAttr::OwnershipAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * Module
+              , const IdentifierInfo * Module
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Ownership, /*IsLateParsed=*/false, false)
               , module(Module)
@@ -35322,6 +37463,16 @@ OwnershipAttr::Spelling OwnershipAttr::getSemanticSpelling() const {
 
 
 
+
+bool OwnershipAttr::isEquivalent(const OwnershipAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getModule(), Other.getModule(), Context))
+    return false;
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
 
 OwnershipAttr *OwnershipAttr::clone(ASTContext &C) const {
   auto *A = new (C) OwnershipAttr(C, *this, module, args_, args_Size);
@@ -35560,6 +37711,10 @@ PackedAttr::PackedAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool PackedAttr::isEquivalent(const PackedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 PackedAttr *PackedAttr::clone(ASTContext &C) const {
   auto *A = new (C) PackedAttr(C, *this);
   A->Inherited = Inherited;
@@ -35686,6 +37841,12 @@ const char *ParamTypestateAttr::ConvertConsumedStateToStr(ParamTypestateAttr::Co
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ParamTypestateAttr::isEquivalent(const ParamTypestateAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getParamState(), Other.getParamState(), Context))
+    return false;
+  return true;
+}
+
 ParamTypestateAttr *ParamTypestateAttr::clone(ASTContext &C) const {
   auto *A = new (C) ParamTypestateAttr(C, *this, paramState);
   A->Inherited = Inherited;
@@ -35794,6 +37955,10 @@ PascalAttr::PascalAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Pascal, /*IsLateParsed=*/false, false)
   {
+}
+
+bool PascalAttr::isEquivalent(const PascalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 PascalAttr *PascalAttr::clone(ASTContext &C) const {
@@ -35939,6 +38104,14 @@ PassObjectSizeAttr::Spelling PassObjectSizeAttr::getSemanticSpelling() const {
   }
 }
 
+
+bool PassObjectSizeAttr::isEquivalent(const PassObjectSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  return true;
+}
 
 PassObjectSizeAttr *PassObjectSizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) PassObjectSizeAttr(C, *this, type);
@@ -36114,6 +38287,16 @@ PatchableFunctionEntryAttr::PatchableFunctionEntryAttr(ASTContext &Ctx, const At
 
 
 
+bool PatchableFunctionEntryAttr::isEquivalent(const PatchableFunctionEntryAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getCount(), Other.getCount(), Context))
+    return false;
+  if (!equalAttrArgs(getOffset(), Other.getOffset(), Context))
+    return false;
+  if (!equalAttrArgs(getSection(), Other.getSection(), Context))
+    return false;
+  return true;
+}
+
 PatchableFunctionEntryAttr *PatchableFunctionEntryAttr::clone(ASTContext &C) const {
   auto *A = new (C) PatchableFunctionEntryAttr(C, *this, count, offset, getSection());
   A->Inherited = Inherited;
@@ -36266,6 +38449,12 @@ const char *PcsAttr::ConvertPCSTypeToStr(PcsAttr::PCSType Val) {
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool PcsAttr::isEquivalent(const PcsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getPCS(), Other.getPCS(), Context))
+    return false;
+  return true;
+}
+
 PcsAttr *PcsAttr::clone(ASTContext &C) const {
   auto *A = new (C) PcsAttr(C, *this, pCS);
   A->Inherited = Inherited;
@@ -36370,6 +38559,12 @@ PointerAttr::PointerAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+bool PointerAttr::isEquivalent(const PointerAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getDerefType(), Other.getDerefType(), Context))
+    return false;
+  return true;
+}
+
 PointerAttr *PointerAttr::clone(ASTContext &C) const {
   auto *A = new (C) PointerAttr(C, *this, derefType);
   A->Inherited = Inherited;
@@ -36467,6 +38662,16 @@ PointerAuthAttr::PointerAuthAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 
 
 
+bool PointerAuthAttr::isEquivalent(const PointerAuthAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKey(), Other.getKey(), Context))
+    return false;
+  if (!equalAttrArgs(getAddressDiscriminated(), Other.getAddressDiscriminated(), Context))
+    return false;
+  if (!equalAttrArgs(getExtraDiscriminator(), Other.getExtraDiscriminator(), Context))
+    return false;
+  return true;
+}
+
 PointerAuthAttr *PointerAuthAttr::clone(ASTContext &C) const {
   auto *A = new (C) PointerAuthAttr(C, *this, key, addressDiscriminated, extraDiscriminator);
   A->Inherited = Inherited;
@@ -36548,6 +38753,12 @@ PragmaClangBSSSectionAttr::PragmaClangBSSSectionAttr(ASTContext &Ctx, const Attr
 
 
 
+bool PragmaClangBSSSectionAttr::isEquivalent(const PragmaClangBSSSectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
+
 PragmaClangBSSSectionAttr *PragmaClangBSSSectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) PragmaClangBSSSectionAttr(C, *this, getName());
   A->Inherited = Inherited;
@@ -36602,6 +38813,12 @@ PragmaClangDataSectionAttr::PragmaClangDataSectionAttr(ASTContext &Ctx, const At
 }
 
 
+
+bool PragmaClangDataSectionAttr::isEquivalent(const PragmaClangDataSectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
 
 PragmaClangDataSectionAttr *PragmaClangDataSectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) PragmaClangDataSectionAttr(C, *this, getName());
@@ -36658,6 +38875,12 @@ PragmaClangRelroSectionAttr::PragmaClangRelroSectionAttr(ASTContext &Ctx, const 
 
 
 
+bool PragmaClangRelroSectionAttr::isEquivalent(const PragmaClangRelroSectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
+
 PragmaClangRelroSectionAttr *PragmaClangRelroSectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) PragmaClangRelroSectionAttr(C, *this, getName());
   A->Inherited = Inherited;
@@ -36713,6 +38936,12 @@ PragmaClangRodataSectionAttr::PragmaClangRodataSectionAttr(ASTContext &Ctx, cons
 
 
 
+bool PragmaClangRodataSectionAttr::isEquivalent(const PragmaClangRodataSectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
+
 PragmaClangRodataSectionAttr *PragmaClangRodataSectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) PragmaClangRodataSectionAttr(C, *this, getName());
   A->Inherited = Inherited;
@@ -36767,6 +38996,12 @@ PragmaClangTextSectionAttr::PragmaClangTextSectionAttr(ASTContext &Ctx, const At
 }
 
 
+
+bool PragmaClangTextSectionAttr::isEquivalent(const PragmaClangTextSectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
 
 PragmaClangTextSectionAttr *PragmaClangTextSectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) PragmaClangTextSectionAttr(C, *this, getName());
@@ -36840,6 +39075,12 @@ PreferredNameAttr::PreferredNameAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool PreferredNameAttr::isEquivalent(const PreferredNameAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getTypedefType(), Other.getTypedefType(), Context))
+    return false;
+  return true;
+}
 
 PreferredNameAttr *PreferredNameAttr::clone(ASTContext &C) const {
   auto *A = new (C) PreferredNameAttr(C, *this, typedefType);
@@ -36957,6 +39198,12 @@ PreferredTypeAttr::PreferredTypeAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool PreferredTypeAttr::isEquivalent(const PreferredTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getType(), Other.getType(), Context))
+    return false;
+  return true;
+}
 
 PreferredTypeAttr *PreferredTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) PreferredTypeAttr(C, *this, type);
@@ -37087,6 +39334,10 @@ PreserveAllAttr::PreserveAllAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool PreserveAllAttr::isEquivalent(const PreserveAllAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 PreserveAllAttr *PreserveAllAttr::clone(ASTContext &C) const {
   auto *A = new (C) PreserveAllAttr(C, *this);
   A->Inherited = Inherited;
@@ -37190,6 +39441,10 @@ PreserveMostAttr::PreserveMostAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::PreserveMost, /*IsLateParsed=*/false, false)
   {
+}
+
+bool PreserveMostAttr::isEquivalent(const PreserveMostAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 PreserveMostAttr *PreserveMostAttr::clone(ASTContext &C) const {
@@ -37297,6 +39552,10 @@ PreserveNoneAttr::PreserveNoneAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool PreserveNoneAttr::isEquivalent(const PreserveNoneAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 PreserveNoneAttr *PreserveNoneAttr::clone(ASTContext &C) const {
   auto *A = new (C) PreserveNoneAttr(C, *this);
   A->Inherited = Inherited;
@@ -37381,6 +39640,12 @@ PtGuardedByAttr::PtGuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool PtGuardedByAttr::isEquivalent(const PtGuardedByAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getArg(), Other.getArg(), Context))
+    return false;
+  return true;
+}
 
 PtGuardedByAttr *PtGuardedByAttr::clone(ASTContext &C) const {
   auto *A = new (C) PtGuardedByAttr(C, *this, arg);
@@ -37475,6 +39740,10 @@ PtGuardedVarAttr::PtGuardedVarAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool PtGuardedVarAttr::isEquivalent(const PtGuardedVarAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 PtGuardedVarAttr *PtGuardedVarAttr::clone(ASTContext &C) const {
   auto *A = new (C) PtGuardedVarAttr(C, *this);
   A->Inherited = Inherited;
@@ -37549,6 +39818,10 @@ Ptr32Attr::Ptr32Attr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool Ptr32Attr::isEquivalent(const Ptr32Attr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 Ptr32Attr *Ptr32Attr::clone(ASTContext &C) const {
   auto *A = new (C) Ptr32Attr(C, *this);
   A->Inherited = Inherited;
@@ -37614,6 +39887,10 @@ Ptr64Attr::Ptr64Attr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : TypeAttr(Ctx, CommonInfo, attr::Ptr64, /*IsLateParsed=*/false)
   {
+}
+
+bool Ptr64Attr::isEquivalent(const Ptr64Attr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 Ptr64Attr *Ptr64Attr::clone(ASTContext &C) const {
@@ -37705,6 +39982,10 @@ PureAttr::PureAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Pure, /*IsLateParsed=*/false, false)
   {
+}
+
+bool PureAttr::isEquivalent(const PureAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 PureAttr *PureAttr::clone(ASTContext &C) const {
@@ -37853,6 +40134,12 @@ const char *RISCVInterruptAttr::ConvertInterruptTypeToStr(RISCVInterruptAttr::In
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool RISCVInterruptAttr::isEquivalent(const RISCVInterruptAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(interrupt_begin(), interrupt_end(), Other.interrupt_begin(), Other.interrupt_end(), Context))
+    return false;
+  return true;
+}
+
 RISCVInterruptAttr *RISCVInterruptAttr::clone(ASTContext &C) const {
   auto *A = new (C) RISCVInterruptAttr(C, *this, interrupt_, interrupt_Size);
   A->Inherited = Inherited;
@@ -38009,6 +40296,14 @@ RISCVVLSCCAttr::Spelling RISCVVLSCCAttr::getSemanticSpelling() const {
 }
 
 
+bool RISCVVLSCCAttr::isEquivalent(const RISCVVLSCCAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getVectorWidth(), Other.getVectorWidth(), Context))
+    return false;
+  return true;
+}
+
 RISCVVLSCCAttr *RISCVVLSCCAttr::clone(ASTContext &C) const {
   auto *A = new (C) RISCVVLSCCAttr(C, *this, vectorWidth);
   A->Inherited = Inherited;
@@ -38164,6 +40459,12 @@ RISCVVectorCCAttr::Spelling RISCVVectorCCAttr::getSemanticSpelling() const {
     case 4: return C23_clang_riscv_vector_cc;
   }
 }
+bool RISCVVectorCCAttr::isEquivalent(const RISCVVectorCCAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 RISCVVectorCCAttr *RISCVVectorCCAttr::clone(ASTContext &C) const {
   auto *A = new (C) RISCVVectorCCAttr(C, *this);
   A->Inherited = Inherited;
@@ -38283,6 +40584,10 @@ RandomizeLayoutAttr::RandomizeLayoutAttr(ASTContext &Ctx, const AttributeCommonI
   {
 }
 
+bool RandomizeLayoutAttr::isEquivalent(const RandomizeLayoutAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 RandomizeLayoutAttr *RandomizeLayoutAttr::clone(ASTContext &C) const {
   auto *A = new (C) RandomizeLayoutAttr(C, *this);
   A->Inherited = Inherited;
@@ -38388,6 +40693,10 @@ ReadOnlyPlacementAttr::ReadOnlyPlacementAttr(ASTContext &Ctx, const AttributeCom
   {
 }
 
+bool ReadOnlyPlacementAttr::isEquivalent(const ReadOnlyPlacementAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ReadOnlyPlacementAttr *ReadOnlyPlacementAttr::clone(ASTContext &C) const {
   auto *A = new (C) ReadOnlyPlacementAttr(C, *this);
   A->Inherited = Inherited;
@@ -38491,6 +40800,10 @@ ReentrantCapabilityAttr::ReentrantCapabilityAttr(ASTContext &Ctx, const Attribut
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ReentrantCapability, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ReentrantCapabilityAttr::isEquivalent(const ReentrantCapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ReentrantCapabilityAttr *ReentrantCapabilityAttr::clone(ASTContext &C) const {
@@ -38602,6 +40915,10 @@ RegCallAttr::RegCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool RegCallAttr::isEquivalent(const RegCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 RegCallAttr *RegCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) RegCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -38708,6 +41025,10 @@ ReinitializesAttr::ReinitializesAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Reinitializes, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ReinitializesAttr::isEquivalent(const ReinitializesAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ReinitializesAttr *ReinitializesAttr::clone(ASTContext &C) const {
@@ -38922,6 +41243,14 @@ ReleaseCapabilityAttr::Spelling ReleaseCapabilityAttr::getSemanticSpelling() con
 }
 
 
+bool ReleaseCapabilityAttr::isEquivalent(const ReleaseCapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
+
 ReleaseCapabilityAttr *ReleaseCapabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) ReleaseCapabilityAttr(C, *this, args_, args_Size);
   A->Inherited = Inherited;
@@ -39133,6 +41462,12 @@ ReleaseHandleAttr::ReleaseHandleAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool ReleaseHandleAttr::isEquivalent(const ReleaseHandleAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getHandleType(), Other.getHandleType(), Context))
+    return false;
+  return true;
+}
+
 ReleaseHandleAttr *ReleaseHandleAttr::clone(ASTContext &C) const {
   auto *A = new (C) ReleaseHandleAttr(C, *this, getHandleType());
   A->Inherited = Inherited;
@@ -39193,73 +41528,6 @@ const char *ReleaseHandleAttr::getSpelling() const {
 }
 
 
-// ReplaceableAttr implementation
-
-ReplaceableAttr *ReplaceableAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) ReplaceableAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-ReplaceableAttr *ReplaceableAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) ReplaceableAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-ReplaceableAttr *ReplaceableAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Keyword, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, I);
-}
-
-ReplaceableAttr *ReplaceableAttr::Create(ASTContext &Ctx, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Keyword, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, I);
-}
-
-ReplaceableAttr::ReplaceableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::Replaceable, /*IsLateParsed=*/false, false)
-  {
-}
-
-ReplaceableAttr *ReplaceableAttr::clone(ASTContext &C) const {
-  auto *A = new (C) ReplaceableAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void ReplaceableAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "replaceable_if_eligible";
-    OS << "";
-    break;
-  }
-}
-}
-
-const char *ReplaceableAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "replaceable_if_eligible";
-  }
-}
-
-
 // ReqdWorkGroupSizeAttr implementation
 
 ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::CreateImplicit(ASTContext &Ctx, Expr * XDim, Expr * YDim, Expr * ZDim, const AttributeCommonInfo &CommonInfo) {
@@ -39304,6 +41572,16 @@ ReqdWorkGroupSizeAttr::ReqdWorkGroupSizeAttr(ASTContext &Ctx, const AttributeCom
 
 
 
+
+bool ReqdWorkGroupSizeAttr::isEquivalent(const ReqdWorkGroupSizeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getXDim(), Other.getXDim(), Context))
+    return false;
+  if (!equalAttrArgs(getYDim(), Other.getYDim(), Context))
+    return false;
+  if (!equalAttrArgs(getZDim(), Other.getZDim(), Context))
+    return false;
+  return true;
+}
 
 ReqdWorkGroupSizeAttr *ReqdWorkGroupSizeAttr::clone(ASTContext &C) const {
   auto *A = new (C) ReqdWorkGroupSizeAttr(C, *this, xDim, yDim, zDim);
@@ -39523,6 +41801,14 @@ RequiresCapabilityAttr::Spelling RequiresCapabilityAttr::getSemanticSpelling() c
   }
 }
 
+
+bool RequiresCapabilityAttr::isEquivalent(const RequiresCapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
 
 RequiresCapabilityAttr *RequiresCapabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) RequiresCapabilityAttr(C, *this, args_, args_Size);
@@ -39756,6 +42042,16 @@ RestrictAttr::Spelling RestrictAttr::getSemanticSpelling() const {
 
 
 
+bool RestrictAttr::isEquivalent(const RestrictAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getDeallocator(), Other.getDeallocator(), Context))
+    return false;
+  if (!equalAttrArgs(getDeallocatorPtrArgIndex(), Other.getDeallocatorPtrArgIndex(), Context))
+    return false;
+  return true;
+}
+
 RestrictAttr *RestrictAttr::clone(ASTContext &C) const {
   auto *A = new (C) RestrictAttr(C, *this, deallocator, deallocatorPtrArgIndex);
   A->Inherited = Inherited;
@@ -39932,6 +42228,10 @@ RetainAttr::RetainAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool RetainAttr::isEquivalent(const RetainAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 RetainAttr *RetainAttr::clone(ASTContext &C) const {
   auto *A = new (C) RetainAttr(C, *this);
   A->Inherited = Inherited;
@@ -40058,6 +42358,12 @@ const char *ReturnTypestateAttr::ConvertConsumedStateToStr(ReturnTypestateAttr::
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ReturnTypestateAttr::isEquivalent(const ReturnTypestateAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getState(), Other.getState(), Context))
+    return false;
+  return true;
+}
+
 ReturnTypestateAttr *ReturnTypestateAttr::clone(ASTContext &C) const {
   auto *A = new (C) ReturnTypestateAttr(C, *this, state);
   A->Inherited = Inherited;
@@ -40162,6 +42468,10 @@ ReturnsNonNullAttr::ReturnsNonNullAttr(ASTContext &Ctx, const AttributeCommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ReturnsNonNull, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ReturnsNonNullAttr::isEquivalent(const ReturnsNonNullAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ReturnsNonNullAttr *ReturnsNonNullAttr::clone(ASTContext &C) const {
@@ -40269,6 +42579,10 @@ ReturnsTwiceAttr::ReturnsTwiceAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool ReturnsTwiceAttr::isEquivalent(const ReturnsTwiceAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ReturnsTwiceAttr *ReturnsTwiceAttr::clone(ASTContext &C) const {
   auto *A = new (C) ReturnsTwiceAttr(C, *this);
   A->Inherited = Inherited;
@@ -40319,7 +42633,7 @@ const char *ReturnsTwiceAttr::getSpelling() const {
 
 // RootSignatureAttr implementation
 
-RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo) {
+RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) RootSignatureAttr(Ctx, CommonInfo, SignatureIdent, SignatureDecl);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -40327,24 +42641,24 @@ RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return A;
 }
 
-RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo) {
+RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) RootSignatureAttr(Ctx, CommonInfo, SignatureIdent, SignatureDecl);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range) {
+RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Microsoft, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return CreateImplicit(Ctx, SignatureIdent, SignatureDecl, I);
 }
 
-RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range) {
+RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, HLSLRootSignatureDecl * SignatureDecl, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Microsoft, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return Create(Ctx, SignatureIdent, SignatureDecl, I);
 }
 
-RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo) {
+RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) RootSignatureAttr(Ctx, CommonInfo, SignatureIdent);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -40352,25 +42666,25 @@ RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, Identifier
   return A;
 }
 
-RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo) {
+RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) RootSignatureAttr(Ctx, CommonInfo, SignatureIdent);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * SignatureIdent, SourceRange Range) {
+RootSignatureAttr *RootSignatureAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Microsoft, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return CreateImplicit(Ctx, SignatureIdent, I);
 }
 
-RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, IdentifierInfo * SignatureIdent, SourceRange Range) {
+RootSignatureAttr *RootSignatureAttr::Create(ASTContext &Ctx, const IdentifierInfo * SignatureIdent, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Microsoft, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
   return Create(Ctx, SignatureIdent, I);
 }
 
 RootSignatureAttr::RootSignatureAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * SignatureIdent
+              , const IdentifierInfo * SignatureIdent
               , HLSLRootSignatureDecl * SignatureDecl
              )
   : Attr(Ctx, CommonInfo, attr::RootSignature, /*IsLateParsed=*/false)
@@ -40380,7 +42694,7 @@ RootSignatureAttr::RootSignatureAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 RootSignatureAttr::RootSignatureAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * SignatureIdent
+              , const IdentifierInfo * SignatureIdent
              )
   : Attr(Ctx, CommonInfo, attr::RootSignature, /*IsLateParsed=*/false)
               , signatureIdent(SignatureIdent)
@@ -40391,6 +42705,14 @@ RootSignatureAttr::RootSignatureAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+
+bool RootSignatureAttr::isEquivalent(const RootSignatureAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSignatureIdent(), Other.getSignatureIdent(), Context))
+    return false;
+  if (!equalAttrArgs(getSignatureDecl(), Other.getSignatureDecl(), Context))
+    return false;
+  return true;
+}
 
 RootSignatureAttr *RootSignatureAttr::clone(ASTContext &C) const {
   auto *A = new (C) RootSignatureAttr(C, *this, signatureIdent, signatureDecl);
@@ -40463,6 +42785,10 @@ SPtrAttr::SPtrAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool SPtrAttr::isEquivalent(const SPtrAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 SPtrAttr *SPtrAttr::clone(ASTContext &C) const {
   auto *A = new (C) SPtrAttr(C, *this);
   A->Inherited = Inherited;
@@ -40528,6 +42854,10 @@ SYCLExternalAttr::SYCLExternalAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SYCLExternal, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SYCLExternalAttr::isEquivalent(const SYCLExternalAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SYCLExternalAttr *SYCLExternalAttr::clone(ASTContext &C) const {
@@ -40619,6 +42949,10 @@ SYCLKernelAttr::SYCLKernelAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SYCLKernel, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SYCLKernelAttr::isEquivalent(const SYCLKernelAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SYCLKernelAttr *SYCLKernelAttr::clone(ASTContext &C) const {
@@ -40744,6 +43078,14 @@ SYCLKernelEntryPointAttr::SYCLKernelEntryPointAttr(ASTContext &Ctx, const Attrib
 
 
 
+bool SYCLKernelEntryPointAttr::isEquivalent(const SYCLKernelEntryPointAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKernelName(), Other.getKernelName(), Context))
+    return false;
+  if (!equalAttrArgs(getInvalid(), Other.getInvalid(), Context))
+    return false;
+  return true;
+}
+
 SYCLKernelEntryPointAttr *SYCLKernelEntryPointAttr::clone(ASTContext &C) const {
   auto *A = new (C) SYCLKernelEntryPointAttr(C, *this, kernelName, invalid);
   A->Inherited = Inherited;
@@ -40837,6 +43179,10 @@ SYCLSpecialClassAttr::SYCLSpecialClassAttr(ASTContext &Ctx, const AttributeCommo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SYCLSpecialClass, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SYCLSpecialClassAttr::isEquivalent(const SYCLSpecialClassAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SYCLSpecialClassAttr *SYCLSpecialClassAttr::clone(ASTContext &C) const {
@@ -40938,6 +43284,10 @@ ScopedLockableAttr::ScopedLockableAttr(ASTContext &Ctx, const AttributeCommonInf
              )
   : InheritableAttr(Ctx, CommonInfo, attr::ScopedLockable, /*IsLateParsed=*/false, false)
   {
+}
+
+bool ScopedLockableAttr::isEquivalent(const ScopedLockableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 ScopedLockableAttr *ScopedLockableAttr::clone(ASTContext &C) const {
@@ -41054,6 +43404,14 @@ SectionAttr::Spelling SectionAttr::getSemanticSpelling() const {
   }
 }
 
+
+bool SectionAttr::isEquivalent(const SectionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
 
 SectionAttr *SectionAttr::clone(ASTContext &C) const {
   auto *A = new (C) SectionAttr(C, *this, getName());
@@ -41187,6 +43545,10 @@ SelectAnyAttr::SelectAnyAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
   {
 }
 
+bool SelectAnyAttr::isEquivalent(const SelectAnyAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 SelectAnyAttr *SelectAnyAttr::clone(ASTContext &C) const {
   auto *A = new (C) SelectAnyAttr(C, *this);
   A->Inherited = Inherited;
@@ -41314,6 +43676,14 @@ SentinelAttr::SentinelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 
 
 
+
+bool SentinelAttr::isEquivalent(const SentinelAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSentinel(), Other.getSentinel(), Context))
+    return false;
+  if (!equalAttrArgs(getNullPos(), Other.getNullPos(), Context))
+    return false;
+  return true;
+}
 
 SentinelAttr *SentinelAttr::clone(ASTContext &C) const {
   auto *A = new (C) SentinelAttr(C, *this, sentinel, nullPos);
@@ -41459,6 +43829,12 @@ const char *SetTypestateAttr::ConvertConsumedStateToStr(SetTypestateAttr::Consum
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool SetTypestateAttr::isEquivalent(const SetTypestateAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNewState(), Other.getNewState(), Context))
+    return false;
+  return true;
+}
+
 SetTypestateAttr *SetTypestateAttr::clone(ASTContext &C) const {
   auto *A = new (C) SetTypestateAttr(C, *this, newState);
   A->Inherited = Inherited;
@@ -41581,6 +43957,14 @@ SizedByAttr::SizedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+
+bool SizedByAttr::isEquivalent(const SizedByAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSize(), Other.getSize(), Context))
+    return false;
+  if (!equalAttrArgs(getNestedLevel(), Other.getNestedLevel(), Context))
+    return false;
+  return true;
+}
 
 SizedByAttr *SizedByAttr::clone(ASTContext &C) const {
   auto *A = new (C) SizedByAttr(C, *this, size, nestedLevel);
@@ -41728,6 +44112,14 @@ SizedByOrNullAttr::SizedByOrNullAttr(ASTContext &Ctx, const AttributeCommonInfo 
 
 
 
+bool SizedByOrNullAttr::isEquivalent(const SizedByOrNullAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSize(), Other.getSize(), Context))
+    return false;
+  if (!equalAttrArgs(getNestedLevel(), Other.getNestedLevel(), Context))
+    return false;
+  return true;
+}
+
 SizedByOrNullAttr *SizedByOrNullAttr::clone(ASTContext &C) const {
   auto *A = new (C) SizedByOrNullAttr(C, *this, size, nestedLevel);
   A->Inherited = Inherited;
@@ -41857,6 +44249,10 @@ SpeculativeLoadHardeningAttr::SpeculativeLoadHardeningAttr(ASTContext &Ctx, cons
   {
 }
 
+bool SpeculativeLoadHardeningAttr::isEquivalent(const SpeculativeLoadHardeningAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 SpeculativeLoadHardeningAttr *SpeculativeLoadHardeningAttr::clone(ASTContext &C) const {
   auto *A = new (C) SpeculativeLoadHardeningAttr(C, *this);
   A->Inherited = Inherited;
@@ -41956,6 +44352,10 @@ StandaloneDebugAttr::StandaloneDebugAttr(ASTContext &Ctx, const AttributeCommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::StandaloneDebug, /*IsLateParsed=*/false, false)
   {
+}
+
+bool StandaloneDebugAttr::isEquivalent(const StandaloneDebugAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 StandaloneDebugAttr *StandaloneDebugAttr::clone(ASTContext &C) const {
@@ -42060,6 +44460,10 @@ StdCallAttr::StdCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool StdCallAttr::isEquivalent(const StdCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 StdCallAttr *StdCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) StdCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -42155,6 +44559,10 @@ StrictFPAttr::StrictFPAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool StrictFPAttr::isEquivalent(const StrictFPAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 StrictFPAttr *StrictFPAttr::clone(ASTContext &C) const {
   auto *A = new (C) StrictFPAttr(C, *this);
   A->Inherited = Inherited;
@@ -42202,6 +44610,10 @@ StrictGuardStackCheckAttr::StrictGuardStackCheckAttr(ASTContext &Ctx, const Attr
              )
   : InheritableAttr(Ctx, CommonInfo, attr::StrictGuardStackCheck, /*IsLateParsed=*/false, false)
   {
+}
+
+bool StrictGuardStackCheckAttr::isEquivalent(const StrictGuardStackCheckAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 StrictGuardStackCheckAttr *StrictGuardStackCheckAttr::clone(ASTContext &C) const {
@@ -42318,6 +44730,12 @@ SuppressAttr::SuppressAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 }
 
 
+
+bool SuppressAttr::isEquivalent(const SuppressAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(diagnosticIdentifiers_begin(), diagnosticIdentifiers_end(), Other.diagnosticIdentifiers_begin(), Other.diagnosticIdentifiers_end(), Context))
+    return false;
+  return true;
+}
 
 SuppressAttr *SuppressAttr::clone(ASTContext &C) const {
   auto *A = new (C) SuppressAttr(C, *this, diagnosticIdentifiers_, diagnosticIdentifiers_Size);
@@ -42501,6 +44919,14 @@ const char *SwiftAsyncAttr::ConvertKindToStr(SwiftAsyncAttr::Kind Val) {
 }
 
 
+bool SwiftAsyncAttr::isEquivalent(const SwiftAsyncAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKind(), Other.getKind(), Context))
+    return false;
+  if (!equalAttrArgs(getCompletionHandlerIndex(), Other.getCompletionHandlerIndex(), Context))
+    return false;
+  return true;
+}
+
 SwiftAsyncAttr *SwiftAsyncAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftAsyncAttr(C, *this, kind, completionHandlerIndex);
   A->Inherited = Inherited;
@@ -42636,6 +45062,10 @@ SwiftAsyncCallAttr::SwiftAsyncCallAttr(ASTContext &Ctx, const AttributeCommonInf
   {
 }
 
+bool SwiftAsyncCallAttr::isEquivalent(const SwiftAsyncCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 SwiftAsyncCallAttr *SwiftAsyncCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftAsyncCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -42739,6 +45169,10 @@ SwiftAsyncContextAttr::SwiftAsyncContextAttr(ASTContext &Ctx, const AttributeCom
              )
   : ParameterABIAttr(Ctx, CommonInfo, attr::SwiftAsyncContext, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftAsyncContextAttr::isEquivalent(const SwiftAsyncContextAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftAsyncContextAttr *SwiftAsyncContextAttr::clone(ASTContext &C) const {
@@ -42886,6 +45320,14 @@ const char *SwiftAsyncErrorAttr::ConvertConventionKindToStr(SwiftAsyncErrorAttr:
 }
 
 
+bool SwiftAsyncErrorAttr::isEquivalent(const SwiftAsyncErrorAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getConvention(), Other.getConvention(), Context))
+    return false;
+  if (!equalAttrArgs(getHandlerParamIdx(), Other.getHandlerParamIdx(), Context))
+    return false;
+  return true;
+}
+
 SwiftAsyncErrorAttr *SwiftAsyncErrorAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftAsyncErrorAttr(C, *this, convention, handlerParamIdx);
   A->Inherited = Inherited;
@@ -42991,6 +45433,12 @@ SwiftAsyncNameAttr::SwiftAsyncNameAttr(ASTContext &Ctx, const AttributeCommonInf
 
 
 
+bool SwiftAsyncNameAttr::isEquivalent(const SwiftAsyncNameAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
+
 SwiftAsyncNameAttr *SwiftAsyncNameAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftAsyncNameAttr(C, *this, getName());
   A->Inherited = Inherited;
@@ -43067,6 +45515,12 @@ SwiftAttrAttr::SwiftAttrAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool SwiftAttrAttr::isEquivalent(const SwiftAttrAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAttribute(), Other.getAttribute(), Context))
+    return false;
+  return true;
+}
 
 SwiftAttrAttr *SwiftAttrAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftAttrAttr(C, *this, getAttribute());
@@ -43145,6 +45599,12 @@ SwiftBridgeAttr::SwiftBridgeAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 
 
 
+bool SwiftBridgeAttr::isEquivalent(const SwiftBridgeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getSwiftType(), Other.getSwiftType(), Context))
+    return false;
+  return true;
+}
+
 SwiftBridgeAttr *SwiftBridgeAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftBridgeAttr(C, *this, getSwiftType());
   A->Inherited = Inherited;
@@ -43214,6 +45674,10 @@ SwiftBridgedTypedefAttr::SwiftBridgedTypedefAttr(ASTContext &Ctx, const Attribut
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SwiftBridgedTypedef, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftBridgedTypedefAttr::isEquivalent(const SwiftBridgedTypedefAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftBridgedTypedefAttr *SwiftBridgedTypedefAttr::clone(ASTContext &C) const {
@@ -43305,6 +45769,10 @@ SwiftCallAttr::SwiftCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SwiftCall, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftCallAttr::isEquivalent(const SwiftCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftCallAttr *SwiftCallAttr::clone(ASTContext &C) const {
@@ -43410,6 +45878,10 @@ SwiftContextAttr::SwiftContextAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : ParameterABIAttr(Ctx, CommonInfo, attr::SwiftContext, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftContextAttr::isEquivalent(const SwiftContextAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftContextAttr *SwiftContextAttr::clone(ASTContext &C) const {
@@ -43522,6 +45994,12 @@ const char *SwiftErrorAttr::ConvertConventionKindToStr(SwiftErrorAttr::Conventio
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool SwiftErrorAttr::isEquivalent(const SwiftErrorAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getConvention(), Other.getConvention(), Context))
+    return false;
+  return true;
+}
+
 SwiftErrorAttr *SwiftErrorAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftErrorAttr(C, *this, convention);
   A->Inherited = Inherited;
@@ -43617,6 +46095,10 @@ SwiftErrorResultAttr::SwiftErrorResultAttr(ASTContext &Ctx, const AttributeCommo
   {
 }
 
+bool SwiftErrorResultAttr::isEquivalent(const SwiftErrorResultAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 SwiftErrorResultAttr *SwiftErrorResultAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftErrorResultAttr(C, *this);
   A->Inherited = Inherited;
@@ -43698,6 +46180,10 @@ SwiftImportAsNonGenericAttr::SwiftImportAsNonGenericAttr(ASTContext &Ctx, const 
   {
 }
 
+bool SwiftImportAsNonGenericAttr::isEquivalent(const SwiftImportAsNonGenericAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 SwiftImportAsNonGenericAttr *SwiftImportAsNonGenericAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftImportAsNonGenericAttr(C, *this);
   A->Inherited = Inherited;
@@ -43745,6 +46231,10 @@ SwiftImportPropertyAsAccessorsAttr::SwiftImportPropertyAsAccessorsAttr(ASTContex
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SwiftImportPropertyAsAccessors, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftImportPropertyAsAccessorsAttr::isEquivalent(const SwiftImportPropertyAsAccessorsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftImportPropertyAsAccessorsAttr *SwiftImportPropertyAsAccessorsAttr::clone(ASTContext &C) const {
@@ -43818,6 +46308,10 @@ SwiftIndirectResultAttr::SwiftIndirectResultAttr(ASTContext &Ctx, const Attribut
              )
   : ParameterABIAttr(Ctx, CommonInfo, attr::SwiftIndirectResult, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftIndirectResultAttr::isEquivalent(const SwiftIndirectResultAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftIndirectResultAttr *SwiftIndirectResultAttr::clone(ASTContext &C) const {
@@ -43906,6 +46400,12 @@ SwiftNameAttr::SwiftNameAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 }
 
 
+
+bool SwiftNameAttr::isEquivalent(const SwiftNameAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getName(), Other.getName(), Context))
+    return false;
+  return true;
+}
 
 SwiftNameAttr *SwiftNameAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftNameAttr(C, *this, getName());
@@ -44026,6 +46526,14 @@ const char *SwiftNewTypeAttr::ConvertNewtypeKindToStr(SwiftNewTypeAttr::NewtypeK
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool SwiftNewTypeAttr::isEquivalent(const SwiftNewTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getNewtypeKind(), Other.getNewtypeKind(), Context))
+    return false;
+  return true;
+}
+
 SwiftNewTypeAttr *SwiftNewTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftNewTypeAttr(C, *this, newtypeKind);
   A->Inherited = Inherited;
@@ -44135,6 +46643,12 @@ const char *SwiftNullabilityAttr::ConvertKindToStr(SwiftNullabilityAttr::Kind Va
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool SwiftNullabilityAttr::isEquivalent(const SwiftNullabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKind(), Other.getKind(), Context))
+    return false;
+  return true;
+}
+
 SwiftNullabilityAttr *SwiftNullabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftNullabilityAttr(C, *this, kind);
   A->Inherited = Inherited;
@@ -44182,6 +46696,10 @@ SwiftObjCMembersAttr::SwiftObjCMembersAttr(ASTContext &Ctx, const AttributeCommo
              )
   : Attr(Ctx, CommonInfo, attr::SwiftObjCMembers, /*IsLateParsed=*/false)
   {
+}
+
+bool SwiftObjCMembersAttr::isEquivalent(const SwiftObjCMembersAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftObjCMembersAttr *SwiftObjCMembersAttr::clone(ASTContext &C) const {
@@ -44249,6 +46767,10 @@ SwiftPrivateAttr::SwiftPrivateAttr(ASTContext &Ctx, const AttributeCommonInfo &C
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SwiftPrivate, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SwiftPrivateAttr::isEquivalent(const SwiftPrivateAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SwiftPrivateAttr *SwiftPrivateAttr::clone(ASTContext &C) const {
@@ -44324,6 +46846,12 @@ SwiftTypeAttr::SwiftTypeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 
 
 
+bool SwiftTypeAttr::isEquivalent(const SwiftTypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getTypeString(), Other.getTypeString(), Context))
+    return false;
+  return true;
+}
+
 SwiftTypeAttr *SwiftTypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftTypeAttr(C, *this, getTypeString());
   A->Inherited = Inherited;
@@ -44385,6 +46913,16 @@ SwiftVersionedAdditionAttr::SwiftVersionedAdditionAttr(ASTContext &Ctx, const At
 
 
 
+bool SwiftVersionedAdditionAttr::isEquivalent(const SwiftVersionedAdditionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVersion(), Other.getVersion(), Context))
+    return false;
+  if (!equalAttrArgs(getAdditionalAttr(), Other.getAdditionalAttr(), Context))
+    return false;
+  if (!equalAttrArgs(getIsReplacedByActive(), Other.getIsReplacedByActive(), Context))
+    return false;
+  return true;
+}
+
 SwiftVersionedAdditionAttr *SwiftVersionedAdditionAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftVersionedAdditionAttr(C, *this, getVersion(), additionalAttr, isReplacedByActive);
   A->Inherited = Inherited;
@@ -44445,6 +46983,16 @@ SwiftVersionedRemovalAttr::SwiftVersionedRemovalAttr(ASTContext &Ctx, const Attr
 
 
 
+
+bool SwiftVersionedRemovalAttr::isEquivalent(const SwiftVersionedRemovalAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVersion(), Other.getVersion(), Context))
+    return false;
+  if (!equalAttrArgs(getRawKind(), Other.getRawKind(), Context))
+    return false;
+  if (!equalAttrArgs(getIsReplacedByActive(), Other.getIsReplacedByActive(), Context))
+    return false;
+  return true;
+}
 
 SwiftVersionedRemovalAttr *SwiftVersionedRemovalAttr::clone(ASTContext &C) const {
   auto *A = new (C) SwiftVersionedRemovalAttr(C, *this, getVersion(), rawKind, isReplacedByActive);
@@ -44517,6 +47065,10 @@ SysVABIAttr::SysVABIAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::SysVABI, /*IsLateParsed=*/false, false)
   {
+}
+
+bool SysVABIAttr::isEquivalent(const SysVABIAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 SysVABIAttr *SysVABIAttr::clone(ASTContext &C) const {
@@ -44629,6 +47181,12 @@ TLSModelAttr::TLSModelAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
 }
 
 
+
+bool TLSModelAttr::isEquivalent(const TLSModelAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getModel(), Other.getModel(), Context))
+    return false;
+  return true;
+}
 
 TLSModelAttr *TLSModelAttr::clone(ASTContext &C) const {
   auto *A = new (C) TLSModelAttr(C, *this, getModel());
@@ -44752,6 +47310,12 @@ TargetAttr::TargetAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool TargetAttr::isEquivalent(const TargetAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getFeaturesStr(), Other.getFeaturesStr(), Context))
+    return false;
+  return true;
+}
 
 TargetAttr *TargetAttr::clone(ASTContext &C) const {
   auto *A = new (C) TargetAttr(C, *this, getFeaturesStr());
@@ -44890,6 +47454,12 @@ TargetClonesAttr::TargetClonesAttr(ASTContext &Ctx, const AttributeCommonInfo &C
 
 
 
+bool TargetClonesAttr::isEquivalent(const TargetClonesAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(featuresStrs_begin(), featuresStrs_end(), Other.featuresStrs_begin(), Other.featuresStrs_end(), Context))
+    return false;
+  return true;
+}
+
 TargetClonesAttr *TargetClonesAttr::clone(ASTContext &C) const {
   auto *A = new (C) TargetClonesAttr(C, *this, featuresStrs_, featuresStrs_Size);
   A->Inherited = Inherited;
@@ -45024,6 +47594,12 @@ TargetVersionAttr::TargetVersionAttr(ASTContext &Ctx, const AttributeCommonInfo 
 }
 
 
+
+bool TargetVersionAttr::isEquivalent(const TargetVersionAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getNamesStr(), Other.getNamesStr(), Context))
+    return false;
+  return true;
+}
 
 TargetVersionAttr *TargetVersionAttr::clone(ASTContext &C) const {
   auto *A = new (C) TargetVersionAttr(C, *this, getNamesStr());
@@ -45161,6 +47737,12 @@ const char *TestTypestateAttr::ConvertConsumedStateToStr(TestTypestateAttr::Cons
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool TestTypestateAttr::isEquivalent(const TestTypestateAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getTestState(), Other.getTestState(), Context))
+    return false;
+  return true;
+}
+
 TestTypestateAttr *TestTypestateAttr::clone(ASTContext &C) const {
   auto *A = new (C) TestTypestateAttr(C, *this, testState);
   A->Inherited = Inherited;
@@ -45271,6 +47853,10 @@ ThisCallAttr::ThisCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
   {
 }
 
+bool ThisCallAttr::isEquivalent(const ThisCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ThisCallAttr *ThisCallAttr::clone(ASTContext &C) const {
   auto *A = new (C) ThisCallAttr(C, *this);
   A->Inherited = Inherited;
@@ -45366,6 +47952,10 @@ ThreadAttr::ThreadAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool ThreadAttr::isEquivalent(const ThreadAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 ThreadAttr *ThreadAttr::clone(ASTContext &C) const {
   auto *A = new (C) ThreadAttr(C, *this);
   A->Inherited = Inherited;
@@ -45455,6 +48045,10 @@ TransparentUnionAttr::TransparentUnionAttr(ASTContext &Ctx, const AttributeCommo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::TransparentUnion, /*IsLateParsed=*/false, false)
   {
+}
+
+bool TransparentUnionAttr::isEquivalent(const TransparentUnionAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 TransparentUnionAttr *TransparentUnionAttr::clone(ASTContext &C) const {
@@ -45558,6 +48152,10 @@ TrivialABIAttr::TrivialABIAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
   {
 }
 
+bool TrivialABIAttr::isEquivalent(const TrivialABIAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 TrivialABIAttr *TrivialABIAttr::clone(ASTContext &C) const {
   auto *A = new (C) TrivialABIAttr(C, *this);
   A->Inherited = Inherited;
@@ -45595,73 +48193,6 @@ const char *TrivialABIAttr::getSpelling() const {
     return "trivial_abi";
   case 1:
     return "trivial_abi";
-  }
-}
-
-
-// TriviallyRelocatableAttr implementation
-
-TriviallyRelocatableAttr *TriviallyRelocatableAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) TriviallyRelocatableAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-TriviallyRelocatableAttr *TriviallyRelocatableAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) TriviallyRelocatableAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-TriviallyRelocatableAttr *TriviallyRelocatableAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Keyword, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, I);
-}
-
-TriviallyRelocatableAttr *TriviallyRelocatableAttr::Create(ASTContext &Ctx, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_Keyword, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, I);
-}
-
-TriviallyRelocatableAttr::TriviallyRelocatableAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::TriviallyRelocatable, /*IsLateParsed=*/false, false)
-  {
-}
-
-TriviallyRelocatableAttr *TriviallyRelocatableAttr::clone(ASTContext &C) const {
-  auto *A = new (C) TriviallyRelocatableAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void TriviallyRelocatableAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "trivially_relocatable_if_eligible";
-    OS << "";
-    break;
-  }
-}
-}
-
-const char *TriviallyRelocatableAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "trivially_relocatable_if_eligible";
   }
 }
 
@@ -45833,6 +48364,16 @@ TryAcquireCapabilityAttr::Spelling TryAcquireCapabilityAttr::getSemanticSpelling
 
 
 
+
+bool TryAcquireCapabilityAttr::isEquivalent(const TryAcquireCapabilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getSuccessValue(), Other.getSuccessValue(), Context))
+    return false;
+  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+    return false;
+  return true;
+}
 
 TryAcquireCapabilityAttr *TryAcquireCapabilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) TryAcquireCapabilityAttr(C, *this, successValue, args_, args_Size);
@@ -46009,6 +48550,10 @@ TypeNonNullAttr::TypeNonNullAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
   {
 }
 
+bool TypeNonNullAttr::isEquivalent(const TypeNonNullAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 TypeNonNullAttr *TypeNonNullAttr::clone(ASTContext &C) const {
   auto *A = new (C) TypeNonNullAttr(C, *this);
   A->Inherited = Inherited;
@@ -46074,6 +48619,10 @@ TypeNullUnspecifiedAttr::TypeNullUnspecifiedAttr(ASTContext &Ctx, const Attribut
              )
   : TypeAttr(Ctx, CommonInfo, attr::TypeNullUnspecified, /*IsLateParsed=*/false)
   {
+}
+
+bool TypeNullUnspecifiedAttr::isEquivalent(const TypeNullUnspecifiedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 TypeNullUnspecifiedAttr *TypeNullUnspecifiedAttr::clone(ASTContext &C) const {
@@ -46143,6 +48692,10 @@ TypeNullableAttr::TypeNullableAttr(ASTContext &Ctx, const AttributeCommonInfo &C
   {
 }
 
+bool TypeNullableAttr::isEquivalent(const TypeNullableAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 TypeNullableAttr *TypeNullableAttr::clone(ASTContext &C) const {
   auto *A = new (C) TypeNullableAttr(C, *this);
   A->Inherited = Inherited;
@@ -46210,6 +48763,10 @@ TypeNullableResultAttr::TypeNullableResultAttr(ASTContext &Ctx, const AttributeC
   {
 }
 
+bool TypeNullableResultAttr::isEquivalent(const TypeNullableResultAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 TypeNullableResultAttr *TypeNullableResultAttr::clone(ASTContext &C) const {
   auto *A = new (C) TypeNullableResultAttr(C, *this);
   A->Inherited = Inherited;
@@ -46246,7 +48803,7 @@ const char *TypeNullableResultAttr::getSpelling() const {
 
 // TypeTagForDatatypeAttr implementation
 
-TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo) {
+TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) TypeTagForDatatypeAttr(Ctx, CommonInfo, ArgumentKind, MatchingCType, LayoutCompatible, MustBeNull);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
@@ -46254,14 +48811,14 @@ TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::CreateImplicit(ASTContext &Ctx, 
   return A;
 }
 
-TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo) {
+TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) TypeTagForDatatypeAttr(Ctx, CommonInfo, ArgumentKind, MatchingCType, LayoutCompatible, MustBeNull);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::CreateImplicit(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range, Spelling S) {
+TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_type_tag_for_datatype:
@@ -46278,7 +48835,7 @@ TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::CreateImplicit(ASTContext &Ctx, 
   return CreateImplicit(Ctx, ArgumentKind, MatchingCType, LayoutCompatible, MustBeNull, I);
 }
 
-TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::Create(ASTContext &Ctx, IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range, Spelling S) {
+TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::Create(ASTContext &Ctx, const IdentifierInfo * ArgumentKind, TypeSourceInfo * MatchingCType, bool LayoutCompatible, bool MustBeNull, SourceRange Range, Spelling S) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
     switch (S) {
     case GNU_type_tag_for_datatype:
@@ -46296,7 +48853,7 @@ TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::Create(ASTContext &Ctx, Identifi
 }
 
 TypeTagForDatatypeAttr::TypeTagForDatatypeAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , IdentifierInfo * ArgumentKind
+              , const IdentifierInfo * ArgumentKind
               , TypeSourceInfo * MatchingCType
               , bool LayoutCompatible
               , bool MustBeNull
@@ -46316,6 +48873,18 @@ TypeTagForDatatypeAttr::TypeTagForDatatypeAttr(ASTContext &Ctx, const AttributeC
 
 
 
+
+bool TypeTagForDatatypeAttr::isEquivalent(const TypeTagForDatatypeAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getArgumentKind(), Other.getArgumentKind(), Context))
+    return false;
+  if (!equalAttrArgs(getMatchingCType(), Other.getMatchingCType(), Context))
+    return false;
+  if (!equalAttrArgs(getLayoutCompatible(), Other.getLayoutCompatible(), Context))
+    return false;
+  if (!equalAttrArgs(getMustBeNull(), Other.getMustBeNull(), Context))
+    return false;
+  return true;
+}
 
 TypeTagForDatatypeAttr *TypeTagForDatatypeAttr::clone(ASTContext &C) const {
   auto *A = new (C) TypeTagForDatatypeAttr(C, *this, argumentKind, matchingCType, layoutCompatible, mustBeNull);
@@ -46478,6 +49047,12 @@ const char *TypeVisibilityAttr::ConvertVisibilityTypeToStr(TypeVisibilityAttr::V
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool TypeVisibilityAttr::isEquivalent(const TypeVisibilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVisibility(), Other.getVisibility(), Context))
+    return false;
+  return true;
+}
+
 TypeVisibilityAttr *TypeVisibilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) TypeVisibilityAttr(C, *this, visibility);
   A->Inherited = Inherited;
@@ -46569,6 +49144,10 @@ UPtrAttr::UPtrAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              )
   : TypeAttr(Ctx, CommonInfo, attr::UPtr, /*IsLateParsed=*/false)
   {
+}
+
+bool UPtrAttr::isEquivalent(const UPtrAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 UPtrAttr *UPtrAttr::clone(ASTContext &C) const {
@@ -46740,6 +49319,14 @@ UnavailableAttr::UnavailableAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 
 
 
+bool UnavailableAttr::isEquivalent(const UnavailableAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  if (!equalAttrArgs(getImplicitReason(), Other.getImplicitReason(), Context))
+    return false;
+  return true;
+}
+
 UnavailableAttr *UnavailableAttr::clone(ASTContext &C) const {
   auto *A = new (C) UnavailableAttr(C, *this, getMessage(), implicitReason);
   A->Inherited = Inherited;
@@ -46853,6 +49440,10 @@ UninitializedAttr::UninitializedAttr(ASTContext &Ctx, const AttributeCommonInfo 
   {
 }
 
+bool UninitializedAttr::isEquivalent(const UninitializedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 UninitializedAttr *UninitializedAttr::clone(ASTContext &C) const {
   auto *A = new (C) UninitializedAttr(C, *this);
   A->Inherited = Inherited;
@@ -46945,6 +49536,10 @@ UnlikelyAttr::UnlikelyAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInf
              )
   : StmtAttr(Ctx, CommonInfo, attr::Unlikely, /*IsLateParsed=*/false)
   {
+}
+
+bool UnlikelyAttr::isEquivalent(const UnlikelyAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 UnlikelyAttr *UnlikelyAttr::clone(ASTContext &C) const {
@@ -47043,6 +49638,10 @@ UnsafeBufferUsageAttr::UnsafeBufferUsageAttr(ASTContext &Ctx, const AttributeCom
              )
   : InheritableAttr(Ctx, CommonInfo, attr::UnsafeBufferUsage, /*IsLateParsed=*/false, false)
   {
+}
+
+bool UnsafeBufferUsageAttr::isEquivalent(const UnsafeBufferUsageAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 UnsafeBufferUsageAttr *UnsafeBufferUsageAttr::clone(ASTContext &C) const {
@@ -47166,6 +49765,12 @@ UnusedAttr::Spelling UnusedAttr::getSemanticSpelling() const {
     case 4: return C23_maybe_unused;
   }
 }
+bool UnusedAttr::isEquivalent(const UnusedAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 UnusedAttr *UnusedAttr::clone(ASTContext &C) const {
   auto *A = new (C) UnusedAttr(C, *this);
   A->Inherited = Inherited;
@@ -47291,6 +49896,12 @@ UseHandleAttr::UseHandleAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
 
 
 
+bool UseHandleAttr::isEquivalent(const UseHandleAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getHandleType(), Other.getHandleType(), Context))
+    return false;
+  return true;
+}
+
 UseHandleAttr *UseHandleAttr::clone(ASTContext &C) const {
   auto *A = new (C) UseHandleAttr(C, *this, getHandleType());
   A->Inherited = Inherited;
@@ -47408,6 +50019,10 @@ UsedAttr::UsedAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool UsedAttr::isEquivalent(const UsedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 UsedAttr *UsedAttr::clone(ASTContext &C) const {
   auto *A = new (C) UsedAttr(C, *this);
   A->Inherited = Inherited;
@@ -47507,6 +50122,10 @@ UsingIfExistsAttr::UsingIfExistsAttr(ASTContext &Ctx, const AttributeCommonInfo 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::UsingIfExists, /*IsLateParsed=*/false, false)
   {
+}
+
+bool UsingIfExistsAttr::isEquivalent(const UsingIfExistsAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 UsingIfExistsAttr *UsingIfExistsAttr::clone(ASTContext &C) const {
@@ -47668,6 +50287,14 @@ UuidAttr::UuidAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 
 
 
+
+bool UuidAttr::isEquivalent(const UuidAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getGuid(), Other.getGuid(), Context))
+    return false;
+  if (!equalAttrArgs(getGuidDecl(), Other.getGuidDecl(), Context))
+    return false;
+  return true;
+}
 
 UuidAttr *UuidAttr::clone(ASTContext &C) const {
   auto *A = new (C) UuidAttr(C, *this, getGuid(), guidDecl);
@@ -47871,6 +50498,18 @@ const char *VTablePointerAuthenticationAttr::ConvertExtraDiscriminationToStr(VTa
 }
 
 
+bool VTablePointerAuthenticationAttr::isEquivalent(const VTablePointerAuthenticationAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getKey(), Other.getKey(), Context))
+    return false;
+  if (!equalAttrArgs(getAddressDiscrimination(), Other.getAddressDiscrimination(), Context))
+    return false;
+  if (!equalAttrArgs(getExtraDiscrimination(), Other.getExtraDiscrimination(), Context))
+    return false;
+  if (!equalAttrArgs(getCustomDiscriminationValue(), Other.getCustomDiscriminationValue(), Context))
+    return false;
+  return true;
+}
+
 VTablePointerAuthenticationAttr *VTablePointerAuthenticationAttr::clone(ASTContext &C) const {
   auto *A = new (C) VTablePointerAuthenticationAttr(C, *this, key, addressDiscrimination, extraDiscrimination, customDiscriminationValue);
   A->Inherited = Inherited;
@@ -48002,6 +50641,10 @@ VecReturnAttr::VecReturnAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonI
   {
 }
 
+bool VecReturnAttr::isEquivalent(const VecReturnAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 VecReturnAttr *VecReturnAttr::clone(ASTContext &C) const {
   auto *A = new (C) VecReturnAttr(C, *this);
   A->Inherited = Inherited;
@@ -48079,6 +50722,12 @@ VecTypeHintAttr::VecTypeHintAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool VecTypeHintAttr::isEquivalent(const VecTypeHintAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getTypeHint(), Other.getTypeHint(), Context))
+    return false;
+  return true;
+}
 
 VecTypeHintAttr *VecTypeHintAttr::clone(ASTContext &C) const {
   auto *A = new (C) VecTypeHintAttr(C, *this, typeHint);
@@ -48177,6 +50826,10 @@ VectorCallAttr::VectorCallAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::VectorCall, /*IsLateParsed=*/false, false)
   {
+}
+
+bool VectorCallAttr::isEquivalent(const VectorCallAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 VectorCallAttr *VectorCallAttr::clone(ASTContext &C) const {
@@ -48324,6 +50977,12 @@ const char *VisibilityAttr::ConvertVisibilityTypeToStr(VisibilityAttr::Visibilit
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool VisibilityAttr::isEquivalent(const VisibilityAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getVisibility(), Other.getVisibility(), Context))
+    return false;
+  return true;
+}
+
 VisibilityAttr *VisibilityAttr::clone(ASTContext &C) const {
   auto *A = new (C) VisibilityAttr(C, *this, visibility);
   A->Inherited = Inherited;
@@ -48439,6 +51098,10 @@ WarnUnusedAttr::WarnUnusedAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::WarnUnused, /*IsLateParsed=*/false, false)
   {
+}
+
+bool WarnUnusedAttr::isEquivalent(const WarnUnusedAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 WarnUnusedAttr *WarnUnusedAttr::clone(ASTContext &C) const {
@@ -48579,6 +51242,14 @@ WarnUnusedResultAttr::Spelling WarnUnusedResultAttr::getSemanticSpelling() const
   }
 }
 
+
+bool WarnUnusedResultAttr::isEquivalent(const WarnUnusedResultAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  if (!equalAttrArgs(getMessage(), Other.getMessage(), Context))
+    return false;
+  return true;
+}
 
 WarnUnusedResultAttr *WarnUnusedResultAttr::clone(ASTContext &C) const {
   auto *A = new (C) WarnUnusedResultAttr(C, *this, getMessage());
@@ -48730,6 +51401,10 @@ WeakAttr::WeakAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
   {
 }
 
+bool WeakAttr::isEquivalent(const WeakAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
+}
+
 WeakAttr *WeakAttr::clone(ASTContext &C) const {
   auto *A = new (C) WeakAttr(C, *this);
   A->Inherited = Inherited;
@@ -48833,6 +51508,10 @@ WeakImportAttr::WeakImportAttr(ASTContext &Ctx, const AttributeCommonInfo &Commo
              )
   : InheritableAttr(Ctx, CommonInfo, attr::WeakImport, /*IsLateParsed=*/false, false)
   {
+}
+
+bool WeakImportAttr::isEquivalent(const WeakImportAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 WeakImportAttr *WeakImportAttr::clone(ASTContext &C) const {
@@ -48952,6 +51631,12 @@ WeakRefAttr::WeakRefAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
 }
 
 
+
+bool WeakRefAttr::isEquivalent(const WeakRefAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getAliasee(), Other.getAliasee(), Context))
+    return false;
+  return true;
+}
 
 WeakRefAttr *WeakRefAttr::clone(ASTContext &C) const {
   auto *A = new (C) WeakRefAttr(C, *this, getAliasee());
@@ -49076,6 +51761,12 @@ WebAssemblyExportNameAttr::WebAssemblyExportNameAttr(ASTContext &Ctx, const Attr
 
 
 
+bool WebAssemblyExportNameAttr::isEquivalent(const WebAssemblyExportNameAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getExportName(), Other.getExportName(), Context))
+    return false;
+  return true;
+}
+
 WebAssemblyExportNameAttr *WebAssemblyExportNameAttr::clone(ASTContext &C) const {
   auto *A = new (C) WebAssemblyExportNameAttr(C, *this, getExportName());
   A->Inherited = Inherited;
@@ -49167,6 +51858,10 @@ WebAssemblyFuncrefAttr::WebAssemblyFuncrefAttr(ASTContext &Ctx, const AttributeC
              )
   : TypeAttr(Ctx, CommonInfo, attr::WebAssemblyFuncref, /*IsLateParsed=*/false)
   {
+}
+
+bool WebAssemblyFuncrefAttr::isEquivalent(const WebAssemblyFuncrefAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 WebAssemblyFuncrefAttr *WebAssemblyFuncrefAttr::clone(ASTContext &C) const {
@@ -49265,6 +51960,12 @@ WebAssemblyImportModuleAttr::WebAssemblyImportModuleAttr(ASTContext &Ctx, const 
 }
 
 
+
+bool WebAssemblyImportModuleAttr::isEquivalent(const WebAssemblyImportModuleAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getImportModule(), Other.getImportModule(), Context))
+    return false;
+  return true;
+}
 
 WebAssemblyImportModuleAttr *WebAssemblyImportModuleAttr::clone(ASTContext &C) const {
   auto *A = new (C) WebAssemblyImportModuleAttr(C, *this, getImportModule());
@@ -49389,6 +52090,12 @@ WebAssemblyImportNameAttr::WebAssemblyImportNameAttr(ASTContext &Ctx, const Attr
 
 
 
+bool WebAssemblyImportNameAttr::isEquivalent(const WebAssemblyImportNameAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getImportName(), Other.getImportName(), Context))
+    return false;
+  return true;
+}
+
 WebAssemblyImportNameAttr *WebAssemblyImportNameAttr::clone(ASTContext &C) const {
   auto *A = new (C) WebAssemblyImportNameAttr(C, *this, getImportName());
   A->Inherited = Inherited;
@@ -49494,6 +52201,16 @@ WorkGroupSizeHintAttr::WorkGroupSizeHintAttr(ASTContext &Ctx, const AttributeCom
 
 
 
+bool WorkGroupSizeHintAttr::isEquivalent(const WorkGroupSizeHintAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getXDim(), Other.getXDim(), Context))
+    return false;
+  if (!equalAttrArgs(getYDim(), Other.getYDim(), Context))
+    return false;
+  if (!equalAttrArgs(getZDim(), Other.getZDim(), Context))
+    return false;
+  return true;
+}
+
 WorkGroupSizeHintAttr *WorkGroupSizeHintAttr::clone(ASTContext &C) const {
   auto *A = new (C) WorkGroupSizeHintAttr(C, *this, xDim, yDim, zDim);
   A->Inherited = Inherited;
@@ -49597,6 +52314,10 @@ X86ForceAlignArgPointerAttr::X86ForceAlignArgPointerAttr(ASTContext &Ctx, const 
              )
   : InheritableAttr(Ctx, CommonInfo, attr::X86ForceAlignArgPointer, /*IsLateParsed=*/false, false)
   {
+}
+
+bool X86ForceAlignArgPointerAttr::isEquivalent(const X86ForceAlignArgPointerAttr &Other, StructuralEquivalenceContext &Context) const {
+  return true;
 }
 
 X86ForceAlignArgPointerAttr *X86ForceAlignArgPointerAttr::clone(ASTContext &C) const {
@@ -49725,6 +52446,12 @@ XRayInstrumentAttr::Spelling XRayInstrumentAttr::getSemanticSpelling() const {
     case 5: return C23_clang_xray_never_instrument;
   }
 }
+bool XRayInstrumentAttr::isEquivalent(const XRayInstrumentAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (getSpelling() != Other.getSpelling()) return false;
+
+  return true;
+}
+
 XRayInstrumentAttr *XRayInstrumentAttr::clone(ASTContext &C) const {
   auto *A = new (C) XRayInstrumentAttr(C, *this);
   A->Inherited = Inherited;
@@ -49854,6 +52581,12 @@ XRayLogArgsAttr::XRayLogArgsAttr(ASTContext &Ctx, const AttributeCommonInfo &Com
 }
 
 
+
+bool XRayLogArgsAttr::isEquivalent(const XRayLogArgsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getArgumentCount(), Other.getArgumentCount(), Context))
+    return false;
+  return true;
+}
 
 XRayLogArgsAttr *XRayLogArgsAttr::clone(ASTContext &C) const {
   auto *A = new (C) XRayLogArgsAttr(C, *this, argumentCount);
@@ -50009,6 +52742,12 @@ const char *ZeroCallUsedRegsAttr::ConvertZeroCallUsedRegsKindToStr(ZeroCallUsedR
   }
   llvm_unreachable("No enumerator with that value");
 }
+bool ZeroCallUsedRegsAttr::isEquivalent(const ZeroCallUsedRegsAttr &Other, StructuralEquivalenceContext &Context) const {
+  if (!equalAttrArgs(getZeroCallUsedRegs(), Other.getZeroCallUsedRegs(), Context))
+    return false;
+  return true;
+}
+
 ZeroCallUsedRegsAttr *ZeroCallUsedRegsAttr::clone(ASTContext &C) const {
   auto *A = new (C) ZeroCallUsedRegsAttr(C, *this, zeroCallUsedRegs);
   A->Inherited = Inherited;
@@ -50314,6 +53053,8 @@ const char *Attr::getSpelling() const {
     return cast<CountedByOrNullAttr>(this)->getSpelling();
   case attr::DLLExport:
     return cast<DLLExportAttr>(this)->getSpelling();
+  case attr::DLLExportOnDecl:
+    return cast<DLLExportOnDeclAttr>(this)->getSpelling();
   case attr::DLLExportStaticLocal:
     return cast<DLLExportStaticLocalAttr>(this)->getSpelling();
   case attr::DLLImport:
@@ -50372,6 +53113,8 @@ const char *Attr::getSpelling() const {
     return cast<FormatMatchesAttr>(this)->getSpelling();
   case attr::FunctionReturnThunks:
     return cast<FunctionReturnThunksAttr>(this)->getSpelling();
+  case attr::GCCStruct:
+    return cast<GCCStructAttr>(this)->getSpelling();
   case attr::GNUInline:
     return cast<GNUInlineAttr>(this)->getSpelling();
   case attr::GuardedBy:
@@ -50380,6 +53123,8 @@ const char *Attr::getSpelling() const {
     return cast<GuardedVarAttr>(this)->getSpelling();
   case attr::HIPManaged:
     return cast<HIPManagedAttr>(this)->getSpelling();
+  case attr::HLSLAppliedSemantic:
+    return cast<HLSLAppliedSemanticAttr>(this)->getSpelling();
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->getSpelling();
   case attr::HLSLControlFlowHint:
@@ -50396,6 +53141,8 @@ const char *Attr::getSpelling() const {
     return cast<HLSLPackOffsetAttr>(this)->getSpelling();
   case attr::HLSLParamModifier:
     return cast<HLSLParamModifierAttr>(this)->getSpelling();
+  case attr::HLSLParsedSemantic:
+    return cast<HLSLParsedSemanticAttr>(this)->getSpelling();
   case attr::HLSLROV:
     return cast<HLSLROVAttr>(this)->getSpelling();
   case attr::HLSLRawBuffer:
@@ -50404,16 +53151,6 @@ const char *Attr::getSpelling() const {
     return cast<HLSLResourceBindingAttr>(this)->getSpelling();
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->getSpelling();
-  case attr::HLSLSV_DispatchThreadID:
-    return cast<HLSLSV_DispatchThreadIDAttr>(this)->getSpelling();
-  case attr::HLSLSV_GroupID:
-    return cast<HLSLSV_GroupIDAttr>(this)->getSpelling();
-  case attr::HLSLSV_GroupIndex:
-    return cast<HLSLSV_GroupIndexAttr>(this)->getSpelling();
-  case attr::HLSLSV_GroupThreadID:
-    return cast<HLSLSV_GroupThreadIDAttr>(this)->getSpelling();
-  case attr::HLSLSV_Position:
-    return cast<HLSLSV_PositionAttr>(this)->getSpelling();
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->getSpelling();
   case attr::HLSLUnparsedSemantic:
@@ -50424,6 +53161,10 @@ const char *Attr::getSpelling() const {
     return cast<HLSLVkConstantIdAttr>(this)->getSpelling();
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->getSpelling();
+  case attr::HLSLVkLocation:
+    return cast<HLSLVkLocationAttr>(this)->getSpelling();
+  case attr::HLSLVkPushConstant:
+    return cast<HLSLVkPushConstantAttr>(this)->getSpelling();
   case attr::HLSLWaveSize:
     return cast<HLSLWaveSizeAttr>(this)->getSpelling();
   case attr::Hot:
@@ -50490,6 +53231,8 @@ const char *Attr::getSpelling() const {
     return cast<MSStructAttr>(this)->getSpelling();
   case attr::MSVtorDisp:
     return cast<MSVtorDispAttr>(this)->getSpelling();
+  case attr::MallocSpan:
+    return cast<MallocSpanAttr>(this)->getSpelling();
   case attr::MaxFieldAlignment:
     return cast<MaxFieldAlignmentAttr>(this)->getSpelling();
   case attr::MayAlias:
@@ -50512,6 +53255,8 @@ const char *Attr::getSpelling() const {
     return cast<MipsShortCallAttr>(this)->getSpelling();
   case attr::Mode:
     return cast<ModeAttr>(this)->getSpelling();
+  case attr::ModularFormat:
+    return cast<ModularFormatAttr>(this)->getSpelling();
   case attr::MustTail:
     return cast<MustTailAttr>(this)->getSpelling();
   case attr::NSConsumed:
@@ -50780,8 +53525,6 @@ const char *Attr::getSpelling() const {
     return cast<ReleaseCapabilityAttr>(this)->getSpelling();
   case attr::ReleaseHandle:
     return cast<ReleaseHandleAttr>(this)->getSpelling();
-  case attr::Replaceable:
-    return cast<ReplaceableAttr>(this)->getSpelling();
   case attr::ReqdWorkGroupSize:
     return cast<ReqdWorkGroupSizeAttr>(this)->getSpelling();
   case attr::RequiresCapability:
@@ -50900,8 +53643,6 @@ const char *Attr::getSpelling() const {
     return cast<TransparentUnionAttr>(this)->getSpelling();
   case attr::TrivialABI:
     return cast<TrivialABIAttr>(this)->getSpelling();
-  case attr::TriviallyRelocatable:
-    return cast<TriviallyRelocatableAttr>(this)->getSpelling();
   case attr::TryAcquireCapability:
     return cast<TryAcquireCapabilityAttr>(this)->getSpelling();
   case attr::TypeNonNull:
@@ -51224,6 +53965,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<CountedByOrNullAttr>(this)->clone(C);
   case attr::DLLExport:
     return cast<DLLExportAttr>(this)->clone(C);
+  case attr::DLLExportOnDecl:
+    return cast<DLLExportOnDeclAttr>(this)->clone(C);
   case attr::DLLExportStaticLocal:
     return cast<DLLExportStaticLocalAttr>(this)->clone(C);
   case attr::DLLImport:
@@ -51282,6 +54025,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<FormatMatchesAttr>(this)->clone(C);
   case attr::FunctionReturnThunks:
     return cast<FunctionReturnThunksAttr>(this)->clone(C);
+  case attr::GCCStruct:
+    return cast<GCCStructAttr>(this)->clone(C);
   case attr::GNUInline:
     return cast<GNUInlineAttr>(this)->clone(C);
   case attr::GuardedBy:
@@ -51290,6 +54035,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<GuardedVarAttr>(this)->clone(C);
   case attr::HIPManaged:
     return cast<HIPManagedAttr>(this)->clone(C);
+  case attr::HLSLAppliedSemantic:
+    return cast<HLSLAppliedSemanticAttr>(this)->clone(C);
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->clone(C);
   case attr::HLSLControlFlowHint:
@@ -51306,6 +54053,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HLSLPackOffsetAttr>(this)->clone(C);
   case attr::HLSLParamModifier:
     return cast<HLSLParamModifierAttr>(this)->clone(C);
+  case attr::HLSLParsedSemantic:
+    return cast<HLSLParsedSemanticAttr>(this)->clone(C);
   case attr::HLSLROV:
     return cast<HLSLROVAttr>(this)->clone(C);
   case attr::HLSLRawBuffer:
@@ -51314,16 +54063,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HLSLResourceBindingAttr>(this)->clone(C);
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->clone(C);
-  case attr::HLSLSV_DispatchThreadID:
-    return cast<HLSLSV_DispatchThreadIDAttr>(this)->clone(C);
-  case attr::HLSLSV_GroupID:
-    return cast<HLSLSV_GroupIDAttr>(this)->clone(C);
-  case attr::HLSLSV_GroupIndex:
-    return cast<HLSLSV_GroupIndexAttr>(this)->clone(C);
-  case attr::HLSLSV_GroupThreadID:
-    return cast<HLSLSV_GroupThreadIDAttr>(this)->clone(C);
-  case attr::HLSLSV_Position:
-    return cast<HLSLSV_PositionAttr>(this)->clone(C);
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->clone(C);
   case attr::HLSLUnparsedSemantic:
@@ -51334,6 +54073,10 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HLSLVkConstantIdAttr>(this)->clone(C);
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->clone(C);
+  case attr::HLSLVkLocation:
+    return cast<HLSLVkLocationAttr>(this)->clone(C);
+  case attr::HLSLVkPushConstant:
+    return cast<HLSLVkPushConstantAttr>(this)->clone(C);
   case attr::HLSLWaveSize:
     return cast<HLSLWaveSizeAttr>(this)->clone(C);
   case attr::Hot:
@@ -51400,6 +54143,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<MSStructAttr>(this)->clone(C);
   case attr::MSVtorDisp:
     return cast<MSVtorDispAttr>(this)->clone(C);
+  case attr::MallocSpan:
+    return cast<MallocSpanAttr>(this)->clone(C);
   case attr::MaxFieldAlignment:
     return cast<MaxFieldAlignmentAttr>(this)->clone(C);
   case attr::MayAlias:
@@ -51422,6 +54167,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<MipsShortCallAttr>(this)->clone(C);
   case attr::Mode:
     return cast<ModeAttr>(this)->clone(C);
+  case attr::ModularFormat:
+    return cast<ModularFormatAttr>(this)->clone(C);
   case attr::MustTail:
     return cast<MustTailAttr>(this)->clone(C);
   case attr::NSConsumed:
@@ -51690,8 +54437,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<ReleaseCapabilityAttr>(this)->clone(C);
   case attr::ReleaseHandle:
     return cast<ReleaseHandleAttr>(this)->clone(C);
-  case attr::Replaceable:
-    return cast<ReplaceableAttr>(this)->clone(C);
   case attr::ReqdWorkGroupSize:
     return cast<ReqdWorkGroupSizeAttr>(this)->clone(C);
   case attr::RequiresCapability:
@@ -51810,8 +54555,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<TransparentUnionAttr>(this)->clone(C);
   case attr::TrivialABI:
     return cast<TrivialABIAttr>(this)->clone(C);
-  case attr::TriviallyRelocatable:
-    return cast<TriviallyRelocatableAttr>(this)->clone(C);
   case attr::TryAcquireCapability:
     return cast<TryAcquireCapabilityAttr>(this)->clone(C);
   case attr::TypeNonNull:
@@ -52134,6 +54877,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<CountedByOrNullAttr>(this)->printPretty(OS, Policy);
   case attr::DLLExport:
     return cast<DLLExportAttr>(this)->printPretty(OS, Policy);
+  case attr::DLLExportOnDecl:
+    return cast<DLLExportOnDeclAttr>(this)->printPretty(OS, Policy);
   case attr::DLLExportStaticLocal:
     return cast<DLLExportStaticLocalAttr>(this)->printPretty(OS, Policy);
   case attr::DLLImport:
@@ -52192,6 +54937,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<FormatMatchesAttr>(this)->printPretty(OS, Policy);
   case attr::FunctionReturnThunks:
     return cast<FunctionReturnThunksAttr>(this)->printPretty(OS, Policy);
+  case attr::GCCStruct:
+    return cast<GCCStructAttr>(this)->printPretty(OS, Policy);
   case attr::GNUInline:
     return cast<GNUInlineAttr>(this)->printPretty(OS, Policy);
   case attr::GuardedBy:
@@ -52200,6 +54947,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<GuardedVarAttr>(this)->printPretty(OS, Policy);
   case attr::HIPManaged:
     return cast<HIPManagedAttr>(this)->printPretty(OS, Policy);
+  case attr::HLSLAppliedSemantic:
+    return cast<HLSLAppliedSemanticAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLControlFlowHint:
@@ -52216,6 +54965,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HLSLPackOffsetAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLParamModifier:
     return cast<HLSLParamModifierAttr>(this)->printPretty(OS, Policy);
+  case attr::HLSLParsedSemantic:
+    return cast<HLSLParsedSemanticAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLROV:
     return cast<HLSLROVAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLRawBuffer:
@@ -52224,16 +54975,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HLSLResourceBindingAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLSV_DispatchThreadID:
-    return cast<HLSLSV_DispatchThreadIDAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLSV_GroupID:
-    return cast<HLSLSV_GroupIDAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLSV_GroupIndex:
-    return cast<HLSLSV_GroupIndexAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLSV_GroupThreadID:
-    return cast<HLSLSV_GroupThreadIDAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLSV_Position:
-    return cast<HLSLSV_PositionAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLUnparsedSemantic:
@@ -52244,6 +54985,10 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HLSLVkConstantIdAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->printPretty(OS, Policy);
+  case attr::HLSLVkLocation:
+    return cast<HLSLVkLocationAttr>(this)->printPretty(OS, Policy);
+  case attr::HLSLVkPushConstant:
+    return cast<HLSLVkPushConstantAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLWaveSize:
     return cast<HLSLWaveSizeAttr>(this)->printPretty(OS, Policy);
   case attr::Hot:
@@ -52310,6 +55055,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<MSStructAttr>(this)->printPretty(OS, Policy);
   case attr::MSVtorDisp:
     return cast<MSVtorDispAttr>(this)->printPretty(OS, Policy);
+  case attr::MallocSpan:
+    return cast<MallocSpanAttr>(this)->printPretty(OS, Policy);
   case attr::MaxFieldAlignment:
     return cast<MaxFieldAlignmentAttr>(this)->printPretty(OS, Policy);
   case attr::MayAlias:
@@ -52332,6 +55079,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<MipsShortCallAttr>(this)->printPretty(OS, Policy);
   case attr::Mode:
     return cast<ModeAttr>(this)->printPretty(OS, Policy);
+  case attr::ModularFormat:
+    return cast<ModularFormatAttr>(this)->printPretty(OS, Policy);
   case attr::MustTail:
     return cast<MustTailAttr>(this)->printPretty(OS, Policy);
   case attr::NSConsumed:
@@ -52600,8 +55349,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<ReleaseCapabilityAttr>(this)->printPretty(OS, Policy);
   case attr::ReleaseHandle:
     return cast<ReleaseHandleAttr>(this)->printPretty(OS, Policy);
-  case attr::Replaceable:
-    return cast<ReplaceableAttr>(this)->printPretty(OS, Policy);
   case attr::ReqdWorkGroupSize:
     return cast<ReqdWorkGroupSizeAttr>(this)->printPretty(OS, Policy);
   case attr::RequiresCapability:
@@ -52720,8 +55467,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<TransparentUnionAttr>(this)->printPretty(OS, Policy);
   case attr::TrivialABI:
     return cast<TrivialABIAttr>(this)->printPretty(OS, Policy);
-  case attr::TriviallyRelocatable:
-    return cast<TriviallyRelocatableAttr>(this)->printPretty(OS, Policy);
   case attr::TryAcquireCapability:
     return cast<TryAcquireCapabilityAttr>(this)->printPretty(OS, Policy);
   case attr::TypeNonNull:
@@ -52794,6 +55539,920 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<XRayLogArgsAttr>(this)->printPretty(OS, Policy);
   case attr::ZeroCallUsedRegs:
     return cast<ZeroCallUsedRegsAttr>(this)->printPretty(OS, Policy);
+  }
+  llvm_unreachable("Unexpected attribute kind!");
+}
+
+bool Attr::isEquivalent(const Attr &Other, StructuralEquivalenceContext &Context) const {
+if (getKind() != Other.getKind()) return false;
+
+  switch (getKind()) {
+  case attr::AArch64SVEPcs:
+    return cast<AArch64SVEPcsAttr>(this)->isEquivalent(cast<AArch64SVEPcsAttr>(Other), Context);
+  case attr::AArch64VectorPcs:
+    return cast<AArch64VectorPcsAttr>(this)->isEquivalent(cast<AArch64VectorPcsAttr>(Other), Context);
+  case attr::AMDGPUFlatWorkGroupSize:
+    return cast<AMDGPUFlatWorkGroupSizeAttr>(this)->isEquivalent(cast<AMDGPUFlatWorkGroupSizeAttr>(Other), Context);
+  case attr::AMDGPUMaxNumWorkGroups:
+    return cast<AMDGPUMaxNumWorkGroupsAttr>(this)->isEquivalent(cast<AMDGPUMaxNumWorkGroupsAttr>(Other), Context);
+  case attr::AMDGPUNumSGPR:
+    return cast<AMDGPUNumSGPRAttr>(this)->isEquivalent(cast<AMDGPUNumSGPRAttr>(Other), Context);
+  case attr::AMDGPUNumVGPR:
+    return cast<AMDGPUNumVGPRAttr>(this)->isEquivalent(cast<AMDGPUNumVGPRAttr>(Other), Context);
+  case attr::AMDGPUWavesPerEU:
+    return cast<AMDGPUWavesPerEUAttr>(this)->isEquivalent(cast<AMDGPUWavesPerEUAttr>(Other), Context);
+  case attr::ARMInterrupt:
+    return cast<ARMInterruptAttr>(this)->isEquivalent(cast<ARMInterruptAttr>(Other), Context);
+  case attr::ARMInterruptSaveFP:
+    return cast<ARMInterruptSaveFPAttr>(this)->isEquivalent(cast<ARMInterruptSaveFPAttr>(Other), Context);
+  case attr::ARMSaveFP:
+    return cast<ARMSaveFPAttr>(this)->isEquivalent(cast<ARMSaveFPAttr>(Other), Context);
+  case attr::AVRInterrupt:
+    return cast<AVRInterruptAttr>(this)->isEquivalent(cast<AVRInterruptAttr>(Other), Context);
+  case attr::AVRSignal:
+    return cast<AVRSignalAttr>(this)->isEquivalent(cast<AVRSignalAttr>(Other), Context);
+  case attr::AbiTag:
+    return cast<AbiTagAttr>(this)->isEquivalent(cast<AbiTagAttr>(Other), Context);
+  case attr::AcquireCapability:
+    return cast<AcquireCapabilityAttr>(this)->isEquivalent(cast<AcquireCapabilityAttr>(Other), Context);
+  case attr::AcquireHandle:
+    return cast<AcquireHandleAttr>(this)->isEquivalent(cast<AcquireHandleAttr>(Other), Context);
+  case attr::AcquiredAfter:
+    return cast<AcquiredAfterAttr>(this)->isEquivalent(cast<AcquiredAfterAttr>(Other), Context);
+  case attr::AcquiredBefore:
+    return cast<AcquiredBeforeAttr>(this)->isEquivalent(cast<AcquiredBeforeAttr>(Other), Context);
+  case attr::AddressSpace:
+    return cast<AddressSpaceAttr>(this)->isEquivalent(cast<AddressSpaceAttr>(Other), Context);
+  case attr::Alias:
+    return cast<AliasAttr>(this)->isEquivalent(cast<AliasAttr>(Other), Context);
+  case attr::AlignMac68k:
+    return cast<AlignMac68kAttr>(this)->isEquivalent(cast<AlignMac68kAttr>(Other), Context);
+  case attr::AlignNatural:
+    return cast<AlignNaturalAttr>(this)->isEquivalent(cast<AlignNaturalAttr>(Other), Context);
+  case attr::AlignValue:
+    return cast<AlignValueAttr>(this)->isEquivalent(cast<AlignValueAttr>(Other), Context);
+  case attr::Aligned:
+    return cast<AlignedAttr>(this)->isEquivalent(cast<AlignedAttr>(Other), Context);
+  case attr::AllocAlign:
+    return cast<AllocAlignAttr>(this)->isEquivalent(cast<AllocAlignAttr>(Other), Context);
+  case attr::AllocSize:
+    return cast<AllocSizeAttr>(this)->isEquivalent(cast<AllocSizeAttr>(Other), Context);
+  case attr::Allocating:
+    return cast<AllocatingAttr>(this)->isEquivalent(cast<AllocatingAttr>(Other), Context);
+  case attr::AlwaysDestroy:
+    return cast<AlwaysDestroyAttr>(this)->isEquivalent(cast<AlwaysDestroyAttr>(Other), Context);
+  case attr::AlwaysInline:
+    return cast<AlwaysInlineAttr>(this)->isEquivalent(cast<AlwaysInlineAttr>(Other), Context);
+  case attr::AnalyzerNoReturn:
+    return cast<AnalyzerNoReturnAttr>(this)->isEquivalent(cast<AnalyzerNoReturnAttr>(Other), Context);
+  case attr::Annotate:
+    return cast<AnnotateAttr>(this)->isEquivalent(cast<AnnotateAttr>(Other), Context);
+  case attr::AnnotateType:
+    return cast<AnnotateTypeAttr>(this)->isEquivalent(cast<AnnotateTypeAttr>(Other), Context);
+  case attr::AnyX86Interrupt:
+    return cast<AnyX86InterruptAttr>(this)->isEquivalent(cast<AnyX86InterruptAttr>(Other), Context);
+  case attr::AnyX86NoCallerSavedRegisters:
+    return cast<AnyX86NoCallerSavedRegistersAttr>(this)->isEquivalent(cast<AnyX86NoCallerSavedRegistersAttr>(Other), Context);
+  case attr::AnyX86NoCfCheck:
+    return cast<AnyX86NoCfCheckAttr>(this)->isEquivalent(cast<AnyX86NoCfCheckAttr>(Other), Context);
+  case attr::ArcWeakrefUnavailable:
+    return cast<ArcWeakrefUnavailableAttr>(this)->isEquivalent(cast<ArcWeakrefUnavailableAttr>(Other), Context);
+  case attr::ArgumentWithTypeTag:
+    return cast<ArgumentWithTypeTagAttr>(this)->isEquivalent(cast<ArgumentWithTypeTagAttr>(Other), Context);
+  case attr::ArmAgnostic:
+    return cast<ArmAgnosticAttr>(this)->isEquivalent(cast<ArmAgnosticAttr>(Other), Context);
+  case attr::ArmBuiltinAlias:
+    return cast<ArmBuiltinAliasAttr>(this)->isEquivalent(cast<ArmBuiltinAliasAttr>(Other), Context);
+  case attr::ArmIn:
+    return cast<ArmInAttr>(this)->isEquivalent(cast<ArmInAttr>(Other), Context);
+  case attr::ArmInOut:
+    return cast<ArmInOutAttr>(this)->isEquivalent(cast<ArmInOutAttr>(Other), Context);
+  case attr::ArmLocallyStreaming:
+    return cast<ArmLocallyStreamingAttr>(this)->isEquivalent(cast<ArmLocallyStreamingAttr>(Other), Context);
+  case attr::ArmMveStrictPolymorphism:
+    return cast<ArmMveStrictPolymorphismAttr>(this)->isEquivalent(cast<ArmMveStrictPolymorphismAttr>(Other), Context);
+  case attr::ArmNew:
+    return cast<ArmNewAttr>(this)->isEquivalent(cast<ArmNewAttr>(Other), Context);
+  case attr::ArmOut:
+    return cast<ArmOutAttr>(this)->isEquivalent(cast<ArmOutAttr>(Other), Context);
+  case attr::ArmPreserves:
+    return cast<ArmPreservesAttr>(this)->isEquivalent(cast<ArmPreservesAttr>(Other), Context);
+  case attr::ArmStreaming:
+    return cast<ArmStreamingAttr>(this)->isEquivalent(cast<ArmStreamingAttr>(Other), Context);
+  case attr::ArmStreamingCompatible:
+    return cast<ArmStreamingCompatibleAttr>(this)->isEquivalent(cast<ArmStreamingCompatibleAttr>(Other), Context);
+  case attr::Artificial:
+    return cast<ArtificialAttr>(this)->isEquivalent(cast<ArtificialAttr>(Other), Context);
+  case attr::AsmLabel:
+    return cast<AsmLabelAttr>(this)->isEquivalent(cast<AsmLabelAttr>(Other), Context);
+  case attr::AssertCapability:
+    return cast<AssertCapabilityAttr>(this)->isEquivalent(cast<AssertCapabilityAttr>(Other), Context);
+  case attr::AssumeAligned:
+    return cast<AssumeAlignedAttr>(this)->isEquivalent(cast<AssumeAlignedAttr>(Other), Context);
+  case attr::Atomic:
+    return cast<AtomicAttr>(this)->isEquivalent(cast<AtomicAttr>(Other), Context);
+  case attr::Availability:
+    return cast<AvailabilityAttr>(this)->isEquivalent(cast<AvailabilityAttr>(Other), Context);
+  case attr::AvailableOnlyInDefaultEvalMethod:
+    return cast<AvailableOnlyInDefaultEvalMethodAttr>(this)->isEquivalent(cast<AvailableOnlyInDefaultEvalMethodAttr>(Other), Context);
+  case attr::BPFFastCall:
+    return cast<BPFFastCallAttr>(this)->isEquivalent(cast<BPFFastCallAttr>(Other), Context);
+  case attr::BPFPreserveAccessIndex:
+    return cast<BPFPreserveAccessIndexAttr>(this)->isEquivalent(cast<BPFPreserveAccessIndexAttr>(Other), Context);
+  case attr::BPFPreserveStaticOffset:
+    return cast<BPFPreserveStaticOffsetAttr>(this)->isEquivalent(cast<BPFPreserveStaticOffsetAttr>(Other), Context);
+  case attr::BTFDeclTag:
+    return cast<BTFDeclTagAttr>(this)->isEquivalent(cast<BTFDeclTagAttr>(Other), Context);
+  case attr::BTFTypeTag:
+    return cast<BTFTypeTagAttr>(this)->isEquivalent(cast<BTFTypeTagAttr>(Other), Context);
+  case attr::Blocking:
+    return cast<BlockingAttr>(this)->isEquivalent(cast<BlockingAttr>(Other), Context);
+  case attr::Blocks:
+    return cast<BlocksAttr>(this)->isEquivalent(cast<BlocksAttr>(Other), Context);
+  case attr::Builtin:
+    return cast<BuiltinAttr>(this)->isEquivalent(cast<BuiltinAttr>(Other), Context);
+  case attr::BuiltinAlias:
+    return cast<BuiltinAliasAttr>(this)->isEquivalent(cast<BuiltinAliasAttr>(Other), Context);
+  case attr::C11NoReturn:
+    return cast<C11NoReturnAttr>(this)->isEquivalent(cast<C11NoReturnAttr>(Other), Context);
+  case attr::CDecl:
+    return cast<CDeclAttr>(this)->isEquivalent(cast<CDeclAttr>(Other), Context);
+  case attr::CFAuditedTransfer:
+    return cast<CFAuditedTransferAttr>(this)->isEquivalent(cast<CFAuditedTransferAttr>(Other), Context);
+  case attr::CFConsumed:
+    return cast<CFConsumedAttr>(this)->isEquivalent(cast<CFConsumedAttr>(Other), Context);
+  case attr::CFGuard:
+    return cast<CFGuardAttr>(this)->isEquivalent(cast<CFGuardAttr>(Other), Context);
+  case attr::CFICanonicalJumpTable:
+    return cast<CFICanonicalJumpTableAttr>(this)->isEquivalent(cast<CFICanonicalJumpTableAttr>(Other), Context);
+  case attr::CFISalt:
+    return cast<CFISaltAttr>(this)->isEquivalent(cast<CFISaltAttr>(Other), Context);
+  case attr::CFIUncheckedCallee:
+    return cast<CFIUncheckedCalleeAttr>(this)->isEquivalent(cast<CFIUncheckedCalleeAttr>(Other), Context);
+  case attr::CFReturnsNotRetained:
+    return cast<CFReturnsNotRetainedAttr>(this)->isEquivalent(cast<CFReturnsNotRetainedAttr>(Other), Context);
+  case attr::CFReturnsRetained:
+    return cast<CFReturnsRetainedAttr>(this)->isEquivalent(cast<CFReturnsRetainedAttr>(Other), Context);
+  case attr::CFUnknownTransfer:
+    return cast<CFUnknownTransferAttr>(this)->isEquivalent(cast<CFUnknownTransferAttr>(Other), Context);
+  case attr::CPUDispatch:
+    return cast<CPUDispatchAttr>(this)->isEquivalent(cast<CPUDispatchAttr>(Other), Context);
+  case attr::CPUSpecific:
+    return cast<CPUSpecificAttr>(this)->isEquivalent(cast<CPUSpecificAttr>(Other), Context);
+  case attr::CUDAClusterDims:
+    return cast<CUDAClusterDimsAttr>(this)->isEquivalent(cast<CUDAClusterDimsAttr>(Other), Context);
+  case attr::CUDAConstant:
+    return cast<CUDAConstantAttr>(this)->isEquivalent(cast<CUDAConstantAttr>(Other), Context);
+  case attr::CUDADevice:
+    return cast<CUDADeviceAttr>(this)->isEquivalent(cast<CUDADeviceAttr>(Other), Context);
+  case attr::CUDADeviceBuiltinSurfaceType:
+    return cast<CUDADeviceBuiltinSurfaceTypeAttr>(this)->isEquivalent(cast<CUDADeviceBuiltinSurfaceTypeAttr>(Other), Context);
+  case attr::CUDADeviceBuiltinTextureType:
+    return cast<CUDADeviceBuiltinTextureTypeAttr>(this)->isEquivalent(cast<CUDADeviceBuiltinTextureTypeAttr>(Other), Context);
+  case attr::CUDAGlobal:
+    return cast<CUDAGlobalAttr>(this)->isEquivalent(cast<CUDAGlobalAttr>(Other), Context);
+  case attr::CUDAGridConstant:
+    return cast<CUDAGridConstantAttr>(this)->isEquivalent(cast<CUDAGridConstantAttr>(Other), Context);
+  case attr::CUDAHost:
+    return cast<CUDAHostAttr>(this)->isEquivalent(cast<CUDAHostAttr>(Other), Context);
+  case attr::CUDAInvalidTarget:
+    return cast<CUDAInvalidTargetAttr>(this)->isEquivalent(cast<CUDAInvalidTargetAttr>(Other), Context);
+  case attr::CUDALaunchBounds:
+    return cast<CUDALaunchBoundsAttr>(this)->isEquivalent(cast<CUDALaunchBoundsAttr>(Other), Context);
+  case attr::CUDANoCluster:
+    return cast<CUDANoClusterAttr>(this)->isEquivalent(cast<CUDANoClusterAttr>(Other), Context);
+  case attr::CUDAShared:
+    return cast<CUDASharedAttr>(this)->isEquivalent(cast<CUDASharedAttr>(Other), Context);
+  case attr::CXX11NoReturn:
+    return cast<CXX11NoReturnAttr>(this)->isEquivalent(cast<CXX11NoReturnAttr>(Other), Context);
+  case attr::CXXAssume:
+    return cast<CXXAssumeAttr>(this)->isEquivalent(cast<CXXAssumeAttr>(Other), Context);
+  case attr::CallableWhen:
+    return cast<CallableWhenAttr>(this)->isEquivalent(cast<CallableWhenAttr>(Other), Context);
+  case attr::Callback:
+    return cast<CallbackAttr>(this)->isEquivalent(cast<CallbackAttr>(Other), Context);
+  case attr::CalledOnce:
+    return cast<CalledOnceAttr>(this)->isEquivalent(cast<CalledOnceAttr>(Other), Context);
+  case attr::Capability:
+    return cast<CapabilityAttr>(this)->isEquivalent(cast<CapabilityAttr>(Other), Context);
+  case attr::CapturedRecord:
+    return cast<CapturedRecordAttr>(this)->isEquivalent(cast<CapturedRecordAttr>(Other), Context);
+  case attr::CarriesDependency:
+    return cast<CarriesDependencyAttr>(this)->isEquivalent(cast<CarriesDependencyAttr>(Other), Context);
+  case attr::Cleanup:
+    return cast<CleanupAttr>(this)->isEquivalent(cast<CleanupAttr>(Other), Context);
+  case attr::ClspvLibclcBuiltin:
+    return cast<ClspvLibclcBuiltinAttr>(this)->isEquivalent(cast<ClspvLibclcBuiltinAttr>(Other), Context);
+  case attr::CmseNSCall:
+    return cast<CmseNSCallAttr>(this)->isEquivalent(cast<CmseNSCallAttr>(Other), Context);
+  case attr::CmseNSEntry:
+    return cast<CmseNSEntryAttr>(this)->isEquivalent(cast<CmseNSEntryAttr>(Other), Context);
+  case attr::CodeAlign:
+    return cast<CodeAlignAttr>(this)->isEquivalent(cast<CodeAlignAttr>(Other), Context);
+  case attr::CodeModel:
+    return cast<CodeModelAttr>(this)->isEquivalent(cast<CodeModelAttr>(Other), Context);
+  case attr::CodeSeg:
+    return cast<CodeSegAttr>(this)->isEquivalent(cast<CodeSegAttr>(Other), Context);
+  case attr::Cold:
+    return cast<ColdAttr>(this)->isEquivalent(cast<ColdAttr>(Other), Context);
+  case attr::Common:
+    return cast<CommonAttr>(this)->isEquivalent(cast<CommonAttr>(Other), Context);
+  case attr::Const:
+    return cast<ConstAttr>(this)->isEquivalent(cast<ConstAttr>(Other), Context);
+  case attr::ConstInit:
+    return cast<ConstInitAttr>(this)->isEquivalent(cast<ConstInitAttr>(Other), Context);
+  case attr::Constructor:
+    return cast<ConstructorAttr>(this)->isEquivalent(cast<ConstructorAttr>(Other), Context);
+  case attr::Consumable:
+    return cast<ConsumableAttr>(this)->isEquivalent(cast<ConsumableAttr>(Other), Context);
+  case attr::ConsumableAutoCast:
+    return cast<ConsumableAutoCastAttr>(this)->isEquivalent(cast<ConsumableAutoCastAttr>(Other), Context);
+  case attr::ConsumableSetOnRead:
+    return cast<ConsumableSetOnReadAttr>(this)->isEquivalent(cast<ConsumableSetOnReadAttr>(Other), Context);
+  case attr::Convergent:
+    return cast<ConvergentAttr>(this)->isEquivalent(cast<ConvergentAttr>(Other), Context);
+  case attr::CoroAwaitElidable:
+    return cast<CoroAwaitElidableAttr>(this)->isEquivalent(cast<CoroAwaitElidableAttr>(Other), Context);
+  case attr::CoroAwaitElidableArgument:
+    return cast<CoroAwaitElidableArgumentAttr>(this)->isEquivalent(cast<CoroAwaitElidableArgumentAttr>(Other), Context);
+  case attr::CoroDisableLifetimeBound:
+    return cast<CoroDisableLifetimeBoundAttr>(this)->isEquivalent(cast<CoroDisableLifetimeBoundAttr>(Other), Context);
+  case attr::CoroLifetimeBound:
+    return cast<CoroLifetimeBoundAttr>(this)->isEquivalent(cast<CoroLifetimeBoundAttr>(Other), Context);
+  case attr::CoroOnlyDestroyWhenComplete:
+    return cast<CoroOnlyDestroyWhenCompleteAttr>(this)->isEquivalent(cast<CoroOnlyDestroyWhenCompleteAttr>(Other), Context);
+  case attr::CoroReturnType:
+    return cast<CoroReturnTypeAttr>(this)->isEquivalent(cast<CoroReturnTypeAttr>(Other), Context);
+  case attr::CoroWrapper:
+    return cast<CoroWrapperAttr>(this)->isEquivalent(cast<CoroWrapperAttr>(Other), Context);
+  case attr::CountedBy:
+    return cast<CountedByAttr>(this)->isEquivalent(cast<CountedByAttr>(Other), Context);
+  case attr::CountedByOrNull:
+    return cast<CountedByOrNullAttr>(this)->isEquivalent(cast<CountedByOrNullAttr>(Other), Context);
+  case attr::DLLExport:
+    return cast<DLLExportAttr>(this)->isEquivalent(cast<DLLExportAttr>(Other), Context);
+  case attr::DLLExportOnDecl:
+    return cast<DLLExportOnDeclAttr>(this)->isEquivalent(cast<DLLExportOnDeclAttr>(Other), Context);
+  case attr::DLLExportStaticLocal:
+    return cast<DLLExportStaticLocalAttr>(this)->isEquivalent(cast<DLLExportStaticLocalAttr>(Other), Context);
+  case attr::DLLImport:
+    return cast<DLLImportAttr>(this)->isEquivalent(cast<DLLImportAttr>(Other), Context);
+  case attr::DLLImportStaticLocal:
+    return cast<DLLImportStaticLocalAttr>(this)->isEquivalent(cast<DLLImportStaticLocalAttr>(Other), Context);
+  case attr::Deprecated:
+    return cast<DeprecatedAttr>(this)->isEquivalent(cast<DeprecatedAttr>(Other), Context);
+  case attr::Destructor:
+    return cast<DestructorAttr>(this)->isEquivalent(cast<DestructorAttr>(Other), Context);
+  case attr::DeviceKernel:
+    return cast<DeviceKernelAttr>(this)->isEquivalent(cast<DeviceKernelAttr>(Other), Context);
+  case attr::DiagnoseAsBuiltin:
+    return cast<DiagnoseAsBuiltinAttr>(this)->isEquivalent(cast<DiagnoseAsBuiltinAttr>(Other), Context);
+  case attr::DiagnoseIf:
+    return cast<DiagnoseIfAttr>(this)->isEquivalent(cast<DiagnoseIfAttr>(Other), Context);
+  case attr::DisableSanitizerInstrumentation:
+    return cast<DisableSanitizerInstrumentationAttr>(this)->isEquivalent(cast<DisableSanitizerInstrumentationAttr>(Other), Context);
+  case attr::DisableTailCalls:
+    return cast<DisableTailCallsAttr>(this)->isEquivalent(cast<DisableTailCallsAttr>(Other), Context);
+  case attr::EmptyBases:
+    return cast<EmptyBasesAttr>(this)->isEquivalent(cast<EmptyBasesAttr>(Other), Context);
+  case attr::EnableIf:
+    return cast<EnableIfAttr>(this)->isEquivalent(cast<EnableIfAttr>(Other), Context);
+  case attr::EnforceTCB:
+    return cast<EnforceTCBAttr>(this)->isEquivalent(cast<EnforceTCBAttr>(Other), Context);
+  case attr::EnforceTCBLeaf:
+    return cast<EnforceTCBLeafAttr>(this)->isEquivalent(cast<EnforceTCBLeafAttr>(Other), Context);
+  case attr::EnumExtensibility:
+    return cast<EnumExtensibilityAttr>(this)->isEquivalent(cast<EnumExtensibilityAttr>(Other), Context);
+  case attr::Error:
+    return cast<ErrorAttr>(this)->isEquivalent(cast<ErrorAttr>(Other), Context);
+  case attr::ExcludeFromExplicitInstantiation:
+    return cast<ExcludeFromExplicitInstantiationAttr>(this)->isEquivalent(cast<ExcludeFromExplicitInstantiationAttr>(Other), Context);
+  case attr::ExplicitInit:
+    return cast<ExplicitInitAttr>(this)->isEquivalent(cast<ExplicitInitAttr>(Other), Context);
+  case attr::ExtVectorType:
+    return cast<ExtVectorTypeAttr>(this)->isEquivalent(cast<ExtVectorTypeAttr>(Other), Context);
+  case attr::ExternalSourceSymbol:
+    return cast<ExternalSourceSymbolAttr>(this)->isEquivalent(cast<ExternalSourceSymbolAttr>(Other), Context);
+  case attr::FallThrough:
+    return cast<FallThroughAttr>(this)->isEquivalent(cast<FallThroughAttr>(Other), Context);
+  case attr::FastCall:
+    return cast<FastCallAttr>(this)->isEquivalent(cast<FastCallAttr>(Other), Context);
+  case attr::Final:
+    return cast<FinalAttr>(this)->isEquivalent(cast<FinalAttr>(Other), Context);
+  case attr::FlagEnum:
+    return cast<FlagEnumAttr>(this)->isEquivalent(cast<FlagEnumAttr>(Other), Context);
+  case attr::Flatten:
+    return cast<FlattenAttr>(this)->isEquivalent(cast<FlattenAttr>(Other), Context);
+  case attr::Format:
+    return cast<FormatAttr>(this)->isEquivalent(cast<FormatAttr>(Other), Context);
+  case attr::FormatArg:
+    return cast<FormatArgAttr>(this)->isEquivalent(cast<FormatArgAttr>(Other), Context);
+  case attr::FormatMatches:
+    return cast<FormatMatchesAttr>(this)->isEquivalent(cast<FormatMatchesAttr>(Other), Context);
+  case attr::FunctionReturnThunks:
+    return cast<FunctionReturnThunksAttr>(this)->isEquivalent(cast<FunctionReturnThunksAttr>(Other), Context);
+  case attr::GCCStruct:
+    return cast<GCCStructAttr>(this)->isEquivalent(cast<GCCStructAttr>(Other), Context);
+  case attr::GNUInline:
+    return cast<GNUInlineAttr>(this)->isEquivalent(cast<GNUInlineAttr>(Other), Context);
+  case attr::GuardedBy:
+    return cast<GuardedByAttr>(this)->isEquivalent(cast<GuardedByAttr>(Other), Context);
+  case attr::GuardedVar:
+    return cast<GuardedVarAttr>(this)->isEquivalent(cast<GuardedVarAttr>(Other), Context);
+  case attr::HIPManaged:
+    return cast<HIPManagedAttr>(this)->isEquivalent(cast<HIPManagedAttr>(Other), Context);
+  case attr::HLSLAppliedSemantic:
+    return cast<HLSLAppliedSemanticAttr>(this)->isEquivalent(cast<HLSLAppliedSemanticAttr>(Other), Context);
+  case attr::HLSLContainedType:
+    return cast<HLSLContainedTypeAttr>(this)->isEquivalent(cast<HLSLContainedTypeAttr>(Other), Context);
+  case attr::HLSLControlFlowHint:
+    return cast<HLSLControlFlowHintAttr>(this)->isEquivalent(cast<HLSLControlFlowHintAttr>(Other), Context);
+  case attr::HLSLGroupSharedAddressSpace:
+    return cast<HLSLGroupSharedAddressSpaceAttr>(this)->isEquivalent(cast<HLSLGroupSharedAddressSpaceAttr>(Other), Context);
+  case attr::HLSLIsCounter:
+    return cast<HLSLIsCounterAttr>(this)->isEquivalent(cast<HLSLIsCounterAttr>(Other), Context);
+  case attr::HLSLLoopHint:
+    return cast<HLSLLoopHintAttr>(this)->isEquivalent(cast<HLSLLoopHintAttr>(Other), Context);
+  case attr::HLSLNumThreads:
+    return cast<HLSLNumThreadsAttr>(this)->isEquivalent(cast<HLSLNumThreadsAttr>(Other), Context);
+  case attr::HLSLPackOffset:
+    return cast<HLSLPackOffsetAttr>(this)->isEquivalent(cast<HLSLPackOffsetAttr>(Other), Context);
+  case attr::HLSLParamModifier:
+    return cast<HLSLParamModifierAttr>(this)->isEquivalent(cast<HLSLParamModifierAttr>(Other), Context);
+  case attr::HLSLParsedSemantic:
+    return cast<HLSLParsedSemanticAttr>(this)->isEquivalent(cast<HLSLParsedSemanticAttr>(Other), Context);
+  case attr::HLSLROV:
+    return cast<HLSLROVAttr>(this)->isEquivalent(cast<HLSLROVAttr>(Other), Context);
+  case attr::HLSLRawBuffer:
+    return cast<HLSLRawBufferAttr>(this)->isEquivalent(cast<HLSLRawBufferAttr>(Other), Context);
+  case attr::HLSLResourceBinding:
+    return cast<HLSLResourceBindingAttr>(this)->isEquivalent(cast<HLSLResourceBindingAttr>(Other), Context);
+  case attr::HLSLResourceClass:
+    return cast<HLSLResourceClassAttr>(this)->isEquivalent(cast<HLSLResourceClassAttr>(Other), Context);
+  case attr::HLSLShader:
+    return cast<HLSLShaderAttr>(this)->isEquivalent(cast<HLSLShaderAttr>(Other), Context);
+  case attr::HLSLUnparsedSemantic:
+    return cast<HLSLUnparsedSemanticAttr>(this)->isEquivalent(cast<HLSLUnparsedSemanticAttr>(Other), Context);
+  case attr::HLSLVkBinding:
+    return cast<HLSLVkBindingAttr>(this)->isEquivalent(cast<HLSLVkBindingAttr>(Other), Context);
+  case attr::HLSLVkConstantId:
+    return cast<HLSLVkConstantIdAttr>(this)->isEquivalent(cast<HLSLVkConstantIdAttr>(Other), Context);
+  case attr::HLSLVkExtBuiltinInput:
+    return cast<HLSLVkExtBuiltinInputAttr>(this)->isEquivalent(cast<HLSLVkExtBuiltinInputAttr>(Other), Context);
+  case attr::HLSLVkLocation:
+    return cast<HLSLVkLocationAttr>(this)->isEquivalent(cast<HLSLVkLocationAttr>(Other), Context);
+  case attr::HLSLVkPushConstant:
+    return cast<HLSLVkPushConstantAttr>(this)->isEquivalent(cast<HLSLVkPushConstantAttr>(Other), Context);
+  case attr::HLSLWaveSize:
+    return cast<HLSLWaveSizeAttr>(this)->isEquivalent(cast<HLSLWaveSizeAttr>(Other), Context);
+  case attr::Hot:
+    return cast<HotAttr>(this)->isEquivalent(cast<HotAttr>(Other), Context);
+  case attr::HybridPatchable:
+    return cast<HybridPatchableAttr>(this)->isEquivalent(cast<HybridPatchableAttr>(Other), Context);
+  case attr::IBAction:
+    return cast<IBActionAttr>(this)->isEquivalent(cast<IBActionAttr>(Other), Context);
+  case attr::IBOutlet:
+    return cast<IBOutletAttr>(this)->isEquivalent(cast<IBOutletAttr>(Other), Context);
+  case attr::IBOutletCollection:
+    return cast<IBOutletCollectionAttr>(this)->isEquivalent(cast<IBOutletCollectionAttr>(Other), Context);
+  case attr::IFunc:
+    return cast<IFuncAttr>(this)->isEquivalent(cast<IFuncAttr>(Other), Context);
+  case attr::InferredNoReturn:
+    return cast<InferredNoReturnAttr>(this)->isEquivalent(cast<InferredNoReturnAttr>(Other), Context);
+  case attr::InitPriority:
+    return cast<InitPriorityAttr>(this)->isEquivalent(cast<InitPriorityAttr>(Other), Context);
+  case attr::InitSeg:
+    return cast<InitSegAttr>(this)->isEquivalent(cast<InitSegAttr>(Other), Context);
+  case attr::IntelOclBicc:
+    return cast<IntelOclBiccAttr>(this)->isEquivalent(cast<IntelOclBiccAttr>(Other), Context);
+  case attr::InternalLinkage:
+    return cast<InternalLinkageAttr>(this)->isEquivalent(cast<InternalLinkageAttr>(Other), Context);
+  case attr::LTOVisibilityPublic:
+    return cast<LTOVisibilityPublicAttr>(this)->isEquivalent(cast<LTOVisibilityPublicAttr>(Other), Context);
+  case attr::LayoutVersion:
+    return cast<LayoutVersionAttr>(this)->isEquivalent(cast<LayoutVersionAttr>(Other), Context);
+  case attr::Leaf:
+    return cast<LeafAttr>(this)->isEquivalent(cast<LeafAttr>(Other), Context);
+  case attr::LifetimeBound:
+    return cast<LifetimeBoundAttr>(this)->isEquivalent(cast<LifetimeBoundAttr>(Other), Context);
+  case attr::LifetimeCaptureBy:
+    return cast<LifetimeCaptureByAttr>(this)->isEquivalent(cast<LifetimeCaptureByAttr>(Other), Context);
+  case attr::Likely:
+    return cast<LikelyAttr>(this)->isEquivalent(cast<LikelyAttr>(Other), Context);
+  case attr::LoaderUninitialized:
+    return cast<LoaderUninitializedAttr>(this)->isEquivalent(cast<LoaderUninitializedAttr>(Other), Context);
+  case attr::LockReturned:
+    return cast<LockReturnedAttr>(this)->isEquivalent(cast<LockReturnedAttr>(Other), Context);
+  case attr::LocksExcluded:
+    return cast<LocksExcludedAttr>(this)->isEquivalent(cast<LocksExcludedAttr>(Other), Context);
+  case attr::LoopHint:
+    return cast<LoopHintAttr>(this)->isEquivalent(cast<LoopHintAttr>(Other), Context);
+  case attr::M68kInterrupt:
+    return cast<M68kInterruptAttr>(this)->isEquivalent(cast<M68kInterruptAttr>(Other), Context);
+  case attr::M68kRTD:
+    return cast<M68kRTDAttr>(this)->isEquivalent(cast<M68kRTDAttr>(Other), Context);
+  case attr::MIGServerRoutine:
+    return cast<MIGServerRoutineAttr>(this)->isEquivalent(cast<MIGServerRoutineAttr>(Other), Context);
+  case attr::MSABI:
+    return cast<MSABIAttr>(this)->isEquivalent(cast<MSABIAttr>(Other), Context);
+  case attr::MSAllocator:
+    return cast<MSAllocatorAttr>(this)->isEquivalent(cast<MSAllocatorAttr>(Other), Context);
+  case attr::MSConstexpr:
+    return cast<MSConstexprAttr>(this)->isEquivalent(cast<MSConstexprAttr>(Other), Context);
+  case attr::MSInheritance:
+    return cast<MSInheritanceAttr>(this)->isEquivalent(cast<MSInheritanceAttr>(Other), Context);
+  case attr::MSNoVTable:
+    return cast<MSNoVTableAttr>(this)->isEquivalent(cast<MSNoVTableAttr>(Other), Context);
+  case attr::MSP430Interrupt:
+    return cast<MSP430InterruptAttr>(this)->isEquivalent(cast<MSP430InterruptAttr>(Other), Context);
+  case attr::MSStruct:
+    return cast<MSStructAttr>(this)->isEquivalent(cast<MSStructAttr>(Other), Context);
+  case attr::MSVtorDisp:
+    return cast<MSVtorDispAttr>(this)->isEquivalent(cast<MSVtorDispAttr>(Other), Context);
+  case attr::MallocSpan:
+    return cast<MallocSpanAttr>(this)->isEquivalent(cast<MallocSpanAttr>(Other), Context);
+  case attr::MaxFieldAlignment:
+    return cast<MaxFieldAlignmentAttr>(this)->isEquivalent(cast<MaxFieldAlignmentAttr>(Other), Context);
+  case attr::MayAlias:
+    return cast<MayAliasAttr>(this)->isEquivalent(cast<MayAliasAttr>(Other), Context);
+  case attr::MaybeUndef:
+    return cast<MaybeUndefAttr>(this)->isEquivalent(cast<MaybeUndefAttr>(Other), Context);
+  case attr::MicroMips:
+    return cast<MicroMipsAttr>(this)->isEquivalent(cast<MicroMipsAttr>(Other), Context);
+  case attr::MinSize:
+    return cast<MinSizeAttr>(this)->isEquivalent(cast<MinSizeAttr>(Other), Context);
+  case attr::MinVectorWidth:
+    return cast<MinVectorWidthAttr>(this)->isEquivalent(cast<MinVectorWidthAttr>(Other), Context);
+  case attr::Mips16:
+    return cast<Mips16Attr>(this)->isEquivalent(cast<Mips16Attr>(Other), Context);
+  case attr::MipsInterrupt:
+    return cast<MipsInterruptAttr>(this)->isEquivalent(cast<MipsInterruptAttr>(Other), Context);
+  case attr::MipsLongCall:
+    return cast<MipsLongCallAttr>(this)->isEquivalent(cast<MipsLongCallAttr>(Other), Context);
+  case attr::MipsShortCall:
+    return cast<MipsShortCallAttr>(this)->isEquivalent(cast<MipsShortCallAttr>(Other), Context);
+  case attr::Mode:
+    return cast<ModeAttr>(this)->isEquivalent(cast<ModeAttr>(Other), Context);
+  case attr::ModularFormat:
+    return cast<ModularFormatAttr>(this)->isEquivalent(cast<ModularFormatAttr>(Other), Context);
+  case attr::MustTail:
+    return cast<MustTailAttr>(this)->isEquivalent(cast<MustTailAttr>(Other), Context);
+  case attr::NSConsumed:
+    return cast<NSConsumedAttr>(this)->isEquivalent(cast<NSConsumedAttr>(Other), Context);
+  case attr::NSConsumesSelf:
+    return cast<NSConsumesSelfAttr>(this)->isEquivalent(cast<NSConsumesSelfAttr>(Other), Context);
+  case attr::NSErrorDomain:
+    return cast<NSErrorDomainAttr>(this)->isEquivalent(cast<NSErrorDomainAttr>(Other), Context);
+  case attr::NSReturnsAutoreleased:
+    return cast<NSReturnsAutoreleasedAttr>(this)->isEquivalent(cast<NSReturnsAutoreleasedAttr>(Other), Context);
+  case attr::NSReturnsNotRetained:
+    return cast<NSReturnsNotRetainedAttr>(this)->isEquivalent(cast<NSReturnsNotRetainedAttr>(Other), Context);
+  case attr::NSReturnsRetained:
+    return cast<NSReturnsRetainedAttr>(this)->isEquivalent(cast<NSReturnsRetainedAttr>(Other), Context);
+  case attr::Naked:
+    return cast<NakedAttr>(this)->isEquivalent(cast<NakedAttr>(Other), Context);
+  case attr::NoAlias:
+    return cast<NoAliasAttr>(this)->isEquivalent(cast<NoAliasAttr>(Other), Context);
+  case attr::NoBuiltin:
+    return cast<NoBuiltinAttr>(this)->isEquivalent(cast<NoBuiltinAttr>(Other), Context);
+  case attr::NoCommon:
+    return cast<NoCommonAttr>(this)->isEquivalent(cast<NoCommonAttr>(Other), Context);
+  case attr::NoConvergent:
+    return cast<NoConvergentAttr>(this)->isEquivalent(cast<NoConvergentAttr>(Other), Context);
+  case attr::NoDebug:
+    return cast<NoDebugAttr>(this)->isEquivalent(cast<NoDebugAttr>(Other), Context);
+  case attr::NoDeref:
+    return cast<NoDerefAttr>(this)->isEquivalent(cast<NoDerefAttr>(Other), Context);
+  case attr::NoDestroy:
+    return cast<NoDestroyAttr>(this)->isEquivalent(cast<NoDestroyAttr>(Other), Context);
+  case attr::NoDuplicate:
+    return cast<NoDuplicateAttr>(this)->isEquivalent(cast<NoDuplicateAttr>(Other), Context);
+  case attr::NoEscape:
+    return cast<NoEscapeAttr>(this)->isEquivalent(cast<NoEscapeAttr>(Other), Context);
+  case attr::NoInline:
+    return cast<NoInlineAttr>(this)->isEquivalent(cast<NoInlineAttr>(Other), Context);
+  case attr::NoInstrumentFunction:
+    return cast<NoInstrumentFunctionAttr>(this)->isEquivalent(cast<NoInstrumentFunctionAttr>(Other), Context);
+  case attr::NoMerge:
+    return cast<NoMergeAttr>(this)->isEquivalent(cast<NoMergeAttr>(Other), Context);
+  case attr::NoMicroMips:
+    return cast<NoMicroMipsAttr>(this)->isEquivalent(cast<NoMicroMipsAttr>(Other), Context);
+  case attr::NoMips16:
+    return cast<NoMips16Attr>(this)->isEquivalent(cast<NoMips16Attr>(Other), Context);
+  case attr::NoProfileFunction:
+    return cast<NoProfileFunctionAttr>(this)->isEquivalent(cast<NoProfileFunctionAttr>(Other), Context);
+  case attr::NoRandomizeLayout:
+    return cast<NoRandomizeLayoutAttr>(this)->isEquivalent(cast<NoRandomizeLayoutAttr>(Other), Context);
+  case attr::NoReturn:
+    return cast<NoReturnAttr>(this)->isEquivalent(cast<NoReturnAttr>(Other), Context);
+  case attr::NoSanitize:
+    return cast<NoSanitizeAttr>(this)->isEquivalent(cast<NoSanitizeAttr>(Other), Context);
+  case attr::NoSpecializations:
+    return cast<NoSpecializationsAttr>(this)->isEquivalent(cast<NoSpecializationsAttr>(Other), Context);
+  case attr::NoSpeculativeLoadHardening:
+    return cast<NoSpeculativeLoadHardeningAttr>(this)->isEquivalent(cast<NoSpeculativeLoadHardeningAttr>(Other), Context);
+  case attr::NoSplitStack:
+    return cast<NoSplitStackAttr>(this)->isEquivalent(cast<NoSplitStackAttr>(Other), Context);
+  case attr::NoStackProtector:
+    return cast<NoStackProtectorAttr>(this)->isEquivalent(cast<NoStackProtectorAttr>(Other), Context);
+  case attr::NoThreadSafetyAnalysis:
+    return cast<NoThreadSafetyAnalysisAttr>(this)->isEquivalent(cast<NoThreadSafetyAnalysisAttr>(Other), Context);
+  case attr::NoThrow:
+    return cast<NoThrowAttr>(this)->isEquivalent(cast<NoThrowAttr>(Other), Context);
+  case attr::NoTrivialAutoVarInit:
+    return cast<NoTrivialAutoVarInitAttr>(this)->isEquivalent(cast<NoTrivialAutoVarInitAttr>(Other), Context);
+  case attr::NoUniqueAddress:
+    return cast<NoUniqueAddressAttr>(this)->isEquivalent(cast<NoUniqueAddressAttr>(Other), Context);
+  case attr::NoUwtable:
+    return cast<NoUwtableAttr>(this)->isEquivalent(cast<NoUwtableAttr>(Other), Context);
+  case attr::NonAllocating:
+    return cast<NonAllocatingAttr>(this)->isEquivalent(cast<NonAllocatingAttr>(Other), Context);
+  case attr::NonBlocking:
+    return cast<NonBlockingAttr>(this)->isEquivalent(cast<NonBlockingAttr>(Other), Context);
+  case attr::NonNull:
+    return cast<NonNullAttr>(this)->isEquivalent(cast<NonNullAttr>(Other), Context);
+  case attr::NonString:
+    return cast<NonStringAttr>(this)->isEquivalent(cast<NonStringAttr>(Other), Context);
+  case attr::NotTailCalled:
+    return cast<NotTailCalledAttr>(this)->isEquivalent(cast<NotTailCalledAttr>(Other), Context);
+  case attr::OMPAllocateDecl:
+    return cast<OMPAllocateDeclAttr>(this)->isEquivalent(cast<OMPAllocateDeclAttr>(Other), Context);
+  case attr::OMPAssume:
+    return cast<OMPAssumeAttr>(this)->isEquivalent(cast<OMPAssumeAttr>(Other), Context);
+  case attr::OMPCaptureKind:
+    return cast<OMPCaptureKindAttr>(this)->isEquivalent(cast<OMPCaptureKindAttr>(Other), Context);
+  case attr::OMPCaptureNoInit:
+    return cast<OMPCaptureNoInitAttr>(this)->isEquivalent(cast<OMPCaptureNoInitAttr>(Other), Context);
+  case attr::OMPDeclareSimdDecl:
+    return cast<OMPDeclareSimdDeclAttr>(this)->isEquivalent(cast<OMPDeclareSimdDeclAttr>(Other), Context);
+  case attr::OMPDeclareTargetDecl:
+    return cast<OMPDeclareTargetDeclAttr>(this)->isEquivalent(cast<OMPDeclareTargetDeclAttr>(Other), Context);
+  case attr::OMPDeclareVariant:
+    return cast<OMPDeclareVariantAttr>(this)->isEquivalent(cast<OMPDeclareVariantAttr>(Other), Context);
+  case attr::OMPGroupPrivateDecl:
+    return cast<OMPGroupPrivateDeclAttr>(this)->isEquivalent(cast<OMPGroupPrivateDeclAttr>(Other), Context);
+  case attr::OMPReferencedVar:
+    return cast<OMPReferencedVarAttr>(this)->isEquivalent(cast<OMPReferencedVarAttr>(Other), Context);
+  case attr::OMPThreadPrivateDecl:
+    return cast<OMPThreadPrivateDeclAttr>(this)->isEquivalent(cast<OMPThreadPrivateDeclAttr>(Other), Context);
+  case attr::OSConsumed:
+    return cast<OSConsumedAttr>(this)->isEquivalent(cast<OSConsumedAttr>(Other), Context);
+  case attr::OSConsumesThis:
+    return cast<OSConsumesThisAttr>(this)->isEquivalent(cast<OSConsumesThisAttr>(Other), Context);
+  case attr::OSReturnsNotRetained:
+    return cast<OSReturnsNotRetainedAttr>(this)->isEquivalent(cast<OSReturnsNotRetainedAttr>(Other), Context);
+  case attr::OSReturnsRetained:
+    return cast<OSReturnsRetainedAttr>(this)->isEquivalent(cast<OSReturnsRetainedAttr>(Other), Context);
+  case attr::OSReturnsRetainedOnNonZero:
+    return cast<OSReturnsRetainedOnNonZeroAttr>(this)->isEquivalent(cast<OSReturnsRetainedOnNonZeroAttr>(Other), Context);
+  case attr::OSReturnsRetainedOnZero:
+    return cast<OSReturnsRetainedOnZeroAttr>(this)->isEquivalent(cast<OSReturnsRetainedOnZeroAttr>(Other), Context);
+  case attr::ObjCBoxable:
+    return cast<ObjCBoxableAttr>(this)->isEquivalent(cast<ObjCBoxableAttr>(Other), Context);
+  case attr::ObjCBridge:
+    return cast<ObjCBridgeAttr>(this)->isEquivalent(cast<ObjCBridgeAttr>(Other), Context);
+  case attr::ObjCBridgeMutable:
+    return cast<ObjCBridgeMutableAttr>(this)->isEquivalent(cast<ObjCBridgeMutableAttr>(Other), Context);
+  case attr::ObjCBridgeRelated:
+    return cast<ObjCBridgeRelatedAttr>(this)->isEquivalent(cast<ObjCBridgeRelatedAttr>(Other), Context);
+  case attr::ObjCClassStub:
+    return cast<ObjCClassStubAttr>(this)->isEquivalent(cast<ObjCClassStubAttr>(Other), Context);
+  case attr::ObjCDesignatedInitializer:
+    return cast<ObjCDesignatedInitializerAttr>(this)->isEquivalent(cast<ObjCDesignatedInitializerAttr>(Other), Context);
+  case attr::ObjCDirect:
+    return cast<ObjCDirectAttr>(this)->isEquivalent(cast<ObjCDirectAttr>(Other), Context);
+  case attr::ObjCDirectMembers:
+    return cast<ObjCDirectMembersAttr>(this)->isEquivalent(cast<ObjCDirectMembersAttr>(Other), Context);
+  case attr::ObjCException:
+    return cast<ObjCExceptionAttr>(this)->isEquivalent(cast<ObjCExceptionAttr>(Other), Context);
+  case attr::ObjCExplicitProtocolImpl:
+    return cast<ObjCExplicitProtocolImplAttr>(this)->isEquivalent(cast<ObjCExplicitProtocolImplAttr>(Other), Context);
+  case attr::ObjCExternallyRetained:
+    return cast<ObjCExternallyRetainedAttr>(this)->isEquivalent(cast<ObjCExternallyRetainedAttr>(Other), Context);
+  case attr::ObjCGC:
+    return cast<ObjCGCAttr>(this)->isEquivalent(cast<ObjCGCAttr>(Other), Context);
+  case attr::ObjCIndependentClass:
+    return cast<ObjCIndependentClassAttr>(this)->isEquivalent(cast<ObjCIndependentClassAttr>(Other), Context);
+  case attr::ObjCInertUnsafeUnretained:
+    return cast<ObjCInertUnsafeUnretainedAttr>(this)->isEquivalent(cast<ObjCInertUnsafeUnretainedAttr>(Other), Context);
+  case attr::ObjCKindOf:
+    return cast<ObjCKindOfAttr>(this)->isEquivalent(cast<ObjCKindOfAttr>(Other), Context);
+  case attr::ObjCMethodFamily:
+    return cast<ObjCMethodFamilyAttr>(this)->isEquivalent(cast<ObjCMethodFamilyAttr>(Other), Context);
+  case attr::ObjCNSObject:
+    return cast<ObjCNSObjectAttr>(this)->isEquivalent(cast<ObjCNSObjectAttr>(Other), Context);
+  case attr::ObjCNonLazyClass:
+    return cast<ObjCNonLazyClassAttr>(this)->isEquivalent(cast<ObjCNonLazyClassAttr>(Other), Context);
+  case attr::ObjCNonRuntimeProtocol:
+    return cast<ObjCNonRuntimeProtocolAttr>(this)->isEquivalent(cast<ObjCNonRuntimeProtocolAttr>(Other), Context);
+  case attr::ObjCOwnership:
+    return cast<ObjCOwnershipAttr>(this)->isEquivalent(cast<ObjCOwnershipAttr>(Other), Context);
+  case attr::ObjCPreciseLifetime:
+    return cast<ObjCPreciseLifetimeAttr>(this)->isEquivalent(cast<ObjCPreciseLifetimeAttr>(Other), Context);
+  case attr::ObjCRequiresPropertyDefs:
+    return cast<ObjCRequiresPropertyDefsAttr>(this)->isEquivalent(cast<ObjCRequiresPropertyDefsAttr>(Other), Context);
+  case attr::ObjCRequiresSuper:
+    return cast<ObjCRequiresSuperAttr>(this)->isEquivalent(cast<ObjCRequiresSuperAttr>(Other), Context);
+  case attr::ObjCReturnsInnerPointer:
+    return cast<ObjCReturnsInnerPointerAttr>(this)->isEquivalent(cast<ObjCReturnsInnerPointerAttr>(Other), Context);
+  case attr::ObjCRootClass:
+    return cast<ObjCRootClassAttr>(this)->isEquivalent(cast<ObjCRootClassAttr>(Other), Context);
+  case attr::ObjCRuntimeName:
+    return cast<ObjCRuntimeNameAttr>(this)->isEquivalent(cast<ObjCRuntimeNameAttr>(Other), Context);
+  case attr::ObjCRuntimeVisible:
+    return cast<ObjCRuntimeVisibleAttr>(this)->isEquivalent(cast<ObjCRuntimeVisibleAttr>(Other), Context);
+  case attr::ObjCSubclassingRestricted:
+    return cast<ObjCSubclassingRestrictedAttr>(this)->isEquivalent(cast<ObjCSubclassingRestrictedAttr>(Other), Context);
+  case attr::OpenACCRoutineAnnot:
+    return cast<OpenACCRoutineAnnotAttr>(this)->isEquivalent(cast<OpenACCRoutineAnnotAttr>(Other), Context);
+  case attr::OpenACCRoutineDecl:
+    return cast<OpenACCRoutineDeclAttr>(this)->isEquivalent(cast<OpenACCRoutineDeclAttr>(Other), Context);
+  case attr::OpenCLAccess:
+    return cast<OpenCLAccessAttr>(this)->isEquivalent(cast<OpenCLAccessAttr>(Other), Context);
+  case attr::OpenCLConstantAddressSpace:
+    return cast<OpenCLConstantAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLConstantAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLGenericAddressSpace:
+    return cast<OpenCLGenericAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLGenericAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLGlobalAddressSpace:
+    return cast<OpenCLGlobalAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLGlobalAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLGlobalDeviceAddressSpace:
+    return cast<OpenCLGlobalDeviceAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLGlobalDeviceAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLGlobalHostAddressSpace:
+    return cast<OpenCLGlobalHostAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLGlobalHostAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLIntelReqdSubGroupSize:
+    return cast<OpenCLIntelReqdSubGroupSizeAttr>(this)->isEquivalent(cast<OpenCLIntelReqdSubGroupSizeAttr>(Other), Context);
+  case attr::OpenCLLocalAddressSpace:
+    return cast<OpenCLLocalAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLLocalAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLPrivateAddressSpace:
+    return cast<OpenCLPrivateAddressSpaceAttr>(this)->isEquivalent(cast<OpenCLPrivateAddressSpaceAttr>(Other), Context);
+  case attr::OpenCLUnrollHint:
+    return cast<OpenCLUnrollHintAttr>(this)->isEquivalent(cast<OpenCLUnrollHintAttr>(Other), Context);
+  case attr::OptimizeNone:
+    return cast<OptimizeNoneAttr>(this)->isEquivalent(cast<OptimizeNoneAttr>(Other), Context);
+  case attr::Overloadable:
+    return cast<OverloadableAttr>(this)->isEquivalent(cast<OverloadableAttr>(Other), Context);
+  case attr::Override:
+    return cast<OverrideAttr>(this)->isEquivalent(cast<OverrideAttr>(Other), Context);
+  case attr::Owner:
+    return cast<OwnerAttr>(this)->isEquivalent(cast<OwnerAttr>(Other), Context);
+  case attr::Ownership:
+    return cast<OwnershipAttr>(this)->isEquivalent(cast<OwnershipAttr>(Other), Context);
+  case attr::Packed:
+    return cast<PackedAttr>(this)->isEquivalent(cast<PackedAttr>(Other), Context);
+  case attr::ParamTypestate:
+    return cast<ParamTypestateAttr>(this)->isEquivalent(cast<ParamTypestateAttr>(Other), Context);
+  case attr::Pascal:
+    return cast<PascalAttr>(this)->isEquivalent(cast<PascalAttr>(Other), Context);
+  case attr::PassObjectSize:
+    return cast<PassObjectSizeAttr>(this)->isEquivalent(cast<PassObjectSizeAttr>(Other), Context);
+  case attr::PatchableFunctionEntry:
+    return cast<PatchableFunctionEntryAttr>(this)->isEquivalent(cast<PatchableFunctionEntryAttr>(Other), Context);
+  case attr::Pcs:
+    return cast<PcsAttr>(this)->isEquivalent(cast<PcsAttr>(Other), Context);
+  case attr::Pointer:
+    return cast<PointerAttr>(this)->isEquivalent(cast<PointerAttr>(Other), Context);
+  case attr::PointerAuth:
+    return cast<PointerAuthAttr>(this)->isEquivalent(cast<PointerAuthAttr>(Other), Context);
+  case attr::PragmaClangBSSSection:
+    return cast<PragmaClangBSSSectionAttr>(this)->isEquivalent(cast<PragmaClangBSSSectionAttr>(Other), Context);
+  case attr::PragmaClangDataSection:
+    return cast<PragmaClangDataSectionAttr>(this)->isEquivalent(cast<PragmaClangDataSectionAttr>(Other), Context);
+  case attr::PragmaClangRelroSection:
+    return cast<PragmaClangRelroSectionAttr>(this)->isEquivalent(cast<PragmaClangRelroSectionAttr>(Other), Context);
+  case attr::PragmaClangRodataSection:
+    return cast<PragmaClangRodataSectionAttr>(this)->isEquivalent(cast<PragmaClangRodataSectionAttr>(Other), Context);
+  case attr::PragmaClangTextSection:
+    return cast<PragmaClangTextSectionAttr>(this)->isEquivalent(cast<PragmaClangTextSectionAttr>(Other), Context);
+  case attr::PreferredName:
+    return cast<PreferredNameAttr>(this)->isEquivalent(cast<PreferredNameAttr>(Other), Context);
+  case attr::PreferredType:
+    return cast<PreferredTypeAttr>(this)->isEquivalent(cast<PreferredTypeAttr>(Other), Context);
+  case attr::PreserveAll:
+    return cast<PreserveAllAttr>(this)->isEquivalent(cast<PreserveAllAttr>(Other), Context);
+  case attr::PreserveMost:
+    return cast<PreserveMostAttr>(this)->isEquivalent(cast<PreserveMostAttr>(Other), Context);
+  case attr::PreserveNone:
+    return cast<PreserveNoneAttr>(this)->isEquivalent(cast<PreserveNoneAttr>(Other), Context);
+  case attr::PtGuardedBy:
+    return cast<PtGuardedByAttr>(this)->isEquivalent(cast<PtGuardedByAttr>(Other), Context);
+  case attr::PtGuardedVar:
+    return cast<PtGuardedVarAttr>(this)->isEquivalent(cast<PtGuardedVarAttr>(Other), Context);
+  case attr::Ptr32:
+    return cast<Ptr32Attr>(this)->isEquivalent(cast<Ptr32Attr>(Other), Context);
+  case attr::Ptr64:
+    return cast<Ptr64Attr>(this)->isEquivalent(cast<Ptr64Attr>(Other), Context);
+  case attr::Pure:
+    return cast<PureAttr>(this)->isEquivalent(cast<PureAttr>(Other), Context);
+  case attr::RISCVInterrupt:
+    return cast<RISCVInterruptAttr>(this)->isEquivalent(cast<RISCVInterruptAttr>(Other), Context);
+  case attr::RISCVVLSCC:
+    return cast<RISCVVLSCCAttr>(this)->isEquivalent(cast<RISCVVLSCCAttr>(Other), Context);
+  case attr::RISCVVectorCC:
+    return cast<RISCVVectorCCAttr>(this)->isEquivalent(cast<RISCVVectorCCAttr>(Other), Context);
+  case attr::RandomizeLayout:
+    return cast<RandomizeLayoutAttr>(this)->isEquivalent(cast<RandomizeLayoutAttr>(Other), Context);
+  case attr::ReadOnlyPlacement:
+    return cast<ReadOnlyPlacementAttr>(this)->isEquivalent(cast<ReadOnlyPlacementAttr>(Other), Context);
+  case attr::ReentrantCapability:
+    return cast<ReentrantCapabilityAttr>(this)->isEquivalent(cast<ReentrantCapabilityAttr>(Other), Context);
+  case attr::RegCall:
+    return cast<RegCallAttr>(this)->isEquivalent(cast<RegCallAttr>(Other), Context);
+  case attr::Reinitializes:
+    return cast<ReinitializesAttr>(this)->isEquivalent(cast<ReinitializesAttr>(Other), Context);
+  case attr::ReleaseCapability:
+    return cast<ReleaseCapabilityAttr>(this)->isEquivalent(cast<ReleaseCapabilityAttr>(Other), Context);
+  case attr::ReleaseHandle:
+    return cast<ReleaseHandleAttr>(this)->isEquivalent(cast<ReleaseHandleAttr>(Other), Context);
+  case attr::ReqdWorkGroupSize:
+    return cast<ReqdWorkGroupSizeAttr>(this)->isEquivalent(cast<ReqdWorkGroupSizeAttr>(Other), Context);
+  case attr::RequiresCapability:
+    return cast<RequiresCapabilityAttr>(this)->isEquivalent(cast<RequiresCapabilityAttr>(Other), Context);
+  case attr::Restrict:
+    return cast<RestrictAttr>(this)->isEquivalent(cast<RestrictAttr>(Other), Context);
+  case attr::Retain:
+    return cast<RetainAttr>(this)->isEquivalent(cast<RetainAttr>(Other), Context);
+  case attr::ReturnTypestate:
+    return cast<ReturnTypestateAttr>(this)->isEquivalent(cast<ReturnTypestateAttr>(Other), Context);
+  case attr::ReturnsNonNull:
+    return cast<ReturnsNonNullAttr>(this)->isEquivalent(cast<ReturnsNonNullAttr>(Other), Context);
+  case attr::ReturnsTwice:
+    return cast<ReturnsTwiceAttr>(this)->isEquivalent(cast<ReturnsTwiceAttr>(Other), Context);
+  case attr::RootSignature:
+    return cast<RootSignatureAttr>(this)->isEquivalent(cast<RootSignatureAttr>(Other), Context);
+  case attr::SPtr:
+    return cast<SPtrAttr>(this)->isEquivalent(cast<SPtrAttr>(Other), Context);
+  case attr::SYCLExternal:
+    return cast<SYCLExternalAttr>(this)->isEquivalent(cast<SYCLExternalAttr>(Other), Context);
+  case attr::SYCLKernel:
+    return cast<SYCLKernelAttr>(this)->isEquivalent(cast<SYCLKernelAttr>(Other), Context);
+  case attr::SYCLKernelEntryPoint:
+    return cast<SYCLKernelEntryPointAttr>(this)->isEquivalent(cast<SYCLKernelEntryPointAttr>(Other), Context);
+  case attr::SYCLSpecialClass:
+    return cast<SYCLSpecialClassAttr>(this)->isEquivalent(cast<SYCLSpecialClassAttr>(Other), Context);
+  case attr::ScopedLockable:
+    return cast<ScopedLockableAttr>(this)->isEquivalent(cast<ScopedLockableAttr>(Other), Context);
+  case attr::Section:
+    return cast<SectionAttr>(this)->isEquivalent(cast<SectionAttr>(Other), Context);
+  case attr::SelectAny:
+    return cast<SelectAnyAttr>(this)->isEquivalent(cast<SelectAnyAttr>(Other), Context);
+  case attr::Sentinel:
+    return cast<SentinelAttr>(this)->isEquivalent(cast<SentinelAttr>(Other), Context);
+  case attr::SetTypestate:
+    return cast<SetTypestateAttr>(this)->isEquivalent(cast<SetTypestateAttr>(Other), Context);
+  case attr::SizedBy:
+    return cast<SizedByAttr>(this)->isEquivalent(cast<SizedByAttr>(Other), Context);
+  case attr::SizedByOrNull:
+    return cast<SizedByOrNullAttr>(this)->isEquivalent(cast<SizedByOrNullAttr>(Other), Context);
+  case attr::SpeculativeLoadHardening:
+    return cast<SpeculativeLoadHardeningAttr>(this)->isEquivalent(cast<SpeculativeLoadHardeningAttr>(Other), Context);
+  case attr::StandaloneDebug:
+    return cast<StandaloneDebugAttr>(this)->isEquivalent(cast<StandaloneDebugAttr>(Other), Context);
+  case attr::StdCall:
+    return cast<StdCallAttr>(this)->isEquivalent(cast<StdCallAttr>(Other), Context);
+  case attr::StrictFP:
+    return cast<StrictFPAttr>(this)->isEquivalent(cast<StrictFPAttr>(Other), Context);
+  case attr::StrictGuardStackCheck:
+    return cast<StrictGuardStackCheckAttr>(this)->isEquivalent(cast<StrictGuardStackCheckAttr>(Other), Context);
+  case attr::Suppress:
+    return cast<SuppressAttr>(this)->isEquivalent(cast<SuppressAttr>(Other), Context);
+  case attr::SwiftAsync:
+    return cast<SwiftAsyncAttr>(this)->isEquivalent(cast<SwiftAsyncAttr>(Other), Context);
+  case attr::SwiftAsyncCall:
+    return cast<SwiftAsyncCallAttr>(this)->isEquivalent(cast<SwiftAsyncCallAttr>(Other), Context);
+  case attr::SwiftAsyncContext:
+    return cast<SwiftAsyncContextAttr>(this)->isEquivalent(cast<SwiftAsyncContextAttr>(Other), Context);
+  case attr::SwiftAsyncError:
+    return cast<SwiftAsyncErrorAttr>(this)->isEquivalent(cast<SwiftAsyncErrorAttr>(Other), Context);
+  case attr::SwiftAsyncName:
+    return cast<SwiftAsyncNameAttr>(this)->isEquivalent(cast<SwiftAsyncNameAttr>(Other), Context);
+  case attr::SwiftAttr:
+    return cast<SwiftAttrAttr>(this)->isEquivalent(cast<SwiftAttrAttr>(Other), Context);
+  case attr::SwiftBridge:
+    return cast<SwiftBridgeAttr>(this)->isEquivalent(cast<SwiftBridgeAttr>(Other), Context);
+  case attr::SwiftBridgedTypedef:
+    return cast<SwiftBridgedTypedefAttr>(this)->isEquivalent(cast<SwiftBridgedTypedefAttr>(Other), Context);
+  case attr::SwiftCall:
+    return cast<SwiftCallAttr>(this)->isEquivalent(cast<SwiftCallAttr>(Other), Context);
+  case attr::SwiftContext:
+    return cast<SwiftContextAttr>(this)->isEquivalent(cast<SwiftContextAttr>(Other), Context);
+  case attr::SwiftError:
+    return cast<SwiftErrorAttr>(this)->isEquivalent(cast<SwiftErrorAttr>(Other), Context);
+  case attr::SwiftErrorResult:
+    return cast<SwiftErrorResultAttr>(this)->isEquivalent(cast<SwiftErrorResultAttr>(Other), Context);
+  case attr::SwiftImportAsNonGeneric:
+    return cast<SwiftImportAsNonGenericAttr>(this)->isEquivalent(cast<SwiftImportAsNonGenericAttr>(Other), Context);
+  case attr::SwiftImportPropertyAsAccessors:
+    return cast<SwiftImportPropertyAsAccessorsAttr>(this)->isEquivalent(cast<SwiftImportPropertyAsAccessorsAttr>(Other), Context);
+  case attr::SwiftIndirectResult:
+    return cast<SwiftIndirectResultAttr>(this)->isEquivalent(cast<SwiftIndirectResultAttr>(Other), Context);
+  case attr::SwiftName:
+    return cast<SwiftNameAttr>(this)->isEquivalent(cast<SwiftNameAttr>(Other), Context);
+  case attr::SwiftNewType:
+    return cast<SwiftNewTypeAttr>(this)->isEquivalent(cast<SwiftNewTypeAttr>(Other), Context);
+  case attr::SwiftNullability:
+    return cast<SwiftNullabilityAttr>(this)->isEquivalent(cast<SwiftNullabilityAttr>(Other), Context);
+  case attr::SwiftObjCMembers:
+    return cast<SwiftObjCMembersAttr>(this)->isEquivalent(cast<SwiftObjCMembersAttr>(Other), Context);
+  case attr::SwiftPrivate:
+    return cast<SwiftPrivateAttr>(this)->isEquivalent(cast<SwiftPrivateAttr>(Other), Context);
+  case attr::SwiftType:
+    return cast<SwiftTypeAttr>(this)->isEquivalent(cast<SwiftTypeAttr>(Other), Context);
+  case attr::SwiftVersionedAddition:
+    return cast<SwiftVersionedAdditionAttr>(this)->isEquivalent(cast<SwiftVersionedAdditionAttr>(Other), Context);
+  case attr::SwiftVersionedRemoval:
+    return cast<SwiftVersionedRemovalAttr>(this)->isEquivalent(cast<SwiftVersionedRemovalAttr>(Other), Context);
+  case attr::SysVABI:
+    return cast<SysVABIAttr>(this)->isEquivalent(cast<SysVABIAttr>(Other), Context);
+  case attr::TLSModel:
+    return cast<TLSModelAttr>(this)->isEquivalent(cast<TLSModelAttr>(Other), Context);
+  case attr::Target:
+    return cast<TargetAttr>(this)->isEquivalent(cast<TargetAttr>(Other), Context);
+  case attr::TargetClones:
+    return cast<TargetClonesAttr>(this)->isEquivalent(cast<TargetClonesAttr>(Other), Context);
+  case attr::TargetVersion:
+    return cast<TargetVersionAttr>(this)->isEquivalent(cast<TargetVersionAttr>(Other), Context);
+  case attr::TestTypestate:
+    return cast<TestTypestateAttr>(this)->isEquivalent(cast<TestTypestateAttr>(Other), Context);
+  case attr::ThisCall:
+    return cast<ThisCallAttr>(this)->isEquivalent(cast<ThisCallAttr>(Other), Context);
+  case attr::Thread:
+    return cast<ThreadAttr>(this)->isEquivalent(cast<ThreadAttr>(Other), Context);
+  case attr::TransparentUnion:
+    return cast<TransparentUnionAttr>(this)->isEquivalent(cast<TransparentUnionAttr>(Other), Context);
+  case attr::TrivialABI:
+    return cast<TrivialABIAttr>(this)->isEquivalent(cast<TrivialABIAttr>(Other), Context);
+  case attr::TryAcquireCapability:
+    return cast<TryAcquireCapabilityAttr>(this)->isEquivalent(cast<TryAcquireCapabilityAttr>(Other), Context);
+  case attr::TypeNonNull:
+    return cast<TypeNonNullAttr>(this)->isEquivalent(cast<TypeNonNullAttr>(Other), Context);
+  case attr::TypeNullUnspecified:
+    return cast<TypeNullUnspecifiedAttr>(this)->isEquivalent(cast<TypeNullUnspecifiedAttr>(Other), Context);
+  case attr::TypeNullable:
+    return cast<TypeNullableAttr>(this)->isEquivalent(cast<TypeNullableAttr>(Other), Context);
+  case attr::TypeNullableResult:
+    return cast<TypeNullableResultAttr>(this)->isEquivalent(cast<TypeNullableResultAttr>(Other), Context);
+  case attr::TypeTagForDatatype:
+    return cast<TypeTagForDatatypeAttr>(this)->isEquivalent(cast<TypeTagForDatatypeAttr>(Other), Context);
+  case attr::TypeVisibility:
+    return cast<TypeVisibilityAttr>(this)->isEquivalent(cast<TypeVisibilityAttr>(Other), Context);
+  case attr::UPtr:
+    return cast<UPtrAttr>(this)->isEquivalent(cast<UPtrAttr>(Other), Context);
+  case attr::Unavailable:
+    return cast<UnavailableAttr>(this)->isEquivalent(cast<UnavailableAttr>(Other), Context);
+  case attr::Uninitialized:
+    return cast<UninitializedAttr>(this)->isEquivalent(cast<UninitializedAttr>(Other), Context);
+  case attr::Unlikely:
+    return cast<UnlikelyAttr>(this)->isEquivalent(cast<UnlikelyAttr>(Other), Context);
+  case attr::UnsafeBufferUsage:
+    return cast<UnsafeBufferUsageAttr>(this)->isEquivalent(cast<UnsafeBufferUsageAttr>(Other), Context);
+  case attr::Unused:
+    return cast<UnusedAttr>(this)->isEquivalent(cast<UnusedAttr>(Other), Context);
+  case attr::UseHandle:
+    return cast<UseHandleAttr>(this)->isEquivalent(cast<UseHandleAttr>(Other), Context);
+  case attr::Used:
+    return cast<UsedAttr>(this)->isEquivalent(cast<UsedAttr>(Other), Context);
+  case attr::UsingIfExists:
+    return cast<UsingIfExistsAttr>(this)->isEquivalent(cast<UsingIfExistsAttr>(Other), Context);
+  case attr::Uuid:
+    return cast<UuidAttr>(this)->isEquivalent(cast<UuidAttr>(Other), Context);
+  case attr::VTablePointerAuthentication:
+    return cast<VTablePointerAuthenticationAttr>(this)->isEquivalent(cast<VTablePointerAuthenticationAttr>(Other), Context);
+  case attr::VecReturn:
+    return cast<VecReturnAttr>(this)->isEquivalent(cast<VecReturnAttr>(Other), Context);
+  case attr::VecTypeHint:
+    return cast<VecTypeHintAttr>(this)->isEquivalent(cast<VecTypeHintAttr>(Other), Context);
+  case attr::VectorCall:
+    return cast<VectorCallAttr>(this)->isEquivalent(cast<VectorCallAttr>(Other), Context);
+  case attr::Visibility:
+    return cast<VisibilityAttr>(this)->isEquivalent(cast<VisibilityAttr>(Other), Context);
+  case attr::WarnUnused:
+    return cast<WarnUnusedAttr>(this)->isEquivalent(cast<WarnUnusedAttr>(Other), Context);
+  case attr::WarnUnusedResult:
+    return cast<WarnUnusedResultAttr>(this)->isEquivalent(cast<WarnUnusedResultAttr>(Other), Context);
+  case attr::Weak:
+    return cast<WeakAttr>(this)->isEquivalent(cast<WeakAttr>(Other), Context);
+  case attr::WeakImport:
+    return cast<WeakImportAttr>(this)->isEquivalent(cast<WeakImportAttr>(Other), Context);
+  case attr::WeakRef:
+    return cast<WeakRefAttr>(this)->isEquivalent(cast<WeakRefAttr>(Other), Context);
+  case attr::WebAssemblyExportName:
+    return cast<WebAssemblyExportNameAttr>(this)->isEquivalent(cast<WebAssemblyExportNameAttr>(Other), Context);
+  case attr::WebAssemblyFuncref:
+    return cast<WebAssemblyFuncrefAttr>(this)->isEquivalent(cast<WebAssemblyFuncrefAttr>(Other), Context);
+  case attr::WebAssemblyImportModule:
+    return cast<WebAssemblyImportModuleAttr>(this)->isEquivalent(cast<WebAssemblyImportModuleAttr>(Other), Context);
+  case attr::WebAssemblyImportName:
+    return cast<WebAssemblyImportNameAttr>(this)->isEquivalent(cast<WebAssemblyImportNameAttr>(Other), Context);
+  case attr::WorkGroupSizeHint:
+    return cast<WorkGroupSizeHintAttr>(this)->isEquivalent(cast<WorkGroupSizeHintAttr>(Other), Context);
+  case attr::X86ForceAlignArgPointer:
+    return cast<X86ForceAlignArgPointerAttr>(this)->isEquivalent(cast<X86ForceAlignArgPointerAttr>(Other), Context);
+  case attr::XRayInstrument:
+    return cast<XRayInstrumentAttr>(this)->isEquivalent(cast<XRayInstrumentAttr>(Other), Context);
+  case attr::XRayLogArgs:
+    return cast<XRayLogArgsAttr>(this)->isEquivalent(cast<XRayLogArgsAttr>(Other), Context);
+  case attr::ZeroCallUsedRegs:
+    return cast<ZeroCallUsedRegsAttr>(this)->isEquivalent(cast<ZeroCallUsedRegsAttr>(Other), Context);
   }
   llvm_unreachable("Unexpected attribute kind!");
 }

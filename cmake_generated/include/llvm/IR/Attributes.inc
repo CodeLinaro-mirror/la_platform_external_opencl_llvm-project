@@ -16,7 +16,6 @@ ATTRIBUTE_ENUM(Cold,cold)
 ATTRIBUTE_ENUM(Convergent,convergent)
 ATTRIBUTE_ENUM(CoroDestroyOnlyWhenComplete,coro_only_destroy_when_complete)
 ATTRIBUTE_ENUM(CoroElideSafe,coro_elide_safe)
-ATTRIBUTE_ENUM(DeadOnReturn,dead_on_return)
 ATTRIBUTE_ENUM(DeadOnUnwind,dead_on_unwind)
 ATTRIBUTE_ENUM(DisableSanitizerInstrumentation,disable_sanitizer_instrumentation)
 ATTRIBUTE_ENUM(FnRetThunkExtern,fn_ret_thunk_extern)
@@ -34,6 +33,7 @@ ATTRIBUTE_ENUM(NoAlias,noalias)
 ATTRIBUTE_ENUM(NoBuiltin,nobuiltin)
 ATTRIBUTE_ENUM(NoCallback,nocallback)
 ATTRIBUTE_ENUM(NoCfCheck,nocf_check)
+ATTRIBUTE_ENUM(NoCreateUndefOrPoison,nocreateundeforpoison)
 ATTRIBUTE_ENUM(NoDivergenceSource,nodivergencesource)
 ATTRIBUTE_ENUM(NoDuplicate,noduplicate)
 ATTRIBUTE_ENUM(NoExt,noext)
@@ -99,6 +99,7 @@ ATTRIBUTE_ENUM(Alignment,align)
 ATTRIBUTE_ENUM(AllocKind,allockind)
 ATTRIBUTE_ENUM(AllocSize,allocsize)
 ATTRIBUTE_ENUM(Captures,captures)
+ATTRIBUTE_ENUM(DeadOnReturn,dead_on_return)
 ATTRIBUTE_ENUM(Dereferenceable,dereferenceable)
 ATTRIBUTE_ENUM(DereferenceableOrNull,dereferenceable_or_null)
 ATTRIBUTE_ENUM(Memory,memory)
@@ -149,24 +150,24 @@ Cold = 5,
 Convergent = 6,
 CoroDestroyOnlyWhenComplete = 7,
 CoroElideSafe = 8,
-DeadOnReturn = 9,
-DeadOnUnwind = 10,
-DisableSanitizerInstrumentation = 11,
-FnRetThunkExtern = 12,
-Hot = 13,
-HybridPatchable = 14,
-ImmArg = 15,
-InReg = 16,
-InlineHint = 17,
-JumpTable = 18,
-MinSize = 19,
-MustProgress = 20,
-Naked = 21,
-Nest = 22,
-NoAlias = 23,
-NoBuiltin = 24,
-NoCallback = 25,
-NoCfCheck = 26,
+DeadOnUnwind = 9,
+DisableSanitizerInstrumentation = 10,
+FnRetThunkExtern = 11,
+Hot = 12,
+HybridPatchable = 13,
+ImmArg = 14,
+InReg = 15,
+InlineHint = 16,
+JumpTable = 17,
+MinSize = 18,
+MustProgress = 19,
+Naked = 20,
+Nest = 21,
+NoAlias = 22,
+NoBuiltin = 23,
+NoCallback = 24,
+NoCfCheck = 25,
+NoCreateUndefOrPoison = 26,
 NoDivergenceSource = 27,
 NoDuplicate = 28,
 NoExt = 29,
@@ -236,20 +237,21 @@ Alignment = 88,
 AllocKind = 89,
 AllocSize = 90,
 Captures = 91,
-Dereferenceable = 92,
-DereferenceableOrNull = 93,
-Memory = 94,
-NoFPClass = 95,
-StackAlignment = 96,
-UWTable = 97,
-VScaleRange = 98,
-LastIntAttr = 98,
-FirstConstantRangeAttr = 99,
-Range = 99,
-LastConstantRangeAttr = 99,
-FirstConstantRangeListAttr = 100,
-Initializes = 100,
-LastConstantRangeListAttr = 100,
+DeadOnReturn = 92,
+Dereferenceable = 93,
+DereferenceableOrNull = 94,
+Memory = 95,
+NoFPClass = 96,
+StackAlignment = 97,
+UWTable = 98,
+VScaleRange = 99,
+LastIntAttr = 99,
+FirstConstantRangeAttr = 100,
+Range = 100,
+LastConstantRangeAttr = 100,
+FirstConstantRangeListAttr = 101,
+Initializes = 101,
+LastConstantRangeListAttr = 101,
 #endif
 
 #ifdef GET_ATTR_COMPAT_FUNC
@@ -311,7 +313,6 @@ static const uint8_t AttrPropTable[] = {
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::ParamAttr | AttributeProperty::IntersectAnd,
-0 | AttributeProperty::ParamAttr | AttributeProperty::IntersectAnd,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectAnd,
@@ -328,6 +329,7 @@ static const uint8_t AttrPropTable[] = {
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectAnd,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
+0 | AttributeProperty::FnAttr | AttributeProperty::IntersectAnd,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectAnd,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::ParamAttr | AttributeProperty::RetAttr | AttributeProperty::IntersectPreserve,
@@ -393,6 +395,7 @@ static const uint8_t AttrPropTable[] = {
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectPreserve,
 0 | AttributeProperty::ParamAttr | AttributeProperty::IntersectCustom,
+0 | AttributeProperty::ParamAttr | AttributeProperty::IntersectMin,
 0 | AttributeProperty::ParamAttr | AttributeProperty::RetAttr | AttributeProperty::IntersectMin,
 0 | AttributeProperty::ParamAttr | AttributeProperty::RetAttr | AttributeProperty::IntersectMin,
 0 | AttributeProperty::FnAttr | AttributeProperty::IntersectCustom,

@@ -515,6 +515,8 @@ public:
     W.find("indexExpression").writeExprRef(indexExpression);
     bool isFullySubstituted = ( node->isFullySubstituted() );
     W.find("isFullySubstituted").writeBool(isFullySubstituted);
+    llvm::ArrayRef<QualType> expansions = ( node->getExpansions() );
+    W.find("expansions").writeArray(expansions);
   }
 
   void writeParenType(const ParenType *node) {

@@ -11,6 +11,7 @@
 #include <utility>
 
 namespace llvm {
+
 namespace acc {
 
 LLVM_ENABLE_BITMASK_ENUMS_IN_NAMESPACE();
@@ -20,13 +21,14 @@ enum class Association {
   First_ = Block,
   Declaration,
   Delimited,
-  Loop,
+  LoopNest,
+  LoopSeq,
   None,
   Separating,
   Last_ = Separating,
 };
 
-static constexpr std::size_t Association_enumSize = 6;
+static constexpr std::size_t Association_enumSize = 7;
 
 enum class Category {
   Declarative,
@@ -250,6 +252,8 @@ template <> struct enum_iteration_traits<acc::Directive> {
 template <> struct enum_iteration_traits<acc::Clause> {
   static constexpr bool is_iterable = true;
 };
+
 } // namespace llvm
 
 #endif // LLVM_OpenACC_INC
+
