@@ -347,17 +347,17 @@ static const char *FunctionExtensionTable[] = {
   "cl_ext_float_atomics __opencl_c_ext_fp64_local_atomic_min_max __opencl_c_ext_fp64_global_atomic_min_max __opencl_c_atomic_order_seq_cst __opencl_c_atomic_scope_device",
   // 98: anonymous_9029
   "cl_ext_float_atomics __opencl_c_ext_fp64_local_atomic_min_max __opencl_c_ext_fp64_global_atomic_min_max __opencl_c_atomic_scope_device",
-  // 99: anonymous_10050
+  // 99: anonymous_10101
   "__opencl_c_integer_dot_product_input_4x8bit",
-  // 100: anonymous_10059
+  // 100: anonymous_10110
   "__opencl_c_integer_dot_product_input_4x8bit_packed",
-  // 101: anonymous_10068
+  // 101: anonymous_10119
   "cl_khr_subgroup_rotate",
-  // 102: anonymous_10071
+  // 102: anonymous_10122
   "cl_khr_kernel_clock __opencl_c_kernel_clock_scope_device",
-  // 103: anonymous_10074
+  // 103: anonymous_10125
   "cl_khr_kernel_clock __opencl_c_kernel_clock_scope_work_group",
-  // 104: anonymous_10077
+  // 104: anonymous_10128
   "cl_khr_kernel_clock __opencl_c_kernel_clock_scope_sub_group",
 };
 
@@ -5920,220 +5920,322 @@ static const unsigned short SignatureTable[] = {
   // 7532
   27, 342, 88, 102, 100, 100, 
   // 7538
-  97, 352, 135, 76, 102, 
+  102, 344, 88, 100, 27, 
   // 7543
-  97, 352, 135, 76, 137, 
-  // 7548
-  97, 352, 135, 76, 142, 
-  // 7553
-  97, 358, 135, 76, 27, 
-  // 7558
-  97, 354, 76, 76, 102, 
-  // 7563
-  97, 354, 76, 76, 137, 
-  // 7568
-  97, 354, 76, 76, 142, 
-  // 7573
-  97, 356, 135, 76, 102, 
-  // 7578
-  97, 356, 135, 76, 137, 
-  // 7583
-  97, 356, 135, 76, 142, 
-  // 7588
-  97, 353, 137, 76, 102, 
+  102, 344, 88, 100, 100, 100, 
+  // 7549
+  137, 344, 88, 100, 27, 
+  // 7554
+  137, 344, 88, 100, 100, 100, 
+  // 7560
+  142, 344, 88, 100, 27, 
+  // 7565
+  142, 344, 88, 100, 100, 100, 
+  // 7571
+  27, 350, 88, 100, 27, 
+  // 7576
+  27, 350, 88, 100, 100, 100, 
+  // 7582
+  102, 348, 88, 27, 27, 
+  // 7587
+  102, 348, 88, 27, 27, 27, 
   // 7593
-  97, 353, 137, 76, 137, 
+  137, 348, 88, 27, 27, 
   // 7598
-  97, 353, 137, 76, 142, 
-  // 7603
-  97, 359, 137, 76, 27, 
-  // 7608
-  97, 357, 137, 76, 102, 
-  // 7613
-  97, 357, 137, 76, 137, 
-  // 7618
-  97, 357, 137, 76, 142, 
-  // 7623
-  102, 366, 135, 76, 
-  // 7627
-  137, 366, 135, 76, 
-  // 7631
-  142, 366, 135, 76, 
-  // 7635
-  102, 367, 137, 76, 
-  // 7639
-  137, 367, 137, 76, 
+  137, 348, 88, 27, 27, 27, 
+  // 7604
+  142, 348, 88, 27, 27, 
+  // 7609
+  142, 348, 88, 27, 27, 27, 
+  // 7615
+  102, 346, 88, 102, 102, 102, 
+  // 7621
+  102, 346, 88, 102, 27, 
+  // 7626
+  137, 346, 88, 102, 102, 102, 
+  // 7632
+  137, 346, 88, 102, 27, 
+  // 7637
+  142, 346, 88, 102, 102, 102, 
   // 7643
-  142, 367, 137, 76, 
-  // 7647
-  27, 368, 135, 76, 
-  // 7651
-  27, 369, 137, 76, 
-  // 7655
-  76, 366, 
-  // 7657
-  135, 366, 
+  142, 346, 88, 102, 27, 
+  // 7648
+  102, 345, 88, 100, 27, 
+  // 7653
+  102, 345, 88, 100, 27, 27, 
   // 7659
-  90, 367, 
-  // 7661
-  76, 367, 
-  // 7663
-  135, 367, 
-  // 7665
-  76, 368, 
-  // 7667
-  135, 368, 
-  // 7669
-  76, 369, 
-  // 7671
-  135, 369, 
-  // 7673
-  90, 369, 
+  137, 345, 88, 100, 27, 
+  // 7664
+  137, 345, 88, 100, 27, 27, 
+  // 7670
+  142, 345, 88, 100, 27, 
   // 7675
-  76, 370, 
-  // 7677
-  135, 370, 
-  // 7679
-  76, 371, 
+  142, 345, 88, 100, 27, 27, 
   // 7681
-  135, 371, 
-  // 7683
-  76, 372, 
-  // 7685
-  135, 372, 
-  // 7687
-  76, 373, 
-  // 7689
-  135, 373, 
-  // 7691
-  90, 371, 
-  // 7693
-  90, 373, 
-  // 7695
-  102, 374, 135, 76, 
-  // 7699
-  137, 374, 135, 76, 
+  102, 347, 88, 102, 27, 
+  // 7686
+  102, 347, 88, 102, 100, 100, 
+  // 7692
+  137, 347, 88, 102, 27, 
+  // 7697
+  137, 347, 88, 102, 100, 100, 
   // 7703
-  142, 374, 135, 76, 
-  // 7707
-  102, 375, 137, 76, 
-  // 7711
-  137, 375, 137, 76, 
-  // 7715
-  142, 375, 137, 76, 
+  142, 347, 88, 102, 27, 
+  // 7708
+  142, 347, 88, 102, 100, 100, 
+  // 7714
+  27, 351, 88, 102, 27, 
   // 7719
-  27, 376, 135, 76, 
-  // 7723
-  27, 377, 137, 76, 
-  // 7727
-  76, 374, 
-  // 7729
-  135, 374, 
-  // 7731
-  76, 375, 
-  // 7733
-  135, 375, 
+  27, 351, 88, 102, 100, 100, 
+  // 7725
+  97, 352, 135, 76, 102, 
+  // 7730
+  97, 352, 135, 76, 137, 
   // 7735
-  76, 376, 
-  // 7737
-  135, 376, 
-  // 7739
-  76, 377, 
-  // 7741
-  135, 377, 
-  // 7743
-  90, 375, 
+  97, 352, 135, 76, 142, 
+  // 7740
+  97, 358, 135, 76, 27, 
   // 7745
-  90, 377, 
-  // 7747
-  77, 77, 93, 
+  97, 354, 76, 76, 102, 
   // 7750
-  21, 21, 93, 
-  // 7753
-  2, 2, 93, 
-  // 7756
-  21, 21, 
-  // 7758
-  76, 
-  // 7759
-  76, 0, 
-  // 7761
-  1, 1, 93, 
-  // 7764
-  0, 0, 
-  // 7766
-  142, 76, 
-  // 7768
-  76, 142, 
+  97, 354, 76, 76, 137, 
+  // 7755
+  97, 354, 76, 76, 142, 
+  // 7760
+  97, 356, 135, 76, 102, 
+  // 7765
+  97, 356, 135, 76, 137, 
   // 7770
-  76, 142, 93, 
-  // 7773
-  93, 142, 
+  97, 356, 135, 76, 142, 
   // 7775
-  142, 
-  // 7776
-  4, 4, 
-  // 7778
-  0, 0, 93, 
-  // 7781
-  4, 4, 93, 
-  // 7784
-  76, 76, 93, 
-  // 7787
-  5, 5, 5, 93, 93, 
-  // 7792
-  87, 87, 93, 93, 
-  // 7796
-  87, 92, 93, 93, 
+  97, 353, 137, 76, 102, 
+  // 7780
+  97, 353, 137, 76, 137, 
+  // 7785
+  97, 353, 137, 76, 142, 
+  // 7790
+  97, 359, 137, 76, 27, 
+  // 7795
+  97, 357, 137, 76, 102, 
   // 7800
-  92, 87, 93, 93, 
-  // 7804
-  92, 92, 93, 93, 
-  // 7808
-  93, 122, 122, 
-  // 7811
-  76, 117, 117, 
-  // 7814
-  76, 122, 117, 
-  // 7817
-  76, 117, 122, 
+  97, 357, 137, 76, 137, 
+  // 7805
+  97, 357, 137, 76, 142, 
+  // 7810
+  97, 344, 135, 76, 102, 
+  // 7815
+  97, 344, 135, 76, 137, 
   // 7820
-  93, 122, 122, 93, 
-  // 7824
-  76, 117, 117, 76, 
-  // 7828
-  76, 122, 117, 76, 
-  // 7832
-  76, 117, 122, 76, 
-  // 7836
-  93, 93, 93, 
-  // 7839
-  76, 93, 93, 
-  // 7842
-  93, 93, 93, 93, 
-  // 7846
-  76, 93, 93, 76, 
+  97, 344, 135, 76, 142, 
+  // 7825
+  97, 350, 135, 76, 27, 
+  // 7830
+  97, 348, 76, 76, 102, 
+  // 7835
+  97, 348, 76, 76, 137, 
+  // 7840
+  97, 348, 76, 76, 142, 
+  // 7845
+  97, 345, 135, 76, 102, 
   // 7850
+  97, 345, 135, 76, 137, 
+  // 7855
+  97, 345, 135, 76, 142, 
+  // 7860
+  97, 347, 137, 76, 102, 
+  // 7865
+  97, 347, 137, 76, 137, 
+  // 7870
+  97, 347, 137, 76, 142, 
+  // 7875
+  97, 351, 137, 76, 27, 
+  // 7880
+  97, 346, 137, 76, 102, 
+  // 7885
+  97, 346, 137, 76, 137, 
+  // 7890
+  97, 346, 137, 76, 142, 
+  // 7895
+  102, 366, 135, 76, 
+  // 7899
+  137, 366, 135, 76, 
+  // 7903
+  142, 366, 135, 76, 
+  // 7907
+  102, 367, 137, 76, 
+  // 7911
+  137, 367, 137, 76, 
+  // 7915
+  142, 367, 137, 76, 
+  // 7919
+  27, 368, 135, 76, 
+  // 7923
+  27, 369, 137, 76, 
+  // 7927
+  76, 366, 
+  // 7929
+  135, 366, 
+  // 7931
+  90, 367, 
+  // 7933
+  76, 367, 
+  // 7935
+  135, 367, 
+  // 7937
+  76, 368, 
+  // 7939
+  135, 368, 
+  // 7941
+  76, 369, 
+  // 7943
+  135, 369, 
+  // 7945
+  90, 369, 
+  // 7947
+  76, 370, 
+  // 7949
+  135, 370, 
+  // 7951
+  76, 371, 
+  // 7953
+  135, 371, 
+  // 7955
+  76, 372, 
+  // 7957
+  135, 372, 
+  // 7959
+  76, 373, 
+  // 7961
+  135, 373, 
+  // 7963
+  90, 371, 
+  // 7965
+  90, 373, 
+  // 7967
+  102, 374, 135, 76, 
+  // 7971
+  137, 374, 135, 76, 
+  // 7975
+  142, 374, 135, 76, 
+  // 7979
+  102, 375, 137, 76, 
+  // 7983
+  137, 375, 137, 76, 
+  // 7987
+  142, 375, 137, 76, 
+  // 7991
+  27, 376, 135, 76, 
+  // 7995
+  27, 377, 137, 76, 
+  // 7999
+  76, 374, 
+  // 8001
+  135, 374, 
+  // 8003
+  76, 375, 
+  // 8005
+  135, 375, 
+  // 8007
+  76, 376, 
+  // 8009
+  135, 376, 
+  // 8011
+  76, 377, 
+  // 8013
+  135, 377, 
+  // 8015
+  90, 375, 
+  // 8017
+  90, 377, 
+  // 8019
+  77, 77, 93, 
+  // 8022
+  21, 21, 93, 
+  // 8025
+  2, 2, 93, 
+  // 8028
+  21, 21, 
+  // 8030
+  76, 
+  // 8031
+  76, 0, 
+  // 8033
+  1, 1, 93, 
+  // 8036
+  0, 0, 
+  // 8038
+  142, 76, 
+  // 8040
+  76, 142, 
+  // 8042
+  76, 142, 93, 
+  // 8045
+  93, 142, 
+  // 8047
+  142, 
+  // 8048
+  4, 4, 
+  // 8050
+  0, 0, 93, 
+  // 8053
+  4, 4, 93, 
+  // 8056
+  76, 76, 93, 
+  // 8059
+  5, 5, 5, 93, 93, 
+  // 8064
+  87, 87, 93, 93, 
+  // 8068
+  87, 92, 93, 93, 
+  // 8072
+  92, 87, 93, 93, 
+  // 8076
+  92, 92, 93, 93, 
+  // 8080
+  93, 122, 122, 
+  // 8083
+  76, 117, 117, 
+  // 8086
+  76, 122, 117, 
+  // 8089
+  76, 117, 122, 
+  // 8092
+  93, 122, 122, 93, 
+  // 8096
+  76, 117, 117, 76, 
+  // 8100
+  76, 122, 117, 76, 
+  // 8104
+  76, 117, 122, 76, 
+  // 8108
+  93, 93, 93, 
+  // 8111
+  76, 93, 93, 
+  // 8114
+  93, 93, 93, 93, 
+  // 8118
+  76, 93, 93, 76, 
+  // 8122
   0, 0, 76, 
-  // 7853
+  // 8125
   0, 0, 76, 93, 
-  // 7857
+  // 8129
   95, 
-  // 7858
+  // 8130
   140, 
-  // 7859
+  // 8131
   93, 130, 130, 93, 
-  // 7863
+  // 8135
   76, 125, 125, 76, 
-  // 7867
+  // 8139
   93, 102, 
-  // 7869
+  // 8141
   93, 142, 142, 93, 
-  // 7873
+  // 8145
   39, 39, 47, 47, 
-  // 7877
+  // 8149
   34, 34, 34, 34, 
-  // 7881
+  // 8153
   49, 49, 47, 49, 
 };
 
@@ -7082,10 +7184,10 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 1733, 3, 0, 1, 0, 45, 31 },
   { 1736, 3, 0, 1, 0, 45, 31 },
   { 1739, 3, 0, 1, 0, 45, 31 },
-  { 7808, 3, 0, 1, 0, 99, 31 },
-  { 7811, 3, 0, 1, 0, 99, 31 },
-  { 7814, 3, 0, 1, 0, 99, 31 },
-  { 7817, 3, 0, 1, 0, 99, 31 },
+  { 8080, 3, 0, 1, 0, 99, 31 },
+  { 8083, 3, 0, 1, 0, 99, 31 },
+  { 8086, 3, 0, 1, 0, 99, 31 },
+  { 8089, 3, 0, 1, 0, 99, 31 },
   // 845: distance, 
   { 1733, 3, 0, 1, 0, 45, 31 },
   { 1736, 3, 0, 1, 0, 45, 31 },
@@ -8678,15 +8780,29 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7499, 6, 1, 0, 0, 35, 31 },
   { 7527, 5, 1, 0, 0, 35, 31 },
   { 7532, 6, 1, 0, 0, 35, 31 },
-  { 7623, 4, 1, 0, 0, 28, 31 },
-  { 7635, 4, 1, 0, 0, 28, 31 },
-  { 7647, 4, 1, 0, 0, 28, 31 },
-  { 7651, 4, 1, 0, 0, 28, 31 },
-  { 7695, 4, 1, 0, 0, 28, 31 },
-  { 7707, 4, 1, 0, 0, 28, 31 },
-  { 7719, 4, 1, 0, 0, 28, 31 },
-  { 7723, 4, 1, 0, 0, 28, 31 },
-  // 2379: read_imagei, 
+  { 7538, 5, 1, 0, 0, 35, 31 },
+  { 7543, 6, 1, 0, 0, 35, 31 },
+  { 7571, 5, 1, 0, 0, 35, 31 },
+  { 7576, 6, 1, 0, 0, 35, 31 },
+  { 7582, 5, 1, 0, 0, 35, 31 },
+  { 7587, 6, 1, 0, 0, 35, 31 },
+  { 7615, 6, 1, 0, 0, 35, 31 },
+  { 7621, 5, 1, 0, 0, 35, 31 },
+  { 7648, 5, 1, 0, 0, 35, 31 },
+  { 7653, 6, 1, 0, 0, 35, 31 },
+  { 7681, 5, 1, 0, 0, 35, 31 },
+  { 7686, 6, 1, 0, 0, 35, 31 },
+  { 7714, 5, 1, 0, 0, 35, 31 },
+  { 7719, 6, 1, 0, 0, 35, 31 },
+  { 7895, 4, 1, 0, 0, 28, 31 },
+  { 7907, 4, 1, 0, 0, 28, 31 },
+  { 7919, 4, 1, 0, 0, 28, 31 },
+  { 7923, 4, 1, 0, 0, 28, 31 },
+  { 7967, 4, 1, 0, 0, 28, 31 },
+  { 7979, 4, 1, 0, 0, 28, 31 },
+  { 7991, 4, 1, 0, 0, 28, 31 },
+  { 7995, 4, 1, 0, 0, 28, 31 },
+  // 2393: read_imagei, 
   { 6667, 4, 1, 0, 0, 45, 31 },
   { 6679, 4, 1, 0, 0, 45, 31 },
   { 6691, 4, 1, 0, 0, 45, 31 },
@@ -8719,11 +8835,21 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7477, 6, 1, 0, 0, 35, 31 },
   { 7505, 5, 1, 0, 0, 35, 31 },
   { 7510, 6, 1, 0, 0, 35, 31 },
-  { 7627, 4, 1, 0, 0, 28, 31 },
-  { 7639, 4, 1, 0, 0, 28, 31 },
-  { 7699, 4, 1, 0, 0, 28, 31 },
-  { 7711, 4, 1, 0, 0, 28, 31 },
-  // 2415: read_imageui, 
+  { 7549, 5, 1, 0, 0, 35, 31 },
+  { 7554, 6, 1, 0, 0, 35, 31 },
+  { 7593, 5, 1, 0, 0, 35, 31 },
+  { 7598, 6, 1, 0, 0, 35, 31 },
+  { 7626, 6, 1, 0, 0, 35, 31 },
+  { 7632, 5, 1, 0, 0, 35, 31 },
+  { 7659, 5, 1, 0, 0, 35, 31 },
+  { 7664, 6, 1, 0, 0, 35, 31 },
+  { 7692, 5, 1, 0, 0, 35, 31 },
+  { 7697, 6, 1, 0, 0, 35, 31 },
+  { 7899, 4, 1, 0, 0, 28, 31 },
+  { 7911, 4, 1, 0, 0, 28, 31 },
+  { 7971, 4, 1, 0, 0, 28, 31 },
+  { 7983, 4, 1, 0, 0, 28, 31 },
+  // 2439: read_imageui, 
   { 6671, 4, 1, 0, 0, 45, 31 },
   { 6683, 4, 1, 0, 0, 45, 31 },
   { 6695, 4, 1, 0, 0, 45, 31 },
@@ -8756,11 +8882,21 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7488, 6, 1, 0, 0, 35, 31 },
   { 7516, 5, 1, 0, 0, 35, 31 },
   { 7521, 6, 1, 0, 0, 35, 31 },
-  { 7631, 4, 1, 0, 0, 28, 31 },
-  { 7643, 4, 1, 0, 0, 28, 31 },
-  { 7703, 4, 1, 0, 0, 28, 31 },
-  { 7715, 4, 1, 0, 0, 28, 31 },
-  // 2451: write_imagef, 
+  { 7560, 5, 1, 0, 0, 35, 31 },
+  { 7565, 6, 1, 0, 0, 35, 31 },
+  { 7604, 5, 1, 0, 0, 35, 31 },
+  { 7609, 6, 1, 0, 0, 35, 31 },
+  { 7637, 6, 1, 0, 0, 35, 31 },
+  { 7643, 5, 1, 0, 0, 35, 31 },
+  { 7670, 5, 1, 0, 0, 35, 31 },
+  { 7675, 6, 1, 0, 0, 35, 31 },
+  { 7703, 5, 1, 0, 0, 35, 31 },
+  { 7708, 6, 1, 0, 0, 35, 31 },
+  { 7903, 4, 1, 0, 0, 28, 31 },
+  { 7915, 4, 1, 0, 0, 28, 31 },
+  { 7975, 4, 1, 0, 0, 28, 31 },
+  { 7987, 4, 1, 0, 0, 28, 31 },
+  // 2485: write_imagef, 
   { 6919, 4, 0, 0, 0, 45, 31 },
   { 6931, 4, 0, 0, 0, 45, 31 },
   { 6943, 4, 0, 0, 0, 45, 31 },
@@ -8777,14 +8913,21 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7059, 4, 0, 0, 0, 50, 31 },
   { 7071, 4, 0, 0, 0, 50, 31 },
   { 7075, 4, 0, 0, 0, 50, 31 },
-  { 7538, 5, 0, 0, 0, 36, 31 },
-  { 7553, 5, 0, 0, 0, 36, 31 },
-  { 7558, 5, 0, 0, 0, 36, 31 },
-  { 7573, 5, 0, 0, 0, 36, 31 },
-  { 7588, 5, 0, 0, 0, 36, 31 },
-  { 7603, 5, 0, 0, 0, 36, 31 },
-  { 7608, 5, 0, 0, 0, 36, 31 },
-  // 2474: write_imagei, 
+  { 7725, 5, 0, 0, 0, 36, 31 },
+  { 7740, 5, 0, 0, 0, 36, 31 },
+  { 7745, 5, 0, 0, 0, 36, 31 },
+  { 7760, 5, 0, 0, 0, 36, 31 },
+  { 7775, 5, 0, 0, 0, 36, 31 },
+  { 7790, 5, 0, 0, 0, 36, 31 },
+  { 7795, 5, 0, 0, 0, 36, 31 },
+  { 7810, 5, 0, 0, 0, 36, 31 },
+  { 7825, 5, 0, 0, 0, 36, 31 },
+  { 7830, 5, 0, 0, 0, 36, 31 },
+  { 7845, 5, 0, 0, 0, 36, 31 },
+  { 7860, 5, 0, 0, 0, 36, 31 },
+  { 7875, 5, 0, 0, 0, 36, 31 },
+  { 7880, 5, 0, 0, 0, 36, 31 },
+  // 2515: write_imagei, 
   { 6923, 4, 0, 0, 0, 45, 31 },
   { 6935, 4, 0, 0, 0, 45, 31 },
   { 6947, 4, 0, 0, 0, 45, 31 },
@@ -8797,12 +8940,17 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7039, 4, 0, 0, 0, 50, 31 },
   { 7051, 4, 0, 0, 0, 50, 31 },
   { 7063, 4, 0, 0, 0, 50, 31 },
-  { 7543, 5, 0, 0, 0, 36, 31 },
-  { 7563, 5, 0, 0, 0, 36, 31 },
-  { 7578, 5, 0, 0, 0, 36, 31 },
-  { 7593, 5, 0, 0, 0, 36, 31 },
-  { 7613, 5, 0, 0, 0, 36, 31 },
-  // 2491: write_imageui, 
+  { 7730, 5, 0, 0, 0, 36, 31 },
+  { 7750, 5, 0, 0, 0, 36, 31 },
+  { 7765, 5, 0, 0, 0, 36, 31 },
+  { 7780, 5, 0, 0, 0, 36, 31 },
+  { 7800, 5, 0, 0, 0, 36, 31 },
+  { 7815, 5, 0, 0, 0, 36, 31 },
+  { 7835, 5, 0, 0, 0, 36, 31 },
+  { 7850, 5, 0, 0, 0, 36, 31 },
+  { 7865, 5, 0, 0, 0, 36, 31 },
+  { 7885, 5, 0, 0, 0, 36, 31 },
+  // 2537: write_imageui, 
   { 6927, 4, 0, 0, 0, 45, 31 },
   { 6939, 4, 0, 0, 0, 45, 31 },
   { 6951, 4, 0, 0, 0, 45, 31 },
@@ -8815,12 +8963,17 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7043, 4, 0, 0, 0, 50, 31 },
   { 7055, 4, 0, 0, 0, 50, 31 },
   { 7067, 4, 0, 0, 0, 50, 31 },
-  { 7548, 5, 0, 0, 0, 36, 31 },
-  { 7568, 5, 0, 0, 0, 36, 31 },
-  { 7583, 5, 0, 0, 0, 36, 31 },
-  { 7598, 5, 0, 0, 0, 36, 31 },
-  { 7618, 5, 0, 0, 0, 36, 31 },
-  // 2508: get_image_width, get_image_channel_data_type, get_image_channel_order, 
+  { 7735, 5, 0, 0, 0, 36, 31 },
+  { 7755, 5, 0, 0, 0, 36, 31 },
+  { 7770, 5, 0, 0, 0, 36, 31 },
+  { 7785, 5, 0, 0, 0, 36, 31 },
+  { 7805, 5, 0, 0, 0, 36, 31 },
+  { 7820, 5, 0, 0, 0, 36, 31 },
+  { 7840, 5, 0, 0, 0, 36, 31 },
+  { 7855, 5, 0, 0, 0, 36, 31 },
+  { 7870, 5, 0, 0, 0, 36, 31 },
+  { 7890, 5, 0, 0, 0, 36, 31 },
+  // 2559: get_image_width, get_image_channel_data_type, get_image_channel_order, 
   { 7079, 2, 0, 1, 0, 45, 31 },
   { 7091, 2, 0, 1, 0, 45, 31 },
   { 7081, 2, 0, 1, 0, 45, 31 },
@@ -8845,19 +8998,19 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7153, 2, 0, 1, 0, 50, 31 },
   { 7155, 2, 0, 1, 0, 50, 31 },
   { 7157, 2, 0, 1, 0, 50, 31 },
-  { 7655, 2, 0, 1, 0, 28, 31 },
-  { 7661, 2, 0, 1, 0, 28, 31 },
-  { 7665, 2, 0, 1, 0, 28, 31 },
-  { 7669, 2, 0, 1, 0, 28, 31 },
-  { 7675, 2, 0, 1, 0, 28, 31 },
-  { 7679, 2, 0, 1, 0, 28, 31 },
-  { 7683, 2, 0, 1, 0, 28, 31 },
-  { 7687, 2, 0, 1, 0, 28, 31 },
-  { 7727, 2, 0, 1, 0, 28, 31 },
-  { 7731, 2, 0, 1, 0, 28, 31 },
-  { 7735, 2, 0, 1, 0, 28, 31 },
-  { 7739, 2, 0, 1, 0, 28, 31 },
-  // 2544: get_image_height, 
+  { 7927, 2, 0, 1, 0, 28, 31 },
+  { 7933, 2, 0, 1, 0, 28, 31 },
+  { 7937, 2, 0, 1, 0, 28, 31 },
+  { 7941, 2, 0, 1, 0, 28, 31 },
+  { 7947, 2, 0, 1, 0, 28, 31 },
+  { 7951, 2, 0, 1, 0, 28, 31 },
+  { 7955, 2, 0, 1, 0, 28, 31 },
+  { 7959, 2, 0, 1, 0, 28, 31 },
+  { 7999, 2, 0, 1, 0, 28, 31 },
+  { 8003, 2, 0, 1, 0, 28, 31 },
+  { 8007, 2, 0, 1, 0, 28, 31 },
+  { 8011, 2, 0, 1, 0, 28, 31 },
+  // 2595: get_image_height, 
   { 7081, 2, 0, 1, 0, 45, 31 },
   { 7083, 2, 0, 1, 0, 45, 31 },
   { 7095, 2, 0, 1, 0, 45, 31 },
@@ -8873,23 +9026,23 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7153, 2, 0, 1, 0, 50, 31 },
   { 7155, 2, 0, 1, 0, 50, 31 },
   { 7157, 2, 0, 1, 0, 50, 31 },
-  { 7655, 2, 0, 1, 0, 28, 31 },
-  { 7661, 2, 0, 1, 0, 28, 31 },
-  { 7665, 2, 0, 1, 0, 28, 31 },
-  { 7669, 2, 0, 1, 0, 28, 31 },
-  { 7675, 2, 0, 1, 0, 28, 31 },
-  { 7679, 2, 0, 1, 0, 28, 31 },
-  { 7683, 2, 0, 1, 0, 28, 31 },
-  { 7687, 2, 0, 1, 0, 28, 31 },
-  { 7727, 2, 0, 1, 0, 28, 31 },
-  { 7731, 2, 0, 1, 0, 28, 31 },
-  { 7735, 2, 0, 1, 0, 28, 31 },
-  { 7739, 2, 0, 1, 0, 28, 31 },
-  // 2571: get_image_depth, 
+  { 7927, 2, 0, 1, 0, 28, 31 },
+  { 7933, 2, 0, 1, 0, 28, 31 },
+  { 7937, 2, 0, 1, 0, 28, 31 },
+  { 7941, 2, 0, 1, 0, 28, 31 },
+  { 7947, 2, 0, 1, 0, 28, 31 },
+  { 7951, 2, 0, 1, 0, 28, 31 },
+  { 7955, 2, 0, 1, 0, 28, 31 },
+  { 7959, 2, 0, 1, 0, 28, 31 },
+  { 7999, 2, 0, 1, 0, 28, 31 },
+  { 8003, 2, 0, 1, 0, 28, 31 },
+  { 8007, 2, 0, 1, 0, 28, 31 },
+  { 8011, 2, 0, 1, 0, 28, 31 },
+  // 2622: get_image_depth, 
   { 7083, 2, 0, 1, 0, 45, 31 },
   { 7117, 2, 0, 1, 0, 45, 31 },
   { 7149, 2, 0, 1, 0, 50, 31 },
-  // 2574: get_image_dim, 
+  // 2625: get_image_dim, 
   { 7085, 2, 0, 1, 0, 45, 31 },
   { 7087, 2, 0, 1, 0, 45, 31 },
   { 7101, 2, 0, 1, 0, 45, 31 },
@@ -8905,19 +9058,19 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7163, 2, 0, 1, 0, 50, 31 },
   { 7165, 2, 0, 1, 0, 50, 31 },
   { 7167, 2, 0, 1, 0, 50, 31 },
-  { 7657, 2, 0, 1, 0, 28, 31 },
-  { 7663, 2, 0, 1, 0, 28, 31 },
-  { 7667, 2, 0, 1, 0, 28, 31 },
-  { 7671, 2, 0, 1, 0, 28, 31 },
-  { 7677, 2, 0, 1, 0, 28, 31 },
-  { 7681, 2, 0, 1, 0, 28, 31 },
-  { 7685, 2, 0, 1, 0, 28, 31 },
-  { 7689, 2, 0, 1, 0, 28, 31 },
-  { 7729, 2, 0, 1, 0, 28, 31 },
-  { 7733, 2, 0, 1, 0, 28, 31 },
-  { 7737, 2, 0, 1, 0, 28, 31 },
-  { 7741, 2, 0, 1, 0, 28, 31 },
-  // 2601: get_image_array_size, 
+  { 7929, 2, 0, 1, 0, 28, 31 },
+  { 7935, 2, 0, 1, 0, 28, 31 },
+  { 7939, 2, 0, 1, 0, 28, 31 },
+  { 7943, 2, 0, 1, 0, 28, 31 },
+  { 7949, 2, 0, 1, 0, 28, 31 },
+  { 7953, 2, 0, 1, 0, 28, 31 },
+  { 7957, 2, 0, 1, 0, 28, 31 },
+  { 7961, 2, 0, 1, 0, 28, 31 },
+  { 8001, 2, 0, 1, 0, 28, 31 },
+  { 8005, 2, 0, 1, 0, 28, 31 },
+  { 8009, 2, 0, 1, 0, 28, 31 },
+  { 8013, 2, 0, 1, 0, 28, 31 },
+  // 2652: get_image_array_size, 
   { 7089, 2, 0, 1, 0, 45, 31 },
   { 7107, 2, 0, 1, 0, 45, 31 },
   { 7109, 2, 0, 1, 0, 45, 31 },
@@ -8927,13 +9080,13 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7169, 2, 0, 1, 0, 50, 31 },
   { 7171, 2, 0, 1, 0, 50, 31 },
   { 7173, 2, 0, 1, 0, 50, 31 },
-  { 7659, 2, 0, 1, 0, 28, 31 },
-  { 7673, 2, 0, 1, 0, 28, 31 },
-  { 7691, 2, 0, 1, 0, 28, 31 },
-  { 7693, 2, 0, 1, 0, 28, 31 },
-  { 7743, 2, 0, 1, 0, 28, 31 },
-  { 7745, 2, 0, 1, 0, 28, 31 },
-  // 2616: read_imageh, 
+  { 7931, 2, 0, 1, 0, 28, 31 },
+  { 7945, 2, 0, 1, 0, 28, 31 },
+  { 7963, 2, 0, 1, 0, 28, 31 },
+  { 7965, 2, 0, 1, 0, 28, 31 },
+  { 8015, 2, 0, 1, 0, 28, 31 },
+  { 8017, 2, 0, 1, 0, 28, 31 },
+  // 2667: read_imageh, 
   { 7175, 4, 1, 0, 0, 45, 31 },
   { 7179, 4, 1, 0, 0, 45, 31 },
   { 7183, 4, 1, 0, 0, 45, 31 },
@@ -8956,7 +9109,7 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7242, 3, 1, 0, 0, 50, 28 },
   { 7245, 3, 1, 0, 0, 50, 28 },
   { 7248, 3, 1, 0, 0, 50, 28 },
-  // 2638: write_imageh, 
+  // 2689: write_imageh, 
   { 7251, 4, 0, 0, 0, 45, 31 },
   { 7255, 4, 0, 0, 0, 45, 31 },
   { 7259, 4, 0, 0, 0, 45, 31 },
@@ -8969,39 +9122,39 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7287, 4, 0, 0, 0, 50, 31 },
   { 7291, 4, 0, 0, 0, 50, 31 },
   { 7295, 4, 0, 0, 0, 50, 31 },
-  // 2650: work_group_all, work_group_any, 
+  // 2701: work_group_all, work_group_any, 
   { 1008, 2, 0, 0, 1, 51, 31 },
-  // 2651: work_group_broadcast, 
+  // 2702: work_group_broadcast, 
   { 7299, 3, 0, 0, 1, 51, 31 },
   { 7302, 4, 0, 0, 1, 51, 31 },
   { 7306, 5, 0, 0, 1, 51, 31 },
-  // 2654: work_group_reduce_add, work_group_scan_exclusive_add, work_group_scan_inclusive_add, work_group_reduce_min, work_group_scan_exclusive_min, work_group_scan_inclusive_min, work_group_reduce_max, work_group_scan_exclusive_max, work_group_scan_inclusive_max, 
+  // 2705: work_group_reduce_add, work_group_scan_exclusive_add, work_group_scan_inclusive_add, work_group_reduce_min, work_group_scan_exclusive_min, work_group_scan_inclusive_min, work_group_reduce_max, work_group_scan_exclusive_max, work_group_scan_inclusive_max, 
   { 7311, 2, 0, 0, 1, 51, 31 },
-  // 2655: is_valid_reserve_id, 
+  // 2706: is_valid_reserve_id, 
   { 7313, 2, 0, 0, 0, 49, 31 },
-  // 2656: enqueue_marker, 
+  // 2707: enqueue_marker, 
   { 7315, 5, 0, 0, 0, 46, 31 },
-  // 2657: retain_event, release_event, 
+  // 2708: retain_event, release_event, 
   { 7320, 2, 0, 0, 0, 46, 31 },
-  // 2658: create_user_event, 
+  // 2709: create_user_event, 
   { 7322, 1, 0, 0, 0, 46, 31 },
-  // 2659: is_valid_event, 
+  // 2710: is_valid_event, 
   { 7323, 2, 0, 0, 0, 46, 31 },
-  // 2660: set_user_event_status, 
+  // 2711: set_user_event_status, 
   { 7325, 3, 0, 0, 0, 46, 31 },
-  // 2661: capture_event_profiling_info, 
+  // 2712: capture_event_profiling_info, 
   { 7328, 4, 0, 0, 0, 46, 31 },
-  // 2662: get_default_queue, 
+  // 2713: get_default_queue, 
   { 7332, 1, 0, 0, 0, 46, 31 },
-  // 2663: ndrange_1D, 
+  // 2714: ndrange_1D, 
   { 7333, 2, 0, 0, 0, 46, 31 },
   { 7335, 3, 0, 0, 0, 46, 31 },
   { 7338, 4, 0, 0, 0, 46, 31 },
-  // 2666: ndrange_2D, ndrange_3D, 
+  // 2717: ndrange_2D, ndrange_3D, 
   { 7342, 2, 0, 0, 0, 46, 31 },
   { 7344, 3, 0, 0, 0, 46, 31 },
   { 7347, 4, 0, 0, 0, 46, 31 },
-  // 2669: get_image_num_mip_levels, 
+  // 2720: get_image_num_mip_levels, 
   { 7079, 2, 0, 0, 0, 35, 31 },
   { 7081, 2, 0, 0, 0, 35, 31 },
   { 7083, 2, 0, 0, 0, 35, 31 },
@@ -9023,144 +9176,144 @@ static const OpenCLBuiltinStruct BuiltinTable[] = {
   { 7153, 2, 0, 0, 0, 35, 31 },
   { 7155, 2, 0, 0, 0, 35, 31 },
   { 7157, 2, 0, 0, 0, 35, 31 },
-  // 2690: get_image_num_samples, 
-  { 7655, 2, 0, 1, 0, 28, 31 },
-  { 7661, 2, 0, 1, 0, 28, 31 },
-  { 7665, 2, 0, 1, 0, 28, 31 },
-  { 7669, 2, 0, 1, 0, 28, 31 },
-  { 7675, 2, 0, 1, 0, 28, 31 },
-  { 7679, 2, 0, 1, 0, 28, 31 },
-  { 7683, 2, 0, 1, 0, 28, 31 },
-  { 7687, 2, 0, 1, 0, 28, 31 },
-  { 7727, 2, 0, 1, 0, 28, 31 },
-  { 7731, 2, 0, 1, 0, 28, 31 },
-  { 7735, 2, 0, 1, 0, 28, 31 },
-  { 7739, 2, 0, 1, 0, 28, 31 },
-  // 2702: get_sub_group_size, get_max_sub_group_size, get_num_sub_groups, get_sub_group_id, get_sub_group_local_id, 
+  // 2741: get_image_num_samples, 
+  { 7927, 2, 0, 1, 0, 28, 31 },
+  { 7933, 2, 0, 1, 0, 28, 31 },
+  { 7937, 2, 0, 1, 0, 28, 31 },
+  { 7941, 2, 0, 1, 0, 28, 31 },
+  { 7947, 2, 0, 1, 0, 28, 31 },
+  { 7951, 2, 0, 1, 0, 28, 31 },
+  { 7955, 2, 0, 1, 0, 28, 31 },
+  { 7959, 2, 0, 1, 0, 28, 31 },
+  { 7999, 2, 0, 1, 0, 28, 31 },
+  { 8003, 2, 0, 1, 0, 28, 31 },
+  { 8007, 2, 0, 1, 0, 28, 31 },
+  { 8011, 2, 0, 1, 0, 28, 31 },
+  // 2753: get_sub_group_size, get_max_sub_group_size, get_num_sub_groups, get_sub_group_id, get_sub_group_local_id, 
   { 1452, 1, 0, 0, 0, 44, 31 },
-  // 2703: get_enqueued_num_sub_groups, 
+  // 2754: get_enqueued_num_sub_groups, 
   { 1452, 1, 0, 0, 0, 44, 24 },
-  // 2704: sub_group_barrier, 
+  // 2755: sub_group_barrier, 
   { 3794, 2, 0, 0, 1, 44, 31 },
   { 3796, 3, 0, 0, 1, 44, 24 },
-  // 2706: sub_group_all, sub_group_any, 
+  // 2757: sub_group_all, sub_group_any, 
   { 1008, 2, 0, 0, 1, 44, 31 },
-  // 2707: sub_group_broadcast, 
-  { 7747, 3, 0, 0, 1, 44, 31 },
-  { 7750, 3, 0, 0, 1, 39, 31 },
-  { 7753, 3, 0, 0, 1, 39, 31 },
-  // 2710: sub_group_reduce_add, sub_group_reduce_min, sub_group_reduce_max, sub_group_scan_exclusive_add, sub_group_scan_exclusive_min, sub_group_scan_exclusive_max, sub_group_scan_inclusive_add, sub_group_scan_inclusive_min, sub_group_scan_inclusive_max, 
+  // 2758: sub_group_broadcast, 
+  { 8019, 3, 0, 0, 1, 44, 31 },
+  { 8022, 3, 0, 0, 1, 39, 31 },
+  { 8025, 3, 0, 0, 1, 39, 31 },
+  // 2761: sub_group_reduce_add, sub_group_reduce_min, sub_group_reduce_max, sub_group_scan_exclusive_add, sub_group_scan_exclusive_min, sub_group_scan_exclusive_max, sub_group_scan_inclusive_add, sub_group_scan_inclusive_min, sub_group_scan_inclusive_max, 
   { 7311, 2, 0, 0, 1, 44, 31 },
-  { 7756, 2, 0, 0, 1, 39, 31 },
-  // 2712: sub_group_elect, 
-  { 7758, 1, 0, 0, 0, 41, 31 },
-  // 2713: sub_group_non_uniform_all, sub_group_non_uniform_any, 
+  { 8028, 2, 0, 0, 1, 39, 31 },
+  // 2763: sub_group_elect, 
+  { 8030, 1, 0, 0, 0, 41, 31 },
+  // 2764: sub_group_non_uniform_all, sub_group_non_uniform_any, 
   { 1008, 2, 0, 0, 0, 41, 31 },
-  // 2714: sub_group_non_uniform_all_equal, 
-  { 7759, 2, 0, 0, 0, 41, 31 },
-  // 2715: sub_group_non_uniform_broadcast, 
-  { 7761, 3, 0, 0, 0, 37, 31 },
-  // 2716: sub_group_broadcast_first, 
-  { 7764, 2, 0, 0, 0, 37, 31 },
-  // 2717: sub_group_ballot, 
-  { 7766, 2, 0, 0, 0, 37, 31 },
-  // 2718: sub_group_inverse_ballot, 
-  { 7768, 2, 0, 1, 0, 37, 31 },
-  // 2719: sub_group_ballot_bit_extract, 
-  { 7770, 3, 0, 1, 0, 37, 31 },
-  // 2720: sub_group_ballot_bit_count, 
-  { 7773, 2, 0, 1, 0, 37, 31 },
-  // 2721: sub_group_ballot_inclusive_scan, sub_group_ballot_exclusive_scan, sub_group_ballot_find_lsb, sub_group_ballot_find_msb, 
-  { 7773, 2, 0, 0, 0, 37, 31 },
-  // 2722: get_sub_group_eq_mask, get_sub_group_ge_mask, get_sub_group_gt_mask, get_sub_group_le_mask, get_sub_group_lt_mask, 
-  { 7775, 1, 0, 1, 0, 37, 31 },
-  // 2723: sub_group_non_uniform_reduce_add, sub_group_non_uniform_reduce_min, sub_group_non_uniform_reduce_max, sub_group_non_uniform_reduce_mul, sub_group_non_uniform_scan_exclusive_add, sub_group_non_uniform_scan_exclusive_min, sub_group_non_uniform_scan_exclusive_max, sub_group_non_uniform_scan_exclusive_mul, sub_group_non_uniform_scan_inclusive_add, sub_group_non_uniform_scan_inclusive_min, sub_group_non_uniform_scan_inclusive_max, sub_group_non_uniform_scan_inclusive_mul, 
-  { 7764, 2, 0, 0, 0, 40, 31 },
-  // 2724: sub_group_non_uniform_reduce_and, sub_group_non_uniform_reduce_or, sub_group_non_uniform_reduce_xor, sub_group_non_uniform_scan_exclusive_and, sub_group_non_uniform_scan_exclusive_or, sub_group_non_uniform_scan_exclusive_xor, sub_group_non_uniform_scan_inclusive_and, sub_group_non_uniform_scan_inclusive_or, sub_group_non_uniform_scan_inclusive_xor, 
-  { 7776, 2, 0, 0, 0, 40, 31 },
-  // 2725: sub_group_non_uniform_reduce_logical_and, sub_group_non_uniform_reduce_logical_or, sub_group_non_uniform_reduce_logical_xor, sub_group_non_uniform_scan_exclusive_logical_and, sub_group_non_uniform_scan_exclusive_logical_or, sub_group_non_uniform_scan_exclusive_logical_xor, sub_group_non_uniform_scan_inclusive_logical_and, sub_group_non_uniform_scan_inclusive_logical_or, sub_group_non_uniform_scan_inclusive_logical_xor, 
+  // 2765: sub_group_non_uniform_all_equal, 
+  { 8031, 2, 0, 0, 0, 41, 31 },
+  // 2766: sub_group_non_uniform_broadcast, 
+  { 8033, 3, 0, 0, 0, 37, 31 },
+  // 2767: sub_group_broadcast_first, 
+  { 8036, 2, 0, 0, 0, 37, 31 },
+  // 2768: sub_group_ballot, 
+  { 8038, 2, 0, 0, 0, 37, 31 },
+  // 2769: sub_group_inverse_ballot, 
+  { 8040, 2, 0, 1, 0, 37, 31 },
+  // 2770: sub_group_ballot_bit_extract, 
+  { 8042, 3, 0, 1, 0, 37, 31 },
+  // 2771: sub_group_ballot_bit_count, 
+  { 8045, 2, 0, 1, 0, 37, 31 },
+  // 2772: sub_group_ballot_inclusive_scan, sub_group_ballot_exclusive_scan, sub_group_ballot_find_lsb, sub_group_ballot_find_msb, 
+  { 8045, 2, 0, 0, 0, 37, 31 },
+  // 2773: get_sub_group_eq_mask, get_sub_group_ge_mask, get_sub_group_gt_mask, get_sub_group_le_mask, get_sub_group_lt_mask, 
+  { 8047, 1, 0, 1, 0, 37, 31 },
+  // 2774: sub_group_non_uniform_reduce_add, sub_group_non_uniform_reduce_min, sub_group_non_uniform_reduce_max, sub_group_non_uniform_reduce_mul, sub_group_non_uniform_scan_exclusive_add, sub_group_non_uniform_scan_exclusive_min, sub_group_non_uniform_scan_exclusive_max, sub_group_non_uniform_scan_exclusive_mul, sub_group_non_uniform_scan_inclusive_add, sub_group_non_uniform_scan_inclusive_min, sub_group_non_uniform_scan_inclusive_max, sub_group_non_uniform_scan_inclusive_mul, 
+  { 8036, 2, 0, 0, 0, 40, 31 },
+  // 2775: sub_group_non_uniform_reduce_and, sub_group_non_uniform_reduce_or, sub_group_non_uniform_reduce_xor, sub_group_non_uniform_scan_exclusive_and, sub_group_non_uniform_scan_exclusive_or, sub_group_non_uniform_scan_exclusive_xor, sub_group_non_uniform_scan_inclusive_and, sub_group_non_uniform_scan_inclusive_or, sub_group_non_uniform_scan_inclusive_xor, 
+  { 8048, 2, 0, 0, 0, 40, 31 },
+  // 2776: sub_group_non_uniform_reduce_logical_and, sub_group_non_uniform_reduce_logical_or, sub_group_non_uniform_reduce_logical_xor, sub_group_non_uniform_scan_exclusive_logical_and, sub_group_non_uniform_scan_exclusive_logical_or, sub_group_non_uniform_scan_exclusive_logical_xor, sub_group_non_uniform_scan_inclusive_logical_and, sub_group_non_uniform_scan_inclusive_logical_or, sub_group_non_uniform_scan_inclusive_logical_xor, 
   { 1008, 2, 0, 0, 0, 40, 31 },
-  // 2726: sub_group_shuffle, sub_group_shuffle_xor, 
-  { 7778, 3, 0, 0, 0, 42, 31 },
-  // 2727: sub_group_shuffle_up, sub_group_shuffle_down, 
-  { 7778, 3, 0, 0, 0, 43, 31 },
-  // 2728: sub_group_clustered_reduce_add, sub_group_clustered_reduce_min, sub_group_clustered_reduce_max, sub_group_clustered_reduce_mul, 
-  { 7778, 3, 0, 0, 0, 38, 31 },
-  // 2729: sub_group_clustered_reduce_and, sub_group_clustered_reduce_or, sub_group_clustered_reduce_xor, 
-  { 7781, 3, 0, 0, 0, 38, 31 },
-  // 2730: sub_group_clustered_reduce_logical_and, sub_group_clustered_reduce_logical_or, sub_group_clustered_reduce_logical_xor, 
-  { 7784, 3, 0, 0, 0, 38, 31 },
-  // 2731: bitfield_insert, 
-  { 7787, 5, 0, 1, 0, 27, 31 },
-  // 2732: bitfield_extract_signed, 
-  { 7792, 4, 0, 1, 0, 27, 31 },
-  { 7796, 4, 0, 1, 0, 27, 31 },
-  // 2734: bitfield_extract_unsigned, 
-  { 7800, 4, 0, 1, 0, 27, 31 },
-  { 7804, 4, 0, 1, 0, 27, 31 },
-  // 2736: bit_reverse, 
+  // 2777: sub_group_shuffle, sub_group_shuffle_xor, 
+  { 8050, 3, 0, 0, 0, 42, 31 },
+  // 2778: sub_group_shuffle_up, sub_group_shuffle_down, 
+  { 8050, 3, 0, 0, 0, 43, 31 },
+  // 2779: sub_group_clustered_reduce_add, sub_group_clustered_reduce_min, sub_group_clustered_reduce_max, sub_group_clustered_reduce_mul, 
+  { 8050, 3, 0, 0, 0, 38, 31 },
+  // 2780: sub_group_clustered_reduce_and, sub_group_clustered_reduce_or, sub_group_clustered_reduce_xor, 
+  { 8053, 3, 0, 0, 0, 38, 31 },
+  // 2781: sub_group_clustered_reduce_logical_and, sub_group_clustered_reduce_logical_or, sub_group_clustered_reduce_logical_xor, 
+  { 8056, 3, 0, 0, 0, 38, 31 },
+  // 2782: bitfield_insert, 
+  { 8059, 5, 0, 1, 0, 27, 31 },
+  // 2783: bitfield_extract_signed, 
+  { 8064, 4, 0, 1, 0, 27, 31 },
+  { 8068, 4, 0, 1, 0, 27, 31 },
+  // 2785: bitfield_extract_unsigned, 
+  { 8072, 4, 0, 1, 0, 27, 31 },
+  { 8076, 4, 0, 1, 0, 27, 31 },
+  // 2787: bit_reverse, 
   { 1607, 2, 0, 1, 0, 27, 31 },
-  // 2737: dot_acc_sat, 
-  { 7820, 4, 0, 1, 0, 99, 31 },
-  { 7824, 4, 0, 1, 0, 99, 31 },
-  { 7828, 4, 0, 1, 0, 99, 31 },
-  { 7832, 4, 0, 1, 0, 99, 31 },
-  // 2741: dot_4x8packed_uu_uint, 
-  { 7836, 3, 0, 1, 0, 100, 31 },
-  // 2742: dot_4x8packed_ss_int, dot_4x8packed_us_int, dot_4x8packed_su_int, 
-  { 7839, 3, 0, 1, 0, 100, 31 },
-  // 2743: dot_acc_sat_4x8packed_uu_uint, 
-  { 7842, 4, 0, 1, 0, 100, 31 },
-  // 2744: dot_acc_sat_4x8packed_ss_int, dot_acc_sat_4x8packed_us_int, dot_acc_sat_4x8packed_su_int, 
-  { 7846, 4, 0, 1, 0, 100, 31 },
-  // 2745: sub_group_rotate, 
-  { 7850, 3, 0, 0, 1, 101, 31 },
-  // 2746: sub_group_clustered_rotate, 
-  { 7853, 4, 0, 0, 1, 101, 31 },
-  // 2747: clock_read_device, 
-  { 7857, 1, 0, 0, 0, 102, 31 },
-  // 2748: clock_read_hilo_device, 
-  { 7858, 1, 0, 0, 0, 102, 31 },
-  // 2749: clock_read_work_group, 
-  { 7857, 1, 0, 0, 0, 103, 31 },
-  // 2750: clock_read_hilo_work_group, 
-  { 7858, 1, 0, 0, 0, 103, 31 },
-  // 2751: clock_read_sub_group, 
-  { 7857, 1, 0, 0, 0, 104, 31 },
-  // 2752: clock_read_hilo_sub_group, 
-  { 7858, 1, 0, 0, 0, 104, 31 },
-  // 2753: arm_dot, 
-  { 7808, 3, 0, 0, 0, 5, 31 },
-  { 7811, 3, 0, 0, 0, 5, 31 },
-  // 2755: arm_dot_acc, 
-  { 7820, 4, 0, 0, 0, 2, 31 },
-  { 7824, 4, 0, 0, 0, 2, 31 },
-  { 7859, 4, 0, 0, 0, 3, 31 },
-  { 7863, 4, 0, 0, 0, 3, 31 },
-  // 2759: arm_dot_acc_sat, 
-  { 7820, 4, 0, 0, 0, 4, 31 },
-  { 7824, 4, 0, 0, 0, 4, 31 },
-  // 2761: amd_bitalign, amd_bytealign, amd_lerp, amd_sadhi, amd_sad, 
+  // 2788: dot_acc_sat, 
+  { 8092, 4, 0, 1, 0, 99, 31 },
+  { 8096, 4, 0, 1, 0, 99, 31 },
+  { 8100, 4, 0, 1, 0, 99, 31 },
+  { 8104, 4, 0, 1, 0, 99, 31 },
+  // 2792: dot_4x8packed_uu_uint, 
+  { 8108, 3, 0, 1, 0, 100, 31 },
+  // 2793: dot_4x8packed_ss_int, dot_4x8packed_us_int, dot_4x8packed_su_int, 
+  { 8111, 3, 0, 1, 0, 100, 31 },
+  // 2794: dot_acc_sat_4x8packed_uu_uint, 
+  { 8114, 4, 0, 1, 0, 100, 31 },
+  // 2795: dot_acc_sat_4x8packed_ss_int, dot_acc_sat_4x8packed_us_int, dot_acc_sat_4x8packed_su_int, 
+  { 8118, 4, 0, 1, 0, 100, 31 },
+  // 2796: sub_group_rotate, 
+  { 8122, 3, 0, 0, 1, 101, 31 },
+  // 2797: sub_group_clustered_rotate, 
+  { 8125, 4, 0, 0, 1, 101, 31 },
+  // 2798: clock_read_device, 
+  { 8129, 1, 0, 0, 0, 102, 31 },
+  // 2799: clock_read_hilo_device, 
+  { 8130, 1, 0, 0, 0, 102, 31 },
+  // 2800: clock_read_work_group, 
+  { 8129, 1, 0, 0, 0, 103, 31 },
+  // 2801: clock_read_hilo_work_group, 
+  { 8130, 1, 0, 0, 0, 103, 31 },
+  // 2802: clock_read_sub_group, 
+  { 8129, 1, 0, 0, 0, 104, 31 },
+  // 2803: clock_read_hilo_sub_group, 
+  { 8130, 1, 0, 0, 0, 104, 31 },
+  // 2804: arm_dot, 
+  { 8080, 3, 0, 0, 0, 5, 31 },
+  { 8083, 3, 0, 0, 0, 5, 31 },
+  // 2806: arm_dot_acc, 
+  { 8092, 4, 0, 0, 0, 2, 31 },
+  { 8096, 4, 0, 0, 0, 2, 31 },
+  { 8131, 4, 0, 0, 0, 3, 31 },
+  { 8135, 4, 0, 0, 0, 3, 31 },
+  // 2810: arm_dot_acc_sat, 
+  { 8092, 4, 0, 0, 0, 4, 31 },
+  { 8096, 4, 0, 0, 0, 4, 31 },
+  // 2812: amd_bitalign, amd_bytealign, amd_lerp, amd_sadhi, amd_sad, 
   { 1648, 4, 0, 0, 0, 0, 31 },
-  // 2762: amd_unpack0, amd_unpack1, amd_unpack2, amd_unpack3, 
+  // 2813: amd_unpack0, amd_unpack1, amd_unpack2, amd_unpack3, 
   { 1458, 2, 0, 0, 0, 0, 31 },
-  // 2763: amd_pack, 
-  { 7867, 2, 0, 0, 0, 0, 31 },
-  // 2764: amd_sad4, 
-  { 7869, 4, 0, 0, 0, 0, 31 },
-  // 2765: amd_bfe, 
-  { 7873, 4, 0, 0, 0, 1, 31 },
+  // 2814: amd_pack, 
+  { 8139, 2, 0, 0, 0, 0, 31 },
+  // 2815: amd_sad4, 
+  { 8141, 4, 0, 0, 0, 0, 31 },
+  // 2816: amd_bfe, 
+  { 8145, 4, 0, 0, 0, 1, 31 },
   { 1648, 4, 0, 0, 0, 1, 31 },
-  // 2767: amd_msad, amd_sadd, amd_sadw, 
+  // 2818: amd_msad, amd_sadd, amd_sadw, 
   { 1648, 4, 0, 0, 0, 1, 31 },
-  // 2768: amd_bfm, 
+  // 2819: amd_bfm, 
   { 1655, 3, 0, 0, 0, 1, 31 },
-  // 2769: amd_max3, amd_median3, amd_min3, 
-  { 7877, 4, 0, 0, 0, 1, 31 },
+  // 2820: amd_max3, amd_median3, amd_min3, 
+  { 8149, 4, 0, 0, 0, 1, 31 },
   { 1644, 4, 0, 0, 0, 1, 31 },
   { 1648, 4, 0, 0, 0, 1, 31 },
-  // 2772: amd_mqsad, amd_qsad, 
-  { 7881, 4, 0, 0, 0, 1, 31 },
+  // 2823: amd_mqsad, amd_qsad, 
+  { 8153, 4, 0, 0, 0, 1, 31 },
 };
 
 
@@ -9737,21 +9890,21 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           switch (Name[6]) {
           default: break;
           case 'e':	 // 1 string to match.
-            return std::make_pair(2765, 2);	 // "amd_bfe"
+            return std::make_pair(2816, 2);	 // "amd_bfe"
           case 'm':	 // 1 string to match.
-            return std::make_pair(2768, 1);	 // "amd_bfm"
+            return std::make_pair(2819, 1);	 // "amd_bfm"
           }
           break;
         case 's':	 // 1 string to match.
           if (memcmp(Name.data()+5, "ad", 2) != 0)
             break;
-          return std::make_pair(2761, 1);	 // "amd_sad"
+          return std::make_pair(2812, 1);	 // "amd_sad"
         }
         break;
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+2, "m_dot", 5) != 0)
           break;
-        return std::make_pair(2753, 2);	 // "arm_dot"
+        return std::make_pair(2804, 2);	 // "arm_dot"
       case 't':	 // 2 strings to match.
         switch (Name[2]) {
         default: break;
@@ -9848,43 +10001,43 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'l':	 // 1 string to match.
           if (memcmp(Name.data()+5, "erp", 3) != 0)
             break;
-          return std::make_pair(2761, 1);	 // "amd_lerp"
+          return std::make_pair(2812, 1);	 // "amd_lerp"
         case 'm':	 // 3 strings to match.
           switch (Name[5]) {
           default: break;
           case 'a':	 // 1 string to match.
             if (memcmp(Name.data()+6, "x3", 2) != 0)
               break;
-            return std::make_pair(2769, 3);	 // "amd_max3"
+            return std::make_pair(2820, 3);	 // "amd_max3"
           case 'i':	 // 1 string to match.
             if (memcmp(Name.data()+6, "n3", 2) != 0)
               break;
-            return std::make_pair(2769, 3);	 // "amd_min3"
+            return std::make_pair(2820, 3);	 // "amd_min3"
           case 's':	 // 1 string to match.
             if (memcmp(Name.data()+6, "ad", 2) != 0)
               break;
-            return std::make_pair(2767, 1);	 // "amd_msad"
+            return std::make_pair(2818, 1);	 // "amd_msad"
           }
           break;
         case 'p':	 // 1 string to match.
           if (memcmp(Name.data()+5, "ack", 3) != 0)
             break;
-          return std::make_pair(2763, 1);	 // "amd_pack"
+          return std::make_pair(2814, 1);	 // "amd_pack"
         case 'q':	 // 1 string to match.
           if (memcmp(Name.data()+5, "sad", 3) != 0)
             break;
-          return std::make_pair(2772, 1);	 // "amd_qsad"
+          return std::make_pair(2823, 1);	 // "amd_qsad"
         case 's':	 // 3 strings to match.
           if (memcmp(Name.data()+5, "ad", 2) != 0)
             break;
           switch (Name[7]) {
           default: break;
           case '4':	 // 1 string to match.
-            return std::make_pair(2764, 1);	 // "amd_sad4"
+            return std::make_pair(2815, 1);	 // "amd_sad4"
           case 'd':	 // 1 string to match.
-            return std::make_pair(2767, 1);	 // "amd_sadd"
+            return std::make_pair(2818, 1);	 // "amd_sadd"
           case 'w':	 // 1 string to match.
-            return std::make_pair(2767, 1);	 // "amd_sadw"
+            return std::make_pair(2818, 1);	 // "amd_sadw"
           }
           break;
         }
@@ -10035,11 +10188,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'm':	 // 1 string to match.
           if (memcmp(Name.data()+5, "qsad", 4) != 0)
             break;
-          return std::make_pair(2772, 1);	 // "amd_mqsad"
+          return std::make_pair(2823, 1);	 // "amd_mqsad"
         case 's':	 // 1 string to match.
           if (memcmp(Name.data()+5, "adhi", 4) != 0)
             break;
-          return std::make_pair(2761, 1);	 // "amd_sadhi"
+          return std::make_pair(2812, 1);	 // "amd_sadhi"
         }
         break;
       case 't':	 // 2 strings to match.
@@ -10250,15 +10403,15 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case '1':	 // 1 string to match.
           if (Name[9] != 'D')
             break;
-          return std::make_pair(2663, 3);	 // "ndrange_1D"
+          return std::make_pair(2714, 3);	 // "ndrange_1D"
         case '2':	 // 1 string to match.
           if (Name[9] != 'D')
             break;
-          return std::make_pair(2666, 3);	 // "ndrange_2D"
+          return std::make_pair(2717, 3);	 // "ndrange_2D"
         case '3':	 // 1 string to match.
           if (Name[9] != 'D')
             break;
-          return std::make_pair(2666, 3);	 // "ndrange_3D"
+          return std::make_pair(2717, 3);	 // "ndrange_3D"
         }
         break;
       }
@@ -10287,20 +10440,20 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'm':	 // 1 string to match.
           if (memcmp(Name.data()+5, "edian3", 6) != 0)
             break;
-          return std::make_pair(2769, 3);	 // "amd_median3"
+          return std::make_pair(2820, 3);	 // "amd_median3"
         case 'u':	 // 4 strings to match.
           if (memcmp(Name.data()+5, "npack", 5) != 0)
             break;
           switch (Name[10]) {
           default: break;
           case '0':	 // 1 string to match.
-            return std::make_pair(2762, 1);	 // "amd_unpack0"
+            return std::make_pair(2813, 1);	 // "amd_unpack0"
           case '1':	 // 1 string to match.
-            return std::make_pair(2762, 1);	 // "amd_unpack1"
+            return std::make_pair(2813, 1);	 // "amd_unpack1"
           case '2':	 // 1 string to match.
-            return std::make_pair(2762, 1);	 // "amd_unpack2"
+            return std::make_pair(2813, 1);	 // "amd_unpack2"
           case '3':	 // 1 string to match.
-            return std::make_pair(2762, 1);	 // "amd_unpack3"
+            return std::make_pair(2813, 1);	 // "amd_unpack3"
           }
           break;
         }
@@ -10308,7 +10461,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+2, "m_dot_acc", 9) != 0)
           break;
-        return std::make_pair(2755, 4);	 // "arm_dot_acc"
+        return std::make_pair(2806, 4);	 // "arm_dot_acc"
       case 't':	 // 3 strings to match.
         if (memcmp(Name.data()+2, "omic_", 5) != 0)
           break;
@@ -10333,7 +10486,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'b':	 // 1 string to match.
       if (memcmp(Name.data()+1, "it_reverse", 10) != 0)
         break;
-      return std::make_pair(2736, 1);	 // "bit_reverse"
+      return std::make_pair(2787, 1);	 // "bit_reverse"
     case 'c':	 // 1 string to match.
       if (memcmp(Name.data()+1, "onvert_int", 10) != 0)
         break;
@@ -10341,7 +10494,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'd':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ot_acc_sat", 10) != 0)
         break;
-      return std::make_pair(2737, 4);	 // "dot_acc_sat"
+      return std::make_pair(2788, 4);	 // "dot_acc_sat"
     case 'f':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ast_length", 10) != 0)
         break;
@@ -10394,11 +10547,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       switch (Name[10]) {
       default: break;
       case 'f':	 // 1 string to match.
-        return std::make_pair(2327, 52);	 // "read_imagef"
+        return std::make_pair(2327, 66);	 // "read_imagef"
       case 'h':	 // 1 string to match.
-        return std::make_pair(2616, 22);	 // "read_imageh"
+        return std::make_pair(2667, 22);	 // "read_imageh"
       case 'i':	 // 1 string to match.
-        return std::make_pair(2379, 36);	 // "read_imagei"
+        return std::make_pair(2393, 46);	 // "read_imagei"
       }
       break;
     case 'v':	 // 5 strings to match.
@@ -10436,7 +10589,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'm':	 // 1 string to match.
         if (memcmp(Name.data()+2, "d_bitalign", 10) != 0)
           break;
-        return std::make_pair(2761, 1);	 // "amd_bitalign"
+        return std::make_pair(2812, 1);	 // "amd_bitalign"
       case 't':	 // 2 strings to match.
         if (memcmp(Name.data()+2, "om", 2) != 0)
           break;
@@ -10547,11 +10700,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (memcmp(Name.data()+3, "d_imageui", 9) != 0)
           break;
-        return std::make_pair(2415, 36);	 // "read_imageui"
+        return std::make_pair(2439, 46);	 // "read_imageui"
       case 't':	 // 1 string to match.
         if (memcmp(Name.data()+3, "ain_event", 9) != 0)
           break;
-        return std::make_pair(2657, 1);	 // "retain_event"
+        return std::make_pair(2708, 1);	 // "retain_event"
       }
       break;
     case 'v':	 // 9 strings to match.
@@ -10606,11 +10759,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       switch (Name[11]) {
       default: break;
       case 'f':	 // 1 string to match.
-        return std::make_pair(2451, 23);	 // "write_imagef"
+        return std::make_pair(2485, 30);	 // "write_imagef"
       case 'h':	 // 1 string to match.
-        return std::make_pair(2638, 12);	 // "write_imageh"
+        return std::make_pair(2689, 12);	 // "write_imageh"
       case 'i':	 // 1 string to match.
-        return std::make_pair(2474, 17);	 // "write_imagei"
+        return std::make_pair(2515, 22);	 // "write_imagei"
       }
       break;
     }
@@ -10621,7 +10774,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'a':	 // 1 string to match.
       if (memcmp(Name.data()+1, "md_bytealign", 12) != 0)
         break;
-      return std::make_pair(2761, 1);	 // "amd_bytealign"
+      return std::make_pair(2812, 1);	 // "amd_bytealign"
     case 'c':	 // 21 strings to match.
       if (memcmp(Name.data()+1, "onvert_", 7) != 0)
         break;
@@ -10730,7 +10883,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'i':	 // 1 string to match.
         if (memcmp(Name.data()+5, "mage_dim", 8) != 0)
           break;
-        return std::make_pair(2574, 27);	 // "get_image_dim"
+        return std::make_pair(2625, 27);	 // "get_image_dim"
       }
       break;
     case 'i':	 // 1 string to match.
@@ -10744,7 +10897,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'r':	 // 1 string to match.
       if (memcmp(Name.data()+1, "elease_event", 12) != 0)
         break;
-      return std::make_pair(2657, 1);	 // "release_event"
+      return std::make_pair(2708, 1);	 // "release_event"
     case 's':	 // 2 strings to match.
       if (memcmp(Name.data()+1, "ub_group_a", 10) != 0)
         break;
@@ -10753,11 +10906,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'l':	 // 1 string to match.
         if (Name[12] != 'l')
           break;
-        return std::make_pair(2706, 1);	 // "sub_group_all"
+        return std::make_pair(2757, 1);	 // "sub_group_all"
       case 'n':	 // 1 string to match.
         if (Name[12] != 'y')
           break;
-        return std::make_pair(2706, 1);	 // "sub_group_any"
+        return std::make_pair(2757, 1);	 // "sub_group_any"
       }
       break;
     case 'v':	 // 6 strings to match.
@@ -10798,7 +10951,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'w':	 // 1 string to match.
       if (memcmp(Name.data()+1, "rite_imageui", 12) != 0)
         break;
-      return std::make_pair(2491, 17);	 // "write_imageui"
+      return std::make_pair(2537, 22);	 // "write_imageui"
     }
     break;
   case 14:	 // 33 strings to match.
@@ -10907,7 +11060,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'e':	 // 1 string to match.
       if (memcmp(Name.data()+1, "nqueue_marker", 13) != 0)
         break;
-      return std::make_pair(2656, 1);	 // "enqueue_marker"
+      return std::make_pair(2707, 1);	 // "enqueue_marker"
     case 'f':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ast_normalize", 13) != 0)
         break;
@@ -10935,7 +11088,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case '_':	 // 1 string to match.
         if (memcmp(Name.data()+3, "valid_event", 11) != 0)
           break;
-        return std::make_pair(2659, 1);	 // "is_valid_event"
+        return std::make_pair(2710, 1);	 // "is_valid_event"
       case 'g':	 // 1 string to match.
         if (memcmp(Name.data()+3, "reaterequal", 11) != 0)
           break;
@@ -10958,11 +11111,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'l':	 // 1 string to match.
         if (Name[13] != 'l')
           break;
-        return std::make_pair(2650, 1);	 // "work_group_all"
+        return std::make_pair(2701, 1);	 // "work_group_all"
       case 'n':	 // 1 string to match.
         if (Name[13] != 'y')
           break;
-        return std::make_pair(2650, 1);	 // "work_group_any"
+        return std::make_pair(2701, 1);	 // "work_group_any"
       }
       break;
     }
@@ -10976,7 +11129,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+2, "m_dot_acc_sat", 13) != 0)
           break;
-        return std::make_pair(2759, 2);	 // "arm_dot_acc_sat"
+        return std::make_pair(2810, 2);	 // "arm_dot_acc_sat"
       case 't':	 // 2 strings to match.
         if (memcmp(Name.data()+2, "omic_", 5) != 0)
           break;
@@ -10997,7 +11150,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'b':	 // 1 string to match.
       if (memcmp(Name.data()+1, "itfield_insert", 14) != 0)
         break;
-      return std::make_pair(2731, 1);	 // "bitfield_insert"
+      return std::make_pair(2782, 1);	 // "bitfield_insert"
     case 'c':	 // 17 strings to match.
       if (memcmp(Name.data()+1, "onvert_", 7) != 0)
         break;
@@ -11099,11 +11252,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'd':	 // 1 string to match.
           if (memcmp(Name.data()+11, "epth", 4) != 0)
             break;
-          return std::make_pair(2571, 3);	 // "get_image_depth"
+          return std::make_pair(2622, 3);	 // "get_image_depth"
         case 'w':	 // 1 string to match.
           if (memcmp(Name.data()+11, "idth", 4) != 0)
             break;
-          return std::make_pair(2508, 36);	 // "get_image_width"
+          return std::make_pair(2559, 36);	 // "get_image_width"
         }
         break;
       }
@@ -11111,7 +11264,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 's':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ub_group_elect", 14) != 0)
         break;
-      return std::make_pair(2712, 1);	 // "sub_group_elect"
+      return std::make_pair(2763, 1);	 // "sub_group_elect"
     case 'v':	 // 4 strings to match.
       if (memcmp(Name.data()+1, "store_half_rt", 13) != 0)
         break;
@@ -11409,11 +11562,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'i':	 // 1 string to match.
         if (memcmp(Name.data()+5, "mage_height", 11) != 0)
           break;
-        return std::make_pair(2544, 27);	 // "get_image_height"
+        return std::make_pair(2595, 27);	 // "get_image_height"
       case 's':	 // 1 string to match.
         if (memcmp(Name.data()+5, "ub_group_id", 11) != 0)
           break;
-        return std::make_pair(2702, 1);	 // "get_sub_group_id"
+        return std::make_pair(2753, 1);	 // "get_sub_group_id"
       }
       break;
     case 's':	 // 2 strings to match.
@@ -11424,11 +11577,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'b':	 // 1 string to match.
         if (memcmp(Name.data()+11, "allot", 5) != 0)
           break;
-        return std::make_pair(2717, 1);	 // "sub_group_ballot"
+        return std::make_pair(2768, 1);	 // "sub_group_ballot"
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+11, "otate", 5) != 0)
           break;
-        return std::make_pair(2745, 1);	 // "sub_group_rotate"
+        return std::make_pair(2796, 1);	 // "sub_group_rotate"
       }
       break;
     case 'v':	 // 16 strings to match.
@@ -11513,7 +11666,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'l':	 // 1 string to match.
         if (memcmp(Name.data()+2, "ock_read_device", 15) != 0)
           break;
-        return std::make_pair(2747, 1);	 // "clock_read_device"
+        return std::make_pair(2798, 1);	 // "clock_read_device"
       case 'o':	 // 100 strings to match.
         if (memcmp(Name.data()+2, "nvert_", 6) != 0)
           break;
@@ -12048,7 +12201,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+2, "eate_user_event", 15) != 0)
           break;
-        return std::make_pair(2658, 1);	 // "create_user_event"
+        return std::make_pair(2709, 1);	 // "create_user_event"
       }
       break;
     case 'g':	 // 2 strings to match.
@@ -12059,7 +12212,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'd':	 // 1 string to match.
         if (memcmp(Name.data()+5, "efault_queue", 12) != 0)
           break;
-        return std::make_pair(2662, 1);	 // "get_default_queue"
+        return std::make_pair(2713, 1);	 // "get_default_queue"
       case 'g':	 // 1 string to match.
         if (memcmp(Name.data()+5, "lobal_offset", 12) != 0)
           break;
@@ -12074,11 +12227,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'b':	 // 1 string to match.
         if (memcmp(Name.data()+11, "arrier", 6) != 0)
           break;
-        return std::make_pair(2704, 2);	 // "sub_group_barrier"
+        return std::make_pair(2755, 2);	 // "sub_group_barrier"
       case 's':	 // 1 string to match.
         if (memcmp(Name.data()+11, "huffle", 6) != 0)
           break;
-        return std::make_pair(2726, 1);	 // "sub_group_shuffle"
+        return std::make_pair(2777, 1);	 // "sub_group_shuffle"
       }
       break;
     case 'v':	 // 20 strings to match.
@@ -12733,11 +12886,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'n':	 // 1 string to match.
         if (memcmp(Name.data()+5, "um_sub_groups", 13) != 0)
           break;
-        return std::make_pair(2702, 1);	 // "get_num_sub_groups"
+        return std::make_pair(2753, 1);	 // "get_num_sub_groups"
       case 's':	 // 1 string to match.
         if (memcmp(Name.data()+5, "ub_group_size", 13) != 0)
           break;
-        return std::make_pair(2702, 1);	 // "get_sub_group_size"
+        return std::make_pair(2753, 1);	 // "get_sub_group_size"
       }
       break;
     case 'v':	 // 4 strings to match.
@@ -13069,11 +13222,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'i':	 // 1 string to match.
       if (memcmp(Name.data()+1, "s_valid_reserve_id", 18) != 0)
         break;
-      return std::make_pair(2655, 1);	 // "is_valid_reserve_id"
+      return std::make_pair(2706, 1);	 // "is_valid_reserve_id"
     case 's':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ub_group_broadcast", 18) != 0)
         break;
-      return std::make_pair(2707, 3);	 // "sub_group_broadcast"
+      return std::make_pair(2758, 3);	 // "sub_group_broadcast"
     }
     break;
   case 20:	 // 49 strings to match.
@@ -13089,7 +13242,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'l':	 // 1 string to match.
         if (memcmp(Name.data()+2, "ock_read_sub_group", 18) != 0)
           break;
-        return std::make_pair(2751, 1);	 // "clock_read_sub_group"
+        return std::make_pair(2802, 1);	 // "clock_read_sub_group"
       case 'o':	 // 37 strings to match.
         if (memcmp(Name.data()+2, "nvert_", 6) != 0)
           break;
@@ -13268,17 +13421,17 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 's':	 // 1 string to match.
           if (memcmp(Name.data()+16, "_int", 4) != 0)
             break;
-          return std::make_pair(2742, 1);	 // "dot_4x8packed_ss_int"
+          return std::make_pair(2793, 1);	 // "dot_4x8packed_ss_int"
         case 'u':	 // 1 string to match.
           if (memcmp(Name.data()+16, "_int", 4) != 0)
             break;
-          return std::make_pair(2742, 1);	 // "dot_4x8packed_su_int"
+          return std::make_pair(2793, 1);	 // "dot_4x8packed_su_int"
         }
         break;
       case 'u':	 // 1 string to match.
         if (memcmp(Name.data()+15, "s_int", 5) != 0)
           break;
-        return std::make_pair(2742, 1);	 // "dot_4x8packed_us_int"
+        return std::make_pair(2793, 1);	 // "dot_4x8packed_us_int"
       }
       break;
     case 'g':	 // 2 strings to match.
@@ -13293,7 +13446,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'i':	 // 1 string to match.
         if (memcmp(Name.data()+5, "mage_array_size", 15) != 0)
           break;
-        return std::make_pair(2601, 15);	 // "get_image_array_size"
+        return std::make_pair(2652, 15);	 // "get_image_array_size"
       }
       break;
     case 's':	 // 4 strings to match.
@@ -13309,18 +13462,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'a':	 // 1 string to match.
           if (memcmp(Name.data()+18, "dd", 2) != 0)
             break;
-          return std::make_pair(2710, 2);	 // "sub_group_reduce_add"
+          return std::make_pair(2761, 2);	 // "sub_group_reduce_add"
         case 'm':	 // 2 strings to match.
           switch (Name[18]) {
           default: break;
           case 'a':	 // 1 string to match.
             if (Name[19] != 'x')
               break;
-            return std::make_pair(2710, 2);	 // "sub_group_reduce_max"
+            return std::make_pair(2761, 2);	 // "sub_group_reduce_max"
           case 'i':	 // 1 string to match.
             if (Name[19] != 'n')
               break;
-            return std::make_pair(2710, 2);	 // "sub_group_reduce_min"
+            return std::make_pair(2761, 2);	 // "sub_group_reduce_min"
           }
           break;
         }
@@ -13328,13 +13481,13 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 's':	 // 1 string to match.
         if (memcmp(Name.data()+11, "huffle_up", 9) != 0)
           break;
-        return std::make_pair(2727, 1);	 // "sub_group_shuffle_up"
+        return std::make_pair(2778, 1);	 // "sub_group_shuffle_up"
       }
       break;
     case 'w':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ork_group_broadcast", 19) != 0)
         break;
-      return std::make_pair(2651, 3);	 // "work_group_broadcast"
+      return std::make_pair(2702, 3);	 // "work_group_broadcast"
     }
     break;
   case 21:	 // 79 strings to match.
@@ -13359,7 +13512,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'l':	 // 1 string to match.
         if (memcmp(Name.data()+2, "ock_read_work_group", 19) != 0)
           break;
-        return std::make_pair(2749, 1);	 // "clock_read_work_group"
+        return std::make_pair(2800, 1);	 // "clock_read_work_group"
       case 'o':	 // 64 strings to match.
         if (memcmp(Name.data()+2, "nvert_", 6) != 0)
           break;
@@ -13638,7 +13791,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'd':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ot_4x8packed_uu_uint", 20) != 0)
         break;
-      return std::make_pair(2741, 1);	 // "dot_4x8packed_uu_uint"
+      return std::make_pair(2792, 1);	 // "dot_4x8packed_uu_uint"
     case 'g':	 // 6 strings to match.
       if (memcmp(Name.data()+1, "et_", 3) != 0)
         break;
@@ -13647,7 +13800,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'i':	 // 1 string to match.
         if (memcmp(Name.data()+5, "mage_num_samples", 16) != 0)
           break;
-        return std::make_pair(2690, 12);	 // "get_image_num_samples"
+        return std::make_pair(2741, 12);	 // "get_image_num_samples"
       case 's':	 // 5 strings to match.
         if (memcmp(Name.data()+5, "ub_group_", 9) != 0)
           break;
@@ -13656,18 +13809,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'e':	 // 1 string to match.
           if (memcmp(Name.data()+15, "q_mask", 6) != 0)
             break;
-          return std::make_pair(2722, 1);	 // "get_sub_group_eq_mask"
+          return std::make_pair(2773, 1);	 // "get_sub_group_eq_mask"
         case 'g':	 // 2 strings to match.
           switch (Name[15]) {
           default: break;
           case 'e':	 // 1 string to match.
             if (memcmp(Name.data()+16, "_mask", 5) != 0)
               break;
-            return std::make_pair(2722, 1);	 // "get_sub_group_ge_mask"
+            return std::make_pair(2773, 1);	 // "get_sub_group_ge_mask"
           case 't':	 // 1 string to match.
             if (memcmp(Name.data()+16, "_mask", 5) != 0)
               break;
-            return std::make_pair(2722, 1);	 // "get_sub_group_gt_mask"
+            return std::make_pair(2773, 1);	 // "get_sub_group_gt_mask"
           }
           break;
         case 'l':	 // 2 strings to match.
@@ -13676,11 +13829,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'e':	 // 1 string to match.
             if (memcmp(Name.data()+16, "_mask", 5) != 0)
               break;
-            return std::make_pair(2722, 1);	 // "get_sub_group_le_mask"
+            return std::make_pair(2773, 1);	 // "get_sub_group_le_mask"
           case 't':	 // 1 string to match.
             if (memcmp(Name.data()+16, "_mask", 5) != 0)
               break;
-            return std::make_pair(2722, 1);	 // "get_sub_group_lt_mask"
+            return std::make_pair(2773, 1);	 // "get_sub_group_lt_mask"
           }
           break;
         }
@@ -13693,11 +13846,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'e':	 // 1 string to match.
         if (memcmp(Name.data()+2, "t_user_event_status", 19) != 0)
           break;
-        return std::make_pair(2660, 1);	 // "set_user_event_status"
+        return std::make_pair(2711, 1);	 // "set_user_event_status"
       case 'u':	 // 1 string to match.
         if (memcmp(Name.data()+2, "b_group_shuffle_xor", 19) != 0)
           break;
-        return std::make_pair(2726, 1);	 // "sub_group_shuffle_xor"
+        return std::make_pair(2777, 1);	 // "sub_group_shuffle_xor"
       }
       break;
     case 'w':	 // 3 strings to match.
@@ -13708,18 +13861,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (memcmp(Name.data()+19, "dd", 2) != 0)
           break;
-        return std::make_pair(2654, 1);	 // "work_group_reduce_add"
+        return std::make_pair(2705, 1);	 // "work_group_reduce_add"
       case 'm':	 // 2 strings to match.
         switch (Name[19]) {
         default: break;
         case 'a':	 // 1 string to match.
           if (Name[20] != 'x')
             break;
-          return std::make_pair(2654, 1);	 // "work_group_reduce_max"
+          return std::make_pair(2705, 1);	 // "work_group_reduce_max"
         case 'i':	 // 1 string to match.
           if (Name[20] != 'n')
             break;
-          return std::make_pair(2654, 1);	 // "work_group_reduce_min"
+          return std::make_pair(2705, 1);	 // "work_group_reduce_min"
         }
         break;
       }
@@ -13739,7 +13892,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'l':	 // 1 string to match.
         if (memcmp(Name.data()+2, "ock_read_hilo_device", 20) != 0)
           break;
-        return std::make_pair(2748, 1);	 // "clock_read_hilo_device"
+        return std::make_pair(2799, 1);	 // "clock_read_hilo_device"
       case 'o':	 // 64 strings to match.
         if (memcmp(Name.data()+2, "nvert_", 6) != 0)
           break;
@@ -14023,17 +14176,17 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'm':	 // 1 string to match.
         if (memcmp(Name.data()+5, "ax_sub_group_size", 17) != 0)
           break;
-        return std::make_pair(2702, 1);	 // "get_max_sub_group_size"
+        return std::make_pair(2753, 1);	 // "get_max_sub_group_size"
       case 's':	 // 1 string to match.
         if (memcmp(Name.data()+5, "ub_group_local_id", 17) != 0)
           break;
-        return std::make_pair(2702, 1);	 // "get_sub_group_local_id"
+        return std::make_pair(2753, 1);	 // "get_sub_group_local_id"
       }
       break;
     case 's':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ub_group_shuffle_down", 21) != 0)
         break;
-      return std::make_pair(2727, 1);	 // "sub_group_shuffle_down"
+      return std::make_pair(2778, 1);	 // "sub_group_shuffle_down"
     }
     break;
   case 23:	 // 31 strings to match.
@@ -14042,7 +14195,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'b':	 // 1 string to match.
       if (memcmp(Name.data()+1, "itfield_extract_signed", 22) != 0)
         break;
-      return std::make_pair(2732, 2);	 // "bitfield_extract_signed"
+      return std::make_pair(2783, 2);	 // "bitfield_extract_signed"
     case 'c':	 // 28 strings to match.
       if (memcmp(Name.data()+1, "onvert_", 7) != 0)
         break;
@@ -14179,7 +14332,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'i':	 // 1 string to match.
         if (memcmp(Name.data()+5, "mage_channel_order", 18) != 0)
           break;
-        return std::make_pair(2508, 36);	 // "get_image_channel_order"
+        return std::make_pair(2559, 36);	 // "get_image_channel_order"
       }
       break;
     }
@@ -14229,11 +14382,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'g':	 // 1 string to match.
       if (memcmp(Name.data()+1, "et_image_num_mip_levels", 23) != 0)
         break;
-      return std::make_pair(2669, 21);	 // "get_image_num_mip_levels"
+      return std::make_pair(2720, 21);	 // "get_image_num_mip_levels"
     case 's':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ub_group_inverse_ballot", 23) != 0)
         break;
-      return std::make_pair(2718, 1);	 // "sub_group_inverse_ballot"
+      return std::make_pair(2769, 1);	 // "sub_group_inverse_ballot"
     }
     break;
   case 25:	 // 13 strings to match.
@@ -14283,11 +14436,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'b':	 // 1 string to match.
       if (memcmp(Name.data()+1, "itfield_extract_unsigned", 24) != 0)
         break;
-      return std::make_pair(2734, 2);	 // "bitfield_extract_unsigned"
+      return std::make_pair(2785, 2);	 // "bitfield_extract_unsigned"
     case 'c':	 // 1 string to match.
       if (memcmp(Name.data()+1, "lock_read_hilo_sub_group", 24) != 0)
         break;
-      return std::make_pair(2752, 1);	 // "clock_read_hilo_sub_group"
+      return std::make_pair(2803, 1);	 // "clock_read_hilo_sub_group"
     case 's':	 // 5 strings to match.
       if (memcmp(Name.data()+1, "ub_group_", 9) != 0)
         break;
@@ -14304,17 +14457,17 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'l':	 // 1 string to match.
             if (memcmp(Name.data()+23, "sb", 2) != 0)
               break;
-            return std::make_pair(2721, 1);	 // "sub_group_ballot_find_lsb"
+            return std::make_pair(2772, 1);	 // "sub_group_ballot_find_lsb"
           case 'm':	 // 1 string to match.
             if (memcmp(Name.data()+23, "sb", 2) != 0)
               break;
-            return std::make_pair(2721, 1);	 // "sub_group_ballot_find_msb"
+            return std::make_pair(2772, 1);	 // "sub_group_ballot_find_msb"
           }
           break;
         case 'r':	 // 1 string to match.
           if (memcmp(Name.data()+12, "oadcast_first", 13) != 0)
             break;
-          return std::make_pair(2716, 1);	 // "sub_group_broadcast_first"
+          return std::make_pair(2767, 1);	 // "sub_group_broadcast_first"
         }
         break;
       case 'n':	 // 2 strings to match.
@@ -14325,11 +14478,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'l':	 // 1 string to match.
           if (Name[24] != 'l')
             break;
-          return std::make_pair(2713, 1);	 // "sub_group_non_uniform_all"
+          return std::make_pair(2764, 1);	 // "sub_group_non_uniform_all"
         case 'n':	 // 1 string to match.
           if (Name[24] != 'y')
             break;
-          return std::make_pair(2713, 1);	 // "sub_group_non_uniform_any"
+          return std::make_pair(2764, 1);	 // "sub_group_non_uniform_any"
         }
         break;
       }
@@ -14346,7 +14499,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'c':	 // 1 string to match.
       if (memcmp(Name.data()+1, "lock_read_hilo_work_group", 25) != 0)
         break;
-      return std::make_pair(2750, 1);	 // "clock_read_hilo_work_group"
+      return std::make_pair(2801, 1);	 // "clock_read_hilo_work_group"
     case 's':	 // 2 strings to match.
       if (memcmp(Name.data()+1, "ub_group_", 9) != 0)
         break;
@@ -14355,11 +14508,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'b':	 // 1 string to match.
         if (memcmp(Name.data()+11, "allot_bit_count", 15) != 0)
           break;
-        return std::make_pair(2720, 1);	 // "sub_group_ballot_bit_count"
+        return std::make_pair(2771, 1);	 // "sub_group_ballot_bit_count"
       case 'c':	 // 1 string to match.
         if (memcmp(Name.data()+11, "lustered_rotate", 15) != 0)
           break;
-        return std::make_pair(2746, 1);	 // "sub_group_clustered_rotate"
+        return std::make_pair(2797, 1);	 // "sub_group_clustered_rotate"
       }
       break;
     }
@@ -14372,11 +14525,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'e':	 // 1 string to match.
       if (memcmp(Name.data()+5, "nqueued_num_sub_groups", 22) != 0)
         break;
-      return std::make_pair(2703, 1);	 // "get_enqueued_num_sub_groups"
+      return std::make_pair(2754, 1);	 // "get_enqueued_num_sub_groups"
     case 'i':	 // 1 string to match.
       if (memcmp(Name.data()+5, "mage_channel_data_type", 22) != 0)
         break;
-      return std::make_pair(2508, 36);	 // "get_image_channel_data_type"
+      return std::make_pair(2559, 36);	 // "get_image_channel_data_type"
     }
     break;
   case 28:	 // 12 strings to match.
@@ -14389,7 +14542,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'c':	 // 1 string to match.
       if (memcmp(Name.data()+1, "apture_event_profiling_info", 27) != 0)
         break;
-      return std::make_pair(2661, 1);	 // "capture_event_profiling_info"
+      return std::make_pair(2712, 1);	 // "capture_event_profiling_info"
     case 'd':	 // 3 strings to match.
       if (memcmp(Name.data()+1, "ot_acc_sat_4x8packed_", 21) != 0)
         break;
@@ -14401,17 +14554,17 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 's':	 // 1 string to match.
           if (memcmp(Name.data()+24, "_int", 4) != 0)
             break;
-          return std::make_pair(2744, 1);	 // "dot_acc_sat_4x8packed_ss_int"
+          return std::make_pair(2795, 1);	 // "dot_acc_sat_4x8packed_ss_int"
         case 'u':	 // 1 string to match.
           if (memcmp(Name.data()+24, "_int", 4) != 0)
             break;
-          return std::make_pair(2744, 1);	 // "dot_acc_sat_4x8packed_su_int"
+          return std::make_pair(2795, 1);	 // "dot_acc_sat_4x8packed_su_int"
         }
         break;
       case 'u':	 // 1 string to match.
         if (memcmp(Name.data()+23, "s_int", 5) != 0)
           break;
-        return std::make_pair(2744, 1);	 // "dot_acc_sat_4x8packed_us_int"
+        return std::make_pair(2795, 1);	 // "dot_acc_sat_4x8packed_us_int"
       }
       break;
     case 's':	 // 7 strings to match.
@@ -14422,7 +14575,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'b':	 // 1 string to match.
         if (memcmp(Name.data()+11, "allot_bit_extract", 17) != 0)
           break;
-        return std::make_pair(2719, 1);	 // "sub_group_ballot_bit_extract"
+        return std::make_pair(2770, 1);	 // "sub_group_ballot_bit_extract"
       case 's':	 // 6 strings to match.
         if (memcmp(Name.data()+11, "can_", 4) != 0)
           break;
@@ -14436,18 +14589,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'a':	 // 1 string to match.
             if (memcmp(Name.data()+26, "dd", 2) != 0)
               break;
-            return std::make_pair(2710, 2);	 // "sub_group_scan_exclusive_add"
+            return std::make_pair(2761, 2);	 // "sub_group_scan_exclusive_add"
           case 'm':	 // 2 strings to match.
             switch (Name[26]) {
             default: break;
             case 'a':	 // 1 string to match.
               if (Name[27] != 'x')
                 break;
-              return std::make_pair(2710, 2);	 // "sub_group_scan_exclusive_max"
+              return std::make_pair(2761, 2);	 // "sub_group_scan_exclusive_max"
             case 'i':	 // 1 string to match.
               if (Name[27] != 'n')
                 break;
-              return std::make_pair(2710, 2);	 // "sub_group_scan_exclusive_min"
+              return std::make_pair(2761, 2);	 // "sub_group_scan_exclusive_min"
             }
             break;
           }
@@ -14460,18 +14613,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'a':	 // 1 string to match.
             if (memcmp(Name.data()+26, "dd", 2) != 0)
               break;
-            return std::make_pair(2710, 2);	 // "sub_group_scan_inclusive_add"
+            return std::make_pair(2761, 2);	 // "sub_group_scan_inclusive_add"
           case 'm':	 // 2 strings to match.
             switch (Name[26]) {
             default: break;
             case 'a':	 // 1 string to match.
               if (Name[27] != 'x')
                 break;
-              return std::make_pair(2710, 2);	 // "sub_group_scan_inclusive_max"
+              return std::make_pair(2761, 2);	 // "sub_group_scan_inclusive_max"
             case 'i':	 // 1 string to match.
               if (Name[27] != 'n')
                 break;
-              return std::make_pair(2710, 2);	 // "sub_group_scan_inclusive_min"
+              return std::make_pair(2761, 2);	 // "sub_group_scan_inclusive_min"
             }
             break;
           }
@@ -14492,11 +14645,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'd':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ot_acc_sat_4x8packed_uu_uint", 28) != 0)
         break;
-      return std::make_pair(2743, 1);	 // "dot_acc_sat_4x8packed_uu_uint"
+      return std::make_pair(2794, 1);	 // "dot_acc_sat_4x8packed_uu_uint"
     case 's':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ub_group_clustered_reduce_or", 28) != 0)
         break;
-      return std::make_pair(2729, 1);	 // "sub_group_clustered_reduce_or"
+      return std::make_pair(2780, 1);	 // "sub_group_clustered_reduce_or"
     case 'w':	 // 6 strings to match.
       if (memcmp(Name.data()+1, "ork_group_scan_", 15) != 0)
         break;
@@ -14510,18 +14663,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'a':	 // 1 string to match.
           if (memcmp(Name.data()+27, "dd", 2) != 0)
             break;
-          return std::make_pair(2654, 1);	 // "work_group_scan_exclusive_add"
+          return std::make_pair(2705, 1);	 // "work_group_scan_exclusive_add"
         case 'm':	 // 2 strings to match.
           switch (Name[27]) {
           default: break;
           case 'a':	 // 1 string to match.
             if (Name[28] != 'x')
               break;
-            return std::make_pair(2654, 1);	 // "work_group_scan_exclusive_max"
+            return std::make_pair(2705, 1);	 // "work_group_scan_exclusive_max"
           case 'i':	 // 1 string to match.
             if (Name[28] != 'n')
               break;
-            return std::make_pair(2654, 1);	 // "work_group_scan_exclusive_min"
+            return std::make_pair(2705, 1);	 // "work_group_scan_exclusive_min"
           }
           break;
         }
@@ -14534,18 +14687,18 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'a':	 // 1 string to match.
           if (memcmp(Name.data()+27, "dd", 2) != 0)
             break;
-          return std::make_pair(2654, 1);	 // "work_group_scan_inclusive_add"
+          return std::make_pair(2705, 1);	 // "work_group_scan_inclusive_add"
         case 'm':	 // 2 strings to match.
           switch (Name[27]) {
           default: break;
           case 'a':	 // 1 string to match.
             if (Name[28] != 'x')
               break;
-            return std::make_pair(2654, 1);	 // "work_group_scan_inclusive_max"
+            return std::make_pair(2705, 1);	 // "work_group_scan_inclusive_max"
           case 'i':	 // 1 string to match.
             if (Name[28] != 'n')
               break;
-            return std::make_pair(2654, 1);	 // "work_group_scan_inclusive_min"
+            return std::make_pair(2705, 1);	 // "work_group_scan_inclusive_min"
           }
           break;
         }
@@ -14572,11 +14725,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'd':	 // 1 string to match.
           if (Name[29] != 'd')
             break;
-          return std::make_pair(2728, 1);	 // "sub_group_clustered_reduce_add"
+          return std::make_pair(2779, 1);	 // "sub_group_clustered_reduce_add"
         case 'n':	 // 1 string to match.
           if (Name[29] != 'd')
             break;
-          return std::make_pair(2729, 1);	 // "sub_group_clustered_reduce_and"
+          return std::make_pair(2780, 1);	 // "sub_group_clustered_reduce_and"
         }
         break;
       case 'm':	 // 3 strings to match.
@@ -14585,21 +14738,21 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'a':	 // 1 string to match.
           if (Name[29] != 'x')
             break;
-          return std::make_pair(2728, 1);	 // "sub_group_clustered_reduce_max"
+          return std::make_pair(2779, 1);	 // "sub_group_clustered_reduce_max"
         case 'i':	 // 1 string to match.
           if (Name[29] != 'n')
             break;
-          return std::make_pair(2728, 1);	 // "sub_group_clustered_reduce_min"
+          return std::make_pair(2779, 1);	 // "sub_group_clustered_reduce_min"
         case 'u':	 // 1 string to match.
           if (Name[29] != 'l')
             break;
-          return std::make_pair(2728, 1);	 // "sub_group_clustered_reduce_mul"
+          return std::make_pair(2779, 1);	 // "sub_group_clustered_reduce_mul"
         }
         break;
       case 'x':	 // 1 string to match.
         if (memcmp(Name.data()+28, "or", 2) != 0)
           break;
-        return std::make_pair(2729, 1);	 // "sub_group_clustered_reduce_xor"
+        return std::make_pair(2780, 1);	 // "sub_group_clustered_reduce_xor"
       }
       break;
     }
@@ -14617,11 +14770,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'e':	 // 1 string to match.
         if (memcmp(Name.data()+18, "xclusive_scan", 13) != 0)
           break;
-        return std::make_pair(2721, 1);	 // "sub_group_ballot_exclusive_scan"
+        return std::make_pair(2772, 1);	 // "sub_group_ballot_exclusive_scan"
       case 'i':	 // 1 string to match.
         if (memcmp(Name.data()+18, "nclusive_scan", 13) != 0)
           break;
-        return std::make_pair(2721, 1);	 // "sub_group_ballot_inclusive_scan"
+        return std::make_pair(2772, 1);	 // "sub_group_ballot_inclusive_scan"
       }
       break;
     case 'n':	 // 3 strings to match.
@@ -14632,15 +14785,15 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (memcmp(Name.data()+23, "ll_equal", 8) != 0)
           break;
-        return std::make_pair(2714, 1);	 // "sub_group_non_uniform_all_equal"
+        return std::make_pair(2765, 1);	 // "sub_group_non_uniform_all_equal"
       case 'b':	 // 1 string to match.
         if (memcmp(Name.data()+23, "roadcast", 8) != 0)
           break;
-        return std::make_pair(2715, 1);	 // "sub_group_non_uniform_broadcast"
+        return std::make_pair(2766, 1);	 // "sub_group_non_uniform_broadcast"
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+23, "educe_or", 8) != 0)
           break;
-        return std::make_pair(2724, 1);	 // "sub_group_non_uniform_reduce_or"
+        return std::make_pair(2775, 1);	 // "sub_group_non_uniform_reduce_or"
       }
       break;
     }
@@ -14656,11 +14809,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'd':	 // 1 string to match.
         if (Name[31] != 'd')
           break;
-        return std::make_pair(2723, 1);	 // "sub_group_non_uniform_reduce_add"
+        return std::make_pair(2774, 1);	 // "sub_group_non_uniform_reduce_add"
       case 'n':	 // 1 string to match.
         if (Name[31] != 'd')
           break;
-        return std::make_pair(2724, 1);	 // "sub_group_non_uniform_reduce_and"
+        return std::make_pair(2775, 1);	 // "sub_group_non_uniform_reduce_and"
       }
       break;
     case 'm':	 // 3 strings to match.
@@ -14669,21 +14822,21 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (Name[31] != 'x')
           break;
-        return std::make_pair(2723, 1);	 // "sub_group_non_uniform_reduce_max"
+        return std::make_pair(2774, 1);	 // "sub_group_non_uniform_reduce_max"
       case 'i':	 // 1 string to match.
         if (Name[31] != 'n')
           break;
-        return std::make_pair(2723, 1);	 // "sub_group_non_uniform_reduce_min"
+        return std::make_pair(2774, 1);	 // "sub_group_non_uniform_reduce_min"
       case 'u':	 // 1 string to match.
         if (Name[31] != 'l')
           break;
-        return std::make_pair(2723, 1);	 // "sub_group_non_uniform_reduce_mul"
+        return std::make_pair(2774, 1);	 // "sub_group_non_uniform_reduce_mul"
       }
       break;
     case 'x':	 // 1 string to match.
       if (memcmp(Name.data()+30, "or", 2) != 0)
         break;
-      return std::make_pair(2724, 1);	 // "sub_group_non_uniform_reduce_xor"
+      return std::make_pair(2775, 1);	 // "sub_group_non_uniform_reduce_xor"
     }
     break;
   case 33:	 // 1 string to match.
@@ -14700,7 +14853,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 's':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ub_group_clustered_reduce_logical_or", 36) != 0)
         break;
-      return std::make_pair(2730, 1);	 // "sub_group_clustered_reduce_logical_or"
+      return std::make_pair(2781, 1);	 // "sub_group_clustered_reduce_logical_or"
     }
     break;
   case 38:	 // 2 strings to match.
@@ -14711,11 +14864,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'a':	 // 1 string to match.
       if (memcmp(Name.data()+36, "nd", 2) != 0)
         break;
-      return std::make_pair(2730, 1);	 // "sub_group_clustered_reduce_logical_and"
+      return std::make_pair(2781, 1);	 // "sub_group_clustered_reduce_logical_and"
     case 'x':	 // 1 string to match.
       if (memcmp(Name.data()+36, "or", 2) != 0)
         break;
-      return std::make_pair(2730, 1);	 // "sub_group_clustered_reduce_logical_xor"
+      return std::make_pair(2781, 1);	 // "sub_group_clustered_reduce_logical_xor"
     }
     break;
   case 39:	 // 4 strings to match.
@@ -14733,7 +14886,7 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'r':	 // 1 string to match.
         if (memcmp(Name.data()+23, "educe_logical_or", 16) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_reduce_logical_or"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_reduce_logical_or"
       case 's':	 // 2 strings to match.
         if (memcmp(Name.data()+23, "can_", 4) != 0)
           break;
@@ -14742,11 +14895,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
         case 'e':	 // 1 string to match.
           if (memcmp(Name.data()+28, "xclusive_or", 11) != 0)
             break;
-          return std::make_pair(2724, 1);	 // "sub_group_non_uniform_scan_exclusive_or"
+          return std::make_pair(2775, 1);	 // "sub_group_non_uniform_scan_exclusive_or"
         case 'i':	 // 1 string to match.
           if (memcmp(Name.data()+28, "nclusive_or", 11) != 0)
             break;
-          return std::make_pair(2724, 1);	 // "sub_group_non_uniform_scan_inclusive_or"
+          return std::make_pair(2775, 1);	 // "sub_group_non_uniform_scan_inclusive_or"
         }
         break;
       }
@@ -14766,11 +14919,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (memcmp(Name.data()+38, "nd", 2) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_reduce_logical_and"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_reduce_logical_and"
       case 'x':	 // 1 string to match.
         if (memcmp(Name.data()+38, "or", 2) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_reduce_logical_xor"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_reduce_logical_xor"
       }
       break;
     case 's':	 // 12 strings to match.
@@ -14789,11 +14942,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'd':	 // 1 string to match.
             if (Name[39] != 'd')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_exclusive_add"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_exclusive_add"
           case 'n':	 // 1 string to match.
             if (Name[39] != 'd')
               break;
-            return std::make_pair(2724, 1);	 // "sub_group_non_uniform_scan_exclusive_and"
+            return std::make_pair(2775, 1);	 // "sub_group_non_uniform_scan_exclusive_and"
           }
           break;
         case 'm':	 // 3 strings to match.
@@ -14802,21 +14955,21 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'a':	 // 1 string to match.
             if (Name[39] != 'x')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_exclusive_max"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_exclusive_max"
           case 'i':	 // 1 string to match.
             if (Name[39] != 'n')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_exclusive_min"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_exclusive_min"
           case 'u':	 // 1 string to match.
             if (Name[39] != 'l')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_exclusive_mul"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_exclusive_mul"
           }
           break;
         case 'x':	 // 1 string to match.
           if (memcmp(Name.data()+38, "or", 2) != 0)
             break;
-          return std::make_pair(2724, 1);	 // "sub_group_non_uniform_scan_exclusive_xor"
+          return std::make_pair(2775, 1);	 // "sub_group_non_uniform_scan_exclusive_xor"
         }
         break;
       case 'i':	 // 6 strings to match.
@@ -14830,11 +14983,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'd':	 // 1 string to match.
             if (Name[39] != 'd')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_inclusive_add"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_inclusive_add"
           case 'n':	 // 1 string to match.
             if (Name[39] != 'd')
               break;
-            return std::make_pair(2724, 1);	 // "sub_group_non_uniform_scan_inclusive_and"
+            return std::make_pair(2775, 1);	 // "sub_group_non_uniform_scan_inclusive_and"
           }
           break;
         case 'm':	 // 3 strings to match.
@@ -14843,21 +14996,21 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
           case 'a':	 // 1 string to match.
             if (Name[39] != 'x')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_inclusive_max"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_inclusive_max"
           case 'i':	 // 1 string to match.
             if (Name[39] != 'n')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_inclusive_min"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_inclusive_min"
           case 'u':	 // 1 string to match.
             if (Name[39] != 'l')
               break;
-            return std::make_pair(2723, 1);	 // "sub_group_non_uniform_scan_inclusive_mul"
+            return std::make_pair(2774, 1);	 // "sub_group_non_uniform_scan_inclusive_mul"
           }
           break;
         case 'x':	 // 1 string to match.
           if (memcmp(Name.data()+38, "or", 2) != 0)
             break;
-          return std::make_pair(2724, 1);	 // "sub_group_non_uniform_scan_inclusive_xor"
+          return std::make_pair(2775, 1);	 // "sub_group_non_uniform_scan_inclusive_xor"
         }
         break;
       }
@@ -14872,11 +15025,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
     case 'e':	 // 1 string to match.
       if (memcmp(Name.data()+28, "xclusive_logical_or", 19) != 0)
         break;
-      return std::make_pair(2725, 1);	 // "sub_group_non_uniform_scan_exclusive_logical_or"
+      return std::make_pair(2776, 1);	 // "sub_group_non_uniform_scan_exclusive_logical_or"
     case 'i':	 // 1 string to match.
       if (memcmp(Name.data()+28, "nclusive_logical_or", 19) != 0)
         break;
-      return std::make_pair(2725, 1);	 // "sub_group_non_uniform_scan_inclusive_logical_or"
+      return std::make_pair(2776, 1);	 // "sub_group_non_uniform_scan_inclusive_logical_or"
     }
     break;
   case 48:	 // 4 strings to match.
@@ -14892,11 +15045,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (memcmp(Name.data()+46, "nd", 2) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_scan_exclusive_logical_and"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_scan_exclusive_logical_and"
       case 'x':	 // 1 string to match.
         if (memcmp(Name.data()+46, "or", 2) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_scan_exclusive_logical_xor"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_scan_exclusive_logical_xor"
       }
       break;
     case 'i':	 // 2 strings to match.
@@ -14907,11 +15060,11 @@ static std::pair<unsigned, unsigned> isOpenCLBuiltin(llvm::StringRef Name) {
       case 'a':	 // 1 string to match.
         if (memcmp(Name.data()+46, "nd", 2) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_scan_inclusive_logical_and"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_scan_inclusive_logical_and"
       case 'x':	 // 1 string to match.
         if (memcmp(Name.data()+46, "or", 2) != 0)
           break;
-        return std::make_pair(2725, 1);	 // "sub_group_non_uniform_scan_inclusive_logical_xor"
+        return std::make_pair(2776, 1);	 // "sub_group_non_uniform_scan_inclusive_logical_xor"
       }
       break;
     }
@@ -15018,17 +15171,17 @@ static void OCL2Qual(Sema &S, const OpenCLTypeStruct &Ty,
         case OCLAQ_None:
           llvm_unreachable("Image without access qualifier");
         case OCLAQ_ReadOnly:
-          if (S.getPreprocessor().isMacroDefined("cl_khr_depth_images")) {
+          if (S.getPreprocessor().isMacroDefined("__opencl_depth_image_builtins")) {
             QT.push_back(Context.OCLImage2dArrayDepthROTy);
           }
           break;
         case OCLAQ_ReadWrite:
-          if (S.getPreprocessor().isMacroDefined("cl_khr_depth_images")) {
+          if (S.getPreprocessor().isMacroDefined("__opencl_depth_image_builtins")) {
             QT.push_back(Context.OCLImage2dArrayDepthRWTy);
           }
           break;
         case OCLAQ_WriteOnly:
-          if (S.getPreprocessor().isMacroDefined("cl_khr_depth_images")) {
+          if (S.getPreprocessor().isMacroDefined("__opencl_depth_image_builtins")) {
             QT.push_back(Context.OCLImage2dArrayDepthWOTy);
           }
           break;
@@ -15109,17 +15262,17 @@ static void OCL2Qual(Sema &S, const OpenCLTypeStruct &Ty,
         case OCLAQ_None:
           llvm_unreachable("Image without access qualifier");
         case OCLAQ_ReadOnly:
-          if (S.getPreprocessor().isMacroDefined("cl_khr_depth_images")) {
+          if (S.getPreprocessor().isMacroDefined("__opencl_depth_image_builtins")) {
             QT.push_back(Context.OCLImage2dDepthROTy);
           }
           break;
         case OCLAQ_ReadWrite:
-          if (S.getPreprocessor().isMacroDefined("cl_khr_depth_images")) {
+          if (S.getPreprocessor().isMacroDefined("__opencl_depth_image_builtins")) {
             QT.push_back(Context.OCLImage2dDepthRWTy);
           }
           break;
         case OCLAQ_WriteOnly:
-          if (S.getPreprocessor().isMacroDefined("cl_khr_depth_images")) {
+          if (S.getPreprocessor().isMacroDefined("__opencl_depth_image_builtins")) {
             QT.push_back(Context.OCLImage2dDepthWOTy);
           }
           break;

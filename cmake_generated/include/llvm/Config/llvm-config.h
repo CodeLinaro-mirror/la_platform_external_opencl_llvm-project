@@ -67,7 +67,7 @@
 #define LLVM_USE_PERF 0
 
 /* Major version of the LLVM API */
-#define LLVM_VERSION_MAJOR 22
+#define LLVM_VERSION_MAJOR 23
 
 /* Minor version of the LLVM API */
 #define LLVM_VERSION_MINOR 0
@@ -76,7 +76,7 @@
 #define LLVM_VERSION_PATCH 0
 
 /* LLVM version string */
-#define LLVM_VERSION_STRING "22.0.0git"
+#define LLVM_VERSION_STRING "23.0.0git"
 
 /* Whether LLVM records statistics for use with GetStatistics(),
  * PrintStatistics() or PrintStatisticsJSON()
@@ -125,6 +125,9 @@
 /* Define if llvm_unreachable should be optimized with undefined behavior
  * in non assert builds */
 #define LLVM_UNREACHABLE_OPTIMIZE 1
+
+/* Define if building LLVM with LLVM_ENABLE_IO_SANDBOX */
+#define LLVM_ENABLE_IO_SANDBOX 0
 
 /* Define to 1 if you have the DIA SDK installed, and to 0 if you don't. */
 #define LLVM_ENABLE_DIA_SDK 0
