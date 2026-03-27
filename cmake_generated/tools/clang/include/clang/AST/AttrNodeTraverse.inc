@@ -133,7 +133,8 @@
   }
   void VisitGuardedByAttr(const GuardedByAttr *A) {
     const auto *SA = cast<GuardedByAttr>(A); (void)SA;
-    Visit(SA->getArg());
+    for (GuardedByAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitLockReturnedAttr(const LockReturnedAttr *A) {
     const auto *SA = cast<LockReturnedAttr>(A); (void)SA;
@@ -197,7 +198,8 @@
   }
   void VisitPtGuardedByAttr(const PtGuardedByAttr *A) {
     const auto *SA = cast<PtGuardedByAttr>(A); (void)SA;
-    Visit(SA->getArg());
+    for (PtGuardedByAttr::args_iterator I = SA->args_begin(), E = SA->args_end(); I != E; ++I)
+      Visit(*I);
   }
   void VisitReleaseCapabilityAttr(const ReleaseCapabilityAttr *A) {
     const auto *SA = cast<ReleaseCapabilityAttr>(A); (void)SA;

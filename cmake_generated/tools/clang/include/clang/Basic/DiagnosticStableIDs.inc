@@ -556,11 +556,13 @@ static constexpr char DiagStableIDsStorage[] =
   "err_auto_var_init_paren_braces\0"
   "err_auto_var_requires_init\0"
   "err_auto_variable_cannot_appear_in_own_initializer\0"
+  "err_avail_query_anyappleos_min_version\0"
   "err_avail_query_expected_platform_name\0"
   "err_avail_query_unrecognized_platform_name\0"
   "err_availability_expected_change\0"
   "err_availability_expected_environment\0"
   "err_availability_expected_platform\0"
+  "err_availability_invalid_anyappleos_version\0"
   "err_availability_query_repeated_platform\0"
   "err_availability_query_repeated_star\0"
   "err_availability_query_wildcard_required\0"
@@ -1642,6 +1644,7 @@ static constexpr char DiagStableIDsStorage[] =
   "err_hlsl_attribute_param_mismatch\0"
   "err_hlsl_binding_type_invalid\0"
   "err_hlsl_binding_type_mismatch\0"
+  "err_hlsl_builtin_resource_coordinate_dimension_mismatch\0"
   "err_hlsl_builtin_scalar_vector_mismatch\0"
   "err_hlsl_duplicate_parameter_modifier\0"
   "err_hlsl_duplicate_register_annotation\0"
@@ -2186,6 +2189,7 @@ static constexpr char DiagStableIDsStorage[] =
   "err_ms_property_initializer\0"
   "err_ms_property_missing_accessor_kind\0"
   "err_ms_property_no_getter_or_putter\0"
+  "err_ms_property_subscript_expects_single_arg\0"
   "err_ms_property_unknown_accessor\0"
   "err_ms_va_start_used_in_sysv_function\0"
   "err_msasm_unable_to_create_target\0"
@@ -2361,6 +2365,7 @@ static constexpr char DiagStableIDsStorage[] =
   "err_objc_kindof_nonobject\0"
   "err_objc_kindof_wrong_position\0"
   "err_objc_literal_method_sig\0"
+  "err_objc_literal_nonconstant_at_file_scope\0"
   "err_objc_method_unsupported_param_ret_type\0"
   "err_objc_missing_end\0"
   "err_objc_multiple_subscript_type_conversion\0"
@@ -2864,6 +2869,7 @@ static constexpr char DiagStableIDsStorage[] =
   "err_ovl_ambiguous_oper_binary\0"
   "err_ovl_ambiguous_oper_unary\0"
   "err_ovl_ambiguous_subscript_call\0"
+  "err_ovl_builtin_subscript_expects_single_arg\0"
   "err_ovl_deleted_call\0"
   "err_ovl_deleted_comparison\0"
   "err_ovl_deleted_conversion_in_cast\0"
@@ -6916,6 +6922,7 @@ static constexpr char DiagStableIDsStorage[] =
   "warn_related_result_type_compatibility_protocol\0"
   "warn_remainder_division_by_zero\0"
   "warn_require_const_init_added_too_late\0"
+  "warn_requires_any_of_locks\0"
   "warn_reserved_extern_symbol\0"
   "warn_reserved_module_name\0"
   "warn_ret_addr_label\0"
@@ -7157,6 +7164,7 @@ static constexpr char DiagStableIDsStorage[] =
   "warn_unsupported_branch_protection\0"
   "warn_unsupported_branch_protection_spec\0"
   "warn_unsupported_target_attribute\0"
+  "warn_unused_but_set_global\0"
   "warn_unused_but_set_parameter\0"
   "warn_unused_but_set_variable\0"
   "warn_unused_call\0"
@@ -7234,7 +7242,7 @@ DiagStableIDs = DiagStableIDsStorage;
 
 static const uint32_t DiagLegacyStableIDs[] = {
   0,
-  211225, 0,
+  211497, 0,
 };
 
 #endif // GET_DIAG_STABLE_ID_ARRAYS
