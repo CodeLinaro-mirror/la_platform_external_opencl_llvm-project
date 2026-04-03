@@ -1,11 +1,19 @@
 #ifdef GET_OPCODE_NAMES
 OP_Activate,
 #endif
-#ifdef GET_INTERP
-case OP_Activate: {
-  if (!Activate(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Activate,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Activate(InterpState &S, CodePtr &PC) {
+  if (!Activate(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31,12 +39,23 @@ bool EvalEmitter::emitActivate(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ActivateThisField,
 #endif
-#ifdef GET_INTERP
-case OP_ActivateThisField: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ActivateThisField(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ActivateThisField,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ActivateThisField(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ActivateThisField(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -74,66 +93,140 @@ OP_AddIntAPS,
 OP_AddBool,
 OP_AddFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_AddSint8: {
-  if (!Add<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_AddSint8,
+&Interp_AddUint8,
+&Interp_AddSint16,
+&Interp_AddUint16,
+&Interp_AddSint32,
+&Interp_AddUint32,
+&Interp_AddSint64,
+&Interp_AddUint64,
+&Interp_AddIntAP,
+&Interp_AddIntAPS,
+&Interp_AddBool,
+&Interp_AddFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_AddSint8(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddUint8: {
-  if (!Add<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddUint8(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddSint16: {
-  if (!Add<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddSint16(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddUint16: {
-  if (!Add<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddUint16(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddSint32: {
-  if (!Add<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddSint32(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddUint32: {
-  if (!Add<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddUint32(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddSint64: {
-  if (!Add<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddSint64(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddUint64: {
-  if (!Add<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddUint64(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddIntAP: {
-  if (!Add<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddIntAP(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddIntAPS: {
-  if (!Add<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddBool: {
-  if (!Add<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddBool(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddFixedPoint: {
-  if (!Add<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Add<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -342,61 +435,129 @@ OP_AddOffsetIntAP,
 OP_AddOffsetIntAPS,
 OP_AddOffsetBool,
 #endif
-#ifdef GET_INTERP
-case OP_AddOffsetSint8: {
-  if (!AddOffset<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_AddOffsetSint8,
+&Interp_AddOffsetUint8,
+&Interp_AddOffsetSint16,
+&Interp_AddOffsetUint16,
+&Interp_AddOffsetSint32,
+&Interp_AddOffsetUint32,
+&Interp_AddOffsetSint64,
+&Interp_AddOffsetUint64,
+&Interp_AddOffsetIntAP,
+&Interp_AddOffsetIntAPS,
+&Interp_AddOffsetBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_AddOffsetSint8(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetUint8: {
-  if (!AddOffset<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetUint8(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetSint16: {
-  if (!AddOffset<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetSint16(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetUint16: {
-  if (!AddOffset<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetUint16(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetSint32: {
-  if (!AddOffset<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetSint32(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetUint32: {
-  if (!AddOffset<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetUint32(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetSint64: {
-  if (!AddOffset<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetSint64(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetUint64: {
-  if (!AddOffset<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetUint64(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetIntAP: {
-  if (!AddOffset<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetIntAP(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetIntAPS: {
-  if (!AddOffset<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetIntAPS(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AddOffsetBool: {
-  if (!AddOffset<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_AddOffsetBool(InterpState &S, CodePtr &PC) {
+  if (!AddOffset<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -581,12 +742,23 @@ bool EvalEmitter::emitAddOffsetBool(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Addf,
 #endif
-#ifdef GET_INTERP
-case OP_Addf: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Addf(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Addf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Addf(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Addf(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -613,12 +785,23 @@ bool EvalEmitter::emitAddf( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Alloc,
 #endif
-#ifdef GET_INTERP
-case OP_Alloc: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!Alloc(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Alloc,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Alloc(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!Alloc(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -653,77 +836,186 @@ OP_AllocCNSint64,
 OP_AllocCNUint64,
 OP_AllocCNIntAP,
 OP_AllocCNIntAPS,
+OP_AllocCNBool,
 #endif
-#ifdef GET_INTERP
-case OP_AllocCNSint8: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_AllocCNSint8,
+&Interp_AllocCNUint8,
+&Interp_AllocCNSint16,
+&Interp_AllocCNUint16,
+&Interp_AllocCNSint32,
+&Interp_AllocCNUint32,
+&Interp_AllocCNSint64,
+&Interp_AllocCNUint64,
+&Interp_AllocCNIntAP,
+&Interp_AllocCNIntAPS,
+&Interp_AllocCNBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_AllocCNSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNUint8: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNSint16: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNUint16: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNSint32: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNUint32: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNSint64: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNUint64: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNIntAP: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocCNIntAPS: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!AllocCN<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocCNIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_AllocCNBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!AllocCN<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -777,6 +1069,11 @@ case OP_AllocCNIntAPS:
   Text.Args.push_back(printArg<const Descriptor *>(P, PC));
   Text.Args.push_back(printArg<bool>(P, PC));
   break;
+case OP_AllocCNBool:
+  Text.Op = PrintName("AllocCNBool");
+  Text.Args.push_back(printArg<const Descriptor *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAllocCNSint8( const Descriptor * ,  bool , SourceInfo);
@@ -789,6 +1086,7 @@ bool emitAllocCNSint64( const Descriptor * ,  bool , SourceInfo);
 bool emitAllocCNUint64( const Descriptor * ,  bool , SourceInfo);
 bool emitAllocCNIntAP( const Descriptor * ,  bool , SourceInfo);
 bool emitAllocCNIntAPS( const Descriptor * ,  bool , SourceInfo);
+bool emitAllocCNBool( const Descriptor * ,  bool , SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitAllocCN(PrimType, const Descriptor *, bool, SourceInfo I);
@@ -822,6 +1120,8 @@ ByteCodeEmitter
     return emitAllocCNIntAP(A0, A1, I);
   case PT_IntAPS:
     return emitAllocCNIntAPS(A0, A1, I);
+  case PT_Bool:
+    return emitAllocCNBool(A0, A1, I);
   default: llvm_unreachable("invalid type: emitAllocCN");
   }
   llvm_unreachable("invalid enum value");
@@ -857,6 +1157,9 @@ bool ByteCodeEmitter::emitAllocCNIntAP( const Descriptor * A0,  bool A1, SourceI
 }
 bool ByteCodeEmitter::emitAllocCNIntAPS( const Descriptor * A0,  bool A1, SourceInfo L) {
   return emitOp<const Descriptor *, bool>(OP_AllocCNIntAPS, A0, A1, L);
+}
+bool ByteCodeEmitter::emitAllocCNBool( const Descriptor * A0,  bool A1, SourceInfo L) {
+  return emitOp<const Descriptor *, bool>(OP_AllocCNBool, A0, A1, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -910,6 +1213,11 @@ bool EvalEmitter::emitAllocCNIntAPS( const Descriptor * A0,  bool A1, SourceInfo
   CurrentSource = L;
   return AllocCN<PT_IntAPS>(S, OpPC, A0, A1);
 }
+bool EvalEmitter::emitAllocCNBool( const Descriptor * A0,  bool A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return AllocCN<PT_Bool>(S, OpPC, A0, A1);
+}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_AllocNSint8,
@@ -922,87 +1230,197 @@ OP_AllocNSint64,
 OP_AllocNUint64,
 OP_AllocNIntAP,
 OP_AllocNIntAPS,
+OP_AllocNBool,
 #endif
-#ifdef GET_INTERP
-case OP_AllocNSint8: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Sint8>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_AllocNSint8,
+&Interp_AllocNUint8,
+&Interp_AllocNSint16,
+&Interp_AllocNUint16,
+&Interp_AllocNSint32,
+&Interp_AllocNUint32,
+&Interp_AllocNSint64,
+&Interp_AllocNUint64,
+&Interp_AllocNIntAP,
+&Interp_AllocNIntAPS,
+&Interp_AllocNBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_AllocNSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Sint8>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNUint8: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Uint8>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Uint8>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNSint16: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Sint16>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Sint16>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNUint16: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Uint16>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Uint16>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNSint32: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Sint32>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Sint32>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNUint32: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Uint32>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Uint32>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNSint64: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Sint64>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Sint64>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNUint64: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_Uint64>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Uint64>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNIntAP: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_IntAP>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_IntAP>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_AllocNIntAPS: {
-  const auto V0 = ReadArg<PrimType>(S, PC);
-  const auto V1 = ReadArg<const Expr *>(S, PC);
-  const auto V2 = ReadArg<bool>(S, PC);
-  if (!AllocN<PT_IntAPS>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_AllocNIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_IntAPS>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_AllocNBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<PrimType>(S, PC);
+    const auto V1 = ReadArg<const Expr *>(S, PC);
+    const auto V2 = ReadArg<bool>(S, PC);
+    if (!AllocN<PT_Bool>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -1066,6 +1484,12 @@ case OP_AllocNIntAPS:
   Text.Args.push_back(printArg<const Expr *>(P, PC));
   Text.Args.push_back(printArg<bool>(P, PC));
   break;
+case OP_AllocNBool:
+  Text.Op = PrintName("AllocNBool");
+  Text.Args.push_back(printArg<PrimType>(P, PC));
+  Text.Args.push_back(printArg<const Expr *>(P, PC));
+  Text.Args.push_back(printArg<bool>(P, PC));
+  break;
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 bool emitAllocNSint8( PrimType ,  const Expr * ,  bool , SourceInfo);
@@ -1078,6 +1502,7 @@ bool emitAllocNSint64( PrimType ,  const Expr * ,  bool , SourceInfo);
 bool emitAllocNUint64( PrimType ,  const Expr * ,  bool , SourceInfo);
 bool emitAllocNIntAP( PrimType ,  const Expr * ,  bool , SourceInfo);
 bool emitAllocNIntAPS( PrimType ,  const Expr * ,  bool , SourceInfo);
+bool emitAllocNBool( PrimType ,  const Expr * ,  bool , SourceInfo);
 #endif
 #if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
 [[nodiscard]] bool emitAllocN(PrimType, PrimType, const Expr *, bool, SourceInfo I);
@@ -1111,6 +1536,8 @@ ByteCodeEmitter
     return emitAllocNIntAP(A0, A1, A2, I);
   case PT_IntAPS:
     return emitAllocNIntAPS(A0, A1, A2, I);
+  case PT_Bool:
+    return emitAllocNBool(A0, A1, A2, I);
   default: llvm_unreachable("invalid type: emitAllocN");
   }
   llvm_unreachable("invalid enum value");
@@ -1146,6 +1573,9 @@ bool ByteCodeEmitter::emitAllocNIntAP( PrimType A0,  const Expr * A1,  bool A2, 
 }
 bool ByteCodeEmitter::emitAllocNIntAPS( PrimType A0,  const Expr * A1,  bool A2, SourceInfo L) {
   return emitOp<PrimType, const Expr *, bool>(OP_AllocNIntAPS, A0, A1, A2, L);
+}
+bool ByteCodeEmitter::emitAllocNBool( PrimType A0,  const Expr * A1,  bool A2, SourceInfo L) {
+  return emitOp<PrimType, const Expr *, bool>(OP_AllocNBool, A0, A1, A2, L);
 }
 #endif
 #ifdef GET_EVAL_IMPL
@@ -1199,15 +1629,28 @@ bool EvalEmitter::emitAllocNIntAPS( PrimType A0,  const Expr * A1,  bool A2, Sou
   CurrentSource = L;
   return AllocN<PT_IntAPS>(S, OpPC, A0, A1, A2);
 }
+bool EvalEmitter::emitAllocNBool( PrimType A0,  const Expr * A1,  bool A2, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return AllocN<PT_Bool>(S, OpPC, A0, A1, A2);
+}
 #endif
 #ifdef GET_OPCODE_NAMES
 OP_ArrayDecay,
 #endif
-#ifdef GET_INTERP
-case OP_ArrayDecay: {
-  if (!ArrayDecay(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_ArrayDecay,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ArrayDecay(InterpState &S, CodePtr &PC) {
+  if (!ArrayDecay(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -1247,96 +1690,233 @@ OP_ArrayElemPtr,
 OP_ArrayElemMemberPtr,
 OP_ArrayElemFloat,
 #endif
-#ifdef GET_INTERP
-case OP_ArrayElemSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ArrayElemSint8,
+&Interp_ArrayElemUint8,
+&Interp_ArrayElemSint16,
+&Interp_ArrayElemUint16,
+&Interp_ArrayElemSint32,
+&Interp_ArrayElemUint32,
+&Interp_ArrayElemSint64,
+&Interp_ArrayElemUint64,
+&Interp_ArrayElemIntAP,
+&Interp_ArrayElemIntAPS,
+&Interp_ArrayElemBool,
+&Interp_ArrayElemFixedPoint,
+&Interp_ArrayElemPtr,
+&Interp_ArrayElemMemberPtr,
+&Interp_ArrayElemFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ArrayElemSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElem<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElem<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -1605,96 +2185,233 @@ OP_ArrayElemPopPtr,
 OP_ArrayElemPopMemberPtr,
 OP_ArrayElemPopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_ArrayElemPopSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ArrayElemPopSint8,
+&Interp_ArrayElemPopUint8,
+&Interp_ArrayElemPopSint16,
+&Interp_ArrayElemPopUint16,
+&Interp_ArrayElemPopSint32,
+&Interp_ArrayElemPopUint32,
+&Interp_ArrayElemPopSint64,
+&Interp_ArrayElemPopUint64,
+&Interp_ArrayElemPopIntAP,
+&Interp_ArrayElemPopIntAPS,
+&Interp_ArrayElemPopBool,
+&Interp_ArrayElemPopFixedPoint,
+&Interp_ArrayElemPopPtr,
+&Interp_ArrayElemPopMemberPtr,
+&Interp_ArrayElemPopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ArrayElemPopSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPopFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ArrayElemPop<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_ArrayElemPopFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ArrayElemPop<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -1959,61 +2676,129 @@ OP_ArrayElemPtrIntAP,
 OP_ArrayElemPtrIntAPS,
 OP_ArrayElemPtrBool,
 #endif
-#ifdef GET_INTERP
-case OP_ArrayElemPtrSint8: {
-  if (!ArrayElemPtr<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_ArrayElemPtrSint8,
+&Interp_ArrayElemPtrUint8,
+&Interp_ArrayElemPtrSint16,
+&Interp_ArrayElemPtrUint16,
+&Interp_ArrayElemPtrSint32,
+&Interp_ArrayElemPtrUint32,
+&Interp_ArrayElemPtrSint64,
+&Interp_ArrayElemPtrUint64,
+&Interp_ArrayElemPtrIntAP,
+&Interp_ArrayElemPtrIntAPS,
+&Interp_ArrayElemPtrBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrSint8(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrUint8: {
-  if (!ArrayElemPtr<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrUint8(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrSint16: {
-  if (!ArrayElemPtr<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrSint16(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrUint16: {
-  if (!ArrayElemPtr<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrUint16(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrSint32: {
-  if (!ArrayElemPtr<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrSint32(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrUint32: {
-  if (!ArrayElemPtr<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrUint32(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrSint64: {
-  if (!ArrayElemPtr<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrSint64(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrUint64: {
-  if (!ArrayElemPtr<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrUint64(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrIntAP: {
-  if (!ArrayElemPtr<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrIntAP(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrIntAPS: {
-  if (!ArrayElemPtr<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrIntAPS(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrBool: {
-  if (!ArrayElemPtr<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrBool(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtr<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -2208,61 +2993,129 @@ OP_ArrayElemPtrPopIntAP,
 OP_ArrayElemPtrPopIntAPS,
 OP_ArrayElemPtrPopBool,
 #endif
-#ifdef GET_INTERP
-case OP_ArrayElemPtrPopSint8: {
-  if (!ArrayElemPtrPop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_ArrayElemPtrPopSint8,
+&Interp_ArrayElemPtrPopUint8,
+&Interp_ArrayElemPtrPopSint16,
+&Interp_ArrayElemPtrPopUint16,
+&Interp_ArrayElemPtrPopSint32,
+&Interp_ArrayElemPtrPopUint32,
+&Interp_ArrayElemPtrPopSint64,
+&Interp_ArrayElemPtrPopUint64,
+&Interp_ArrayElemPtrPopIntAP,
+&Interp_ArrayElemPtrPopIntAPS,
+&Interp_ArrayElemPtrPopBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopSint8(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopUint8: {
-  if (!ArrayElemPtrPop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopUint8(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopSint16: {
-  if (!ArrayElemPtrPop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopSint16(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopUint16: {
-  if (!ArrayElemPtrPop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopUint16(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopSint32: {
-  if (!ArrayElemPtrPop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopSint32(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopUint32: {
-  if (!ArrayElemPtrPop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopUint32(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopSint64: {
-  if (!ArrayElemPtrPop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopSint64(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopUint64: {
-  if (!ArrayElemPtrPop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopUint64(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopIntAP: {
-  if (!ArrayElemPtrPop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopIntAP(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopIntAPS: {
-  if (!ArrayElemPtrPop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ArrayElemPtrPopBool: {
-  if (!ArrayElemPtrPop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ArrayElemPtrPopBool(InterpState &S, CodePtr &PC) {
+  if (!ArrayElemPtrPop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -2447,11 +3300,19 @@ bool EvalEmitter::emitArrayElemPtrPopBool(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Assume,
 #endif
-#ifdef GET_INTERP
-case OP_Assume: {
-  if (!Assume(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Assume,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Assume(InterpState &S, CodePtr &PC) {
+  if (!Assume(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -2477,13 +3338,23 @@ bool EvalEmitter::emitAssume(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_BCP,
 #endif
-#ifdef GET_INTERP
-case OP_BCP: {
-  const auto V0 = ReadArg<int32_t>(S, PC);
-  const auto V1 = ReadArg<PrimType>(S, PC);
-  if (!BCP(S, PC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_BCP,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_BCP(InterpState &S, CodePtr &PC) {
+  {
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    const auto V1 = ReadArg<PrimType>(S, PC);
+    if (!BCP(S, PC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -2514,61 +3385,129 @@ OP_BitAndIntAP,
 OP_BitAndIntAPS,
 OP_BitAndFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_BitAndSint8: {
-  if (!BitAnd<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_BitAndSint8,
+&Interp_BitAndUint8,
+&Interp_BitAndSint16,
+&Interp_BitAndUint16,
+&Interp_BitAndSint32,
+&Interp_BitAndUint32,
+&Interp_BitAndSint64,
+&Interp_BitAndUint64,
+&Interp_BitAndIntAP,
+&Interp_BitAndIntAPS,
+&Interp_BitAndFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_BitAndSint8(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndUint8: {
-  if (!BitAnd<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndUint8(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndSint16: {
-  if (!BitAnd<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndSint16(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndUint16: {
-  if (!BitAnd<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndUint16(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndSint32: {
-  if (!BitAnd<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndSint32(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndUint32: {
-  if (!BitAnd<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndUint32(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndSint64: {
-  if (!BitAnd<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndSint64(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndUint64: {
-  if (!BitAnd<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndUint64(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndIntAP: {
-  if (!BitAnd<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndIntAP(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndIntAPS: {
-  if (!BitAnd<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndIntAPS(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitAndFixedPoint: {
-  if (!BitAnd<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitAndFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!BitAnd<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -2753,11 +3692,19 @@ bool EvalEmitter::emitBitAndFixedPoint(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_BitCast,
 #endif
-#ifdef GET_INTERP
-case OP_BitCast: {
-  if (!BitCast(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_BitCast,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_BitCast(InterpState &S, CodePtr &PC) {
+  if (!BitCast(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -2796,132 +3743,260 @@ OP_BitCastPrimFloat,
 OP_BitCastPrimPtr,
 OP_BitCastPrimMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_BitCastPrimUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Uint8>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_BitCastPrimUint8,
+&Interp_BitCastPrimSint8,
+&Interp_BitCastPrimUint16,
+&Interp_BitCastPrimSint16,
+&Interp_BitCastPrimUint32,
+&Interp_BitCastPrimSint32,
+&Interp_BitCastPrimUint64,
+&Interp_BitCastPrimSint64,
+&Interp_BitCastPrimIntAP,
+&Interp_BitCastPrimIntAPS,
+&Interp_BitCastPrimBool,
+&Interp_BitCastPrimFloat,
+&Interp_BitCastPrimPtr,
+&Interp_BitCastPrimMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_BitCastPrimUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Uint8>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Sint8>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Sint8>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Uint16>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Uint16>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Sint16>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Sint16>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Uint32>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Uint32>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Sint32>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Sint32>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Uint64>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Uint64>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Sint64>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Sint64>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_IntAP>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_IntAP>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_IntAPS>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_IntAPS>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Bool>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Bool>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimFloat: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Float>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Float>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimPtr: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_Ptr>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_Ptr>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitCastPrimMemberPtr: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V3 = ReadArg<const Type *>(S, PC);
-  if (!BitCastPrim<PT_MemberPtr>(S, OpPC, V0, V1, V2, V3))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_BitCastPrimMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V3 = ReadArg<const Type *>(S, PC);
+    if (!BitCastPrim<PT_MemberPtr>(S, OpPC, V0, V1, V2, V3))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -3214,61 +4289,129 @@ OP_BitOrIntAP,
 OP_BitOrIntAPS,
 OP_BitOrFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_BitOrSint8: {
-  if (!BitOr<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_BitOrSint8,
+&Interp_BitOrUint8,
+&Interp_BitOrSint16,
+&Interp_BitOrUint16,
+&Interp_BitOrSint32,
+&Interp_BitOrUint32,
+&Interp_BitOrSint64,
+&Interp_BitOrUint64,
+&Interp_BitOrIntAP,
+&Interp_BitOrIntAPS,
+&Interp_BitOrFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_BitOrSint8(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrUint8: {
-  if (!BitOr<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrUint8(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrSint16: {
-  if (!BitOr<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrSint16(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrUint16: {
-  if (!BitOr<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrUint16(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrSint32: {
-  if (!BitOr<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrSint32(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrUint32: {
-  if (!BitOr<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrUint32(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrSint64: {
-  if (!BitOr<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrSint64(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrUint64: {
-  if (!BitOr<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrUint64(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrIntAP: {
-  if (!BitOr<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrIntAP(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrIntAPS: {
-  if (!BitOr<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrIntAPS(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitOrFixedPoint: {
-  if (!BitOr<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitOrFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!BitOr<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -3463,61 +4606,129 @@ OP_BitXorIntAP,
 OP_BitXorIntAPS,
 OP_BitXorFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_BitXorSint8: {
-  if (!BitXor<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_BitXorSint8,
+&Interp_BitXorUint8,
+&Interp_BitXorSint16,
+&Interp_BitXorUint16,
+&Interp_BitXorSint32,
+&Interp_BitXorUint32,
+&Interp_BitXorSint64,
+&Interp_BitXorUint64,
+&Interp_BitXorIntAP,
+&Interp_BitXorIntAPS,
+&Interp_BitXorFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_BitXorSint8(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorUint8: {
-  if (!BitXor<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorUint8(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorSint16: {
-  if (!BitXor<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorSint16(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorUint16: {
-  if (!BitXor<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorUint16(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorSint32: {
-  if (!BitXor<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorSint32(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorUint32: {
-  if (!BitXor<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorUint32(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorSint64: {
-  if (!BitXor<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorSint64(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorUint64: {
-  if (!BitXor<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorUint64(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorIntAP: {
-  if (!BitXor<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorIntAP(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorIntAPS: {
-  if (!BitXor<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorIntAPS(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_BitXorFixedPoint: {
-  if (!BitXor<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_BitXorFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!BitXor<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -3715,90 +4926,218 @@ OP_CMP3FixedPoint,
 OP_CMP3Ptr,
 OP_CMP3Float,
 #endif
-#ifdef GET_INTERP
-case OP_CMP3Sint8: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CMP3Sint8,
+&Interp_CMP3Uint8,
+&Interp_CMP3Sint16,
+&Interp_CMP3Uint16,
+&Interp_CMP3Sint32,
+&Interp_CMP3Uint32,
+&Interp_CMP3Sint64,
+&Interp_CMP3Uint64,
+&Interp_CMP3IntAP,
+&Interp_CMP3IntAPS,
+&Interp_CMP3Bool,
+&Interp_CMP3FixedPoint,
+&Interp_CMP3Ptr,
+&Interp_CMP3Float,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CMP3Sint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Uint8: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Uint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Sint16: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Sint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Uint16: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Uint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Sint32: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Sint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Uint32: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Uint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Sint64: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Sint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Uint64: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Uint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3IntAP: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3IntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3IntAPS: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3IntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Bool: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Bool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3FixedPoint: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3FixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Ptr: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Ptr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CMP3Float: {
-  const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
-  if (!CMP3<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CMP3Float(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ComparisonCategoryInfo *>(S, PC);
+    if (!CMP3<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -4039,13 +5378,24 @@ bool EvalEmitter::emitCMP3Float( const ComparisonCategoryInfo * A0, SourceInfo L
 #ifdef GET_OPCODE_NAMES
 OP_Call,
 #endif
-#ifdef GET_INTERP
-case OP_Call: {
-  const auto V0 = ReadArg<const Function *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!Call(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Call,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Call(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Function *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!Call(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -4073,13 +5423,24 @@ bool EvalEmitter::emitCall( const Function * A0,  uint32_t A1, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CallBI,
 #endif
-#ifdef GET_INTERP
-case OP_CallBI: {
-  const auto V0 = ReadArg<const CallExpr *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CallBI(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CallBI,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CallBI(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const CallExpr *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CallBI(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -4107,13 +5468,24 @@ bool EvalEmitter::emitCallBI( const CallExpr * A0,  uint32_t A1, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CallPtr,
 #endif
-#ifdef GET_INTERP
-case OP_CallPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const CallExpr *>(S, PC);
-  if (!CallPtr(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CallPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CallPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const CallExpr *>(S, PC);
+    if (!CallPtr(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -4141,13 +5513,24 @@ bool EvalEmitter::emitCallPtr( uint32_t A0,  const CallExpr * A1, SourceInfo L) 
 #ifdef GET_OPCODE_NAMES
 OP_CallVar,
 #endif
-#ifdef GET_INTERP
-case OP_CallVar: {
-  const auto V0 = ReadArg<const Function *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CallVar(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CallVar,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CallVar(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Function *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CallVar(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -4175,13 +5558,24 @@ bool EvalEmitter::emitCallVar( const Function * A0,  uint32_t A1, SourceInfo L) 
 #ifdef GET_OPCODE_NAMES
 OP_CallVirt,
 #endif
-#ifdef GET_INTERP
-case OP_CallVirt: {
-  const auto V0 = ReadArg<const Function *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CallVirt(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CallVirt,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CallVirt(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Function *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CallVirt(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -4316,546 +5710,1196 @@ OP_CastFixedPointUint64,
 OP_CastFixedPointSint64,
 OP_CastFixedPointBool,
 #endif
-#ifdef GET_INTERP
-case OP_CastUint8Uint8: {
-  if (!Cast<PT_Uint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Sint8: {
-  if (!Cast<PT_Uint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Uint16: {
-  if (!Cast<PT_Uint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Sint16: {
-  if (!Cast<PT_Uint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Uint32: {
-  if (!Cast<PT_Uint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Sint32: {
-  if (!Cast<PT_Uint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Uint64: {
-  if (!Cast<PT_Uint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Sint64: {
-  if (!Cast<PT_Uint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint8Bool: {
-  if (!Cast<PT_Uint8, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Uint8: {
-  if (!Cast<PT_Sint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Sint8: {
-  if (!Cast<PT_Sint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Uint16: {
-  if (!Cast<PT_Sint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Sint16: {
-  if (!Cast<PT_Sint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Uint32: {
-  if (!Cast<PT_Sint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Sint32: {
-  if (!Cast<PT_Sint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Uint64: {
-  if (!Cast<PT_Sint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Sint64: {
-  if (!Cast<PT_Sint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint8Bool: {
-  if (!Cast<PT_Sint8, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Uint8: {
-  if (!Cast<PT_Uint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Sint8: {
-  if (!Cast<PT_Uint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Uint16: {
-  if (!Cast<PT_Uint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Sint16: {
-  if (!Cast<PT_Uint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Uint32: {
-  if (!Cast<PT_Uint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Sint32: {
-  if (!Cast<PT_Uint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Uint64: {
-  if (!Cast<PT_Uint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Sint64: {
-  if (!Cast<PT_Uint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint16Bool: {
-  if (!Cast<PT_Uint16, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Uint8: {
-  if (!Cast<PT_Sint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Sint8: {
-  if (!Cast<PT_Sint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Uint16: {
-  if (!Cast<PT_Sint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Sint16: {
-  if (!Cast<PT_Sint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Uint32: {
-  if (!Cast<PT_Sint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Sint32: {
-  if (!Cast<PT_Sint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Uint64: {
-  if (!Cast<PT_Sint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Sint64: {
-  if (!Cast<PT_Sint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint16Bool: {
-  if (!Cast<PT_Sint16, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Uint8: {
-  if (!Cast<PT_Uint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Sint8: {
-  if (!Cast<PT_Uint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Uint16: {
-  if (!Cast<PT_Uint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Sint16: {
-  if (!Cast<PT_Uint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Uint32: {
-  if (!Cast<PT_Uint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Sint32: {
-  if (!Cast<PT_Uint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Uint64: {
-  if (!Cast<PT_Uint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Sint64: {
-  if (!Cast<PT_Uint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint32Bool: {
-  if (!Cast<PT_Uint32, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Uint8: {
-  if (!Cast<PT_Sint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Sint8: {
-  if (!Cast<PT_Sint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Uint16: {
-  if (!Cast<PT_Sint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Sint16: {
-  if (!Cast<PT_Sint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Uint32: {
-  if (!Cast<PT_Sint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Sint32: {
-  if (!Cast<PT_Sint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Uint64: {
-  if (!Cast<PT_Sint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Sint64: {
-  if (!Cast<PT_Sint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint32Bool: {
-  if (!Cast<PT_Sint32, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Uint8: {
-  if (!Cast<PT_Uint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Sint8: {
-  if (!Cast<PT_Uint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Uint16: {
-  if (!Cast<PT_Uint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Sint16: {
-  if (!Cast<PT_Uint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Uint32: {
-  if (!Cast<PT_Uint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Sint32: {
-  if (!Cast<PT_Uint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Uint64: {
-  if (!Cast<PT_Uint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Sint64: {
-  if (!Cast<PT_Uint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastUint64Bool: {
-  if (!Cast<PT_Uint64, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Uint8: {
-  if (!Cast<PT_Sint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Sint8: {
-  if (!Cast<PT_Sint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Uint16: {
-  if (!Cast<PT_Sint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Sint16: {
-  if (!Cast<PT_Sint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Uint32: {
-  if (!Cast<PT_Sint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Sint32: {
-  if (!Cast<PT_Sint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Uint64: {
-  if (!Cast<PT_Sint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Sint64: {
-  if (!Cast<PT_Sint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastSint64Bool: {
-  if (!Cast<PT_Sint64, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolUint8: {
-  if (!Cast<PT_Bool, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolSint8: {
-  if (!Cast<PT_Bool, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolUint16: {
-  if (!Cast<PT_Bool, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolSint16: {
-  if (!Cast<PT_Bool, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolUint32: {
-  if (!Cast<PT_Bool, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolSint32: {
-  if (!Cast<PT_Bool, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolUint64: {
-  if (!Cast<PT_Bool, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolSint64: {
-  if (!Cast<PT_Bool, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastBoolBool: {
-  if (!Cast<PT_Bool, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPUint8: {
-  if (!Cast<PT_IntAP, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSint8: {
-  if (!Cast<PT_IntAP, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPUint16: {
-  if (!Cast<PT_IntAP, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSint16: {
-  if (!Cast<PT_IntAP, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPUint32: {
-  if (!Cast<PT_IntAP, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSint32: {
-  if (!Cast<PT_IntAP, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPUint64: {
-  if (!Cast<PT_IntAP, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSint64: {
-  if (!Cast<PT_IntAP, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPBool: {
-  if (!Cast<PT_IntAP, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSUint8: {
-  if (!Cast<PT_IntAPS, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSSint8: {
-  if (!Cast<PT_IntAPS, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSUint16: {
-  if (!Cast<PT_IntAPS, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSSint16: {
-  if (!Cast<PT_IntAPS, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSUint32: {
-  if (!Cast<PT_IntAPS, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSSint32: {
-  if (!Cast<PT_IntAPS, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSUint64: {
-  if (!Cast<PT_IntAPS, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSSint64: {
-  if (!Cast<PT_IntAPS, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastIntAPSBool: {
-  if (!Cast<PT_IntAPS, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointUint8: {
-  if (!Cast<PT_FixedPoint, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointSint8: {
-  if (!Cast<PT_FixedPoint, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointUint16: {
-  if (!Cast<PT_FixedPoint, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointSint16: {
-  if (!Cast<PT_FixedPoint, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointUint32: {
-  if (!Cast<PT_FixedPoint, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointSint32: {
-  if (!Cast<PT_FixedPoint, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointUint64: {
-  if (!Cast<PT_FixedPoint, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointSint64: {
-  if (!Cast<PT_FixedPoint, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_CastFixedPointBool: {
-  if (!Cast<PT_FixedPoint, PT_Bool>(S, OpPC))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastUint8Uint8,
+&Interp_CastUint8Sint8,
+&Interp_CastUint8Uint16,
+&Interp_CastUint8Sint16,
+&Interp_CastUint8Uint32,
+&Interp_CastUint8Sint32,
+&Interp_CastUint8Uint64,
+&Interp_CastUint8Sint64,
+&Interp_CastUint8Bool,
+&Interp_CastSint8Uint8,
+&Interp_CastSint8Sint8,
+&Interp_CastSint8Uint16,
+&Interp_CastSint8Sint16,
+&Interp_CastSint8Uint32,
+&Interp_CastSint8Sint32,
+&Interp_CastSint8Uint64,
+&Interp_CastSint8Sint64,
+&Interp_CastSint8Bool,
+&Interp_CastUint16Uint8,
+&Interp_CastUint16Sint8,
+&Interp_CastUint16Uint16,
+&Interp_CastUint16Sint16,
+&Interp_CastUint16Uint32,
+&Interp_CastUint16Sint32,
+&Interp_CastUint16Uint64,
+&Interp_CastUint16Sint64,
+&Interp_CastUint16Bool,
+&Interp_CastSint16Uint8,
+&Interp_CastSint16Sint8,
+&Interp_CastSint16Uint16,
+&Interp_CastSint16Sint16,
+&Interp_CastSint16Uint32,
+&Interp_CastSint16Sint32,
+&Interp_CastSint16Uint64,
+&Interp_CastSint16Sint64,
+&Interp_CastSint16Bool,
+&Interp_CastUint32Uint8,
+&Interp_CastUint32Sint8,
+&Interp_CastUint32Uint16,
+&Interp_CastUint32Sint16,
+&Interp_CastUint32Uint32,
+&Interp_CastUint32Sint32,
+&Interp_CastUint32Uint64,
+&Interp_CastUint32Sint64,
+&Interp_CastUint32Bool,
+&Interp_CastSint32Uint8,
+&Interp_CastSint32Sint8,
+&Interp_CastSint32Uint16,
+&Interp_CastSint32Sint16,
+&Interp_CastSint32Uint32,
+&Interp_CastSint32Sint32,
+&Interp_CastSint32Uint64,
+&Interp_CastSint32Sint64,
+&Interp_CastSint32Bool,
+&Interp_CastUint64Uint8,
+&Interp_CastUint64Sint8,
+&Interp_CastUint64Uint16,
+&Interp_CastUint64Sint16,
+&Interp_CastUint64Uint32,
+&Interp_CastUint64Sint32,
+&Interp_CastUint64Uint64,
+&Interp_CastUint64Sint64,
+&Interp_CastUint64Bool,
+&Interp_CastSint64Uint8,
+&Interp_CastSint64Sint8,
+&Interp_CastSint64Uint16,
+&Interp_CastSint64Sint16,
+&Interp_CastSint64Uint32,
+&Interp_CastSint64Sint32,
+&Interp_CastSint64Uint64,
+&Interp_CastSint64Sint64,
+&Interp_CastSint64Bool,
+&Interp_CastBoolUint8,
+&Interp_CastBoolSint8,
+&Interp_CastBoolUint16,
+&Interp_CastBoolSint16,
+&Interp_CastBoolUint32,
+&Interp_CastBoolSint32,
+&Interp_CastBoolUint64,
+&Interp_CastBoolSint64,
+&Interp_CastBoolBool,
+&Interp_CastIntAPUint8,
+&Interp_CastIntAPSint8,
+&Interp_CastIntAPUint16,
+&Interp_CastIntAPSint16,
+&Interp_CastIntAPUint32,
+&Interp_CastIntAPSint32,
+&Interp_CastIntAPUint64,
+&Interp_CastIntAPSint64,
+&Interp_CastIntAPBool,
+&Interp_CastIntAPSUint8,
+&Interp_CastIntAPSSint8,
+&Interp_CastIntAPSUint16,
+&Interp_CastIntAPSSint16,
+&Interp_CastIntAPSUint32,
+&Interp_CastIntAPSSint32,
+&Interp_CastIntAPSUint64,
+&Interp_CastIntAPSSint64,
+&Interp_CastIntAPSBool,
+&Interp_CastFixedPointUint8,
+&Interp_CastFixedPointSint8,
+&Interp_CastFixedPointUint16,
+&Interp_CastFixedPointSint16,
+&Interp_CastFixedPointUint32,
+&Interp_CastFixedPointSint32,
+&Interp_CastFixedPointUint64,
+&Interp_CastFixedPointSint64,
+&Interp_CastFixedPointBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastUint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint8Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint8, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint8Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint8, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint16Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint16, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint16Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint16, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint32Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint32, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint32Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint32, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastUint64Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Uint64, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastSint64Bool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Sint64, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolUint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolSint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolUint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolSint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolUint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolSint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolUint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolSint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastBoolBool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_Bool, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPUint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPUint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPUint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPUint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPBool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAP, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSUint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSSint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSUint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSSint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSUint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSSint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSUint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSSint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastIntAPSBool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_IntAPS, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointUint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointSint8(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointUint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointSint16(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointUint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointSint32(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointUint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointSint64(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_CastFixedPointBool(InterpState &S, CodePtr &PC) {
+  if (!Cast<PT_FixedPoint, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -6469,78 +8513,188 @@ OP_CastAPIntAPS,
 OP_CastAPBool,
 OP_CastAPFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_CastAPSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastAPSint8,
+&Interp_CastAPUint8,
+&Interp_CastAPSint16,
+&Interp_CastAPUint16,
+&Interp_CastAPSint32,
+&Interp_CastAPUint32,
+&Interp_CastAPSint64,
+&Interp_CastAPUint64,
+&Interp_CastAPIntAP,
+&Interp_CastAPIntAPS,
+&Interp_CastAPBool,
+&Interp_CastAPFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastAPSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAP<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAP<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -6762,78 +8916,188 @@ OP_CastAPSIntAPS,
 OP_CastAPSBool,
 OP_CastAPSFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_CastAPSSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastAPSSint8,
+&Interp_CastAPSUint8,
+&Interp_CastAPSSint16,
+&Interp_CastAPSUint16,
+&Interp_CastAPSSint32,
+&Interp_CastAPSUint32,
+&Interp_CastAPSSint64,
+&Interp_CastAPSUint64,
+&Interp_CastAPSIntAP,
+&Interp_CastAPSIntAPS,
+&Interp_CastAPSBool,
+&Interp_CastAPSFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastAPSSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastAPSFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastAPS<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastAPSFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastAPS<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7044,13 +9308,24 @@ bool EvalEmitter::emitCastAPSFixedPoint( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CastFP,
 #endif
-#ifdef GET_INTERP
-case OP_CastFP: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<llvm::RoundingMode>(S, PC);
-  if (!CastFP(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFP,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<llvm::RoundingMode>(S, PC);
+    if (!CastFP(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7078,12 +9353,23 @@ bool EvalEmitter::emitCastFP( const llvm::fltSemantics * A0,  llvm::RoundingMode
 #ifdef GET_OPCODE_NAMES
 OP_CastFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_CastFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFixedPoint(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFixedPoint(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7110,12 +9396,23 @@ bool EvalEmitter::emitCastFixedPoint( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CastFixedPointFloating,
 #endif
-#ifdef GET_INTERP
-case OP_CastFixedPointFloating: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  if (!CastFixedPointFloating(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFixedPointFloating,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFixedPointFloating(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    if (!CastFixedPointFloating(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7149,46 +9446,96 @@ OP_CastFixedPointIntegralUint32,
 OP_CastFixedPointIntegralSint64,
 OP_CastFixedPointIntegralUint64,
 #endif
-#ifdef GET_INTERP
-case OP_CastFixedPointIntegralSint8: {
-  if (!CastFixedPointIntegral<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFixedPointIntegralSint8,
+&Interp_CastFixedPointIntegralUint8,
+&Interp_CastFixedPointIntegralSint16,
+&Interp_CastFixedPointIntegralUint16,
+&Interp_CastFixedPointIntegralSint32,
+&Interp_CastFixedPointIntegralUint32,
+&Interp_CastFixedPointIntegralSint64,
+&Interp_CastFixedPointIntegralUint64,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralSint8(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralUint8: {
-  if (!CastFixedPointIntegral<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralUint8(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralSint16: {
-  if (!CastFixedPointIntegral<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralSint16(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralUint16: {
-  if (!CastFixedPointIntegral<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralUint16(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralSint32: {
-  if (!CastFixedPointIntegral<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralSint32(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralUint32: {
-  if (!CastFixedPointIntegral<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralUint32(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralSint64: {
-  if (!CastFixedPointIntegral<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralSint64(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFixedPointIntegralUint64: {
-  if (!CastFixedPointIntegral<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastFixedPointIntegralUint64(InterpState &S, CodePtr &PC) {
+  if (!CastFixedPointIntegral<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7331,12 +9678,23 @@ bool EvalEmitter::emitCastFixedPointIntegralUint64(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CastFloatingFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_CastFloatingFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingFixedPoint(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFloatingFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFloatingFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingFixedPoint(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7371,60 +9729,143 @@ OP_CastFloatingIntegralSint64,
 OP_CastFloatingIntegralUint64,
 OP_CastFloatingIntegralBool,
 #endif
-#ifdef GET_INTERP
-case OP_CastFloatingIntegralSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFloatingIntegralSint8,
+&Interp_CastFloatingIntegralUint8,
+&Interp_CastFloatingIntegralSint16,
+&Interp_CastFloatingIntegralUint16,
+&Interp_CastFloatingIntegralSint32,
+&Interp_CastFloatingIntegralUint32,
+&Interp_CastFloatingIntegralSint64,
+&Interp_CastFloatingIntegralUint64,
+&Interp_CastFloatingIntegralBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastFloatingIntegralBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegral<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegral<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7590,13 +10031,24 @@ bool EvalEmitter::emitCastFloatingIntegralBool( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CastFloatingIntegralAP,
 #endif
-#ifdef GET_INTERP
-case OP_CastFloatingIntegralAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegralAP(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFloatingIntegralAP,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegralAP(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7624,13 +10076,24 @@ bool EvalEmitter::emitCastFloatingIntegralAP( uint32_t A0,  uint32_t A1, SourceI
 #ifdef GET_OPCODE_NAMES
 OP_CastFloatingIntegralAPS,
 #endif
-#ifdef GET_INTERP
-case OP_CastFloatingIntegralAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastFloatingIntegralAPS(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastFloatingIntegralAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastFloatingIntegralAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastFloatingIntegralAPS(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7666,60 +10129,143 @@ OP_CastIntegralFixedPointSint64,
 OP_CastIntegralFixedPointUint64,
 OP_CastIntegralFixedPointBool,
 #endif
-#ifdef GET_INTERP
-case OP_CastIntegralFixedPointSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastIntegralFixedPointSint8,
+&Interp_CastIntegralFixedPointUint8,
+&Interp_CastIntegralFixedPointSint16,
+&Interp_CastIntegralFixedPointUint16,
+&Interp_CastIntegralFixedPointSint32,
+&Interp_CastIntegralFixedPointUint32,
+&Interp_CastIntegralFixedPointSint64,
+&Interp_CastIntegralFixedPointUint64,
+&Interp_CastIntegralFixedPointBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFixedPointBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFixedPoint<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFixedPointBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFixedPoint<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -7896,90 +10442,200 @@ OP_CastIntegralFloatingIntAPS,
 OP_CastIntegralFloatingBool,
 OP_CastIntegralFloatingFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_CastIntegralFloatingSint8: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastIntegralFloatingSint8,
+&Interp_CastIntegralFloatingUint8,
+&Interp_CastIntegralFloatingSint16,
+&Interp_CastIntegralFloatingUint16,
+&Interp_CastIntegralFloatingSint32,
+&Interp_CastIntegralFloatingUint32,
+&Interp_CastIntegralFloatingSint64,
+&Interp_CastIntegralFloatingUint64,
+&Interp_CastIntegralFloatingIntAP,
+&Interp_CastIntegralFloatingIntAPS,
+&Interp_CastIntegralFloatingBool,
+&Interp_CastIntegralFloatingFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingUint8: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingSint16: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingUint16: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingSint32: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingUint32: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingSint64: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingUint64: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingIntAP: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingIntAPS: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingBool: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastIntegralFloatingFixedPoint: {
-  const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!CastIntegralFloating<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CastIntegralFloatingFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const llvm::fltSemantics *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!CastIntegralFloating<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8200,13 +10856,111 @@ bool EvalEmitter::emitCastIntegralFloatingFixedPoint( const llvm::fltSemantics *
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_CastMemberPtrBasePop,
+#endif
+#ifdef GET_INTERPFN_LIST
+&Interp_CastMemberPtrBasePop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastMemberPtrBasePop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    const auto V1 = ReadArg<const RecordDecl *>(S, PC);
+    if (!CastMemberPtrBasePop(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+#endif
+#ifdef GET_DISASM
+case OP_CastMemberPtrBasePop:
+  Text.Op = PrintName("CastMemberPtrBasePop");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  Text.Args.push_back(printArg<const RecordDecl *>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCastMemberPtrBasePop( int32_t ,  const RecordDecl * , SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCastMemberPtrBasePop( int32_t A0,  const RecordDecl * A1, SourceInfo L) {
+  return emitOp<int32_t, const RecordDecl *>(OP_CastMemberPtrBasePop, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCastMemberPtrBasePop( int32_t A0,  const RecordDecl * A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CastMemberPtrBasePop(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
+OP_CastMemberPtrDerivedPop,
+#endif
+#ifdef GET_INTERPFN_LIST
+&Interp_CastMemberPtrDerivedPop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastMemberPtrDerivedPop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    const auto V1 = ReadArg<const RecordDecl *>(S, PC);
+    if (!CastMemberPtrDerivedPop(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+#endif
+#ifdef GET_DISASM
+case OP_CastMemberPtrDerivedPop:
+  Text.Op = PrintName("CastMemberPtrDerivedPop");
+  Text.Args.push_back(printArg<int32_t>(P, PC));
+  Text.Args.push_back(printArg<const RecordDecl *>(P, PC));
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitCastMemberPtrDerivedPop( int32_t ,  const RecordDecl * , SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitCastMemberPtrDerivedPop( int32_t A0,  const RecordDecl * A1, SourceInfo L) {
+  return emitOp<int32_t, const RecordDecl *>(OP_CastMemberPtrDerivedPop, A0, A1, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitCastMemberPtrDerivedPop( int32_t A0,  const RecordDecl * A1, SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return CastMemberPtrDerivedPop(S, OpPC, A0, A1);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_CastMemberPtrPtr,
 #endif
-#ifdef GET_INTERP
-case OP_CastMemberPtrPtr: {
-  if (!CastMemberPtrPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CastMemberPtrPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastMemberPtrPtr(InterpState &S, CodePtr &PC) {
+  if (!CastMemberPtrPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8240,51 +10994,107 @@ OP_CastPointerIntegralSint64,
 OP_CastPointerIntegralUint64,
 OP_CastPointerIntegralBool,
 #endif
-#ifdef GET_INTERP
-case OP_CastPointerIntegralSint8: {
-  if (!CastPointerIntegral<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CastPointerIntegralSint8,
+&Interp_CastPointerIntegralUint8,
+&Interp_CastPointerIntegralSint16,
+&Interp_CastPointerIntegralUint16,
+&Interp_CastPointerIntegralSint32,
+&Interp_CastPointerIntegralUint32,
+&Interp_CastPointerIntegralSint64,
+&Interp_CastPointerIntegralUint64,
+&Interp_CastPointerIntegralBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralSint8(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralUint8: {
-  if (!CastPointerIntegral<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralUint8(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralSint16: {
-  if (!CastPointerIntegral<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralSint16(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralUint16: {
-  if (!CastPointerIntegral<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralUint16(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralSint32: {
-  if (!CastPointerIntegral<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralSint32(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralUint32: {
-  if (!CastPointerIntegral<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralUint32(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralSint64: {
-  if (!CastPointerIntegral<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralSint64(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralUint64: {
-  if (!CastPointerIntegral<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralUint64(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CastPointerIntegralBool: {
-  if (!CastPointerIntegral<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralBool(InterpState &S, CodePtr &PC) {
+  if (!CastPointerIntegral<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8441,12 +11251,23 @@ bool EvalEmitter::emitCastPointerIntegralBool(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CastPointerIntegralAP,
 #endif
-#ifdef GET_INTERP
-case OP_CastPointerIntegralAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastPointerIntegralAP(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastPointerIntegralAP,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastPointerIntegralAP(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8473,12 +11294,23 @@ bool EvalEmitter::emitCastPointerIntegralAP( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CastPointerIntegralAPS,
 #endif
-#ifdef GET_INTERP
-case OP_CastPointerIntegralAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!CastPointerIntegralAPS(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CastPointerIntegralAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CastPointerIntegralAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!CastPointerIntegralAPS(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8505,11 +11337,19 @@ bool EvalEmitter::emitCastPointerIntegralAPS( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckAllocations,
 #endif
-#ifdef GET_INTERP
-case OP_CheckAllocations: {
-  if (!CheckAllocations(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckAllocations,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckAllocations(InterpState &S, CodePtr &PC) {
+  if (!CheckAllocations(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8535,12 +11375,23 @@ bool EvalEmitter::emitCheckAllocations(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckArraySize,
 #endif
-#ifdef GET_INTERP
-case OP_CheckArraySize: {
-  const auto V0 = ReadArg<uint64_t>(S, PC);
-  if (!CheckArraySize(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckArraySize,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckArraySize(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint64_t>(S, PC);
+    if (!CheckArraySize(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8567,13 +11418,24 @@ bool EvalEmitter::emitCheckArraySize( uint64_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckBitCast,
 #endif
-#ifdef GET_INTERP
-case OP_CheckBitCast: {
-  const auto V0 = ReadArg<const Type *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!CheckBitCast(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckBitCast,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckBitCast(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Type *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!CheckBitCast(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8601,12 +11463,23 @@ bool EvalEmitter::emitCheckBitCast( const Type * A0,  bool A1, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckDecl,
 #endif
-#ifdef GET_INTERP
-case OP_CheckDecl: {
-  const auto V0 = ReadArg<const VarDecl*>(S, PC);
-  if (!CheckDecl(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckDecl,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckDecl(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const VarDecl*>(S, PC);
+    if (!CheckDecl(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8633,11 +11506,19 @@ bool EvalEmitter::emitCheckDecl( const VarDecl* A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckDestruction,
 #endif
-#ifdef GET_INTERP
-case OP_CheckDestruction: {
-  if (!CheckDestruction(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckDestruction,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckDestruction(InterpState &S, CodePtr &PC) {
+  if (!CheckDestruction(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8673,72 +11554,173 @@ OP_CheckEnumValueIntAP,
 OP_CheckEnumValueIntAPS,
 OP_CheckEnumValueBool,
 #endif
-#ifdef GET_INTERP
-case OP_CheckEnumValueSint8: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckEnumValueSint8,
+&Interp_CheckEnumValueUint8,
+&Interp_CheckEnumValueSint16,
+&Interp_CheckEnumValueUint16,
+&Interp_CheckEnumValueSint32,
+&Interp_CheckEnumValueUint32,
+&Interp_CheckEnumValueSint64,
+&Interp_CheckEnumValueUint64,
+&Interp_CheckEnumValueIntAP,
+&Interp_CheckEnumValueIntAPS,
+&Interp_CheckEnumValueBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckEnumValueSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueUint8: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueSint16: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueUint16: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueSint32: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueUint32: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueSint64: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueUint64: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueIntAP: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueIntAPS: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckEnumValueBool: {
-  const auto V0 = ReadArg<const EnumDecl *>(S, PC);
-  if (!CheckEnumValue<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckEnumValueBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const EnumDecl *>(S, PC);
+    if (!CheckEnumValue<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8934,12 +11916,23 @@ bool EvalEmitter::emitCheckEnumValueBool( const EnumDecl * A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckFunctionDecl,
 #endif
-#ifdef GET_INTERP
-case OP_CheckFunctionDecl: {
-  const auto V0 = ReadArg<const FunctionDecl *>(S, PC);
-  if (!CheckFunctionDecl(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckFunctionDecl,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckFunctionDecl(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const FunctionDecl *>(S, PC);
+    if (!CheckFunctionDecl(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8966,12 +11959,23 @@ bool EvalEmitter::emitCheckFunctionDecl( const FunctionDecl * A0, SourceInfo L) 
 #ifdef GET_OPCODE_NAMES
 OP_CheckLiteralType,
 #endif
-#ifdef GET_INTERP
-case OP_CheckLiteralType: {
-  const auto V0 = ReadArg<const Type *>(S, PC);
-  if (!CheckLiteralType(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckLiteralType,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckLiteralType(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Type *>(S, PC);
+    if (!CheckLiteralType(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -8998,12 +12002,23 @@ bool EvalEmitter::emitCheckLiteralType( const Type * A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckNewTypeMismatch,
 #endif
-#ifdef GET_INTERP
-case OP_CheckNewTypeMismatch: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatch(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckNewTypeMismatch,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatch(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatch(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9039,66 +12054,158 @@ OP_CheckNewTypeMismatchArrayUint64,
 OP_CheckNewTypeMismatchArrayIntAP,
 OP_CheckNewTypeMismatchArrayIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_CheckNewTypeMismatchArraySint8: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckNewTypeMismatchArraySint8,
+&Interp_CheckNewTypeMismatchArrayUint8,
+&Interp_CheckNewTypeMismatchArraySint16,
+&Interp_CheckNewTypeMismatchArrayUint16,
+&Interp_CheckNewTypeMismatchArraySint32,
+&Interp_CheckNewTypeMismatchArrayUint32,
+&Interp_CheckNewTypeMismatchArraySint64,
+&Interp_CheckNewTypeMismatchArrayUint64,
+&Interp_CheckNewTypeMismatchArrayIntAP,
+&Interp_CheckNewTypeMismatchArrayIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArraySint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArrayUint8: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArrayUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArraySint16: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArraySint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArrayUint16: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArrayUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArraySint32: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArraySint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArrayUint32: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArrayUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArraySint64: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArraySint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArrayUint64: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArrayUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArrayIntAP: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArrayIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNewTypeMismatchArrayIntAPS: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!CheckNewTypeMismatchArray<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CheckNewTypeMismatchArrayIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!CheckNewTypeMismatchArray<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9280,16 +12387,30 @@ bool EvalEmitter::emitCheckNewTypeMismatchArrayIntAPS( const Expr * A0, SourceIn
 OP_CheckNonNullArgPtr,
 OP_CheckNonNullArgMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_CheckNonNullArgPtr: {
-  if (!CheckNonNullArg<PT_Ptr>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckNonNullArgPtr,
+&Interp_CheckNonNullArgMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckNonNullArgPtr(InterpState &S, CodePtr &PC) {
+  if (!CheckNonNullArg<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CheckNonNullArgMemberPtr: {
-  if (!CheckNonNullArg<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CheckNonNullArgMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!CheckNonNullArg<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9348,11 +12469,19 @@ bool EvalEmitter::emitCheckNonNullArgMemberPtr(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckNull,
 #endif
-#ifdef GET_INTERP
-case OP_CheckNull: {
-  if (!CheckNull(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckNull,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckNull(InterpState &S, CodePtr &PC) {
+  if (!CheckNull(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9378,11 +12507,19 @@ bool EvalEmitter::emitCheckNull(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_CheckPseudoDtor,
 #endif
-#ifdef GET_INTERP
-case OP_CheckPseudoDtor: {
-  if (!CheckPseudoDtor(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CheckPseudoDtor,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CheckPseudoDtor(InterpState &S, CodePtr &PC) {
+  if (!CheckPseudoDtor(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9417,56 +12554,118 @@ OP_CompUint64,
 OP_CompIntAP,
 OP_CompIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_CompSint8: {
-  if (!Comp<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CompSint8,
+&Interp_CompUint8,
+&Interp_CompSint16,
+&Interp_CompUint16,
+&Interp_CompSint32,
+&Interp_CompUint32,
+&Interp_CompSint64,
+&Interp_CompUint64,
+&Interp_CompIntAP,
+&Interp_CompIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CompSint8(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompUint8: {
-  if (!Comp<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompUint8(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompSint16: {
-  if (!Comp<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompSint16(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompUint16: {
-  if (!Comp<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompUint16(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompSint32: {
-  if (!Comp<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompSint32(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompUint32: {
-  if (!Comp<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompUint32(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompSint64: {
-  if (!Comp<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompSint64(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompUint64: {
-  if (!Comp<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompUint64(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompIntAP: {
-  if (!Comp<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompIntAP(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CompIntAPS: {
-  if (!Comp<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_CompIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Comp<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9637,12 +12836,23 @@ bool EvalEmitter::emitCompIntAPS(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstBool,
 #endif
-#ifdef GET_INTERP
-case OP_ConstBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Const<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Const<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9669,12 +12879,23 @@ bool EvalEmitter::emitConstBool( bool A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_ConstFixedPoint: {
-  const auto &V0 = ReadArg<FixedPoint>(S, PC);
-  if (!Const<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto &V0 = ReadArg<FixedPoint>(S, PC);
+    if (!Const<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9701,12 +12922,23 @@ bool EvalEmitter::emitConstFixedPoint(const FixedPoint &A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstFloat,
 #endif
-#ifdef GET_INTERP
-case OP_ConstFloat: {
-  const auto &V0 = ReadArg<Floating>(S, PC);
-  if (!ConstFloat(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto &V0 = ReadArg<Floating>(S, PC);
+    if (!ConstFloat(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9733,12 +12965,23 @@ bool EvalEmitter::emitConstFloat(const Floating &A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstIntAP,
 #endif
-#ifdef GET_INTERP
-case OP_ConstIntAP: {
-  const auto &V0 = ReadArg<IntegralAP<false>>(S, PC);
-  if (!Const<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstIntAP,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto &V0 = ReadArg<IntegralAP<false>>(S, PC);
+    if (!Const<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9765,12 +13008,23 @@ bool EvalEmitter::emitConstIntAP(const IntegralAP<false> &A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_ConstIntAPS: {
-  const auto &V0 = ReadArg<IntegralAP<true>>(S, PC);
-  if (!Const<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto &V0 = ReadArg<IntegralAP<true>>(S, PC);
+    if (!Const<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9797,12 +13051,23 @@ bool EvalEmitter::emitConstIntAPS(const IntegralAP<true> &A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstSint8,
 #endif
-#ifdef GET_INTERP
-case OP_ConstSint8: {
-  const auto V0 = ReadArg<int8_t>(S, PC);
-  if (!Const<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstSint8,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<int8_t>(S, PC);
+    if (!Const<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9829,12 +13094,23 @@ bool EvalEmitter::emitConstSint8( int8_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstSint16,
 #endif
-#ifdef GET_INTERP
-case OP_ConstSint16: {
-  const auto V0 = ReadArg<int16_t>(S, PC);
-  if (!Const<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstSint16,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<int16_t>(S, PC);
+    if (!Const<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9861,12 +13137,23 @@ bool EvalEmitter::emitConstSint16( int16_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstSint32,
 #endif
-#ifdef GET_INTERP
-case OP_ConstSint32: {
-  const auto V0 = ReadArg<int32_t>(S, PC);
-  if (!Const<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstSint32,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    if (!Const<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9893,12 +13180,23 @@ bool EvalEmitter::emitConstSint32( int32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstSint64,
 #endif
-#ifdef GET_INTERP
-case OP_ConstSint64: {
-  const auto V0 = ReadArg<int64_t>(S, PC);
-  if (!Const<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstSint64,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<int64_t>(S, PC);
+    if (!Const<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9925,12 +13223,23 @@ bool EvalEmitter::emitConstSint64( int64_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstUint8,
 #endif
-#ifdef GET_INTERP
-case OP_ConstUint8: {
-  const auto V0 = ReadArg<uint8_t>(S, PC);
-  if (!Const<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstUint8,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint8_t>(S, PC);
+    if (!Const<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9957,12 +13266,23 @@ bool EvalEmitter::emitConstUint8( uint8_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstUint16,
 #endif
-#ifdef GET_INTERP
-case OP_ConstUint16: {
-  const auto V0 = ReadArg<uint16_t>(S, PC);
-  if (!Const<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstUint16,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint16_t>(S, PC);
+    if (!Const<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -9989,12 +13309,23 @@ bool EvalEmitter::emitConstUint16( uint16_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstUint32,
 #endif
-#ifdef GET_INTERP
-case OP_ConstUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Const<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstUint32,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Const<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -10021,12 +13352,23 @@ bool EvalEmitter::emitConstUint32( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ConstUint64,
 #endif
-#ifdef GET_INTERP
-case OP_ConstUint64: {
-  const auto V0 = ReadArg<uint64_t>(S, PC);
-  if (!Const<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ConstUint64,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ConstUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint64_t>(S, PC);
+    if (!Const<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -10067,126 +13409,263 @@ OP_CopyArrayPtr,
 OP_CopyArrayMemberPtr,
 OP_CopyArrayFloat,
 #endif
-#ifdef GET_INTERP
-case OP_CopyArraySint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Sint8>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_CopyArraySint8,
+&Interp_CopyArrayUint8,
+&Interp_CopyArraySint16,
+&Interp_CopyArrayUint16,
+&Interp_CopyArraySint32,
+&Interp_CopyArrayUint32,
+&Interp_CopyArraySint64,
+&Interp_CopyArrayUint64,
+&Interp_CopyArrayIntAP,
+&Interp_CopyArrayIntAPS,
+&Interp_CopyArrayBool,
+&Interp_CopyArrayFixedPoint,
+&Interp_CopyArrayPtr,
+&Interp_CopyArrayMemberPtr,
+&Interp_CopyArrayFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CopyArraySint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Sint8>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Uint8>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Uint8>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArraySint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Sint16>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArraySint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Sint16>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Uint16>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Uint16>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArraySint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Sint32>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArraySint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Sint32>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Uint32>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Uint32>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArraySint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Sint64>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArraySint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Sint64>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Uint64>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Uint64>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_IntAP>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_IntAP>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_IntAPS>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_IntAPS>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Bool>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Bool>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_FixedPoint>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_FixedPoint>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Ptr>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Ptr>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_MemberPtr>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_MemberPtr>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_CopyArrayFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  const auto V2 = ReadArg<uint32_t>(S, PC);
-  if (!CopyArray<PT_Float>(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_CopyArrayFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    const auto V2 = ReadArg<uint32_t>(S, PC);
+    if (!CopyArray<PT_Float>(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -10471,11 +13950,19 @@ bool EvalEmitter::emitCopyArrayFloat( uint32_t A0,  uint32_t A1,  uint32_t A2, S
 #ifdef GET_OPCODE_NAMES
 OP_CtorCheck,
 #endif
-#ifdef GET_INTERP
-case OP_CtorCheck: {
-  if (!CtorCheck(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_CtorCheck,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_CtorCheck(InterpState &S, CodePtr &PC) {
+  if (!CtorCheck(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -10512,78 +13999,188 @@ OP_DecIntAPS,
 OP_DecBool,
 OP_DecFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_DecSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_DecSint8,
+&Interp_DecUint8,
+&Interp_DecSint16,
+&Interp_DecUint16,
+&Interp_DecSint32,
+&Interp_DecUint32,
+&Interp_DecSint64,
+&Interp_DecUint64,
+&Interp_DecIntAP,
+&Interp_DecIntAPS,
+&Interp_DecBool,
+&Interp_DecFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Dec<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Dec<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -10805,90 +14402,200 @@ OP_DecBitfieldIntAPS,
 OP_DecBitfieldBool,
 OP_DecBitfieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_DecBitfieldSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_DecBitfieldSint8,
+&Interp_DecBitfieldUint8,
+&Interp_DecBitfieldSint16,
+&Interp_DecBitfieldUint16,
+&Interp_DecBitfieldSint32,
+&Interp_DecBitfieldUint32,
+&Interp_DecBitfieldSint64,
+&Interp_DecBitfieldUint64,
+&Interp_DecBitfieldIntAP,
+&Interp_DecBitfieldIntAPS,
+&Interp_DecBitfieldBool,
+&Interp_DecBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecBitfieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecBitfieldFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecBitfieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11122,78 +14829,188 @@ OP_DecPopIntAPS,
 OP_DecPopBool,
 OP_DecPopFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_DecPopSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_DecPopSint8,
+&Interp_DecPopUint8,
+&Interp_DecPopSint16,
+&Interp_DecPopUint16,
+&Interp_DecPopSint32,
+&Interp_DecPopUint32,
+&Interp_DecPopSint64,
+&Interp_DecPopUint64,
+&Interp_DecPopIntAP,
+&Interp_DecPopIntAPS,
+&Interp_DecPopBool,
+&Interp_DecPopFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecPopSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!DecPop<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!DecPop<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11415,90 +15232,200 @@ OP_DecPopBitfieldIntAPS,
 OP_DecPopBitfieldBool,
 OP_DecPopBitfieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_DecPopBitfieldSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_DecPopBitfieldSint8,
+&Interp_DecPopBitfieldUint8,
+&Interp_DecPopBitfieldSint16,
+&Interp_DecPopBitfieldUint16,
+&Interp_DecPopBitfieldSint32,
+&Interp_DecPopBitfieldUint32,
+&Interp_DecPopBitfieldSint64,
+&Interp_DecPopBitfieldUint64,
+&Interp_DecPopBitfieldIntAP,
+&Interp_DecPopBitfieldIntAPS,
+&Interp_DecPopBitfieldBool,
+&Interp_DecPopBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecPopBitfieldFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!DecPopBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_DecPopBitfieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!DecPopBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11721,11 +15648,19 @@ bool EvalEmitter::emitDecPopBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInf
 #ifdef GET_OPCODE_NAMES
 OP_DecPtr,
 #endif
-#ifdef GET_INTERP
-case OP_DecPtr: {
-  if (!DecPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_DecPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecPtr(InterpState &S, CodePtr &PC) {
+  if (!DecPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11754,26 +15689,52 @@ OP_DecayPtrPtrMemberPtr,
 OP_DecayPtrMemberPtrPtr,
 OP_DecayPtrMemberPtrMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_DecayPtrPtrPtr: {
-  if (!DecayPtr<PT_Ptr, PT_Ptr>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_DecayPtrPtrPtr,
+&Interp_DecayPtrPtrMemberPtr,
+&Interp_DecayPtrMemberPtrPtr,
+&Interp_DecayPtrMemberPtrMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecayPtrPtrPtr(InterpState &S, CodePtr &PC) {
+  if (!DecayPtr<PT_Ptr, PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecayPtrPtrMemberPtr: {
-  if (!DecayPtr<PT_Ptr, PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DecayPtrPtrMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!DecayPtr<PT_Ptr, PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecayPtrMemberPtrPtr: {
-  if (!DecayPtr<PT_MemberPtr, PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DecayPtrMemberPtrPtr(InterpState &S, CodePtr &PC) {
+  if (!DecayPtr<PT_MemberPtr, PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DecayPtrMemberPtrMemberPtr: {
-  if (!DecayPtr<PT_MemberPtr, PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DecayPtrMemberPtrMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!DecayPtr<PT_MemberPtr, PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11870,12 +15831,23 @@ bool EvalEmitter::emitDecayPtrMemberPtrMemberPtr(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Decf,
 #endif
-#ifdef GET_INTERP
-case OP_Decf: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Decf(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Decf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Decf(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Decf(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11902,12 +15874,23 @@ bool EvalEmitter::emitDecf( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_DecfPop,
 #endif
-#ifdef GET_INTERP
-case OP_DecfPop: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!DecfPop(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_DecfPop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DecfPop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!DecfPop(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11934,12 +15917,23 @@ bool EvalEmitter::emitDecfPop( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Destroy,
 #endif
-#ifdef GET_INTERP
-case OP_Destroy: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Destroy(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Destroy,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Destroy(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Destroy(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11959,11 +15953,19 @@ bool ByteCodeEmitter::emitDestroy( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_DiagTypeid,
 #endif
-#ifdef GET_INTERP
-case OP_DiagTypeid: {
-  if (!DiagTypeid(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_DiagTypeid,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DiagTypeid(InterpState &S, CodePtr &PC) {
+  if (!DiagTypeid(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -11999,61 +16001,129 @@ OP_DivIntAP,
 OP_DivIntAPS,
 OP_DivFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_DivSint8: {
-  if (!Div<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_DivSint8,
+&Interp_DivUint8,
+&Interp_DivSint16,
+&Interp_DivUint16,
+&Interp_DivSint32,
+&Interp_DivUint32,
+&Interp_DivSint64,
+&Interp_DivUint64,
+&Interp_DivIntAP,
+&Interp_DivIntAPS,
+&Interp_DivFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DivSint8(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivUint8: {
-  if (!Div<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivUint8(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivSint16: {
-  if (!Div<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivSint16(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivUint16: {
-  if (!Div<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivUint16(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivSint32: {
-  if (!Div<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivSint32(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivUint32: {
-  if (!Div<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivUint32(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivSint64: {
-  if (!Div<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivSint64(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivUint64: {
-  if (!Div<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivUint64(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivIntAP: {
-  if (!Div<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivIntAP(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivIntAPS: {
-  if (!Div<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivFixedPoint: {
-  if (!Div<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Div<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -12248,61 +16318,129 @@ OP_DivcIntAP,
 OP_DivcIntAPS,
 OP_DivcFloat,
 #endif
-#ifdef GET_INTERP
-case OP_DivcSint8: {
-  if (!Divc<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_DivcSint8,
+&Interp_DivcUint8,
+&Interp_DivcSint16,
+&Interp_DivcUint16,
+&Interp_DivcSint32,
+&Interp_DivcUint32,
+&Interp_DivcSint64,
+&Interp_DivcUint64,
+&Interp_DivcIntAP,
+&Interp_DivcIntAPS,
+&Interp_DivcFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DivcSint8(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcUint8: {
-  if (!Divc<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcUint8(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcSint16: {
-  if (!Divc<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcSint16(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcUint16: {
-  if (!Divc<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcUint16(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcSint32: {
-  if (!Divc<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcSint32(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcUint32: {
-  if (!Divc<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcUint32(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcSint64: {
-  if (!Divc<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcSint64(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcUint64: {
-  if (!Divc<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcUint64(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcIntAP: {
-  if (!Divc<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcIntAP(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcIntAPS: {
-  if (!Divc<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DivcFloat: {
-  if (!Divc<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DivcFloat(InterpState &S, CodePtr &PC) {
+  if (!Divc<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -12487,12 +16625,23 @@ bool EvalEmitter::emitDivcFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Divf,
 #endif
-#ifdef GET_INTERP
-case OP_Divf: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Divf(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Divf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Divf(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Divf(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -12519,11 +16668,19 @@ bool EvalEmitter::emitDivf( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Dump,
 #endif
-#ifdef GET_INTERP
-case OP_Dump: {
-  if (!Dump(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Dump,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Dump(InterpState &S, CodePtr &PC) {
+  if (!Dump(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -12563,81 +16720,173 @@ OP_DupPtr,
 OP_DupMemberPtr,
 OP_DupFloat,
 #endif
-#ifdef GET_INTERP
-case OP_DupSint8: {
-  if (!Dup<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_DupSint8,
+&Interp_DupUint8,
+&Interp_DupSint16,
+&Interp_DupUint16,
+&Interp_DupSint32,
+&Interp_DupUint32,
+&Interp_DupSint64,
+&Interp_DupUint64,
+&Interp_DupIntAP,
+&Interp_DupIntAPS,
+&Interp_DupBool,
+&Interp_DupFixedPoint,
+&Interp_DupPtr,
+&Interp_DupMemberPtr,
+&Interp_DupFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_DupSint8(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupUint8: {
-  if (!Dup<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupUint8(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupSint16: {
-  if (!Dup<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupSint16(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupUint16: {
-  if (!Dup<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupUint16(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupSint32: {
-  if (!Dup<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupSint32(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupUint32: {
-  if (!Dup<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupUint32(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupSint64: {
-  if (!Dup<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupSint64(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupUint64: {
-  if (!Dup<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupUint64(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupIntAP: {
-  if (!Dup<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupIntAP(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupIntAPS: {
-  if (!Dup<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupBool: {
-  if (!Dup<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupBool(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupFixedPoint: {
-  if (!Dup<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupPtr: {
-  if (!Dup<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupPtr(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupMemberPtr: {
-  if (!Dup<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_DupFloat: {
-  if (!Dup<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_DupFloat(InterpState &S, CodePtr &PC) {
+  if (!Dup<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -12891,81 +17140,173 @@ OP_EQPtr,
 OP_EQMemberPtr,
 OP_EQFloat,
 #endif
-#ifdef GET_INTERP
-case OP_EQSint8: {
-  if (!EQ<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_EQSint8,
+&Interp_EQUint8,
+&Interp_EQSint16,
+&Interp_EQUint16,
+&Interp_EQSint32,
+&Interp_EQUint32,
+&Interp_EQSint64,
+&Interp_EQUint64,
+&Interp_EQIntAP,
+&Interp_EQIntAPS,
+&Interp_EQBool,
+&Interp_EQFixedPoint,
+&Interp_EQPtr,
+&Interp_EQMemberPtr,
+&Interp_EQFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_EQSint8(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQUint8: {
-  if (!EQ<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQUint8(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQSint16: {
-  if (!EQ<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQSint16(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQUint16: {
-  if (!EQ<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQUint16(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQSint32: {
-  if (!EQ<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQSint32(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQUint32: {
-  if (!EQ<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQUint32(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQSint64: {
-  if (!EQ<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQSint64(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQUint64: {
-  if (!EQ<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQUint64(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQIntAP: {
-  if (!EQ<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQIntAP(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQIntAPS: {
-  if (!EQ<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQIntAPS(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQBool: {
-  if (!EQ<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQBool(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQFixedPoint: {
-  if (!EQ<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQPtr: {
-  if (!EQ<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQPtr(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQMemberPtr: {
-  if (!EQ<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_EQFloat: {
-  if (!EQ<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_EQFloat(InterpState &S, CodePtr &PC) {
+  if (!EQ<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13205,12 +17546,23 @@ bool EvalEmitter::emitEQFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_EnableLocal,
 #endif
-#ifdef GET_INTERP
-case OP_EnableLocal: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!EnableLocal(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_EnableLocal,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_EnableLocal(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!EnableLocal(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13230,11 +17582,19 @@ bool ByteCodeEmitter::emitEnableLocal( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_EndLifetime,
 #endif
-#ifdef GET_INTERP
-case OP_EndLifetime: {
-  if (!EndLifetime(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_EndLifetime,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_EndLifetime(InterpState &S, CodePtr &PC) {
+  if (!EndLifetime(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13260,11 +17620,19 @@ bool EvalEmitter::emitEndLifetime(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_EndLifetimePop,
 #endif
-#ifdef GET_INTERP
-case OP_EndLifetimePop: {
-  if (!EndLifetimePop(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_EndLifetimePop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_EndLifetimePop(InterpState &S, CodePtr &PC) {
+  if (!EndLifetimePop(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13290,11 +17658,13 @@ bool EvalEmitter::emitEndLifetimePop(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_EndSpeculation,
 #endif
-#ifdef GET_INTERP
-case OP_EndSpeculation: {
-  if (!EndSpeculation(S, OpPC))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_EndSpeculation,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_EndSpeculation(InterpState &S, CodePtr &PC) {
+    MUSTTAIL return EndSpeculation(S, PC);
 }
 #endif
 #ifdef GET_DISASM
@@ -13320,11 +17690,19 @@ bool EvalEmitter::emitEndSpeculation(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Error,
 #endif
-#ifdef GET_INTERP
-case OP_Error: {
-  if (!Error(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Error,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Error(InterpState &S, CodePtr &PC) {
+  if (!Error(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13350,11 +17728,19 @@ bool EvalEmitter::emitError(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ExpandPtr,
 #endif
-#ifdef GET_INTERP
-case OP_ExpandPtr: {
-  if (!ExpandPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_ExpandPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ExpandPtr(InterpState &S, CodePtr &PC) {
+  if (!ExpandPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13380,11 +17766,19 @@ bool EvalEmitter::emitExpandPtr(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_FinishInit,
 #endif
-#ifdef GET_INTERP
-case OP_FinishInit: {
-  if (!FinishInit(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_FinishInit,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FinishInit(InterpState &S, CodePtr &PC) {
+  if (!FinishInit(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13410,11 +17804,19 @@ bool EvalEmitter::emitFinishInit(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_FinishInitActivate,
 #endif
-#ifdef GET_INTERP
-case OP_FinishInitActivate: {
-  if (!FinishInitActivate(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_FinishInitActivate,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FinishInitActivate(InterpState &S, CodePtr &PC) {
+  if (!FinishInitActivate(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13440,11 +17842,19 @@ bool EvalEmitter::emitFinishInitActivate(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_FinishInitActivatePop,
 #endif
-#ifdef GET_INTERP
-case OP_FinishInitActivatePop: {
-  if (!FinishInitActivatePop(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_FinishInitActivatePop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FinishInitActivatePop(InterpState &S, CodePtr &PC) {
+  if (!FinishInitActivatePop(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13470,11 +17880,19 @@ bool EvalEmitter::emitFinishInitActivatePop(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_FinishInitGlobal,
 #endif
-#ifdef GET_INTERP
-case OP_FinishInitGlobal: {
-  if (!FinishInitGlobal(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_FinishInitGlobal,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FinishInitGlobal(InterpState &S, CodePtr &PC) {
+  if (!FinishInitGlobal(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13500,11 +17918,19 @@ bool EvalEmitter::emitFinishInitGlobal(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_FinishInitPop,
 #endif
-#ifdef GET_INTERP
-case OP_FinishInitPop: {
-  if (!FinishInitPop(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_FinishInitPop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FinishInitPop(InterpState &S, CodePtr &PC) {
+  if (!FinishInitPop(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -13754,1131 +18180,2483 @@ OP_FlipFloatPtr,
 OP_FlipFloatMemberPtr,
 OP_FlipFloatFloat,
 #endif
-#ifdef GET_INTERP
-case OP_FlipSint8Sint8: {
-  if (!Flip<PT_Sint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Uint8: {
-  if (!Flip<PT_Sint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Sint16: {
-  if (!Flip<PT_Sint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Uint16: {
-  if (!Flip<PT_Sint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Sint32: {
-  if (!Flip<PT_Sint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Uint32: {
-  if (!Flip<PT_Sint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Sint64: {
-  if (!Flip<PT_Sint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Uint64: {
-  if (!Flip<PT_Sint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8IntAP: {
-  if (!Flip<PT_Sint8, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8IntAPS: {
-  if (!Flip<PT_Sint8, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Bool: {
-  if (!Flip<PT_Sint8, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8FixedPoint: {
-  if (!Flip<PT_Sint8, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Ptr: {
-  if (!Flip<PT_Sint8, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8MemberPtr: {
-  if (!Flip<PT_Sint8, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint8Float: {
-  if (!Flip<PT_Sint8, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Sint8: {
-  if (!Flip<PT_Uint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Uint8: {
-  if (!Flip<PT_Uint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Sint16: {
-  if (!Flip<PT_Uint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Uint16: {
-  if (!Flip<PT_Uint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Sint32: {
-  if (!Flip<PT_Uint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Uint32: {
-  if (!Flip<PT_Uint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Sint64: {
-  if (!Flip<PT_Uint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Uint64: {
-  if (!Flip<PT_Uint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8IntAP: {
-  if (!Flip<PT_Uint8, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8IntAPS: {
-  if (!Flip<PT_Uint8, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Bool: {
-  if (!Flip<PT_Uint8, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8FixedPoint: {
-  if (!Flip<PT_Uint8, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Ptr: {
-  if (!Flip<PT_Uint8, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8MemberPtr: {
-  if (!Flip<PT_Uint8, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint8Float: {
-  if (!Flip<PT_Uint8, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Sint8: {
-  if (!Flip<PT_Sint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Uint8: {
-  if (!Flip<PT_Sint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Sint16: {
-  if (!Flip<PT_Sint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Uint16: {
-  if (!Flip<PT_Sint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Sint32: {
-  if (!Flip<PT_Sint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Uint32: {
-  if (!Flip<PT_Sint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Sint64: {
-  if (!Flip<PT_Sint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Uint64: {
-  if (!Flip<PT_Sint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16IntAP: {
-  if (!Flip<PT_Sint16, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16IntAPS: {
-  if (!Flip<PT_Sint16, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Bool: {
-  if (!Flip<PT_Sint16, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16FixedPoint: {
-  if (!Flip<PT_Sint16, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Ptr: {
-  if (!Flip<PT_Sint16, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16MemberPtr: {
-  if (!Flip<PT_Sint16, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint16Float: {
-  if (!Flip<PT_Sint16, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Sint8: {
-  if (!Flip<PT_Uint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Uint8: {
-  if (!Flip<PT_Uint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Sint16: {
-  if (!Flip<PT_Uint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Uint16: {
-  if (!Flip<PT_Uint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Sint32: {
-  if (!Flip<PT_Uint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Uint32: {
-  if (!Flip<PT_Uint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Sint64: {
-  if (!Flip<PT_Uint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Uint64: {
-  if (!Flip<PT_Uint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16IntAP: {
-  if (!Flip<PT_Uint16, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16IntAPS: {
-  if (!Flip<PT_Uint16, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Bool: {
-  if (!Flip<PT_Uint16, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16FixedPoint: {
-  if (!Flip<PT_Uint16, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Ptr: {
-  if (!Flip<PT_Uint16, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16MemberPtr: {
-  if (!Flip<PT_Uint16, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint16Float: {
-  if (!Flip<PT_Uint16, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Sint8: {
-  if (!Flip<PT_Sint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Uint8: {
-  if (!Flip<PT_Sint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Sint16: {
-  if (!Flip<PT_Sint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Uint16: {
-  if (!Flip<PT_Sint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Sint32: {
-  if (!Flip<PT_Sint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Uint32: {
-  if (!Flip<PT_Sint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Sint64: {
-  if (!Flip<PT_Sint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Uint64: {
-  if (!Flip<PT_Sint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32IntAP: {
-  if (!Flip<PT_Sint32, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32IntAPS: {
-  if (!Flip<PT_Sint32, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Bool: {
-  if (!Flip<PT_Sint32, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32FixedPoint: {
-  if (!Flip<PT_Sint32, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Ptr: {
-  if (!Flip<PT_Sint32, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32MemberPtr: {
-  if (!Flip<PT_Sint32, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint32Float: {
-  if (!Flip<PT_Sint32, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Sint8: {
-  if (!Flip<PT_Uint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Uint8: {
-  if (!Flip<PT_Uint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Sint16: {
-  if (!Flip<PT_Uint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Uint16: {
-  if (!Flip<PT_Uint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Sint32: {
-  if (!Flip<PT_Uint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Uint32: {
-  if (!Flip<PT_Uint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Sint64: {
-  if (!Flip<PT_Uint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Uint64: {
-  if (!Flip<PT_Uint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32IntAP: {
-  if (!Flip<PT_Uint32, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32IntAPS: {
-  if (!Flip<PT_Uint32, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Bool: {
-  if (!Flip<PT_Uint32, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32FixedPoint: {
-  if (!Flip<PT_Uint32, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Ptr: {
-  if (!Flip<PT_Uint32, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32MemberPtr: {
-  if (!Flip<PT_Uint32, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint32Float: {
-  if (!Flip<PT_Uint32, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Sint8: {
-  if (!Flip<PT_Sint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Uint8: {
-  if (!Flip<PT_Sint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Sint16: {
-  if (!Flip<PT_Sint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Uint16: {
-  if (!Flip<PT_Sint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Sint32: {
-  if (!Flip<PT_Sint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Uint32: {
-  if (!Flip<PT_Sint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Sint64: {
-  if (!Flip<PT_Sint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Uint64: {
-  if (!Flip<PT_Sint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64IntAP: {
-  if (!Flip<PT_Sint64, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64IntAPS: {
-  if (!Flip<PT_Sint64, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Bool: {
-  if (!Flip<PT_Sint64, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64FixedPoint: {
-  if (!Flip<PT_Sint64, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Ptr: {
-  if (!Flip<PT_Sint64, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64MemberPtr: {
-  if (!Flip<PT_Sint64, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipSint64Float: {
-  if (!Flip<PT_Sint64, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Sint8: {
-  if (!Flip<PT_Uint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Uint8: {
-  if (!Flip<PT_Uint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Sint16: {
-  if (!Flip<PT_Uint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Uint16: {
-  if (!Flip<PT_Uint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Sint32: {
-  if (!Flip<PT_Uint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Uint32: {
-  if (!Flip<PT_Uint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Sint64: {
-  if (!Flip<PT_Uint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Uint64: {
-  if (!Flip<PT_Uint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64IntAP: {
-  if (!Flip<PT_Uint64, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64IntAPS: {
-  if (!Flip<PT_Uint64, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Bool: {
-  if (!Flip<PT_Uint64, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64FixedPoint: {
-  if (!Flip<PT_Uint64, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Ptr: {
-  if (!Flip<PT_Uint64, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64MemberPtr: {
-  if (!Flip<PT_Uint64, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipUint64Float: {
-  if (!Flip<PT_Uint64, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSint8: {
-  if (!Flip<PT_IntAP, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPUint8: {
-  if (!Flip<PT_IntAP, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSint16: {
-  if (!Flip<PT_IntAP, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPUint16: {
-  if (!Flip<PT_IntAP, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSint32: {
-  if (!Flip<PT_IntAP, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPUint32: {
-  if (!Flip<PT_IntAP, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSint64: {
-  if (!Flip<PT_IntAP, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPUint64: {
-  if (!Flip<PT_IntAP, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPIntAP: {
-  if (!Flip<PT_IntAP, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPIntAPS: {
-  if (!Flip<PT_IntAP, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPBool: {
-  if (!Flip<PT_IntAP, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPFixedPoint: {
-  if (!Flip<PT_IntAP, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPPtr: {
-  if (!Flip<PT_IntAP, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPMemberPtr: {
-  if (!Flip<PT_IntAP, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPFloat: {
-  if (!Flip<PT_IntAP, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSSint8: {
-  if (!Flip<PT_IntAPS, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSUint8: {
-  if (!Flip<PT_IntAPS, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSSint16: {
-  if (!Flip<PT_IntAPS, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSUint16: {
-  if (!Flip<PT_IntAPS, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSSint32: {
-  if (!Flip<PT_IntAPS, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSUint32: {
-  if (!Flip<PT_IntAPS, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSSint64: {
-  if (!Flip<PT_IntAPS, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSUint64: {
-  if (!Flip<PT_IntAPS, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSIntAP: {
-  if (!Flip<PT_IntAPS, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSIntAPS: {
-  if (!Flip<PT_IntAPS, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSBool: {
-  if (!Flip<PT_IntAPS, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSFixedPoint: {
-  if (!Flip<PT_IntAPS, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSPtr: {
-  if (!Flip<PT_IntAPS, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSMemberPtr: {
-  if (!Flip<PT_IntAPS, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipIntAPSFloat: {
-  if (!Flip<PT_IntAPS, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolSint8: {
-  if (!Flip<PT_Bool, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolUint8: {
-  if (!Flip<PT_Bool, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolSint16: {
-  if (!Flip<PT_Bool, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolUint16: {
-  if (!Flip<PT_Bool, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolSint32: {
-  if (!Flip<PT_Bool, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolUint32: {
-  if (!Flip<PT_Bool, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolSint64: {
-  if (!Flip<PT_Bool, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolUint64: {
-  if (!Flip<PT_Bool, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolIntAP: {
-  if (!Flip<PT_Bool, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolIntAPS: {
-  if (!Flip<PT_Bool, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolBool: {
-  if (!Flip<PT_Bool, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolFixedPoint: {
-  if (!Flip<PT_Bool, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolPtr: {
-  if (!Flip<PT_Bool, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolMemberPtr: {
-  if (!Flip<PT_Bool, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipBoolFloat: {
-  if (!Flip<PT_Bool, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointSint8: {
-  if (!Flip<PT_FixedPoint, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointUint8: {
-  if (!Flip<PT_FixedPoint, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointSint16: {
-  if (!Flip<PT_FixedPoint, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointUint16: {
-  if (!Flip<PT_FixedPoint, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointSint32: {
-  if (!Flip<PT_FixedPoint, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointUint32: {
-  if (!Flip<PT_FixedPoint, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointSint64: {
-  if (!Flip<PT_FixedPoint, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointUint64: {
-  if (!Flip<PT_FixedPoint, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointIntAP: {
-  if (!Flip<PT_FixedPoint, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointIntAPS: {
-  if (!Flip<PT_FixedPoint, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointBool: {
-  if (!Flip<PT_FixedPoint, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointFixedPoint: {
-  if (!Flip<PT_FixedPoint, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointPtr: {
-  if (!Flip<PT_FixedPoint, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointMemberPtr: {
-  if (!Flip<PT_FixedPoint, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFixedPointFloat: {
-  if (!Flip<PT_FixedPoint, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrSint8: {
-  if (!Flip<PT_Ptr, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrUint8: {
-  if (!Flip<PT_Ptr, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrSint16: {
-  if (!Flip<PT_Ptr, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrUint16: {
-  if (!Flip<PT_Ptr, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrSint32: {
-  if (!Flip<PT_Ptr, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrUint32: {
-  if (!Flip<PT_Ptr, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrSint64: {
-  if (!Flip<PT_Ptr, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrUint64: {
-  if (!Flip<PT_Ptr, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrIntAP: {
-  if (!Flip<PT_Ptr, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrIntAPS: {
-  if (!Flip<PT_Ptr, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrBool: {
-  if (!Flip<PT_Ptr, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrFixedPoint: {
-  if (!Flip<PT_Ptr, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrPtr: {
-  if (!Flip<PT_Ptr, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrMemberPtr: {
-  if (!Flip<PT_Ptr, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipPtrFloat: {
-  if (!Flip<PT_Ptr, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrSint8: {
-  if (!Flip<PT_MemberPtr, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrUint8: {
-  if (!Flip<PT_MemberPtr, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrSint16: {
-  if (!Flip<PT_MemberPtr, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrUint16: {
-  if (!Flip<PT_MemberPtr, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrSint32: {
-  if (!Flip<PT_MemberPtr, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrUint32: {
-  if (!Flip<PT_MemberPtr, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrSint64: {
-  if (!Flip<PT_MemberPtr, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrUint64: {
-  if (!Flip<PT_MemberPtr, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrIntAP: {
-  if (!Flip<PT_MemberPtr, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrIntAPS: {
-  if (!Flip<PT_MemberPtr, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrBool: {
-  if (!Flip<PT_MemberPtr, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrFixedPoint: {
-  if (!Flip<PT_MemberPtr, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrPtr: {
-  if (!Flip<PT_MemberPtr, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrMemberPtr: {
-  if (!Flip<PT_MemberPtr, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipMemberPtrFloat: {
-  if (!Flip<PT_MemberPtr, PT_Float>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatSint8: {
-  if (!Flip<PT_Float, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatUint8: {
-  if (!Flip<PT_Float, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatSint16: {
-  if (!Flip<PT_Float, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatUint16: {
-  if (!Flip<PT_Float, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatSint32: {
-  if (!Flip<PT_Float, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatUint32: {
-  if (!Flip<PT_Float, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatSint64: {
-  if (!Flip<PT_Float, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatUint64: {
-  if (!Flip<PT_Float, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatIntAP: {
-  if (!Flip<PT_Float, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatIntAPS: {
-  if (!Flip<PT_Float, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatBool: {
-  if (!Flip<PT_Float, PT_Bool>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatFixedPoint: {
-  if (!Flip<PT_Float, PT_FixedPoint>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatPtr: {
-  if (!Flip<PT_Float, PT_Ptr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatMemberPtr: {
-  if (!Flip<PT_Float, PT_MemberPtr>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_FlipFloatFloat: {
-  if (!Flip<PT_Float, PT_Float>(S, OpPC))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_FlipSint8Sint8,
+&Interp_FlipSint8Uint8,
+&Interp_FlipSint8Sint16,
+&Interp_FlipSint8Uint16,
+&Interp_FlipSint8Sint32,
+&Interp_FlipSint8Uint32,
+&Interp_FlipSint8Sint64,
+&Interp_FlipSint8Uint64,
+&Interp_FlipSint8IntAP,
+&Interp_FlipSint8IntAPS,
+&Interp_FlipSint8Bool,
+&Interp_FlipSint8FixedPoint,
+&Interp_FlipSint8Ptr,
+&Interp_FlipSint8MemberPtr,
+&Interp_FlipSint8Float,
+&Interp_FlipUint8Sint8,
+&Interp_FlipUint8Uint8,
+&Interp_FlipUint8Sint16,
+&Interp_FlipUint8Uint16,
+&Interp_FlipUint8Sint32,
+&Interp_FlipUint8Uint32,
+&Interp_FlipUint8Sint64,
+&Interp_FlipUint8Uint64,
+&Interp_FlipUint8IntAP,
+&Interp_FlipUint8IntAPS,
+&Interp_FlipUint8Bool,
+&Interp_FlipUint8FixedPoint,
+&Interp_FlipUint8Ptr,
+&Interp_FlipUint8MemberPtr,
+&Interp_FlipUint8Float,
+&Interp_FlipSint16Sint8,
+&Interp_FlipSint16Uint8,
+&Interp_FlipSint16Sint16,
+&Interp_FlipSint16Uint16,
+&Interp_FlipSint16Sint32,
+&Interp_FlipSint16Uint32,
+&Interp_FlipSint16Sint64,
+&Interp_FlipSint16Uint64,
+&Interp_FlipSint16IntAP,
+&Interp_FlipSint16IntAPS,
+&Interp_FlipSint16Bool,
+&Interp_FlipSint16FixedPoint,
+&Interp_FlipSint16Ptr,
+&Interp_FlipSint16MemberPtr,
+&Interp_FlipSint16Float,
+&Interp_FlipUint16Sint8,
+&Interp_FlipUint16Uint8,
+&Interp_FlipUint16Sint16,
+&Interp_FlipUint16Uint16,
+&Interp_FlipUint16Sint32,
+&Interp_FlipUint16Uint32,
+&Interp_FlipUint16Sint64,
+&Interp_FlipUint16Uint64,
+&Interp_FlipUint16IntAP,
+&Interp_FlipUint16IntAPS,
+&Interp_FlipUint16Bool,
+&Interp_FlipUint16FixedPoint,
+&Interp_FlipUint16Ptr,
+&Interp_FlipUint16MemberPtr,
+&Interp_FlipUint16Float,
+&Interp_FlipSint32Sint8,
+&Interp_FlipSint32Uint8,
+&Interp_FlipSint32Sint16,
+&Interp_FlipSint32Uint16,
+&Interp_FlipSint32Sint32,
+&Interp_FlipSint32Uint32,
+&Interp_FlipSint32Sint64,
+&Interp_FlipSint32Uint64,
+&Interp_FlipSint32IntAP,
+&Interp_FlipSint32IntAPS,
+&Interp_FlipSint32Bool,
+&Interp_FlipSint32FixedPoint,
+&Interp_FlipSint32Ptr,
+&Interp_FlipSint32MemberPtr,
+&Interp_FlipSint32Float,
+&Interp_FlipUint32Sint8,
+&Interp_FlipUint32Uint8,
+&Interp_FlipUint32Sint16,
+&Interp_FlipUint32Uint16,
+&Interp_FlipUint32Sint32,
+&Interp_FlipUint32Uint32,
+&Interp_FlipUint32Sint64,
+&Interp_FlipUint32Uint64,
+&Interp_FlipUint32IntAP,
+&Interp_FlipUint32IntAPS,
+&Interp_FlipUint32Bool,
+&Interp_FlipUint32FixedPoint,
+&Interp_FlipUint32Ptr,
+&Interp_FlipUint32MemberPtr,
+&Interp_FlipUint32Float,
+&Interp_FlipSint64Sint8,
+&Interp_FlipSint64Uint8,
+&Interp_FlipSint64Sint16,
+&Interp_FlipSint64Uint16,
+&Interp_FlipSint64Sint32,
+&Interp_FlipSint64Uint32,
+&Interp_FlipSint64Sint64,
+&Interp_FlipSint64Uint64,
+&Interp_FlipSint64IntAP,
+&Interp_FlipSint64IntAPS,
+&Interp_FlipSint64Bool,
+&Interp_FlipSint64FixedPoint,
+&Interp_FlipSint64Ptr,
+&Interp_FlipSint64MemberPtr,
+&Interp_FlipSint64Float,
+&Interp_FlipUint64Sint8,
+&Interp_FlipUint64Uint8,
+&Interp_FlipUint64Sint16,
+&Interp_FlipUint64Uint16,
+&Interp_FlipUint64Sint32,
+&Interp_FlipUint64Uint32,
+&Interp_FlipUint64Sint64,
+&Interp_FlipUint64Uint64,
+&Interp_FlipUint64IntAP,
+&Interp_FlipUint64IntAPS,
+&Interp_FlipUint64Bool,
+&Interp_FlipUint64FixedPoint,
+&Interp_FlipUint64Ptr,
+&Interp_FlipUint64MemberPtr,
+&Interp_FlipUint64Float,
+&Interp_FlipIntAPSint8,
+&Interp_FlipIntAPUint8,
+&Interp_FlipIntAPSint16,
+&Interp_FlipIntAPUint16,
+&Interp_FlipIntAPSint32,
+&Interp_FlipIntAPUint32,
+&Interp_FlipIntAPSint64,
+&Interp_FlipIntAPUint64,
+&Interp_FlipIntAPIntAP,
+&Interp_FlipIntAPIntAPS,
+&Interp_FlipIntAPBool,
+&Interp_FlipIntAPFixedPoint,
+&Interp_FlipIntAPPtr,
+&Interp_FlipIntAPMemberPtr,
+&Interp_FlipIntAPFloat,
+&Interp_FlipIntAPSSint8,
+&Interp_FlipIntAPSUint8,
+&Interp_FlipIntAPSSint16,
+&Interp_FlipIntAPSUint16,
+&Interp_FlipIntAPSSint32,
+&Interp_FlipIntAPSUint32,
+&Interp_FlipIntAPSSint64,
+&Interp_FlipIntAPSUint64,
+&Interp_FlipIntAPSIntAP,
+&Interp_FlipIntAPSIntAPS,
+&Interp_FlipIntAPSBool,
+&Interp_FlipIntAPSFixedPoint,
+&Interp_FlipIntAPSPtr,
+&Interp_FlipIntAPSMemberPtr,
+&Interp_FlipIntAPSFloat,
+&Interp_FlipBoolSint8,
+&Interp_FlipBoolUint8,
+&Interp_FlipBoolSint16,
+&Interp_FlipBoolUint16,
+&Interp_FlipBoolSint32,
+&Interp_FlipBoolUint32,
+&Interp_FlipBoolSint64,
+&Interp_FlipBoolUint64,
+&Interp_FlipBoolIntAP,
+&Interp_FlipBoolIntAPS,
+&Interp_FlipBoolBool,
+&Interp_FlipBoolFixedPoint,
+&Interp_FlipBoolPtr,
+&Interp_FlipBoolMemberPtr,
+&Interp_FlipBoolFloat,
+&Interp_FlipFixedPointSint8,
+&Interp_FlipFixedPointUint8,
+&Interp_FlipFixedPointSint16,
+&Interp_FlipFixedPointUint16,
+&Interp_FlipFixedPointSint32,
+&Interp_FlipFixedPointUint32,
+&Interp_FlipFixedPointSint64,
+&Interp_FlipFixedPointUint64,
+&Interp_FlipFixedPointIntAP,
+&Interp_FlipFixedPointIntAPS,
+&Interp_FlipFixedPointBool,
+&Interp_FlipFixedPointFixedPoint,
+&Interp_FlipFixedPointPtr,
+&Interp_FlipFixedPointMemberPtr,
+&Interp_FlipFixedPointFloat,
+&Interp_FlipPtrSint8,
+&Interp_FlipPtrUint8,
+&Interp_FlipPtrSint16,
+&Interp_FlipPtrUint16,
+&Interp_FlipPtrSint32,
+&Interp_FlipPtrUint32,
+&Interp_FlipPtrSint64,
+&Interp_FlipPtrUint64,
+&Interp_FlipPtrIntAP,
+&Interp_FlipPtrIntAPS,
+&Interp_FlipPtrBool,
+&Interp_FlipPtrFixedPoint,
+&Interp_FlipPtrPtr,
+&Interp_FlipPtrMemberPtr,
+&Interp_FlipPtrFloat,
+&Interp_FlipMemberPtrSint8,
+&Interp_FlipMemberPtrUint8,
+&Interp_FlipMemberPtrSint16,
+&Interp_FlipMemberPtrUint16,
+&Interp_FlipMemberPtrSint32,
+&Interp_FlipMemberPtrUint32,
+&Interp_FlipMemberPtrSint64,
+&Interp_FlipMemberPtrUint64,
+&Interp_FlipMemberPtrIntAP,
+&Interp_FlipMemberPtrIntAPS,
+&Interp_FlipMemberPtrBool,
+&Interp_FlipMemberPtrFixedPoint,
+&Interp_FlipMemberPtrPtr,
+&Interp_FlipMemberPtrMemberPtr,
+&Interp_FlipMemberPtrFloat,
+&Interp_FlipFloatSint8,
+&Interp_FlipFloatUint8,
+&Interp_FlipFloatSint16,
+&Interp_FlipFloatUint16,
+&Interp_FlipFloatSint32,
+&Interp_FlipFloatUint32,
+&Interp_FlipFloatSint64,
+&Interp_FlipFloatUint64,
+&Interp_FlipFloatIntAP,
+&Interp_FlipFloatIntAPS,
+&Interp_FlipFloatBool,
+&Interp_FlipFloatFixedPoint,
+&Interp_FlipFloatPtr,
+&Interp_FlipFloatMemberPtr,
+&Interp_FlipFloatFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FlipSint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint8Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint8, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint8Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint8, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint16Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint16, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint16Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint16, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint32Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint32, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint32Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint32, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipSint64Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Sint64, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64IntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Bool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64FixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Ptr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64MemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipUint64Float(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Uint64, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAP, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipIntAPSFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_IntAPS, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipBoolFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Bool, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFixedPointFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_FixedPoint, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipPtrFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Ptr, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipMemberPtrFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_MemberPtr, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatSint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatUint8(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatSint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatUint16(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatSint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatUint32(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatSint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatUint64(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatIntAP(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatBool(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Bool>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_FixedPoint>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Ptr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_MemberPtr>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_FlipFloatFloat(InterpState &S, CodePtr &PC) {
+  if (!Flip<PT_Float, PT_Float>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -18118,11 +23896,19 @@ bool EvalEmitter::emitFlipFloatFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_FnPtrCast,
 #endif
-#ifdef GET_INTERP
-case OP_FnPtrCast: {
-  if (!FnPtrCast(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_FnPtrCast,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_FnPtrCast(InterpState &S, CodePtr &PC) {
+  if (!FnPtrCast(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -18148,13 +23934,24 @@ bool EvalEmitter::emitFnPtrCast(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Free,
 #endif
-#ifdef GET_INTERP
-case OP_Free: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!Free(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Free,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Free(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!Free(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -18195,76 +23992,162 @@ OP_GEFixedPoint,
 OP_GEPtr,
 OP_GEFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GESint8: {
-  if (!GE<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_GESint8,
+&Interp_GEUint8,
+&Interp_GESint16,
+&Interp_GEUint16,
+&Interp_GESint32,
+&Interp_GEUint32,
+&Interp_GESint64,
+&Interp_GEUint64,
+&Interp_GEIntAP,
+&Interp_GEIntAPS,
+&Interp_GEBool,
+&Interp_GEFixedPoint,
+&Interp_GEPtr,
+&Interp_GEFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GESint8(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEUint8: {
-  if (!GE<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEUint8(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GESint16: {
-  if (!GE<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GESint16(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEUint16: {
-  if (!GE<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEUint16(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GESint32: {
-  if (!GE<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GESint32(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEUint32: {
-  if (!GE<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEUint32(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GESint64: {
-  if (!GE<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GESint64(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEUint64: {
-  if (!GE<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEUint64(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEIntAP: {
-  if (!GE<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEIntAP(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEIntAPS: {
-  if (!GE<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEIntAPS(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEBool: {
-  if (!GE<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEBool(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEFixedPoint: {
-  if (!GE<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEPtr: {
-  if (!GE<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEPtr(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GEFloat: {
-  if (!GE<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GEFloat(InterpState &S, CodePtr &PC) {
+  if (!GE<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -18504,76 +24387,162 @@ OP_GTFixedPoint,
 OP_GTPtr,
 OP_GTFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GTSint8: {
-  if (!GT<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_GTSint8,
+&Interp_GTUint8,
+&Interp_GTSint16,
+&Interp_GTUint16,
+&Interp_GTSint32,
+&Interp_GTUint32,
+&Interp_GTSint64,
+&Interp_GTUint64,
+&Interp_GTIntAP,
+&Interp_GTIntAPS,
+&Interp_GTBool,
+&Interp_GTFixedPoint,
+&Interp_GTPtr,
+&Interp_GTFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GTSint8(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTUint8: {
-  if (!GT<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTUint8(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTSint16: {
-  if (!GT<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTSint16(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTUint16: {
-  if (!GT<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTUint16(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTSint32: {
-  if (!GT<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTSint32(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTUint32: {
-  if (!GT<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTUint32(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTSint64: {
-  if (!GT<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTSint64(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTUint64: {
-  if (!GT<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTUint64(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTIntAP: {
-  if (!GT<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTIntAP(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTIntAPS: {
-  if (!GT<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTIntAPS(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTBool: {
-  if (!GT<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTBool(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTFixedPoint: {
-  if (!GT<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTPtr: {
-  if (!GT<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTPtr(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GTFloat: {
-  if (!GT<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_GTFloat(InterpState &S, CodePtr &PC) {
+  if (!GT<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -18814,96 +24783,233 @@ OP_GetFieldPtr,
 OP_GetFieldMemberPtr,
 OP_GetFieldFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetFieldSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetFieldSint8,
+&Interp_GetFieldUint8,
+&Interp_GetFieldSint16,
+&Interp_GetFieldUint16,
+&Interp_GetFieldSint32,
+&Interp_GetFieldUint32,
+&Interp_GetFieldSint64,
+&Interp_GetFieldUint64,
+&Interp_GetFieldIntAP,
+&Interp_GetFieldIntAPS,
+&Interp_GetFieldBool,
+&Interp_GetFieldFixedPoint,
+&Interp_GetFieldPtr,
+&Interp_GetFieldMemberPtr,
+&Interp_GetFieldFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetField<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetField<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -19172,96 +25278,233 @@ OP_GetFieldPopPtr,
 OP_GetFieldPopMemberPtr,
 OP_GetFieldPopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetFieldPopSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetFieldPopSint8,
+&Interp_GetFieldPopUint8,
+&Interp_GetFieldPopSint16,
+&Interp_GetFieldPopUint16,
+&Interp_GetFieldPopSint32,
+&Interp_GetFieldPopUint32,
+&Interp_GetFieldPopSint64,
+&Interp_GetFieldPopUint64,
+&Interp_GetFieldPopIntAP,
+&Interp_GetFieldPopIntAPS,
+&Interp_GetFieldPopBool,
+&Interp_GetFieldPopFixedPoint,
+&Interp_GetFieldPopPtr,
+&Interp_GetFieldPopMemberPtr,
+&Interp_GetFieldPopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetFieldPopSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetFieldPopFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetFieldPop<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetFieldPopFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetFieldPop<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -19516,12 +25759,23 @@ bool EvalEmitter::emitGetFieldPopFloat( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetFnPtr,
 #endif
-#ifdef GET_INTERP
-case OP_GetFnPtr: {
-  const auto V0 = ReadArg<const Function *>(S, PC);
-  if (!GetFnPtr(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetFnPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetFnPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Function *>(S, PC);
+    if (!GetFnPtr(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -19562,96 +25816,233 @@ OP_GetGlobalPtr,
 OP_GetGlobalMemberPtr,
 OP_GetGlobalFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetGlobalSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetGlobalSint8,
+&Interp_GetGlobalUint8,
+&Interp_GetGlobalSint16,
+&Interp_GetGlobalUint16,
+&Interp_GetGlobalSint32,
+&Interp_GetGlobalUint32,
+&Interp_GetGlobalSint64,
+&Interp_GetGlobalUint64,
+&Interp_GetGlobalIntAP,
+&Interp_GetGlobalIntAPS,
+&Interp_GetGlobalBool,
+&Interp_GetGlobalFixedPoint,
+&Interp_GetGlobalPtr,
+&Interp_GetGlobalMemberPtr,
+&Interp_GetGlobalFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetGlobalSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobal<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobal<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -19920,96 +26311,233 @@ OP_GetGlobalUncheckedPtr,
 OP_GetGlobalUncheckedMemberPtr,
 OP_GetGlobalUncheckedFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetGlobalUncheckedSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetGlobalUncheckedSint8,
+&Interp_GetGlobalUncheckedUint8,
+&Interp_GetGlobalUncheckedSint16,
+&Interp_GetGlobalUncheckedUint16,
+&Interp_GetGlobalUncheckedSint32,
+&Interp_GetGlobalUncheckedUint32,
+&Interp_GetGlobalUncheckedSint64,
+&Interp_GetGlobalUncheckedUint64,
+&Interp_GetGlobalUncheckedIntAP,
+&Interp_GetGlobalUncheckedIntAPS,
+&Interp_GetGlobalUncheckedBool,
+&Interp_GetGlobalUncheckedFixedPoint,
+&Interp_GetGlobalUncheckedPtr,
+&Interp_GetGlobalUncheckedMemberPtr,
+&Interp_GetGlobalUncheckedFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetGlobalUncheckedFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetGlobalUnchecked<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetGlobalUncheckedFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetGlobalUnchecked<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -20275,78 +26803,188 @@ OP_GetIntPtrIntAPS,
 OP_GetIntPtrBool,
 OP_GetIntPtrFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_GetIntPtrSint8: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetIntPtrSint8,
+&Interp_GetIntPtrUint8,
+&Interp_GetIntPtrSint16,
+&Interp_GetIntPtrUint16,
+&Interp_GetIntPtrSint32,
+&Interp_GetIntPtrUint32,
+&Interp_GetIntPtrSint64,
+&Interp_GetIntPtrUint64,
+&Interp_GetIntPtrIntAP,
+&Interp_GetIntPtrIntAPS,
+&Interp_GetIntPtrBool,
+&Interp_GetIntPtrFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetIntPtrSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrUint8: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrSint16: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrUint16: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrSint32: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrUint32: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrSint64: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrUint64: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrIntAP: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrIntAPS: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrBool: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetIntPtrFixedPoint: {
-  const auto V0 = ReadArg<const Descriptor *>(S, PC);
-  if (!GetIntPtr<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetIntPtrFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Descriptor *>(S, PC);
+    if (!GetIntPtr<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -20571,96 +27209,233 @@ OP_GetLocalPtr,
 OP_GetLocalMemberPtr,
 OP_GetLocalFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetLocalSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetLocalSint8,
+&Interp_GetLocalUint8,
+&Interp_GetLocalSint16,
+&Interp_GetLocalUint16,
+&Interp_GetLocalSint32,
+&Interp_GetLocalUint32,
+&Interp_GetLocalSint64,
+&Interp_GetLocalUint64,
+&Interp_GetLocalIntAP,
+&Interp_GetLocalIntAPS,
+&Interp_GetLocalBool,
+&Interp_GetLocalFixedPoint,
+&Interp_GetLocalPtr,
+&Interp_GetLocalMemberPtr,
+&Interp_GetLocalFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetLocalSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetLocalFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocal<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetLocalFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocal<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -20917,12 +27692,23 @@ bool ByteCodeEmitter::emitGetLocalFloat( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetLocalEnabled,
 #endif
-#ifdef GET_INTERP
-case OP_GetLocalEnabled: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetLocalEnabled(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetLocalEnabled,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetLocalEnabled(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetLocalEnabled(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -20942,12 +27728,23 @@ bool ByteCodeEmitter::emitGetLocalEnabled( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_GetMemberPtr: {
-  const auto V0 = ReadArg<const ValueDecl*>(S, PC);
-  if (!GetMemberPtr(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const ValueDecl*>(S, PC);
+    if (!GetMemberPtr(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -20974,11 +27771,19 @@ bool EvalEmitter::emitGetMemberPtr( const ValueDecl* A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetMemberPtrBase,
 #endif
-#ifdef GET_INTERP
-case OP_GetMemberPtrBase: {
-  if (!GetMemberPtrBase(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_GetMemberPtrBase,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetMemberPtrBase(InterpState &S, CodePtr &PC) {
+  if (!GetMemberPtrBase(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21002,45 +27807,21 @@ bool EvalEmitter::emitGetMemberPtrBase(SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
-OP_GetMemberPtrBasePop,
-#endif
-#ifdef GET_INTERP
-case OP_GetMemberPtrBasePop: {
-  const auto V0 = ReadArg<int32_t>(S, PC);
-  if (!GetMemberPtrBasePop(S, OpPC, V0))
-    return false;
-  continue;
-}
-#endif
-#ifdef GET_DISASM
-case OP_GetMemberPtrBasePop:
-  Text.Op = PrintName("GetMemberPtrBasePop");
-  Text.Args.push_back(printArg<int32_t>(P, PC));
-  break;
-#endif
-#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
-bool emitGetMemberPtrBasePop( int32_t , SourceInfo);
-#endif
-#ifdef GET_LINK_IMPL
-bool ByteCodeEmitter::emitGetMemberPtrBasePop( int32_t A0, SourceInfo L) {
-  return emitOp<int32_t>(OP_GetMemberPtrBasePop, A0, L);
-}
-#endif
-#ifdef GET_EVAL_IMPL
-bool EvalEmitter::emitGetMemberPtrBasePop( int32_t A0, SourceInfo L) {
-  if (!isActive()) return true;
-  CurrentSource = L;
-  return GetMemberPtrBasePop(S, OpPC, A0);
-}
-#endif
-#ifdef GET_OPCODE_NAMES
 OP_GetMemberPtrDecl,
 #endif
-#ifdef GET_INTERP
-case OP_GetMemberPtrDecl: {
-  if (!GetMemberPtrDecl(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_GetMemberPtrDecl,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetMemberPtrDecl(InterpState &S, CodePtr &PC) {
+  if (!GetMemberPtrDecl(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21080,96 +27861,233 @@ OP_GetParamPtr,
 OP_GetParamMemberPtr,
 OP_GetParamFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetParamSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetParamSint8,
+&Interp_GetParamUint8,
+&Interp_GetParamSint16,
+&Interp_GetParamUint16,
+&Interp_GetParamSint32,
+&Interp_GetParamUint32,
+&Interp_GetParamSint64,
+&Interp_GetParamUint64,
+&Interp_GetParamIntAP,
+&Interp_GetParamIntAPS,
+&Interp_GetParamBool,
+&Interp_GetParamFixedPoint,
+&Interp_GetParamPtr,
+&Interp_GetParamMemberPtr,
+&Interp_GetParamFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetParamSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetParamFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetParam<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetParamFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetParam<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21424,12 +28342,23 @@ bool EvalEmitter::emitGetParamFloat( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrBase,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrBase: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrBase(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrBase,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrBase(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrBase(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21456,13 +28385,24 @@ bool EvalEmitter::emitGetPtrBase( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrBasePop,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrBasePop: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!GetPtrBasePop(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrBasePop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrBasePop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!GetPtrBasePop(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21490,14 +28430,25 @@ bool EvalEmitter::emitGetPtrBasePop( uint32_t A0,  bool A1, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrDerivedPop,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrDerivedPop: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  const auto V2 = ReadArg<const Type *>(S, PC);
-  if (!GetPtrDerivedPop(S, OpPC, V0, V1, V2))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrDerivedPop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrDerivedPop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    const auto V2 = ReadArg<const Type *>(S, PC);
+    if (!GetPtrDerivedPop(S, OpPC, V0, V1, V2))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21526,12 +28477,23 @@ bool EvalEmitter::emitGetPtrDerivedPop( uint32_t A0,  bool A1,  const Type * A2,
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrField,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrField: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrField(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrField,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrField(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrField(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21558,12 +28520,23 @@ bool EvalEmitter::emitGetPtrField( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrFieldPop,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrFieldPop: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrFieldPop(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrFieldPop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrFieldPop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrFieldPop(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21590,12 +28563,23 @@ bool EvalEmitter::emitGetPtrFieldPop( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrGlobal,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrGlobal: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrGlobal(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrGlobal,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrGlobal(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrGlobal(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21622,12 +28606,23 @@ bool EvalEmitter::emitGetPtrGlobal( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrLocal,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrLocal: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrLocal(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrLocal,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrLocal(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrLocal(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21647,12 +28642,23 @@ bool ByteCodeEmitter::emitGetPtrLocal( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrParam,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrParam: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrParam(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrParam,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrParam(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrParam(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21679,12 +28685,23 @@ bool EvalEmitter::emitGetPtrParam( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrThisBase,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrThisBase: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrThisBase(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrThisBase,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrThisBase(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrThisBase(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21711,12 +28728,23 @@ bool EvalEmitter::emitGetPtrThisBase( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrThisField,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrThisField: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetPtrThisField(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrThisField,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrThisField(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetPtrThisField(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21743,12 +28771,23 @@ bool EvalEmitter::emitGetPtrThisField( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrThisVirtBase,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrThisVirtBase: {
-  const auto V0 = ReadArg<const RecordDecl *>(S, PC);
-  if (!GetPtrThisVirtBase(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrThisVirtBase,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrThisVirtBase(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const RecordDecl *>(S, PC);
+    if (!GetPtrThisVirtBase(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21775,12 +28814,23 @@ bool EvalEmitter::emitGetPtrThisVirtBase( const RecordDecl * A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetPtrVirtBasePop,
 #endif
-#ifdef GET_INTERP
-case OP_GetPtrVirtBasePop: {
-  const auto V0 = ReadArg<const RecordDecl *>(S, PC);
-  if (!GetPtrVirtBasePop(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetPtrVirtBasePop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetPtrVirtBasePop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const RecordDecl *>(S, PC);
+    if (!GetPtrVirtBasePop(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -21821,96 +28871,233 @@ OP_GetThisFieldPtr,
 OP_GetThisFieldMemberPtr,
 OP_GetThisFieldFloat,
 #endif
-#ifdef GET_INTERP
-case OP_GetThisFieldSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetThisFieldSint8,
+&Interp_GetThisFieldUint8,
+&Interp_GetThisFieldSint16,
+&Interp_GetThisFieldUint16,
+&Interp_GetThisFieldSint32,
+&Interp_GetThisFieldUint32,
+&Interp_GetThisFieldSint64,
+&Interp_GetThisFieldUint64,
+&Interp_GetThisFieldIntAP,
+&Interp_GetThisFieldIntAPS,
+&Interp_GetThisFieldBool,
+&Interp_GetThisFieldFixedPoint,
+&Interp_GetThisFieldPtr,
+&Interp_GetThisFieldMemberPtr,
+&Interp_GetThisFieldFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetThisFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_GetThisFieldFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!GetThisField<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_GetThisFieldFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!GetThisField<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -22165,13 +29352,24 @@ bool EvalEmitter::emitGetThisFieldFloat( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_GetTypeid,
 #endif
-#ifdef GET_INTERP
-case OP_GetTypeid: {
-  const auto V0 = ReadArg<const Type *>(S, PC);
-  const auto V1 = ReadArg<const Type *>(S, PC);
-  if (!GetTypeid(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetTypeid,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetTypeid(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Type *>(S, PC);
+    const auto V1 = ReadArg<const Type *>(S, PC);
+    if (!GetTypeid(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -22199,12 +29397,23 @@ bool EvalEmitter::emitGetTypeid( const Type * A0,  const Type * A1, SourceInfo L
 #ifdef GET_OPCODE_NAMES
 OP_GetTypeidPtr,
 #endif
-#ifdef GET_INTERP
-case OP_GetTypeidPtr: {
-  const auto V0 = ReadArg<const Type *>(S, PC);
-  if (!GetTypeidPtr(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_GetTypeidPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_GetTypeidPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Type *>(S, PC);
+    if (!GetTypeidPtr(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -22242,78 +29451,188 @@ OP_IncIntAPS,
 OP_IncBool,
 OP_IncFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_IncSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_IncSint8,
+&Interp_IncUint8,
+&Interp_IncSint16,
+&Interp_IncUint16,
+&Interp_IncSint32,
+&Interp_IncUint32,
+&Interp_IncSint64,
+&Interp_IncUint64,
+&Interp_IncIntAP,
+&Interp_IncIntAPS,
+&Interp_IncBool,
+&Interp_IncFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IncSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!Inc<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!Inc<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -22535,90 +29854,200 @@ OP_IncBitfieldIntAPS,
 OP_IncBitfieldBool,
 OP_IncBitfieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_IncBitfieldSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_IncBitfieldSint8,
+&Interp_IncBitfieldUint8,
+&Interp_IncBitfieldSint16,
+&Interp_IncBitfieldUint16,
+&Interp_IncBitfieldSint32,
+&Interp_IncBitfieldUint32,
+&Interp_IncBitfieldSint64,
+&Interp_IncBitfieldUint64,
+&Interp_IncBitfieldIntAP,
+&Interp_IncBitfieldIntAPS,
+&Interp_IncBitfieldBool,
+&Interp_IncBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IncBitfieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncBitfieldFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncBitfieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -22852,78 +30281,188 @@ OP_IncPopIntAPS,
 OP_IncPopBool,
 OP_IncPopFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_IncPopSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_IncPopSint8,
+&Interp_IncPopUint8,
+&Interp_IncPopSint16,
+&Interp_IncPopUint16,
+&Interp_IncPopSint32,
+&Interp_IncPopUint32,
+&Interp_IncPopSint64,
+&Interp_IncPopUint64,
+&Interp_IncPopIntAP,
+&Interp_IncPopIntAPS,
+&Interp_IncPopBool,
+&Interp_IncPopFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IncPopSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!IncPop<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!IncPop<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -23145,90 +30684,200 @@ OP_IncPopBitfieldIntAPS,
 OP_IncPopBitfieldBool,
 OP_IncPopBitfieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_IncPopBitfieldSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_IncPopBitfieldSint8,
+&Interp_IncPopBitfieldUint8,
+&Interp_IncPopBitfieldSint16,
+&Interp_IncPopBitfieldUint16,
+&Interp_IncPopBitfieldSint32,
+&Interp_IncPopBitfieldUint32,
+&Interp_IncPopBitfieldSint64,
+&Interp_IncPopBitfieldUint64,
+&Interp_IncPopBitfieldIntAP,
+&Interp_IncPopBitfieldIntAPS,
+&Interp_IncPopBitfieldBool,
+&Interp_IncPopBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IncPopBitfieldFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!IncPopBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_IncPopBitfieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!IncPopBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -23451,11 +31100,19 @@ bool EvalEmitter::emitIncPopBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInf
 #ifdef GET_OPCODE_NAMES
 OP_IncPtr,
 #endif
-#ifdef GET_INTERP
-case OP_IncPtr: {
-  if (!IncPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_IncPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IncPtr(InterpState &S, CodePtr &PC) {
+  if (!IncPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -23481,12 +31138,23 @@ bool EvalEmitter::emitIncPtr(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Incf,
 #endif
-#ifdef GET_INTERP
-case OP_Incf: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Incf(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Incf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Incf(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Incf(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -23513,12 +31181,23 @@ bool EvalEmitter::emitIncf( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_IncfPop,
 #endif
-#ifdef GET_INTERP
-case OP_IncfPop: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!IncfPop(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_IncfPop,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IncfPop(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!IncfPop(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -23559,81 +31238,173 @@ OP_InitPtr,
 OP_InitMemberPtr,
 OP_InitFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitSint8: {
-  if (!Init<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_InitSint8,
+&Interp_InitUint8,
+&Interp_InitSint16,
+&Interp_InitUint16,
+&Interp_InitSint32,
+&Interp_InitUint32,
+&Interp_InitSint64,
+&Interp_InitUint64,
+&Interp_InitIntAP,
+&Interp_InitIntAPS,
+&Interp_InitBool,
+&Interp_InitFixedPoint,
+&Interp_InitPtr,
+&Interp_InitMemberPtr,
+&Interp_InitFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitSint8(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitUint8: {
-  if (!Init<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitUint8(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitSint16: {
-  if (!Init<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitSint16(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitUint16: {
-  if (!Init<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitUint16(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitSint32: {
-  if (!Init<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitSint32(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitUint32: {
-  if (!Init<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitUint32(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitSint64: {
-  if (!Init<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitSint64(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitUint64: {
-  if (!Init<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitUint64(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitIntAP: {
-  if (!Init<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitIntAP(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitIntAPS: {
-  if (!Init<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBool: {
-  if (!Init<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitBool(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFixedPoint: {
-  if (!Init<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPtr: {
-  if (!Init<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPtr(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitMemberPtr: {
-  if (!Init<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFloat: {
-  if (!Init<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitFloat(InterpState &S, CodePtr &PC) {
+  if (!Init<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -23883,72 +31654,173 @@ OP_InitBitFieldIntAP,
 OP_InitBitFieldIntAPS,
 OP_InitBitFieldBool,
 #endif
-#ifdef GET_INTERP
-case OP_InitBitFieldSint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitBitFieldSint8,
+&Interp_InitBitFieldUint8,
+&Interp_InitBitFieldSint16,
+&Interp_InitBitFieldUint16,
+&Interp_InitBitFieldSint32,
+&Interp_InitBitFieldUint32,
+&Interp_InitBitFieldSint64,
+&Interp_InitBitFieldUint64,
+&Interp_InitBitFieldIntAP,
+&Interp_InitBitFieldIntAPS,
+&Interp_InitBitFieldBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitBitFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldUint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldSint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldUint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldSint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldUint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldSint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldUint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldIntAP: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldIntAPS: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldBool: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -24154,72 +32026,173 @@ OP_InitBitFieldActivateIntAP,
 OP_InitBitFieldActivateIntAPS,
 OP_InitBitFieldActivateBool,
 #endif
-#ifdef GET_INTERP
-case OP_InitBitFieldActivateSint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitBitFieldActivateSint8,
+&Interp_InitBitFieldActivateUint8,
+&Interp_InitBitFieldActivateSint16,
+&Interp_InitBitFieldActivateUint16,
+&Interp_InitBitFieldActivateSint32,
+&Interp_InitBitFieldActivateUint32,
+&Interp_InitBitFieldActivateSint64,
+&Interp_InitBitFieldActivateUint64,
+&Interp_InitBitFieldActivateIntAP,
+&Interp_InitBitFieldActivateIntAPS,
+&Interp_InitBitFieldActivateBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateUint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateSint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateUint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateSint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateUint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateSint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateUint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateIntAP: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateIntAPS: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitBitFieldActivateBool: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  if (!InitBitFieldActivate<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitBitFieldActivateBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    if (!InitBitFieldActivate<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -24429,96 +32402,233 @@ OP_InitElemPtr,
 OP_InitElemMemberPtr,
 OP_InitElemFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitElemSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitElemSint8,
+&Interp_InitElemUint8,
+&Interp_InitElemSint16,
+&Interp_InitElemUint16,
+&Interp_InitElemSint32,
+&Interp_InitElemUint32,
+&Interp_InitElemSint64,
+&Interp_InitElemUint64,
+&Interp_InitElemIntAP,
+&Interp_InitElemIntAPS,
+&Interp_InitElemBool,
+&Interp_InitElemFixedPoint,
+&Interp_InitElemPtr,
+&Interp_InitElemMemberPtr,
+&Interp_InitElemFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitElemSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElem<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElem<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -24787,96 +32897,233 @@ OP_InitElemPopPtr,
 OP_InitElemPopMemberPtr,
 OP_InitElemPopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitElemPopSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitElemPopSint8,
+&Interp_InitElemPopUint8,
+&Interp_InitElemPopSint16,
+&Interp_InitElemPopUint16,
+&Interp_InitElemPopSint32,
+&Interp_InitElemPopUint32,
+&Interp_InitElemPopSint64,
+&Interp_InitElemPopUint64,
+&Interp_InitElemPopIntAP,
+&Interp_InitElemPopIntAPS,
+&Interp_InitElemPopBool,
+&Interp_InitElemPopFixedPoint,
+&Interp_InitElemPopPtr,
+&Interp_InitElemPopMemberPtr,
+&Interp_InitElemPopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitElemPopSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitElemPopFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitElemPop<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitElemPopFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitElemPop<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -25145,96 +33392,233 @@ OP_InitFieldPtr,
 OP_InitFieldMemberPtr,
 OP_InitFieldFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitFieldSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitFieldSint8,
+&Interp_InitFieldUint8,
+&Interp_InitFieldSint16,
+&Interp_InitFieldUint16,
+&Interp_InitFieldSint32,
+&Interp_InitFieldUint32,
+&Interp_InitFieldSint64,
+&Interp_InitFieldUint64,
+&Interp_InitFieldIntAP,
+&Interp_InitFieldIntAPS,
+&Interp_InitFieldBool,
+&Interp_InitFieldFixedPoint,
+&Interp_InitFieldPtr,
+&Interp_InitFieldMemberPtr,
+&Interp_InitFieldFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitField<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitField<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -25503,96 +33887,233 @@ OP_InitFieldActivatePtr,
 OP_InitFieldActivateMemberPtr,
 OP_InitFieldActivateFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitFieldActivateSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitFieldActivateSint8,
+&Interp_InitFieldActivateUint8,
+&Interp_InitFieldActivateSint16,
+&Interp_InitFieldActivateUint16,
+&Interp_InitFieldActivateSint32,
+&Interp_InitFieldActivateUint32,
+&Interp_InitFieldActivateSint64,
+&Interp_InitFieldActivateUint64,
+&Interp_InitFieldActivateIntAP,
+&Interp_InitFieldActivateIntAPS,
+&Interp_InitFieldActivateBool,
+&Interp_InitFieldActivateFixedPoint,
+&Interp_InitFieldActivatePtr,
+&Interp_InitFieldActivateMemberPtr,
+&Interp_InitFieldActivateFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitFieldActivateSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivatePtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivatePtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitFieldActivateFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitFieldActivate<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitFieldActivateFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitFieldActivate<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -25861,96 +34382,233 @@ OP_InitGlobalPtr,
 OP_InitGlobalMemberPtr,
 OP_InitGlobalFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitGlobalSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitGlobalSint8,
+&Interp_InitGlobalUint8,
+&Interp_InitGlobalSint16,
+&Interp_InitGlobalUint16,
+&Interp_InitGlobalSint32,
+&Interp_InitGlobalUint32,
+&Interp_InitGlobalSint64,
+&Interp_InitGlobalUint64,
+&Interp_InitGlobalIntAP,
+&Interp_InitGlobalIntAPS,
+&Interp_InitGlobalBool,
+&Interp_InitGlobalFixedPoint,
+&Interp_InitGlobalPtr,
+&Interp_InitGlobalMemberPtr,
+&Interp_InitGlobalFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitGlobalSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitGlobal<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitGlobal<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -26219,111 +34877,248 @@ OP_InitGlobalTempPtr,
 OP_InitGlobalTempMemberPtr,
 OP_InitGlobalTempFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitGlobalTempSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitGlobalTempSint8,
+&Interp_InitGlobalTempUint8,
+&Interp_InitGlobalTempSint16,
+&Interp_InitGlobalTempUint16,
+&Interp_InitGlobalTempSint32,
+&Interp_InitGlobalTempUint32,
+&Interp_InitGlobalTempSint64,
+&Interp_InitGlobalTempUint64,
+&Interp_InitGlobalTempIntAP,
+&Interp_InitGlobalTempIntAPS,
+&Interp_InitGlobalTempBool,
+&Interp_InitGlobalTempFixedPoint,
+&Interp_InitGlobalTempPtr,
+&Interp_InitGlobalTempMemberPtr,
+&Interp_InitGlobalTempFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitGlobalTempSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Ptr>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Ptr>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_MemberPtr>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_MemberPtr>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitGlobalTempFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTemp<PT_Float>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitGlobalTempFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    const auto V1 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTemp<PT_Float>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -26593,12 +35388,23 @@ bool EvalEmitter::emitInitGlobalTempFloat( uint32_t A0,  const LifetimeExtendedT
 #ifdef GET_OPCODE_NAMES
 OP_InitGlobalTempComp,
 #endif
-#ifdef GET_INTERP
-case OP_InitGlobalTempComp: {
-  const auto V0 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
-  if (!InitGlobalTempComp(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitGlobalTempComp,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitGlobalTempComp(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const LifetimeExtendedTemporaryDecl *>(S, PC);
+    if (!InitGlobalTempComp(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -26639,81 +35445,173 @@ OP_InitPopPtr,
 OP_InitPopMemberPtr,
 OP_InitPopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitPopSint8: {
-  if (!InitPop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_InitPopSint8,
+&Interp_InitPopUint8,
+&Interp_InitPopSint16,
+&Interp_InitPopUint16,
+&Interp_InitPopSint32,
+&Interp_InitPopUint32,
+&Interp_InitPopSint64,
+&Interp_InitPopUint64,
+&Interp_InitPopIntAP,
+&Interp_InitPopIntAPS,
+&Interp_InitPopBool,
+&Interp_InitPopFixedPoint,
+&Interp_InitPopPtr,
+&Interp_InitPopMemberPtr,
+&Interp_InitPopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitPopSint8(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopUint8: {
-  if (!InitPop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopUint8(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopSint16: {
-  if (!InitPop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopSint16(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopUint16: {
-  if (!InitPop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopUint16(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopSint32: {
-  if (!InitPop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopSint32(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopUint32: {
-  if (!InitPop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopUint32(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopSint64: {
-  if (!InitPop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopSint64(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopUint64: {
-  if (!InitPop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopUint64(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopIntAP: {
-  if (!InitPop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopIntAP(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopIntAPS: {
-  if (!InitPop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopBool: {
-  if (!InitPop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopBool(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopFixedPoint: {
-  if (!InitPop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopPtr: {
-  if (!InitPop<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopPtr(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopMemberPtr: {
-  if (!InitPop<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitPopFloat: {
-  if (!InitPop<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_InitPopFloat(InterpState &S, CodePtr &PC) {
+  if (!InitPop<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -26953,12 +35851,23 @@ bool EvalEmitter::emitInitPopFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_InitScope,
 #endif
-#ifdef GET_INTERP
-case OP_InitScope: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitScope(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitScope,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitScope(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitScope(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -26996,90 +35905,200 @@ OP_InitThisBitFieldIntAPS,
 OP_InitThisBitFieldBool,
 OP_InitThisBitFieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_InitThisBitFieldSint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitThisBitFieldSint8,
+&Interp_InitThisBitFieldUint8,
+&Interp_InitThisBitFieldSint16,
+&Interp_InitThisBitFieldUint16,
+&Interp_InitThisBitFieldSint32,
+&Interp_InitThisBitFieldUint32,
+&Interp_InitThisBitFieldSint64,
+&Interp_InitThisBitFieldUint64,
+&Interp_InitThisBitFieldIntAP,
+&Interp_InitThisBitFieldIntAPS,
+&Interp_InitThisBitFieldBool,
+&Interp_InitThisBitFieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldUint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldSint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldUint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldSint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldUint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldSint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldUint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldIntAP: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldIntAPS: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldBool: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldFixedPoint: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitField<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitField<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -27313,90 +36332,200 @@ OP_InitThisBitFieldActivateIntAPS,
 OP_InitThisBitFieldActivateBool,
 OP_InitThisBitFieldActivateFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_InitThisBitFieldActivateSint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitThisBitFieldActivateSint8,
+&Interp_InitThisBitFieldActivateUint8,
+&Interp_InitThisBitFieldActivateSint16,
+&Interp_InitThisBitFieldActivateUint16,
+&Interp_InitThisBitFieldActivateSint32,
+&Interp_InitThisBitFieldActivateUint32,
+&Interp_InitThisBitFieldActivateSint64,
+&Interp_InitThisBitFieldActivateUint64,
+&Interp_InitThisBitFieldActivateIntAP,
+&Interp_InitThisBitFieldActivateIntAPS,
+&Interp_InitThisBitFieldActivateBool,
+&Interp_InitThisBitFieldActivateFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateUint8: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateSint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateUint16: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateSint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateUint32: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateSint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateUint64: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateIntAP: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateIntAPS: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateBool: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisBitFieldActivateFixedPoint: {
-  const auto V0 = ReadArg<const Record::Field *>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisBitFieldActivate<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisBitFieldActivateFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Record::Field *>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisBitFieldActivate<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -27633,96 +36762,233 @@ OP_InitThisFieldPtr,
 OP_InitThisFieldMemberPtr,
 OP_InitThisFieldFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitThisFieldSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitThisFieldSint8,
+&Interp_InitThisFieldUint8,
+&Interp_InitThisFieldSint16,
+&Interp_InitThisFieldUint16,
+&Interp_InitThisFieldSint32,
+&Interp_InitThisFieldUint32,
+&Interp_InitThisFieldSint64,
+&Interp_InitThisFieldUint64,
+&Interp_InitThisFieldIntAP,
+&Interp_InitThisFieldIntAPS,
+&Interp_InitThisFieldBool,
+&Interp_InitThisFieldFixedPoint,
+&Interp_InitThisFieldPtr,
+&Interp_InitThisFieldMemberPtr,
+&Interp_InitThisFieldFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitThisFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisField<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisField<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -27991,96 +37257,233 @@ OP_InitThisFieldActivatePtr,
 OP_InitThisFieldActivateMemberPtr,
 OP_InitThisFieldActivateFloat,
 #endif
-#ifdef GET_INTERP
-case OP_InitThisFieldActivateSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InitThisFieldActivateSint8,
+&Interp_InitThisFieldActivateUint8,
+&Interp_InitThisFieldActivateSint16,
+&Interp_InitThisFieldActivateUint16,
+&Interp_InitThisFieldActivateSint32,
+&Interp_InitThisFieldActivateUint32,
+&Interp_InitThisFieldActivateSint64,
+&Interp_InitThisFieldActivateUint64,
+&Interp_InitThisFieldActivateIntAP,
+&Interp_InitThisFieldActivateIntAPS,
+&Interp_InitThisFieldActivateBool,
+&Interp_InitThisFieldActivateFixedPoint,
+&Interp_InitThisFieldActivatePtr,
+&Interp_InitThisFieldActivateMemberPtr,
+&Interp_InitThisFieldActivateFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivatePtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivatePtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_InitThisFieldActivateFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InitThisFieldActivate<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_InitThisFieldActivateFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InitThisFieldActivate<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28335,11 +37738,19 @@ bool EvalEmitter::emitInitThisFieldActivateFloat( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Inv,
 #endif
-#ifdef GET_INTERP
-case OP_Inv: {
-  if (!Inv(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Inv,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Inv(InterpState &S, CodePtr &PC) {
+  if (!Inv(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28365,11 +37776,19 @@ bool EvalEmitter::emitInv(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Invalid,
 #endif
-#ifdef GET_INTERP
-case OP_Invalid: {
-  if (!Invalid(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Invalid,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Invalid(InterpState &S, CodePtr &PC) {
+  if (!Invalid(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28395,13 +37814,24 @@ bool EvalEmitter::emitInvalid(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_InvalidCast,
 #endif
-#ifdef GET_INTERP
-case OP_InvalidCast: {
-  const auto V0 = ReadArg<interp::CastKind>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!InvalidCast(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InvalidCast,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InvalidCast(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<interp::CastKind>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!InvalidCast(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28429,13 +37859,24 @@ bool EvalEmitter::emitInvalidCast( interp::CastKind A0,  bool A1, SourceInfo L) 
 #ifdef GET_OPCODE_NAMES
 OP_InvalidDeclRef,
 #endif
-#ifdef GET_INTERP
-case OP_InvalidDeclRef: {
-  const auto V0 = ReadArg<const DeclRefExpr *>(S, PC);
-  const auto V1 = ReadArg<bool>(S, PC);
-  if (!InvalidDeclRef(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InvalidDeclRef,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InvalidDeclRef(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const DeclRefExpr *>(S, PC);
+    const auto V1 = ReadArg<bool>(S, PC);
+    if (!InvalidDeclRef(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28463,12 +37904,23 @@ bool EvalEmitter::emitInvalidDeclRef( const DeclRefExpr * A0,  bool A1, SourceIn
 #ifdef GET_OPCODE_NAMES
 OP_InvalidNewDeleteExpr,
 #endif
-#ifdef GET_INTERP
-case OP_InvalidNewDeleteExpr: {
-  const auto V0 = ReadArg<const Expr *>(S, PC);
-  if (!InvalidNewDeleteExpr(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InvalidNewDeleteExpr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InvalidNewDeleteExpr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Expr *>(S, PC);
+    if (!InvalidNewDeleteExpr(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28495,12 +37947,23 @@ bool EvalEmitter::emitInvalidNewDeleteExpr( const Expr * A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_InvalidShuffleVectorIndex,
 #endif
-#ifdef GET_INTERP
-case OP_InvalidShuffleVectorIndex: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!InvalidShuffleVectorIndex(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InvalidShuffleVectorIndex,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InvalidShuffleVectorIndex(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!InvalidShuffleVectorIndex(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28527,12 +37990,23 @@ bool EvalEmitter::emitInvalidShuffleVectorIndex( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_InvalidStore,
 #endif
-#ifdef GET_INTERP
-case OP_InvalidStore: {
-  const auto V0 = ReadArg<const Type *>(S, PC);
-  if (!InvalidStore(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_InvalidStore,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_InvalidStore(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const Type *>(S, PC);
+    if (!InvalidStore(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28559,11 +38033,19 @@ bool EvalEmitter::emitInvalidStore( const Type * A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_IsConstantContext,
 #endif
-#ifdef GET_INTERP
-case OP_IsConstantContext: {
-  if (!IsConstantContext(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_IsConstantContext,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IsConstantContext(InterpState &S, CodePtr &PC) {
+  if (!IsConstantContext(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28590,16 +38072,30 @@ bool EvalEmitter::emitIsConstantContext(SourceInfo L) {
 OP_IsNonNullPtr,
 OP_IsNonNullMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_IsNonNullPtr: {
-  if (!IsNonNull<PT_Ptr>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_IsNonNullPtr,
+&Interp_IsNonNullMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_IsNonNullPtr(InterpState &S, CodePtr &PC) {
+  if (!IsNonNull<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_IsNonNullMemberPtr: {
-  if (!IsNonNull<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_IsNonNullMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!IsNonNull<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28658,12 +38154,22 @@ bool EvalEmitter::emitIsNonNullMemberPtr(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Jf,
 #endif
-#ifdef GET_INTERP
-case OP_Jf: {
-  const auto V0 = ReadArg<int32_t>(S, PC);
-  if (!Jf(S, PC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Jf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Jf(InterpState &S, CodePtr &PC) {
+  {
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    if (!Jf(S, PC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28683,12 +38189,22 @@ bool ByteCodeEmitter::emitJf( int32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Jmp,
 #endif
-#ifdef GET_INTERP
-case OP_Jmp: {
-  const auto V0 = ReadArg<int32_t>(S, PC);
-  if (!Jmp(S, PC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Jmp,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Jmp(InterpState &S, CodePtr &PC) {
+  {
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    if (!Jmp(S, PC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28708,12 +38224,22 @@ bool ByteCodeEmitter::emitJmp( int32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Jt,
 #endif
-#ifdef GET_INTERP
-case OP_Jt: {
-  const auto V0 = ReadArg<int32_t>(S, PC);
-  if (!Jt(S, PC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Jt,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Jt(InterpState &S, CodePtr &PC) {
+  {
+    const auto V0 = ReadArg<int32_t>(S, PC);
+    if (!Jt(S, PC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -28746,76 +38272,162 @@ OP_LEFixedPoint,
 OP_LEPtr,
 OP_LEFloat,
 #endif
-#ifdef GET_INTERP
-case OP_LESint8: {
-  if (!LE<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_LESint8,
+&Interp_LEUint8,
+&Interp_LESint16,
+&Interp_LEUint16,
+&Interp_LESint32,
+&Interp_LEUint32,
+&Interp_LESint64,
+&Interp_LEUint64,
+&Interp_LEIntAP,
+&Interp_LEIntAPS,
+&Interp_LEBool,
+&Interp_LEFixedPoint,
+&Interp_LEPtr,
+&Interp_LEFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_LESint8(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEUint8: {
-  if (!LE<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEUint8(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LESint16: {
-  if (!LE<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LESint16(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEUint16: {
-  if (!LE<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEUint16(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LESint32: {
-  if (!LE<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LESint32(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEUint32: {
-  if (!LE<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEUint32(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LESint64: {
-  if (!LE<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LESint64(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEUint64: {
-  if (!LE<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEUint64(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEIntAP: {
-  if (!LE<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEIntAP(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEIntAPS: {
-  if (!LE<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEIntAPS(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEBool: {
-  if (!LE<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEBool(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEFixedPoint: {
-  if (!LE<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEPtr: {
-  if (!LE<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEPtr(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LEFloat: {
-  if (!LE<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LEFloat(InterpState &S, CodePtr &PC) {
+  if (!LE<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -29055,76 +38667,162 @@ OP_LTFixedPoint,
 OP_LTPtr,
 OP_LTFloat,
 #endif
-#ifdef GET_INTERP
-case OP_LTSint8: {
-  if (!LT<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_LTSint8,
+&Interp_LTUint8,
+&Interp_LTSint16,
+&Interp_LTUint16,
+&Interp_LTSint32,
+&Interp_LTUint32,
+&Interp_LTSint64,
+&Interp_LTUint64,
+&Interp_LTIntAP,
+&Interp_LTIntAPS,
+&Interp_LTBool,
+&Interp_LTFixedPoint,
+&Interp_LTPtr,
+&Interp_LTFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_LTSint8(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTUint8: {
-  if (!LT<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTUint8(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTSint16: {
-  if (!LT<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTSint16(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTUint16: {
-  if (!LT<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTUint16(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTSint32: {
-  if (!LT<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTSint32(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTUint32: {
-  if (!LT<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTUint32(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTSint64: {
-  if (!LT<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTSint64(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTUint64: {
-  if (!LT<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTUint64(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTIntAP: {
-  if (!LT<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTIntAP(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTIntAPS: {
-  if (!LT<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTIntAPS(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTBool: {
-  if (!LT<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTBool(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTFixedPoint: {
-  if (!LT<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTPtr: {
-  if (!LT<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTPtr(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LTFloat: {
-  if (!LT<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LTFloat(InterpState &S, CodePtr &PC) {
+  if (!LT<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -29365,81 +39063,173 @@ OP_LoadPtr,
 OP_LoadMemberPtr,
 OP_LoadFloat,
 #endif
-#ifdef GET_INTERP
-case OP_LoadSint8: {
-  if (!Load<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_LoadSint8,
+&Interp_LoadUint8,
+&Interp_LoadSint16,
+&Interp_LoadUint16,
+&Interp_LoadSint32,
+&Interp_LoadUint32,
+&Interp_LoadSint64,
+&Interp_LoadUint64,
+&Interp_LoadIntAP,
+&Interp_LoadIntAPS,
+&Interp_LoadBool,
+&Interp_LoadFixedPoint,
+&Interp_LoadPtr,
+&Interp_LoadMemberPtr,
+&Interp_LoadFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_LoadSint8(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadUint8: {
-  if (!Load<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadUint8(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadSint16: {
-  if (!Load<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadSint16(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadUint16: {
-  if (!Load<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadUint16(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadSint32: {
-  if (!Load<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadSint32(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadUint32: {
-  if (!Load<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadUint32(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadSint64: {
-  if (!Load<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadSint64(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadUint64: {
-  if (!Load<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadUint64(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadIntAP: {
-  if (!Load<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadIntAP(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadIntAPS: {
-  if (!Load<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadBool: {
-  if (!Load<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadBool(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadFixedPoint: {
-  if (!Load<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPtr: {
-  if (!Load<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPtr(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadMemberPtr: {
-  if (!Load<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadFloat: {
-  if (!Load<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadFloat(InterpState &S, CodePtr &PC) {
+  if (!Load<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -29693,81 +39483,173 @@ OP_LoadPopPtr,
 OP_LoadPopMemberPtr,
 OP_LoadPopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_LoadPopSint8: {
-  if (!LoadPop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_LoadPopSint8,
+&Interp_LoadPopUint8,
+&Interp_LoadPopSint16,
+&Interp_LoadPopUint16,
+&Interp_LoadPopSint32,
+&Interp_LoadPopUint32,
+&Interp_LoadPopSint64,
+&Interp_LoadPopUint64,
+&Interp_LoadPopIntAP,
+&Interp_LoadPopIntAPS,
+&Interp_LoadPopBool,
+&Interp_LoadPopFixedPoint,
+&Interp_LoadPopPtr,
+&Interp_LoadPopMemberPtr,
+&Interp_LoadPopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_LoadPopSint8(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopUint8: {
-  if (!LoadPop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopUint8(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopSint16: {
-  if (!LoadPop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopSint16(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopUint16: {
-  if (!LoadPop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopUint16(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopSint32: {
-  if (!LoadPop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopSint32(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopUint32: {
-  if (!LoadPop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopUint32(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopSint64: {
-  if (!LoadPop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopSint64(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopUint64: {
-  if (!LoadPop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopUint64(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopIntAP: {
-  if (!LoadPop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopIntAP(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopIntAPS: {
-  if (!LoadPop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopBool: {
-  if (!LoadPop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopBool(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopFixedPoint: {
-  if (!LoadPop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopPtr: {
-  if (!LoadPop<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopPtr(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopMemberPtr: {
-  if (!LoadPop<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_LoadPopFloat: {
-  if (!LoadPop<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_LoadPopFloat(InterpState &S, CodePtr &PC) {
+  if (!LoadPop<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30007,11 +39889,19 @@ bool EvalEmitter::emitLoadPopFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Memcpy,
 #endif
-#ifdef GET_INTERP
-case OP_Memcpy: {
-  if (!Memcpy(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Memcpy,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Memcpy(InterpState &S, CodePtr &PC) {
+  if (!Memcpy(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30048,66 +39938,140 @@ OP_MulIntAPS,
 OP_MulBool,
 OP_MulFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_MulSint8: {
-  if (!Mul<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_MulSint8,
+&Interp_MulUint8,
+&Interp_MulSint16,
+&Interp_MulUint16,
+&Interp_MulSint32,
+&Interp_MulUint32,
+&Interp_MulSint64,
+&Interp_MulUint64,
+&Interp_MulIntAP,
+&Interp_MulIntAPS,
+&Interp_MulBool,
+&Interp_MulFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_MulSint8(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulUint8: {
-  if (!Mul<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulUint8(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulSint16: {
-  if (!Mul<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulSint16(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulUint16: {
-  if (!Mul<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulUint16(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulSint32: {
-  if (!Mul<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulSint32(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulUint32: {
-  if (!Mul<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulUint32(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulSint64: {
-  if (!Mul<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulSint64(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulUint64: {
-  if (!Mul<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulUint64(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulIntAP: {
-  if (!Mul<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulIntAP(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulIntAPS: {
-  if (!Mul<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulBool: {
-  if (!Mul<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulBool(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulFixedPoint: {
-  if (!Mul<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Mul<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30316,61 +40280,129 @@ OP_MulcIntAP,
 OP_MulcIntAPS,
 OP_MulcFloat,
 #endif
-#ifdef GET_INTERP
-case OP_MulcSint8: {
-  if (!Mulc<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_MulcSint8,
+&Interp_MulcUint8,
+&Interp_MulcSint16,
+&Interp_MulcUint16,
+&Interp_MulcSint32,
+&Interp_MulcUint32,
+&Interp_MulcSint64,
+&Interp_MulcUint64,
+&Interp_MulcIntAP,
+&Interp_MulcIntAPS,
+&Interp_MulcFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_MulcSint8(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcUint8: {
-  if (!Mulc<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcUint8(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcSint16: {
-  if (!Mulc<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcSint16(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcUint16: {
-  if (!Mulc<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcUint16(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcSint32: {
-  if (!Mulc<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcSint32(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcUint32: {
-  if (!Mulc<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcUint32(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcSint64: {
-  if (!Mulc<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcSint64(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcUint64: {
-  if (!Mulc<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcUint64(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcIntAP: {
-  if (!Mulc<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcIntAP(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcIntAPS: {
-  if (!Mulc<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_MulcFloat: {
-  if (!Mulc<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_MulcFloat(InterpState &S, CodePtr &PC) {
+  if (!Mulc<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30555,12 +40587,23 @@ bool EvalEmitter::emitMulcFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Mulf,
 #endif
-#ifdef GET_INTERP
-case OP_Mulf: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Mulf(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Mulf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Mulf(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Mulf(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30601,81 +40644,173 @@ OP_NEPtr,
 OP_NEMemberPtr,
 OP_NEFloat,
 #endif
-#ifdef GET_INTERP
-case OP_NESint8: {
-  if (!NE<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_NESint8,
+&Interp_NEUint8,
+&Interp_NESint16,
+&Interp_NEUint16,
+&Interp_NESint32,
+&Interp_NEUint32,
+&Interp_NESint64,
+&Interp_NEUint64,
+&Interp_NEIntAP,
+&Interp_NEIntAPS,
+&Interp_NEBool,
+&Interp_NEFixedPoint,
+&Interp_NEPtr,
+&Interp_NEMemberPtr,
+&Interp_NEFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_NESint8(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEUint8: {
-  if (!NE<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEUint8(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NESint16: {
-  if (!NE<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NESint16(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEUint16: {
-  if (!NE<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEUint16(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NESint32: {
-  if (!NE<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NESint32(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEUint32: {
-  if (!NE<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEUint32(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NESint64: {
-  if (!NE<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NESint64(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEUint64: {
-  if (!NE<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEUint64(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEIntAP: {
-  if (!NE<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEIntAP(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEIntAPS: {
-  if (!NE<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEIntAPS(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEBool: {
-  if (!NE<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEBool(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEFixedPoint: {
-  if (!NE<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEPtr: {
-  if (!NE<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEPtr(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEMemberPtr: {
-  if (!NE<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NEFloat: {
-  if (!NE<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NEFloat(InterpState &S, CodePtr &PC) {
+  if (!NE<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30915,11 +41050,19 @@ bool EvalEmitter::emitNEFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_NarrowPtr,
 #endif
-#ifdef GET_INTERP
-case OP_NarrowPtr: {
-  if (!NarrowPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_NarrowPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_NarrowPtr(InterpState &S, CodePtr &PC) {
+  if (!NarrowPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -30957,71 +41100,151 @@ OP_NegBool,
 OP_NegFloat,
 OP_NegFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_NegSint8: {
-  if (!Neg<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_NegSint8,
+&Interp_NegUint8,
+&Interp_NegSint16,
+&Interp_NegUint16,
+&Interp_NegSint32,
+&Interp_NegUint32,
+&Interp_NegSint64,
+&Interp_NegUint64,
+&Interp_NegIntAP,
+&Interp_NegIntAPS,
+&Interp_NegBool,
+&Interp_NegFloat,
+&Interp_NegFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_NegSint8(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegUint8: {
-  if (!Neg<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegUint8(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegSint16: {
-  if (!Neg<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegSint16(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegUint16: {
-  if (!Neg<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegUint16(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegSint32: {
-  if (!Neg<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegSint32(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegUint32: {
-  if (!Neg<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegUint32(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegSint64: {
-  if (!Neg<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegSint64(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegUint64: {
-  if (!Neg<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegUint64(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegIntAP: {
-  if (!Neg<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegIntAP(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegIntAPS: {
-  if (!Neg<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegBool: {
-  if (!Neg<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegBool(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegFloat: {
-  if (!Neg<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegFloat(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NegFixedPoint: {
-  if (!Neg<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_NegFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Neg<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31234,11 +41457,19 @@ bool EvalEmitter::emitNegFixedPoint(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_NoRet,
 #endif
-#ifdef GET_INTERP
-case OP_NoRet: {
-  if (!NoRet(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_NoRet,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_NoRet(InterpState &S, CodePtr &PC) {
+  if (!NoRet(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31265,20 +41496,40 @@ bool EvalEmitter::emitNoRet(SourceInfo L) {
 OP_NullPtr,
 OP_NullMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_NullPtr: {
-  const auto V0 = ReadArg<uint64_t>(S, PC);
-  const auto V1 = ReadArg<const Descriptor *>(S, PC);
-  if (!Null<PT_Ptr>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_NullPtr,
+&Interp_NullMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_NullPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint64_t>(S, PC);
+    const auto V1 = ReadArg<const Descriptor *>(S, PC);
+    if (!Null<PT_Ptr>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_NullMemberPtr: {
-  const auto V0 = ReadArg<uint64_t>(S, PC);
-  const auto V1 = ReadArg<const Descriptor *>(S, PC);
-  if (!Null<PT_MemberPtr>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_NullMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint64_t>(S, PC);
+    const auto V1 = ReadArg<const Descriptor *>(S, PC);
+    if (!Null<PT_MemberPtr>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31350,66 +41601,158 @@ OP_OffsetOfUint64,
 OP_OffsetOfIntAP,
 OP_OffsetOfIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_OffsetOfSint8: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_OffsetOfSint8,
+&Interp_OffsetOfUint8,
+&Interp_OffsetOfSint16,
+&Interp_OffsetOfUint16,
+&Interp_OffsetOfSint32,
+&Interp_OffsetOfUint32,
+&Interp_OffsetOfSint64,
+&Interp_OffsetOfUint64,
+&Interp_OffsetOfIntAP,
+&Interp_OffsetOfIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_OffsetOfSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfUint8: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfSint16: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfUint16: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfSint32: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfUint32: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfSint64: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfUint64: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfIntAP: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_OffsetOfIntAPS: {
-  const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
-  if (!OffsetOf<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_OffsetOfIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<const OffsetOfExpr *>(S, PC);
+    if (!OffsetOf<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31604,81 +41947,173 @@ OP_PopPtr,
 OP_PopMemberPtr,
 OP_PopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_PopSint8: {
-  if (!Pop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_PopSint8,
+&Interp_PopUint8,
+&Interp_PopSint16,
+&Interp_PopUint16,
+&Interp_PopSint32,
+&Interp_PopUint32,
+&Interp_PopSint64,
+&Interp_PopUint64,
+&Interp_PopIntAP,
+&Interp_PopIntAPS,
+&Interp_PopBool,
+&Interp_PopFixedPoint,
+&Interp_PopPtr,
+&Interp_PopMemberPtr,
+&Interp_PopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PopSint8(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopUint8: {
-  if (!Pop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopUint8(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopSint16: {
-  if (!Pop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopSint16(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopUint16: {
-  if (!Pop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopUint16(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopSint32: {
-  if (!Pop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopSint32(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopUint32: {
-  if (!Pop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopUint32(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopSint64: {
-  if (!Pop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopSint64(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopUint64: {
-  if (!Pop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopUint64(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopIntAP: {
-  if (!Pop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopIntAP(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopIntAPS: {
-  if (!Pop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopBool: {
-  if (!Pop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopBool(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopFixedPoint: {
-  if (!Pop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopPtr: {
-  if (!Pop<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopPtr(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopMemberPtr: {
-  if (!Pop<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PopFloat: {
-  if (!Pop<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_PopFloat(InterpState &S, CodePtr &PC) {
+  if (!Pop<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31918,11 +42353,19 @@ bool EvalEmitter::emitPopFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_PopCC,
 #endif
-#ifdef GET_INTERP
-case OP_PopCC: {
-  if (!PopCC(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_PopCC,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PopCC(InterpState &S, CodePtr &PC) {
+  if (!PopCC(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31946,13 +42389,59 @@ bool EvalEmitter::emitPopCC(SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_PopIgnoreDiags,
+#endif
+#ifdef GET_INTERPFN_LIST
+&Interp_PopIgnoreDiags,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PopIgnoreDiags(InterpState &S, CodePtr &PC) {
+  if (!PopIgnoreDiags(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+#endif
+#ifdef GET_DISASM
+case OP_PopIgnoreDiags:
+  Text.Op = PrintName("PopIgnoreDiags");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPopIgnoreDiags(SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPopIgnoreDiags(SourceInfo L) {
+  return emitOp<>(OP_PopIgnoreDiags, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPopIgnoreDiags(SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PopIgnoreDiags(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_PopMSVCCE,
 #endif
-#ifdef GET_INTERP
-case OP_PopMSVCCE: {
-  if (!PopMSVCCE(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_PopMSVCCE,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PopMSVCCE(InterpState &S, CodePtr &PC) {
+  if (!PopMSVCCE(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -31989,78 +42478,188 @@ OP_PreDecIntAPS,
 OP_PreDecBool,
 OP_PreDecFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_PreDecSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_PreDecSint8,
+&Interp_PreDecUint8,
+&Interp_PreDecSint16,
+&Interp_PreDecUint16,
+&Interp_PreDecSint32,
+&Interp_PreDecUint32,
+&Interp_PreDecSint64,
+&Interp_PreDecUint64,
+&Interp_PreDecIntAP,
+&Interp_PreDecIntAPS,
+&Interp_PreDecBool,
+&Interp_PreDecFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PreDecSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreDec<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreDec<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -32282,90 +42881,200 @@ OP_PreDecBitfieldIntAPS,
 OP_PreDecBitfieldBool,
 OP_PreDecBitfieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_PreDecBitfieldSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_PreDecBitfieldSint8,
+&Interp_PreDecBitfieldUint8,
+&Interp_PreDecBitfieldSint16,
+&Interp_PreDecBitfieldUint16,
+&Interp_PreDecBitfieldSint32,
+&Interp_PreDecBitfieldUint32,
+&Interp_PreDecBitfieldSint64,
+&Interp_PreDecBitfieldUint64,
+&Interp_PreDecBitfieldIntAP,
+&Interp_PreDecBitfieldIntAPS,
+&Interp_PreDecBitfieldBool,
+&Interp_PreDecBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreDecBitfieldFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreDecBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreDecBitfieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreDecBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -32599,78 +43308,188 @@ OP_PreIncIntAPS,
 OP_PreIncBool,
 OP_PreIncFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_PreIncSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_PreIncSint8,
+&Interp_PreIncUint8,
+&Interp_PreIncSint16,
+&Interp_PreIncUint16,
+&Interp_PreIncSint32,
+&Interp_PreIncUint32,
+&Interp_PreIncSint64,
+&Interp_PreIncUint64,
+&Interp_PreIncIntAP,
+&Interp_PreIncIntAPS,
+&Interp_PreIncBool,
+&Interp_PreIncFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PreIncSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PreInc<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PreInc<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -32892,90 +43711,200 @@ OP_PreIncBitfieldIntAPS,
 OP_PreIncBitfieldBool,
 OP_PreIncBitfieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_PreIncBitfieldSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Sint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_PreIncBitfieldSint8,
+&Interp_PreIncBitfieldUint8,
+&Interp_PreIncBitfieldSint16,
+&Interp_PreIncBitfieldUint16,
+&Interp_PreIncBitfieldSint32,
+&Interp_PreIncBitfieldUint32,
+&Interp_PreIncBitfieldSint64,
+&Interp_PreIncBitfieldUint64,
+&Interp_PreIncBitfieldIntAP,
+&Interp_PreIncBitfieldIntAPS,
+&Interp_PreIncBitfieldBool,
+&Interp_PreIncBitfieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Sint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Uint8>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Uint8>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Sint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Sint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Uint16>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Uint16>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Sint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Sint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Uint32>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Uint32>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Sint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Sint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Uint64>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Uint64>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_IntAP>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_IntAP>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_IntAPS>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_IntAPS>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldBool: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_Bool>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_Bool>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_PreIncBitfieldFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  const auto V1 = ReadArg<uint32_t>(S, PC);
-  if (!PreIncBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_PreIncBitfieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    const auto V1 = ReadArg<uint32_t>(S, PC);
+    if (!PreIncBitfield<PT_FixedPoint>(S, OpPC, V0, V1))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -33198,12 +44127,23 @@ bool EvalEmitter::emitPreIncBitfieldFixedPoint( bool A0,  uint32_t A1, SourceInf
 #ifdef GET_OPCODE_NAMES
 OP_PtrPtrCast,
 #endif
-#ifdef GET_INTERP
-case OP_PtrPtrCast: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PtrPtrCast(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_PtrPtrCast,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PtrPtrCast(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PtrPtrCast(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -33230,12 +44170,23 @@ bool EvalEmitter::emitPtrPtrCast( bool A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_PushCC,
 #endif
-#ifdef GET_INTERP
-case OP_PushCC: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!PushCC(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_PushCC,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PushCC(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!PushCC(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -33260,13 +44211,59 @@ bool EvalEmitter::emitPushCC( bool A0, SourceInfo L) {
 }
 #endif
 #ifdef GET_OPCODE_NAMES
+OP_PushIgnoreDiags,
+#endif
+#ifdef GET_INTERPFN_LIST
+&Interp_PushIgnoreDiags,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PushIgnoreDiags(InterpState &S, CodePtr &PC) {
+  if (!PushIgnoreDiags(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+#endif
+#ifdef GET_DISASM
+case OP_PushIgnoreDiags:
+  Text.Op = PrintName("PushIgnoreDiags");
+  break;
+#endif
+#if defined(GET_EVAL_PROTO) || defined(GET_LINK_PROTO)
+bool emitPushIgnoreDiags(SourceInfo);
+#endif
+#ifdef GET_LINK_IMPL
+bool ByteCodeEmitter::emitPushIgnoreDiags(SourceInfo L) {
+  return emitOp<>(OP_PushIgnoreDiags, L);
+}
+#endif
+#ifdef GET_EVAL_IMPL
+bool EvalEmitter::emitPushIgnoreDiags(SourceInfo L) {
+  if (!isActive()) return true;
+  CurrentSource = L;
+  return PushIgnoreDiags(S, OpPC);
+}
+#endif
+#ifdef GET_OPCODE_NAMES
 OP_PushMSVCCE,
 #endif
-#ifdef GET_INTERP
-case OP_PushMSVCCE: {
-  if (!PushMSVCCE(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_PushMSVCCE,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_PushMSVCCE(InterpState &S, CodePtr &PC) {
+  if (!PushMSVCCE(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -33292,11 +44289,19 @@ bool EvalEmitter::emitPushMSVCCE(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_RVOPtr,
 #endif
-#ifdef GET_INTERP
-case OP_RVOPtr: {
-  if (!RVOPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_RVOPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_RVOPtr(InterpState &S, CodePtr &PC) {
+  if (!RVOPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -33332,61 +44337,129 @@ OP_RemIntAP,
 OP_RemIntAPS,
 OP_RemFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_RemSint8: {
-  if (!Rem<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_RemSint8,
+&Interp_RemUint8,
+&Interp_RemSint16,
+&Interp_RemUint16,
+&Interp_RemSint32,
+&Interp_RemUint32,
+&Interp_RemSint64,
+&Interp_RemUint64,
+&Interp_RemIntAP,
+&Interp_RemIntAPS,
+&Interp_RemFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_RemSint8(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemUint8: {
-  if (!Rem<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemUint8(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemSint16: {
-  if (!Rem<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemSint16(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemUint16: {
-  if (!Rem<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemUint16(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemSint32: {
-  if (!Rem<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemSint32(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemUint32: {
-  if (!Rem<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemUint32(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemSint64: {
-  if (!Rem<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemSint64(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemUint64: {
-  if (!Rem<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemUint64(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemIntAP: {
-  if (!Rem<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemIntAP(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemIntAPS: {
-  if (!Rem<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_RemFixedPoint: {
-  if (!Rem<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_RemFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Rem<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -33585,156 +44658,83 @@ OP_RetPtr,
 OP_RetMemberPtr,
 OP_RetFloat,
 #endif
-#ifdef GET_INTERP
-case OP_RetSint8: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Sint8>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_RetSint8,
+&Interp_RetUint8,
+&Interp_RetSint16,
+&Interp_RetUint16,
+&Interp_RetSint32,
+&Interp_RetUint32,
+&Interp_RetSint64,
+&Interp_RetUint64,
+&Interp_RetIntAP,
+&Interp_RetIntAPS,
+&Interp_RetBool,
+&Interp_RetFixedPoint,
+&Interp_RetPtr,
+&Interp_RetMemberPtr,
+&Interp_RetFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_RetSint8(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Sint8>(S, PC);
 }
-case OP_RetUint8: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Uint8>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetUint8(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Uint8>(S, PC);
 }
-case OP_RetSint16: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Sint16>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetSint16(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Sint16>(S, PC);
 }
-case OP_RetUint16: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Uint16>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetUint16(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Uint16>(S, PC);
 }
-case OP_RetSint32: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Sint32>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetSint32(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Sint32>(S, PC);
 }
-case OP_RetUint32: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Uint32>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetUint32(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Uint32>(S, PC);
 }
-case OP_RetSint64: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Sint64>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetSint64(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Sint64>(S, PC);
 }
-case OP_RetUint64: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Uint64>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetUint64(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Uint64>(S, PC);
 }
-case OP_RetIntAP: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_IntAP>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetIntAP(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_IntAP>(S, PC);
 }
-case OP_RetIntAPS: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_IntAPS>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetIntAPS(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_IntAPS>(S, PC);
 }
-case OP_RetBool: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Bool>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetBool(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Bool>(S, PC);
 }
-case OP_RetFixedPoint: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_FixedPoint>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetFixedPoint(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_FixedPoint>(S, PC);
 }
-case OP_RetPtr: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Ptr>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetPtr(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Ptr>(S, PC);
 }
-case OP_RetMemberPtr: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_MemberPtr>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetMemberPtr(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_MemberPtr>(S, PC);
 }
-case OP_RetFloat: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!Ret<PT_Float>(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+PRESERVE_NONE
+static bool Interp_RetFloat(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return Ret<PT_Float>(S, PC);
 }
 #endif
 #ifdef GET_DISASM
@@ -33976,16 +44976,13 @@ bool ByteCodeEmitter::emitRetFloat(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_RetValue,
 #endif
-#ifdef GET_INTERP
-case OP_RetValue: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!RetValue(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_RetValue,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_RetValue(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return RetValue(S, PC);
 }
 #endif
 #ifdef GET_DISASM
@@ -34004,16 +45001,13 @@ bool ByteCodeEmitter::emitRetValue(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_RetVoid,
 #endif
-#ifdef GET_INTERP
-case OP_RetVoid: {
-  bool DoReturn = (S.Current == StartFrame);
-  if (!RetVoid(S, PC))
-    return false;
-  if (!S.Current || S.Current->isRoot())
-    return true;
-  if (DoReturn)
-    return true;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_RetVoid,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_RetVoid(InterpState &S, CodePtr &PC) {
+ MUSTTAIL return RetVoid(S, PC);
 }
 #endif
 #ifdef GET_DISASM
@@ -34046,96 +45040,233 @@ OP_SetFieldPtr,
 OP_SetFieldMemberPtr,
 OP_SetFieldFloat,
 #endif
-#ifdef GET_INTERP
-case OP_SetFieldSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_SetFieldSint8,
+&Interp_SetFieldUint8,
+&Interp_SetFieldSint16,
+&Interp_SetFieldUint16,
+&Interp_SetFieldSint32,
+&Interp_SetFieldUint32,
+&Interp_SetFieldSint64,
+&Interp_SetFieldUint64,
+&Interp_SetFieldIntAP,
+&Interp_SetFieldIntAPS,
+&Interp_SetFieldBool,
+&Interp_SetFieldFixedPoint,
+&Interp_SetFieldPtr,
+&Interp_SetFieldMemberPtr,
+&Interp_SetFieldFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SetFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetFieldFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetField<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetFieldFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetField<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -34404,96 +45535,233 @@ OP_SetGlobalPtr,
 OP_SetGlobalMemberPtr,
 OP_SetGlobalFloat,
 #endif
-#ifdef GET_INTERP
-case OP_SetGlobalSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_SetGlobalSint8,
+&Interp_SetGlobalUint8,
+&Interp_SetGlobalSint16,
+&Interp_SetGlobalUint16,
+&Interp_SetGlobalSint32,
+&Interp_SetGlobalUint32,
+&Interp_SetGlobalSint64,
+&Interp_SetGlobalUint64,
+&Interp_SetGlobalIntAP,
+&Interp_SetGlobalIntAPS,
+&Interp_SetGlobalBool,
+&Interp_SetGlobalFixedPoint,
+&Interp_SetGlobalPtr,
+&Interp_SetGlobalMemberPtr,
+&Interp_SetGlobalFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SetGlobalSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetGlobalFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetGlobal<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetGlobalFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetGlobal<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -34762,96 +46030,233 @@ OP_SetLocalPtr,
 OP_SetLocalMemberPtr,
 OP_SetLocalFloat,
 #endif
-#ifdef GET_INTERP
-case OP_SetLocalSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_SetLocalSint8,
+&Interp_SetLocalUint8,
+&Interp_SetLocalSint16,
+&Interp_SetLocalUint16,
+&Interp_SetLocalSint32,
+&Interp_SetLocalUint32,
+&Interp_SetLocalSint64,
+&Interp_SetLocalUint64,
+&Interp_SetLocalIntAP,
+&Interp_SetLocalIntAPS,
+&Interp_SetLocalBool,
+&Interp_SetLocalFixedPoint,
+&Interp_SetLocalPtr,
+&Interp_SetLocalMemberPtr,
+&Interp_SetLocalFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SetLocalSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetLocalFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetLocal<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetLocalFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetLocal<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -35122,96 +46527,233 @@ OP_SetParamPtr,
 OP_SetParamMemberPtr,
 OP_SetParamFloat,
 #endif
-#ifdef GET_INTERP
-case OP_SetParamSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_SetParamSint8,
+&Interp_SetParamUint8,
+&Interp_SetParamSint16,
+&Interp_SetParamUint16,
+&Interp_SetParamSint32,
+&Interp_SetParamUint32,
+&Interp_SetParamSint64,
+&Interp_SetParamUint64,
+&Interp_SetParamIntAP,
+&Interp_SetParamIntAPS,
+&Interp_SetParamBool,
+&Interp_SetParamFixedPoint,
+&Interp_SetParamPtr,
+&Interp_SetParamMemberPtr,
+&Interp_SetParamFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SetParamSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetParamFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetParam<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetParamFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetParam<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -35480,96 +47022,233 @@ OP_SetThisFieldPtr,
 OP_SetThisFieldMemberPtr,
 OP_SetThisFieldFloat,
 #endif
-#ifdef GET_INTERP
-case OP_SetThisFieldSint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_SetThisFieldSint8,
+&Interp_SetThisFieldUint8,
+&Interp_SetThisFieldSint16,
+&Interp_SetThisFieldUint16,
+&Interp_SetThisFieldSint32,
+&Interp_SetThisFieldUint32,
+&Interp_SetThisFieldSint64,
+&Interp_SetThisFieldUint64,
+&Interp_SetThisFieldIntAP,
+&Interp_SetThisFieldIntAPS,
+&Interp_SetThisFieldBool,
+&Interp_SetThisFieldFixedPoint,
+&Interp_SetThisFieldPtr,
+&Interp_SetThisFieldMemberPtr,
+&Interp_SetThisFieldFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SetThisFieldSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldUint8: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldSint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldUint16: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldSint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldUint32: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldSint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldUint64: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldBool: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Bool>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldBool(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Bool>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldFixedPoint: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_FixedPoint>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_FixedPoint>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Ptr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Ptr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldMemberPtr: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_MemberPtr>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldMemberPtr(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_MemberPtr>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SetThisFieldFloat: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!SetThisField<PT_Float>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SetThisFieldFloat(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!SetThisField<PT_Float>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -35824,12 +47503,23 @@ bool EvalEmitter::emitSetThisFieldFloat( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ShiftFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_ShiftFixedPoint: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!ShiftFixedPoint(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ShiftFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ShiftFixedPoint(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!ShiftFixedPoint(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -35955,506 +47645,1108 @@ OP_ShlIntAPSUint64,
 OP_ShlIntAPSIntAP,
 OP_ShlIntAPSIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_ShlSint8Sint8: {
-  if (!Shl<PT_Sint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Uint8: {
-  if (!Shl<PT_Sint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Sint16: {
-  if (!Shl<PT_Sint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Uint16: {
-  if (!Shl<PT_Sint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Sint32: {
-  if (!Shl<PT_Sint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Uint32: {
-  if (!Shl<PT_Sint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Sint64: {
-  if (!Shl<PT_Sint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8Uint64: {
-  if (!Shl<PT_Sint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8IntAP: {
-  if (!Shl<PT_Sint8, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint8IntAPS: {
-  if (!Shl<PT_Sint8, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Sint8: {
-  if (!Shl<PT_Uint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Uint8: {
-  if (!Shl<PT_Uint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Sint16: {
-  if (!Shl<PT_Uint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Uint16: {
-  if (!Shl<PT_Uint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Sint32: {
-  if (!Shl<PT_Uint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Uint32: {
-  if (!Shl<PT_Uint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Sint64: {
-  if (!Shl<PT_Uint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8Uint64: {
-  if (!Shl<PT_Uint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8IntAP: {
-  if (!Shl<PT_Uint8, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint8IntAPS: {
-  if (!Shl<PT_Uint8, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Sint8: {
-  if (!Shl<PT_Sint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Uint8: {
-  if (!Shl<PT_Sint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Sint16: {
-  if (!Shl<PT_Sint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Uint16: {
-  if (!Shl<PT_Sint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Sint32: {
-  if (!Shl<PT_Sint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Uint32: {
-  if (!Shl<PT_Sint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Sint64: {
-  if (!Shl<PT_Sint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16Uint64: {
-  if (!Shl<PT_Sint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16IntAP: {
-  if (!Shl<PT_Sint16, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint16IntAPS: {
-  if (!Shl<PT_Sint16, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Sint8: {
-  if (!Shl<PT_Uint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Uint8: {
-  if (!Shl<PT_Uint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Sint16: {
-  if (!Shl<PT_Uint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Uint16: {
-  if (!Shl<PT_Uint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Sint32: {
-  if (!Shl<PT_Uint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Uint32: {
-  if (!Shl<PT_Uint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Sint64: {
-  if (!Shl<PT_Uint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16Uint64: {
-  if (!Shl<PT_Uint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16IntAP: {
-  if (!Shl<PT_Uint16, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint16IntAPS: {
-  if (!Shl<PT_Uint16, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Sint8: {
-  if (!Shl<PT_Sint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Uint8: {
-  if (!Shl<PT_Sint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Sint16: {
-  if (!Shl<PT_Sint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Uint16: {
-  if (!Shl<PT_Sint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Sint32: {
-  if (!Shl<PT_Sint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Uint32: {
-  if (!Shl<PT_Sint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Sint64: {
-  if (!Shl<PT_Sint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32Uint64: {
-  if (!Shl<PT_Sint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32IntAP: {
-  if (!Shl<PT_Sint32, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint32IntAPS: {
-  if (!Shl<PT_Sint32, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Sint8: {
-  if (!Shl<PT_Uint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Uint8: {
-  if (!Shl<PT_Uint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Sint16: {
-  if (!Shl<PT_Uint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Uint16: {
-  if (!Shl<PT_Uint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Sint32: {
-  if (!Shl<PT_Uint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Uint32: {
-  if (!Shl<PT_Uint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Sint64: {
-  if (!Shl<PT_Uint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32Uint64: {
-  if (!Shl<PT_Uint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32IntAP: {
-  if (!Shl<PT_Uint32, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint32IntAPS: {
-  if (!Shl<PT_Uint32, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Sint8: {
-  if (!Shl<PT_Sint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Uint8: {
-  if (!Shl<PT_Sint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Sint16: {
-  if (!Shl<PT_Sint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Uint16: {
-  if (!Shl<PT_Sint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Sint32: {
-  if (!Shl<PT_Sint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Uint32: {
-  if (!Shl<PT_Sint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Sint64: {
-  if (!Shl<PT_Sint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64Uint64: {
-  if (!Shl<PT_Sint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64IntAP: {
-  if (!Shl<PT_Sint64, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlSint64IntAPS: {
-  if (!Shl<PT_Sint64, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Sint8: {
-  if (!Shl<PT_Uint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Uint8: {
-  if (!Shl<PT_Uint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Sint16: {
-  if (!Shl<PT_Uint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Uint16: {
-  if (!Shl<PT_Uint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Sint32: {
-  if (!Shl<PT_Uint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Uint32: {
-  if (!Shl<PT_Uint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Sint64: {
-  if (!Shl<PT_Uint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64Uint64: {
-  if (!Shl<PT_Uint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64IntAP: {
-  if (!Shl<PT_Uint64, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlUint64IntAPS: {
-  if (!Shl<PT_Uint64, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSint8: {
-  if (!Shl<PT_IntAP, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPUint8: {
-  if (!Shl<PT_IntAP, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSint16: {
-  if (!Shl<PT_IntAP, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPUint16: {
-  if (!Shl<PT_IntAP, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSint32: {
-  if (!Shl<PT_IntAP, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPUint32: {
-  if (!Shl<PT_IntAP, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSint64: {
-  if (!Shl<PT_IntAP, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPUint64: {
-  if (!Shl<PT_IntAP, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPIntAP: {
-  if (!Shl<PT_IntAP, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPIntAPS: {
-  if (!Shl<PT_IntAP, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSSint8: {
-  if (!Shl<PT_IntAPS, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSUint8: {
-  if (!Shl<PT_IntAPS, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSSint16: {
-  if (!Shl<PT_IntAPS, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSUint16: {
-  if (!Shl<PT_IntAPS, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSSint32: {
-  if (!Shl<PT_IntAPS, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSUint32: {
-  if (!Shl<PT_IntAPS, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSSint64: {
-  if (!Shl<PT_IntAPS, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSUint64: {
-  if (!Shl<PT_IntAPS, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSIntAP: {
-  if (!Shl<PT_IntAPS, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShlIntAPSIntAPS: {
-  if (!Shl<PT_IntAPS, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ShlSint8Sint8,
+&Interp_ShlSint8Uint8,
+&Interp_ShlSint8Sint16,
+&Interp_ShlSint8Uint16,
+&Interp_ShlSint8Sint32,
+&Interp_ShlSint8Uint32,
+&Interp_ShlSint8Sint64,
+&Interp_ShlSint8Uint64,
+&Interp_ShlSint8IntAP,
+&Interp_ShlSint8IntAPS,
+&Interp_ShlUint8Sint8,
+&Interp_ShlUint8Uint8,
+&Interp_ShlUint8Sint16,
+&Interp_ShlUint8Uint16,
+&Interp_ShlUint8Sint32,
+&Interp_ShlUint8Uint32,
+&Interp_ShlUint8Sint64,
+&Interp_ShlUint8Uint64,
+&Interp_ShlUint8IntAP,
+&Interp_ShlUint8IntAPS,
+&Interp_ShlSint16Sint8,
+&Interp_ShlSint16Uint8,
+&Interp_ShlSint16Sint16,
+&Interp_ShlSint16Uint16,
+&Interp_ShlSint16Sint32,
+&Interp_ShlSint16Uint32,
+&Interp_ShlSint16Sint64,
+&Interp_ShlSint16Uint64,
+&Interp_ShlSint16IntAP,
+&Interp_ShlSint16IntAPS,
+&Interp_ShlUint16Sint8,
+&Interp_ShlUint16Uint8,
+&Interp_ShlUint16Sint16,
+&Interp_ShlUint16Uint16,
+&Interp_ShlUint16Sint32,
+&Interp_ShlUint16Uint32,
+&Interp_ShlUint16Sint64,
+&Interp_ShlUint16Uint64,
+&Interp_ShlUint16IntAP,
+&Interp_ShlUint16IntAPS,
+&Interp_ShlSint32Sint8,
+&Interp_ShlSint32Uint8,
+&Interp_ShlSint32Sint16,
+&Interp_ShlSint32Uint16,
+&Interp_ShlSint32Sint32,
+&Interp_ShlSint32Uint32,
+&Interp_ShlSint32Sint64,
+&Interp_ShlSint32Uint64,
+&Interp_ShlSint32IntAP,
+&Interp_ShlSint32IntAPS,
+&Interp_ShlUint32Sint8,
+&Interp_ShlUint32Uint8,
+&Interp_ShlUint32Sint16,
+&Interp_ShlUint32Uint16,
+&Interp_ShlUint32Sint32,
+&Interp_ShlUint32Uint32,
+&Interp_ShlUint32Sint64,
+&Interp_ShlUint32Uint64,
+&Interp_ShlUint32IntAP,
+&Interp_ShlUint32IntAPS,
+&Interp_ShlSint64Sint8,
+&Interp_ShlSint64Uint8,
+&Interp_ShlSint64Sint16,
+&Interp_ShlSint64Uint16,
+&Interp_ShlSint64Sint32,
+&Interp_ShlSint64Uint32,
+&Interp_ShlSint64Sint64,
+&Interp_ShlSint64Uint64,
+&Interp_ShlSint64IntAP,
+&Interp_ShlSint64IntAPS,
+&Interp_ShlUint64Sint8,
+&Interp_ShlUint64Uint8,
+&Interp_ShlUint64Sint16,
+&Interp_ShlUint64Uint16,
+&Interp_ShlUint64Sint32,
+&Interp_ShlUint64Uint32,
+&Interp_ShlUint64Sint64,
+&Interp_ShlUint64Uint64,
+&Interp_ShlUint64IntAP,
+&Interp_ShlUint64IntAPS,
+&Interp_ShlIntAPSint8,
+&Interp_ShlIntAPUint8,
+&Interp_ShlIntAPSint16,
+&Interp_ShlIntAPUint16,
+&Interp_ShlIntAPSint32,
+&Interp_ShlIntAPUint32,
+&Interp_ShlIntAPSint64,
+&Interp_ShlIntAPUint64,
+&Interp_ShlIntAPIntAP,
+&Interp_ShlIntAPIntAPS,
+&Interp_ShlIntAPSSint8,
+&Interp_ShlIntAPSUint8,
+&Interp_ShlIntAPSSint16,
+&Interp_ShlIntAPSUint16,
+&Interp_ShlIntAPSSint32,
+&Interp_ShlIntAPSUint32,
+&Interp_ShlIntAPSSint64,
+&Interp_ShlIntAPSUint64,
+&Interp_ShlIntAPSIntAP,
+&Interp_ShlIntAPSIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ShlSint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint8IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint8, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint8IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint8, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint16IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint16, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint16IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint16, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint32IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint32, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint32IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint32, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlSint64IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Sint64, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlUint64IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_Uint64, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPUint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPUint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPUint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPUint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPIntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAP, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSSint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSUint8(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSSint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSUint16(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSSint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSUint32(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSSint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSUint64(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSIntAP(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShlIntAPSIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shl<PT_IntAPS, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -38034,506 +50326,1108 @@ OP_ShrIntAPSUint64,
 OP_ShrIntAPSIntAP,
 OP_ShrIntAPSIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_ShrSint8Sint8: {
-  if (!Shr<PT_Sint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Uint8: {
-  if (!Shr<PT_Sint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Sint16: {
-  if (!Shr<PT_Sint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Uint16: {
-  if (!Shr<PT_Sint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Sint32: {
-  if (!Shr<PT_Sint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Uint32: {
-  if (!Shr<PT_Sint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Sint64: {
-  if (!Shr<PT_Sint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8Uint64: {
-  if (!Shr<PT_Sint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8IntAP: {
-  if (!Shr<PT_Sint8, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint8IntAPS: {
-  if (!Shr<PT_Sint8, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Sint8: {
-  if (!Shr<PT_Uint8, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Uint8: {
-  if (!Shr<PT_Uint8, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Sint16: {
-  if (!Shr<PT_Uint8, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Uint16: {
-  if (!Shr<PT_Uint8, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Sint32: {
-  if (!Shr<PT_Uint8, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Uint32: {
-  if (!Shr<PT_Uint8, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Sint64: {
-  if (!Shr<PT_Uint8, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8Uint64: {
-  if (!Shr<PT_Uint8, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8IntAP: {
-  if (!Shr<PT_Uint8, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint8IntAPS: {
-  if (!Shr<PT_Uint8, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Sint8: {
-  if (!Shr<PT_Sint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Uint8: {
-  if (!Shr<PT_Sint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Sint16: {
-  if (!Shr<PT_Sint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Uint16: {
-  if (!Shr<PT_Sint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Sint32: {
-  if (!Shr<PT_Sint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Uint32: {
-  if (!Shr<PT_Sint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Sint64: {
-  if (!Shr<PT_Sint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16Uint64: {
-  if (!Shr<PT_Sint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16IntAP: {
-  if (!Shr<PT_Sint16, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint16IntAPS: {
-  if (!Shr<PT_Sint16, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Sint8: {
-  if (!Shr<PT_Uint16, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Uint8: {
-  if (!Shr<PT_Uint16, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Sint16: {
-  if (!Shr<PT_Uint16, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Uint16: {
-  if (!Shr<PT_Uint16, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Sint32: {
-  if (!Shr<PT_Uint16, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Uint32: {
-  if (!Shr<PT_Uint16, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Sint64: {
-  if (!Shr<PT_Uint16, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16Uint64: {
-  if (!Shr<PT_Uint16, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16IntAP: {
-  if (!Shr<PT_Uint16, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint16IntAPS: {
-  if (!Shr<PT_Uint16, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Sint8: {
-  if (!Shr<PT_Sint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Uint8: {
-  if (!Shr<PT_Sint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Sint16: {
-  if (!Shr<PT_Sint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Uint16: {
-  if (!Shr<PT_Sint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Sint32: {
-  if (!Shr<PT_Sint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Uint32: {
-  if (!Shr<PT_Sint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Sint64: {
-  if (!Shr<PT_Sint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32Uint64: {
-  if (!Shr<PT_Sint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32IntAP: {
-  if (!Shr<PT_Sint32, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint32IntAPS: {
-  if (!Shr<PT_Sint32, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Sint8: {
-  if (!Shr<PT_Uint32, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Uint8: {
-  if (!Shr<PT_Uint32, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Sint16: {
-  if (!Shr<PT_Uint32, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Uint16: {
-  if (!Shr<PT_Uint32, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Sint32: {
-  if (!Shr<PT_Uint32, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Uint32: {
-  if (!Shr<PT_Uint32, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Sint64: {
-  if (!Shr<PT_Uint32, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32Uint64: {
-  if (!Shr<PT_Uint32, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32IntAP: {
-  if (!Shr<PT_Uint32, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint32IntAPS: {
-  if (!Shr<PT_Uint32, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Sint8: {
-  if (!Shr<PT_Sint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Uint8: {
-  if (!Shr<PT_Sint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Sint16: {
-  if (!Shr<PT_Sint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Uint16: {
-  if (!Shr<PT_Sint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Sint32: {
-  if (!Shr<PT_Sint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Uint32: {
-  if (!Shr<PT_Sint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Sint64: {
-  if (!Shr<PT_Sint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64Uint64: {
-  if (!Shr<PT_Sint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64IntAP: {
-  if (!Shr<PT_Sint64, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrSint64IntAPS: {
-  if (!Shr<PT_Sint64, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Sint8: {
-  if (!Shr<PT_Uint64, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Uint8: {
-  if (!Shr<PT_Uint64, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Sint16: {
-  if (!Shr<PT_Uint64, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Uint16: {
-  if (!Shr<PT_Uint64, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Sint32: {
-  if (!Shr<PT_Uint64, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Uint32: {
-  if (!Shr<PT_Uint64, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Sint64: {
-  if (!Shr<PT_Uint64, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64Uint64: {
-  if (!Shr<PT_Uint64, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64IntAP: {
-  if (!Shr<PT_Uint64, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrUint64IntAPS: {
-  if (!Shr<PT_Uint64, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSint8: {
-  if (!Shr<PT_IntAP, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPUint8: {
-  if (!Shr<PT_IntAP, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSint16: {
-  if (!Shr<PT_IntAP, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPUint16: {
-  if (!Shr<PT_IntAP, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSint32: {
-  if (!Shr<PT_IntAP, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPUint32: {
-  if (!Shr<PT_IntAP, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSint64: {
-  if (!Shr<PT_IntAP, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPUint64: {
-  if (!Shr<PT_IntAP, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPIntAP: {
-  if (!Shr<PT_IntAP, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPIntAPS: {
-  if (!Shr<PT_IntAP, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSSint8: {
-  if (!Shr<PT_IntAPS, PT_Sint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSUint8: {
-  if (!Shr<PT_IntAPS, PT_Uint8>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSSint16: {
-  if (!Shr<PT_IntAPS, PT_Sint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSUint16: {
-  if (!Shr<PT_IntAPS, PT_Uint16>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSSint32: {
-  if (!Shr<PT_IntAPS, PT_Sint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSUint32: {
-  if (!Shr<PT_IntAPS, PT_Uint32>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSSint64: {
-  if (!Shr<PT_IntAPS, PT_Sint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSUint64: {
-  if (!Shr<PT_IntAPS, PT_Uint64>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSIntAP: {
-  if (!Shr<PT_IntAPS, PT_IntAP>(S, OpPC))
-    return false;
-  continue;
-}
-case OP_ShrIntAPSIntAPS: {
-  if (!Shr<PT_IntAPS, PT_IntAPS>(S, OpPC))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ShrSint8Sint8,
+&Interp_ShrSint8Uint8,
+&Interp_ShrSint8Sint16,
+&Interp_ShrSint8Uint16,
+&Interp_ShrSint8Sint32,
+&Interp_ShrSint8Uint32,
+&Interp_ShrSint8Sint64,
+&Interp_ShrSint8Uint64,
+&Interp_ShrSint8IntAP,
+&Interp_ShrSint8IntAPS,
+&Interp_ShrUint8Sint8,
+&Interp_ShrUint8Uint8,
+&Interp_ShrUint8Sint16,
+&Interp_ShrUint8Uint16,
+&Interp_ShrUint8Sint32,
+&Interp_ShrUint8Uint32,
+&Interp_ShrUint8Sint64,
+&Interp_ShrUint8Uint64,
+&Interp_ShrUint8IntAP,
+&Interp_ShrUint8IntAPS,
+&Interp_ShrSint16Sint8,
+&Interp_ShrSint16Uint8,
+&Interp_ShrSint16Sint16,
+&Interp_ShrSint16Uint16,
+&Interp_ShrSint16Sint32,
+&Interp_ShrSint16Uint32,
+&Interp_ShrSint16Sint64,
+&Interp_ShrSint16Uint64,
+&Interp_ShrSint16IntAP,
+&Interp_ShrSint16IntAPS,
+&Interp_ShrUint16Sint8,
+&Interp_ShrUint16Uint8,
+&Interp_ShrUint16Sint16,
+&Interp_ShrUint16Uint16,
+&Interp_ShrUint16Sint32,
+&Interp_ShrUint16Uint32,
+&Interp_ShrUint16Sint64,
+&Interp_ShrUint16Uint64,
+&Interp_ShrUint16IntAP,
+&Interp_ShrUint16IntAPS,
+&Interp_ShrSint32Sint8,
+&Interp_ShrSint32Uint8,
+&Interp_ShrSint32Sint16,
+&Interp_ShrSint32Uint16,
+&Interp_ShrSint32Sint32,
+&Interp_ShrSint32Uint32,
+&Interp_ShrSint32Sint64,
+&Interp_ShrSint32Uint64,
+&Interp_ShrSint32IntAP,
+&Interp_ShrSint32IntAPS,
+&Interp_ShrUint32Sint8,
+&Interp_ShrUint32Uint8,
+&Interp_ShrUint32Sint16,
+&Interp_ShrUint32Uint16,
+&Interp_ShrUint32Sint32,
+&Interp_ShrUint32Uint32,
+&Interp_ShrUint32Sint64,
+&Interp_ShrUint32Uint64,
+&Interp_ShrUint32IntAP,
+&Interp_ShrUint32IntAPS,
+&Interp_ShrSint64Sint8,
+&Interp_ShrSint64Uint8,
+&Interp_ShrSint64Sint16,
+&Interp_ShrSint64Uint16,
+&Interp_ShrSint64Sint32,
+&Interp_ShrSint64Uint32,
+&Interp_ShrSint64Sint64,
+&Interp_ShrSint64Uint64,
+&Interp_ShrSint64IntAP,
+&Interp_ShrSint64IntAPS,
+&Interp_ShrUint64Sint8,
+&Interp_ShrUint64Uint8,
+&Interp_ShrUint64Sint16,
+&Interp_ShrUint64Uint16,
+&Interp_ShrUint64Sint32,
+&Interp_ShrUint64Uint32,
+&Interp_ShrUint64Sint64,
+&Interp_ShrUint64Uint64,
+&Interp_ShrUint64IntAP,
+&Interp_ShrUint64IntAPS,
+&Interp_ShrIntAPSint8,
+&Interp_ShrIntAPUint8,
+&Interp_ShrIntAPSint16,
+&Interp_ShrIntAPUint16,
+&Interp_ShrIntAPSint32,
+&Interp_ShrIntAPUint32,
+&Interp_ShrIntAPSint64,
+&Interp_ShrIntAPUint64,
+&Interp_ShrIntAPIntAP,
+&Interp_ShrIntAPIntAPS,
+&Interp_ShrIntAPSSint8,
+&Interp_ShrIntAPSUint8,
+&Interp_ShrIntAPSSint16,
+&Interp_ShrIntAPSUint16,
+&Interp_ShrIntAPSSint32,
+&Interp_ShrIntAPSUint32,
+&Interp_ShrIntAPSSint64,
+&Interp_ShrIntAPSUint64,
+&Interp_ShrIntAPSIntAP,
+&Interp_ShrIntAPSIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ShrSint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint8IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint8, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint8IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint8, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint16IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint16, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint16IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint16, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint32IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint32, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint32IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint32, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrSint64IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Sint64, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Sint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Uint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Sint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Uint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Sint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Uint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Sint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64Uint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64IntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrUint64IntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_Uint64, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPUint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPUint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPUint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPUint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPIntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAP, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSSint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Sint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSUint8(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Uint8>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSSint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Sint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSUint16(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Uint16>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSSint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Sint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSUint32(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Uint32>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSSint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Sint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSUint64(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_Uint64>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSIntAP(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_IntAP>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
+}
+PRESERVE_NONE
+static bool Interp_ShrIntAPSIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Shr<PT_IntAPS, PT_IntAPS>(S, PC))
+    return false;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40014,11 +52908,19 @@ bool EvalEmitter::emitShrIntAPSIntAPS(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_SideEffect,
 #endif
-#ifdef GET_INTERP
-case OP_SideEffect: {
-  if (!SideEffect(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_SideEffect,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SideEffect(InterpState &S, CodePtr &PC) {
+  if (!SideEffect(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40044,11 +52946,19 @@ bool EvalEmitter::emitSideEffect(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_SizelessVectorElementSize,
 #endif
-#ifdef GET_INTERP
-case OP_SizelessVectorElementSize: {
-  if (!SizelessVectorElementSize(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_SizelessVectorElementSize,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SizelessVectorElementSize(InterpState &S, CodePtr &PC) {
+  if (!SizelessVectorElementSize(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40074,11 +52984,19 @@ bool EvalEmitter::emitSizelessVectorElementSize(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_StartLifetime,
 #endif
-#ifdef GET_INTERP
-case OP_StartLifetime: {
-  if (!StartLifetime(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StartLifetime,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StartLifetime(InterpState &S, CodePtr &PC) {
+  if (!StartLifetime(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40104,11 +53022,19 @@ bool EvalEmitter::emitStartLifetime(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_StartSpeculation,
 #endif
-#ifdef GET_INTERP
-case OP_StartSpeculation: {
-  if (!StartSpeculation(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StartSpeculation,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StartSpeculation(InterpState &S, CodePtr &PC) {
+  if (!StartSpeculation(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40148,81 +53074,173 @@ OP_StorePtr,
 OP_StoreMemberPtr,
 OP_StoreFloat,
 #endif
-#ifdef GET_INTERP
-case OP_StoreSint8: {
-  if (!Store<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreSint8,
+&Interp_StoreUint8,
+&Interp_StoreSint16,
+&Interp_StoreUint16,
+&Interp_StoreSint32,
+&Interp_StoreUint32,
+&Interp_StoreSint64,
+&Interp_StoreUint64,
+&Interp_StoreIntAP,
+&Interp_StoreIntAPS,
+&Interp_StoreBool,
+&Interp_StoreFixedPoint,
+&Interp_StorePtr,
+&Interp_StoreMemberPtr,
+&Interp_StoreFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreSint8(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreUint8: {
-  if (!Store<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreUint8(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreSint16: {
-  if (!Store<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreSint16(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreUint16: {
-  if (!Store<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreUint16(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreSint32: {
-  if (!Store<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreSint32(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreUint32: {
-  if (!Store<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreUint32(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreSint64: {
-  if (!Store<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreSint64(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreUint64: {
-  if (!Store<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreUint64(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreIntAP: {
-  if (!Store<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreIntAP(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreIntAPS: {
-  if (!Store<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBool: {
-  if (!Store<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBool(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreFixedPoint: {
-  if (!Store<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePtr: {
-  if (!Store<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePtr(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreMemberPtr: {
-  if (!Store<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreFloat: {
-  if (!Store<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreFloat(InterpState &S, CodePtr &PC) {
+  if (!Store<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40476,81 +53494,173 @@ OP_StoreActivatePtr,
 OP_StoreActivateMemberPtr,
 OP_StoreActivateFloat,
 #endif
-#ifdef GET_INTERP
-case OP_StoreActivateSint8: {
-  if (!StoreActivate<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreActivateSint8,
+&Interp_StoreActivateUint8,
+&Interp_StoreActivateSint16,
+&Interp_StoreActivateUint16,
+&Interp_StoreActivateSint32,
+&Interp_StoreActivateUint32,
+&Interp_StoreActivateSint64,
+&Interp_StoreActivateUint64,
+&Interp_StoreActivateIntAP,
+&Interp_StoreActivateIntAPS,
+&Interp_StoreActivateBool,
+&Interp_StoreActivateFixedPoint,
+&Interp_StoreActivatePtr,
+&Interp_StoreActivateMemberPtr,
+&Interp_StoreActivateFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreActivateSint8(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateUint8: {
-  if (!StoreActivate<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateUint8(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateSint16: {
-  if (!StoreActivate<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateSint16(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateUint16: {
-  if (!StoreActivate<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateUint16(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateSint32: {
-  if (!StoreActivate<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateSint32(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateUint32: {
-  if (!StoreActivate<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateUint32(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateSint64: {
-  if (!StoreActivate<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateSint64(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateUint64: {
-  if (!StoreActivate<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateUint64(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateIntAP: {
-  if (!StoreActivate<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateIntAP(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateIntAPS: {
-  if (!StoreActivate<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateBool: {
-  if (!StoreActivate<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateBool(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateFixedPoint: {
-  if (!StoreActivate<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePtr: {
-  if (!StoreActivate<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePtr(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateMemberPtr: {
-  if (!StoreActivate<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivateFloat: {
-  if (!StoreActivate<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivateFloat(InterpState &S, CodePtr &PC) {
+  if (!StoreActivate<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -40804,81 +53914,173 @@ OP_StoreActivatePopPtr,
 OP_StoreActivatePopMemberPtr,
 OP_StoreActivatePopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_StoreActivatePopSint8: {
-  if (!StoreActivatePop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreActivatePopSint8,
+&Interp_StoreActivatePopUint8,
+&Interp_StoreActivatePopSint16,
+&Interp_StoreActivatePopUint16,
+&Interp_StoreActivatePopSint32,
+&Interp_StoreActivatePopUint32,
+&Interp_StoreActivatePopSint64,
+&Interp_StoreActivatePopUint64,
+&Interp_StoreActivatePopIntAP,
+&Interp_StoreActivatePopIntAPS,
+&Interp_StoreActivatePopBool,
+&Interp_StoreActivatePopFixedPoint,
+&Interp_StoreActivatePopPtr,
+&Interp_StoreActivatePopMemberPtr,
+&Interp_StoreActivatePopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreActivatePopSint8(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopUint8: {
-  if (!StoreActivatePop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopUint8(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopSint16: {
-  if (!StoreActivatePop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopSint16(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopUint16: {
-  if (!StoreActivatePop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopUint16(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopSint32: {
-  if (!StoreActivatePop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopSint32(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopUint32: {
-  if (!StoreActivatePop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopUint32(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopSint64: {
-  if (!StoreActivatePop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopSint64(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopUint64: {
-  if (!StoreActivatePop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopUint64(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopIntAP: {
-  if (!StoreActivatePop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopIntAP(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopIntAPS: {
-  if (!StoreActivatePop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopBool: {
-  if (!StoreActivatePop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopBool(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopFixedPoint: {
-  if (!StoreActivatePop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopPtr: {
-  if (!StoreActivatePop<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopPtr(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopMemberPtr: {
-  if (!StoreActivatePop<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreActivatePopFloat: {
-  if (!StoreActivatePop<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreActivatePopFloat(InterpState &S, CodePtr &PC) {
+  if (!StoreActivatePop<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -41129,66 +54331,140 @@ OP_StoreBitFieldIntAPS,
 OP_StoreBitFieldBool,
 OP_StoreBitFieldFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_StoreBitFieldSint8: {
-  if (!StoreBitField<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreBitFieldSint8,
+&Interp_StoreBitFieldUint8,
+&Interp_StoreBitFieldSint16,
+&Interp_StoreBitFieldUint16,
+&Interp_StoreBitFieldSint32,
+&Interp_StoreBitFieldUint32,
+&Interp_StoreBitFieldSint64,
+&Interp_StoreBitFieldUint64,
+&Interp_StoreBitFieldIntAP,
+&Interp_StoreBitFieldIntAPS,
+&Interp_StoreBitFieldBool,
+&Interp_StoreBitFieldFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreBitFieldSint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldUint8: {
-  if (!StoreBitField<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldUint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldSint16: {
-  if (!StoreBitField<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldSint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldUint16: {
-  if (!StoreBitField<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldUint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldSint32: {
-  if (!StoreBitField<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldSint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldUint32: {
-  if (!StoreBitField<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldUint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldSint64: {
-  if (!StoreBitField<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldSint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldUint64: {
-  if (!StoreBitField<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldUint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldIntAP: {
-  if (!StoreBitField<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldIntAP(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldIntAPS: {
-  if (!StoreBitField<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldBool: {
-  if (!StoreBitField<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldBool(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldFixedPoint: {
-  if (!StoreBitField<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StoreBitField<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -41398,66 +54674,140 @@ OP_StoreBitFieldActivateIntAPS,
 OP_StoreBitFieldActivateBool,
 OP_StoreBitFieldActivateFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_StoreBitFieldActivateSint8: {
-  if (!StoreBitFieldActivate<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreBitFieldActivateSint8,
+&Interp_StoreBitFieldActivateUint8,
+&Interp_StoreBitFieldActivateSint16,
+&Interp_StoreBitFieldActivateUint16,
+&Interp_StoreBitFieldActivateSint32,
+&Interp_StoreBitFieldActivateUint32,
+&Interp_StoreBitFieldActivateSint64,
+&Interp_StoreBitFieldActivateUint64,
+&Interp_StoreBitFieldActivateIntAP,
+&Interp_StoreBitFieldActivateIntAPS,
+&Interp_StoreBitFieldActivateBool,
+&Interp_StoreBitFieldActivateFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateSint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateUint8: {
-  if (!StoreBitFieldActivate<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateUint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateSint16: {
-  if (!StoreBitFieldActivate<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateSint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateUint16: {
-  if (!StoreBitFieldActivate<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateUint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateSint32: {
-  if (!StoreBitFieldActivate<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateSint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateUint32: {
-  if (!StoreBitFieldActivate<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateUint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateSint64: {
-  if (!StoreBitFieldActivate<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateSint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateUint64: {
-  if (!StoreBitFieldActivate<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateUint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateIntAP: {
-  if (!StoreBitFieldActivate<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateIntAP(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateIntAPS: {
-  if (!StoreBitFieldActivate<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateBool: {
-  if (!StoreBitFieldActivate<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateBool(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivateFixedPoint: {
-  if (!StoreBitFieldActivate<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivateFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivate<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -41667,66 +55017,140 @@ OP_StoreBitFieldActivatePopIntAPS,
 OP_StoreBitFieldActivatePopBool,
 OP_StoreBitFieldActivatePopFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_StoreBitFieldActivatePopSint8: {
-  if (!StoreBitFieldActivatePop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreBitFieldActivatePopSint8,
+&Interp_StoreBitFieldActivatePopUint8,
+&Interp_StoreBitFieldActivatePopSint16,
+&Interp_StoreBitFieldActivatePopUint16,
+&Interp_StoreBitFieldActivatePopSint32,
+&Interp_StoreBitFieldActivatePopUint32,
+&Interp_StoreBitFieldActivatePopSint64,
+&Interp_StoreBitFieldActivatePopUint64,
+&Interp_StoreBitFieldActivatePopIntAP,
+&Interp_StoreBitFieldActivatePopIntAPS,
+&Interp_StoreBitFieldActivatePopBool,
+&Interp_StoreBitFieldActivatePopFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopSint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopUint8: {
-  if (!StoreBitFieldActivatePop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopUint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopSint16: {
-  if (!StoreBitFieldActivatePop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopSint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopUint16: {
-  if (!StoreBitFieldActivatePop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopUint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopSint32: {
-  if (!StoreBitFieldActivatePop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopSint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopUint32: {
-  if (!StoreBitFieldActivatePop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopUint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopSint64: {
-  if (!StoreBitFieldActivatePop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopSint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopUint64: {
-  if (!StoreBitFieldActivatePop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopUint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopIntAP: {
-  if (!StoreBitFieldActivatePop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopIntAP(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopIntAPS: {
-  if (!StoreBitFieldActivatePop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopBool: {
-  if (!StoreBitFieldActivatePop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopBool(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldActivatePopFixedPoint: {
-  if (!StoreBitFieldActivatePop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldActivatePopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldActivatePop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -41936,66 +55360,140 @@ OP_StoreBitFieldPopIntAPS,
 OP_StoreBitFieldPopBool,
 OP_StoreBitFieldPopFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_StoreBitFieldPopSint8: {
-  if (!StoreBitFieldPop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StoreBitFieldPopSint8,
+&Interp_StoreBitFieldPopUint8,
+&Interp_StoreBitFieldPopSint16,
+&Interp_StoreBitFieldPopUint16,
+&Interp_StoreBitFieldPopSint32,
+&Interp_StoreBitFieldPopUint32,
+&Interp_StoreBitFieldPopSint64,
+&Interp_StoreBitFieldPopUint64,
+&Interp_StoreBitFieldPopIntAP,
+&Interp_StoreBitFieldPopIntAPS,
+&Interp_StoreBitFieldPopBool,
+&Interp_StoreBitFieldPopFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopSint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopUint8: {
-  if (!StoreBitFieldPop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopUint8(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopSint16: {
-  if (!StoreBitFieldPop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopSint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopUint16: {
-  if (!StoreBitFieldPop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopUint16(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopSint32: {
-  if (!StoreBitFieldPop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopSint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopUint32: {
-  if (!StoreBitFieldPop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopUint32(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopSint64: {
-  if (!StoreBitFieldPop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopSint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopUint64: {
-  if (!StoreBitFieldPop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopUint64(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopIntAP: {
-  if (!StoreBitFieldPop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopIntAP(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopIntAPS: {
-  if (!StoreBitFieldPop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopBool: {
-  if (!StoreBitFieldPop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopBool(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StoreBitFieldPopFixedPoint: {
-  if (!StoreBitFieldPop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StoreBitFieldPopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StoreBitFieldPop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -42208,81 +55706,173 @@ OP_StorePopPtr,
 OP_StorePopMemberPtr,
 OP_StorePopFloat,
 #endif
-#ifdef GET_INTERP
-case OP_StorePopSint8: {
-  if (!StorePop<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_StorePopSint8,
+&Interp_StorePopUint8,
+&Interp_StorePopSint16,
+&Interp_StorePopUint16,
+&Interp_StorePopSint32,
+&Interp_StorePopUint32,
+&Interp_StorePopSint64,
+&Interp_StorePopUint64,
+&Interp_StorePopIntAP,
+&Interp_StorePopIntAPS,
+&Interp_StorePopBool,
+&Interp_StorePopFixedPoint,
+&Interp_StorePopPtr,
+&Interp_StorePopMemberPtr,
+&Interp_StorePopFloat,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_StorePopSint8(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopUint8: {
-  if (!StorePop<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopUint8(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopSint16: {
-  if (!StorePop<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopSint16(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopUint16: {
-  if (!StorePop<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopUint16(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopSint32: {
-  if (!StorePop<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopSint32(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopUint32: {
-  if (!StorePop<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopUint32(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopSint64: {
-  if (!StorePop<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopSint64(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopUint64: {
-  if (!StorePop<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopUint64(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopIntAP: {
-  if (!StorePop<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopIntAP(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopIntAPS: {
-  if (!StorePop<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopIntAPS(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopBool: {
-  if (!StorePop<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopBool(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopFixedPoint: {
-  if (!StorePop<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopPtr: {
-  if (!StorePop<PT_Ptr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopPtr(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Ptr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopMemberPtr: {
-  if (!StorePop<PT_MemberPtr>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_MemberPtr>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_StorePopFloat: {
-  if (!StorePop<PT_Float>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_StorePopFloat(InterpState &S, CodePtr &PC) {
+  if (!StorePop<PT_Float>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -42533,66 +56123,140 @@ OP_SubIntAPS,
 OP_SubBool,
 OP_SubFixedPoint,
 #endif
-#ifdef GET_INTERP
-case OP_SubSint8: {
-  if (!Sub<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_SubSint8,
+&Interp_SubUint8,
+&Interp_SubSint16,
+&Interp_SubUint16,
+&Interp_SubSint32,
+&Interp_SubUint32,
+&Interp_SubSint64,
+&Interp_SubUint64,
+&Interp_SubIntAP,
+&Interp_SubIntAPS,
+&Interp_SubBool,
+&Interp_SubFixedPoint,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SubSint8(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubUint8: {
-  if (!Sub<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubUint8(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubSint16: {
-  if (!Sub<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubSint16(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubUint16: {
-  if (!Sub<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubUint16(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubSint32: {
-  if (!Sub<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubSint32(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubUint32: {
-  if (!Sub<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubUint32(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubSint64: {
-  if (!Sub<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubSint64(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubUint64: {
-  if (!Sub<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubUint64(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubIntAP: {
-  if (!Sub<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubIntAP(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubIntAPS: {
-  if (!Sub<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubIntAPS(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubBool: {
-  if (!Sub<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubBool(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubFixedPoint: {
-  if (!Sub<PT_FixedPoint>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubFixedPoint(InterpState &S, CodePtr &PC) {
+  if (!Sub<PT_FixedPoint>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -42801,61 +56465,129 @@ OP_SubOffsetIntAP,
 OP_SubOffsetIntAPS,
 OP_SubOffsetBool,
 #endif
-#ifdef GET_INTERP
-case OP_SubOffsetSint8: {
-  if (!SubOffset<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_SubOffsetSint8,
+&Interp_SubOffsetUint8,
+&Interp_SubOffsetSint16,
+&Interp_SubOffsetUint16,
+&Interp_SubOffsetSint32,
+&Interp_SubOffsetUint32,
+&Interp_SubOffsetSint64,
+&Interp_SubOffsetUint64,
+&Interp_SubOffsetIntAP,
+&Interp_SubOffsetIntAPS,
+&Interp_SubOffsetBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SubOffsetSint8(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetUint8: {
-  if (!SubOffset<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetUint8(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetSint16: {
-  if (!SubOffset<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetSint16(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetUint16: {
-  if (!SubOffset<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetUint16(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetSint32: {
-  if (!SubOffset<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetSint32(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetUint32: {
-  if (!SubOffset<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetUint32(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetSint64: {
-  if (!SubOffset<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetSint64(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetUint64: {
-  if (!SubOffset<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetUint64(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetIntAP: {
-  if (!SubOffset<PT_IntAP>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetIntAP(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_IntAP>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetIntAPS: {
-  if (!SubOffset<PT_IntAPS>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetIntAPS(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_IntAPS>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubOffsetBool: {
-  if (!SubOffset<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_SubOffsetBool(InterpState &S, CodePtr &PC) {
+  if (!SubOffset<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43049,66 +56781,158 @@ OP_SubPtrUint64,
 OP_SubPtrIntAP,
 OP_SubPtrIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_SubPtrSint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Sint8>(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_SubPtrSint8,
+&Interp_SubPtrUint8,
+&Interp_SubPtrSint16,
+&Interp_SubPtrUint16,
+&Interp_SubPtrSint32,
+&Interp_SubPtrUint32,
+&Interp_SubPtrSint64,
+&Interp_SubPtrUint64,
+&Interp_SubPtrIntAP,
+&Interp_SubPtrIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_SubPtrSint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Sint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrUint8: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Uint8>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrUint8(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Uint8>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrSint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Sint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrSint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Sint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrUint16: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Uint16>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrUint16(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Uint16>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrSint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Sint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrSint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Sint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrUint32: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Uint32>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrUint32(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Uint32>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrSint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Sint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrSint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Sint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrUint64: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_Uint64>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrUint64(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_Uint64>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrIntAP: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_IntAP>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_IntAP>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_SubPtrIntAPS: {
-  const auto V0 = ReadArg<bool>(S, PC);
-  if (!SubPtr<PT_IntAPS>(S, OpPC, V0))
-    return false;
-  continue;
+PRESERVE_NONE
+static bool Interp_SubPtrIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<bool>(S, PC);
+    if (!SubPtr<PT_IntAPS>(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43289,12 +57113,23 @@ bool EvalEmitter::emitSubPtrIntAPS( bool A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Subf,
 #endif
-#ifdef GET_INTERP
-case OP_Subf: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!Subf(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_Subf,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Subf(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!Subf(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43321,11 +57156,19 @@ bool EvalEmitter::emitSubf( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_This,
 #endif
-#ifdef GET_INTERP
-case OP_This: {
-  if (!This(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_This,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_This(InterpState &S, CodePtr &PC) {
+  if (!This(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43351,11 +57194,19 @@ bool EvalEmitter::emitThis(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ToMemberPtr,
 #endif
-#ifdef GET_INTERP
-case OP_ToMemberPtr: {
-  if (!ToMemberPtr(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_ToMemberPtr,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ToMemberPtr(InterpState &S, CodePtr &PC) {
+  if (!ToMemberPtr(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43381,11 +57232,19 @@ bool EvalEmitter::emitToMemberPtr(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_Unsupported,
 #endif
-#ifdef GET_INTERP
-case OP_Unsupported: {
-  if (!Unsupported(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_Unsupported,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_Unsupported(InterpState &S, CodePtr &PC) {
+  if (!Unsupported(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43419,51 +57278,107 @@ OP_ZeroSint64,
 OP_ZeroUint64,
 OP_ZeroBool,
 #endif
-#ifdef GET_INTERP
-case OP_ZeroSint8: {
-  if (!Zero<PT_Sint8>(S, OpPC))
+#ifdef GET_INTERPFN_LIST
+&Interp_ZeroSint8,
+&Interp_ZeroUint8,
+&Interp_ZeroSint16,
+&Interp_ZeroUint16,
+&Interp_ZeroSint32,
+&Interp_ZeroUint32,
+&Interp_ZeroSint64,
+&Interp_ZeroUint64,
+&Interp_ZeroBool,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ZeroSint8(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Sint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroUint8: {
-  if (!Zero<PT_Uint8>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroUint8(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Uint8>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroSint16: {
-  if (!Zero<PT_Sint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroSint16(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Sint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroUint16: {
-  if (!Zero<PT_Uint16>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroUint16(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Uint16>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroSint32: {
-  if (!Zero<PT_Sint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroSint32(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Sint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroUint32: {
-  if (!Zero<PT_Uint32>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroUint32(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Uint32>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroSint64: {
-  if (!Zero<PT_Sint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroSint64(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Sint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroUint64: {
-  if (!Zero<PT_Uint64>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroUint64(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Uint64>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
-case OP_ZeroBool: {
-  if (!Zero<PT_Bool>(S, OpPC))
+PRESERVE_NONE
+static bool Interp_ZeroBool(InterpState &S, CodePtr &PC) {
+  if (!Zero<PT_Bool>(S, PC))
     return false;
-  continue;
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43620,12 +57535,23 @@ bool EvalEmitter::emitZeroBool(SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ZeroIntAP,
 #endif
-#ifdef GET_INTERP
-case OP_ZeroIntAP: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ZeroIntAP(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ZeroIntAP,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ZeroIntAP(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ZeroIntAP(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM
@@ -43652,12 +57578,23 @@ bool EvalEmitter::emitZeroIntAP( uint32_t A0, SourceInfo L) {
 #ifdef GET_OPCODE_NAMES
 OP_ZeroIntAPS,
 #endif
-#ifdef GET_INTERP
-case OP_ZeroIntAPS: {
-  const auto V0 = ReadArg<uint32_t>(S, PC);
-  if (!ZeroIntAPS(S, OpPC, V0))
-    return false;
-  continue;
+#ifdef GET_INTERPFN_LIST
+&Interp_ZeroIntAPS,
+#endif
+#ifdef GET_INTERPFN_DISPATCHERS
+PRESERVE_NONE
+static bool Interp_ZeroIntAPS(InterpState &S, CodePtr &PC) {
+  {
+    CodePtr OpPC = PC;
+    const auto V0 = ReadArg<uint32_t>(S, PC);
+    if (!ZeroIntAPS(S, OpPC, V0))
+      return false;
+  }
+#if USE_TAILCALLS
+  MUSTTAIL return InterpNext(S, PC);
+#else
+  return true;
+#endif
 }
 #endif
 #ifdef GET_DISASM

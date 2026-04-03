@@ -25,34 +25,67 @@ license {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangToolingInclusions_a",
-    srcs: ["clang/lib/Tooling/Inclusions/*.cpp"],
+    name: "llvm-project_lib_libclangSupport_a",
+    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Tooling/Inclusions",
+        "clang/lib/Support",
         "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangToolingCore_a",
-    srcs: ["clang/lib/Tooling/Core/*.cpp"],
+    name: "llvm-project_lib_libLLVMSupport_a",
+    srcs: [
+        "llvm/lib/Support/*.c",
+        "llvm/lib/Support/*.cpp",
+        "llvm/lib/Support/BLAKE3/blake3.c",
+        "llvm/lib/Support/BLAKE3/blake3_dispatch.c",
+        "llvm/lib/Support/BLAKE3/blake3_neon.c",
+        "llvm/lib/Support/BLAKE3/blake3_portable.c",
+    ],
+    cflags: [
+        "-DBLAKE3_NO_AVX2",
+        "-DBLAKE3_NO_AVX512",
+        "-DBLAKE3_NO_SSE2",
+        "-DBLAKE3_NO_SSE41",
+    ],
+    shared_libs: ["libz"],
+    local_include_dirs: [
+        "llvm/../third-party/siphash/include",
+        "llvm/lib/Support",
+        "llvm/lib/Support/BLAKE3",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMDemangle_a",
+    srcs: ["llvm/lib/Demangle/*.cpp"],
+    local_include_dirs: ["llvm/lib/Demangle"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangSerialization_a",
+    srcs: ["clang/lib/Serialization/*.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Tooling/Core",
+        "clang/lib/Serialization",
         "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangRewrite_a",
-    srcs: ["clang/lib/Rewrite/*.cpp"],
+    name: "llvm-project_lib_libclangSema_a",
+    srcs: ["clang/lib/Sema/*.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Rewrite",
+        "clang/lib/Sema",
         "cmake_generated/tools/clang/include",
+        "cmake_generated/tools/clang/lib/Sema",
     ],
     defaults: ["llvm-project-defaults"],
 }
@@ -101,38 +134,6 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMTargetParser_a",
     srcs: ["llvm/lib/TargetParser/*.cpp"],
     local_include_dirs: ["llvm/lib/TargetParser"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMSupport_a",
-    srcs: [
-        "llvm/lib/Support/*.c",
-        "llvm/lib/Support/*.cpp",
-        "llvm/lib/Support/BLAKE3/blake3.c",
-        "llvm/lib/Support/BLAKE3/blake3_dispatch.c",
-        "llvm/lib/Support/BLAKE3/blake3_neon.c",
-        "llvm/lib/Support/BLAKE3/blake3_portable.c",
-    ],
-    cflags: [
-        "-DBLAKE3_NO_AVX2",
-        "-DBLAKE3_NO_AVX512",
-        "-DBLAKE3_NO_SSE2",
-        "-DBLAKE3_NO_SSE41",
-    ],
-    shared_libs: ["libz"],
-    local_include_dirs: [
-        "llvm/../third-party/siphash/include",
-        "llvm/lib/Support",
-        "llvm/lib/Support/BLAKE3",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMDemangle_a",
-    srcs: ["llvm/lib/Demangle/*.cpp"],
-    local_include_dirs: ["llvm/lib/Demangle"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -339,51 +340,6 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendAtomic_a",
     srcs: ["llvm/lib/Frontend/Atomic/Atomic.cpp"],
     local_include_dirs: ["llvm/lib/Frontend/Atomic"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangSupport_a",
-    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Support",
-        "cmake_generated/tools/clang/include",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangSerialization_a",
-    srcs: ["clang/lib/Serialization/*.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Serialization",
-        "cmake_generated/tools/clang/include",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangSema_a",
-    srcs: ["clang/lib/Sema/*.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Sema",
-        "cmake_generated/tools/clang/include",
-        "cmake_generated/tools/clang/lib/Sema",
-    ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libclangFormat_a",
-    srcs: ["clang/lib/Format/*.cpp"],
-    local_include_dirs: [
-        "clang/include",
-        "clang/lib/Format",
-        "cmake_generated/tools/clang/include",
-    ],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -806,6 +762,152 @@ cc_binary {
 }
 
 cc_binary {
+    name: "llvm-project_bin_llvm-ar",
+    srcs: [
+        "cmake_generated/tools/llvm-ar/llvm-ar-driver.cpp",
+        "llvm/tools/llvm-ar/llvm-ar.cpp",
+    ],
+    shared_libs: ["libz"],
+    static_libs: [
+        "llvm-project_lib_libLLVMAsmParser_a",
+        "llvm-project_lib_libLLVMBinaryFormat_a",
+        "llvm-project_lib_libLLVMBitReader_a",
+        "llvm-project_lib_libLLVMBitstreamReader_a",
+        "llvm-project_lib_libLLVMCore_a",
+        "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
+        "llvm-project_lib_libLLVMDemangle_a",
+        "llvm-project_lib_libLLVMDlltoolDriver_a",
+        "llvm-project_lib_libLLVMIRReader_a",
+        "llvm-project_lib_libLLVMLibDriver_a",
+        "llvm-project_lib_libLLVMMCParser_a",
+        "llvm-project_lib_libLLVMMC_a",
+        "llvm-project_lib_libLLVMObject_a",
+        "llvm-project_lib_libLLVMOption_a",
+        "llvm-project_lib_libLLVMRemarks_a",
+        "llvm-project_lib_libLLVMSupport_a",
+        "llvm-project_lib_libLLVMTargetParser_a",
+        "llvm-project_lib_libLLVMTextAPI_a",
+    ],
+    local_include_dirs: [
+        "cmake_generated/tools/llvm-ar",
+        "llvm/tools/llvm-ar",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMLibDriver_a",
+    srcs: ["llvm/lib/ToolDrivers/llvm-lib/LibDriver.cpp"],
+    local_include_dirs: [
+        "cmake_generated/lib/ToolDrivers/llvm-lib",
+        "llvm/lib/ToolDrivers/llvm-lib",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMTableGen_a",
+    srcs: ["llvm/lib/TableGen/*.cpp"],
+    local_include_dirs: ["llvm/lib/TableGen"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_binary {
+    name: "llvm-project_bin_llvm-tblgen",
+    srcs: [
+        "llvm/utils/TableGen/AsmMatcherEmitter.cpp",
+        "llvm/utils/TableGen/AsmWriterEmitter.cpp",
+        "llvm/utils/TableGen/Basic/*.cpp",
+        "llvm/utils/TableGen/CTagsEmitter.cpp",
+        "llvm/utils/TableGen/CallingConvEmitter.cpp",
+        "llvm/utils/TableGen/CodeEmitterGen.cpp",
+        "llvm/utils/TableGen/CodeGenMapTable.cpp",
+        "llvm/utils/TableGen/Common/*.cpp",
+        "llvm/utils/TableGen/Common/GlobalISel/*.cpp",
+        "llvm/utils/TableGen/CompressInstEmitter.cpp",
+        "llvm/utils/TableGen/DAGISelEmitter.cpp",
+        "llvm/utils/TableGen/DAGISelMatcher.cpp",
+        "llvm/utils/TableGen/DAGISelMatcherEmitter.cpp",
+        "llvm/utils/TableGen/DAGISelMatcherGen.cpp",
+        "llvm/utils/TableGen/DAGISelMatcherOpt.cpp",
+        "llvm/utils/TableGen/DFAEmitter.cpp",
+        "llvm/utils/TableGen/DFAPacketizerEmitter.cpp",
+        "llvm/utils/TableGen/DXILEmitter.cpp",
+        "llvm/utils/TableGen/DecoderEmitter.cpp",
+        "llvm/utils/TableGen/DecoderTableEmitter.cpp",
+        "llvm/utils/TableGen/DecoderTree.cpp",
+        "llvm/utils/TableGen/DisassemblerEmitter.cpp",
+        "llvm/utils/TableGen/ExegesisEmitter.cpp",
+        "llvm/utils/TableGen/FastISelEmitter.cpp",
+        "llvm/utils/TableGen/GlobalISelCombinerEmitter.cpp",
+        "llvm/utils/TableGen/GlobalISelEmitter.cpp",
+        "llvm/utils/TableGen/InstrDocsEmitter.cpp",
+        "llvm/utils/TableGen/InstrInfoEmitter.cpp",
+        "llvm/utils/TableGen/MacroFusionPredicatorEmitter.cpp",
+        "llvm/utils/TableGen/OptionParserEmitter.cpp",
+        "llvm/utils/TableGen/OptionRSTEmitter.cpp",
+        "llvm/utils/TableGen/PseudoLoweringEmitter.cpp",
+        "llvm/utils/TableGen/RegisterBankEmitter.cpp",
+        "llvm/utils/TableGen/RegisterInfoEmitter.cpp",
+        "llvm/utils/TableGen/SDNodeInfoEmitter.cpp",
+        "llvm/utils/TableGen/SearchableTableEmitter.cpp",
+        "llvm/utils/TableGen/SubtargetEmitter.cpp",
+        "llvm/utils/TableGen/WebAssemblyDisassemblerEmitter.cpp",
+        "llvm/utils/TableGen/X86DisassemblerTables.cpp",
+        "llvm/utils/TableGen/X86FoldTablesEmitter.cpp",
+        "llvm/utils/TableGen/X86InstrMappingEmitter.cpp",
+        "llvm/utils/TableGen/X86MnemonicTables.cpp",
+        "llvm/utils/TableGen/X86ModRMFilters.cpp",
+        "llvm/utils/TableGen/X86RecognizableInstr.cpp",
+        "llvm/utils/TableGen/llvm-tblgen.cpp",
+    ],
+    shared_libs: ["libz"],
+    static_libs: [
+        "llvm-project_lib_libLLVMCodeGenTypes_a",
+        "llvm-project_lib_libLLVMDemangle_a",
+        "llvm-project_lib_libLLVMSupport_a",
+        "llvm-project_lib_libLLVMTableGen_a",
+    ],
+    local_include_dirs: [
+        "llvm/utils/TableGen",
+        "llvm/utils/TableGen/Basic",
+        "llvm/utils/TableGen/Basic/..",
+        "llvm/utils/TableGen/Common",
+        "llvm/utils/TableGen/Common/..",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_binary {
+    name: "llvm-project_bin_llvm-min-tblgen",
+    srcs: [
+        "llvm/utils/TableGen/Basic/*.cpp",
+        "llvm/utils/TableGen/llvm-min-tblgen.cpp",
+    ],
+    shared_libs: ["libz"],
+    static_libs: [
+        "llvm-project_lib_libLLVMDemangle_a",
+        "llvm-project_lib_libLLVMSupport_a",
+        "llvm-project_lib_libLLVMTableGen_a",
+    ],
+    local_include_dirs: [
+        "llvm/utils/TableGen",
+        "llvm/utils/TableGen/Basic",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMDlltoolDriver_a",
+    srcs: ["llvm/lib/ToolDrivers/llvm-dlltool/DlltoolDriver.cpp"],
+    local_include_dirs: [
+        "cmake_generated/lib/ToolDrivers/llvm-dlltool",
+        "llvm/lib/ToolDrivers/llvm-dlltool",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_binary {
     name: "llvm-project_bin_clang-23",
     srcs: [
         "clang/tools/driver/*.cpp",
@@ -881,19 +983,20 @@ cc_binary {
         "llvm-project_lib_libclangBasic_a",
         "llvm-project_lib_libclangCodeGen_a",
         "llvm-project_lib_libclangCrossTU_a",
+        "llvm-project_lib_libclangDependencyScanning_a",
         "llvm-project_lib_libclangDriver_a",
         "llvm-project_lib_libclangEdit_a",
         "llvm-project_lib_libclangExtractAPI_a",
-        "llvm-project_lib_libclangFormat_a",
         "llvm-project_lib_libclangFrontendTool_a",
         "llvm-project_lib_libclangFrontend_a",
-        "llvm-project_lib_libclangIndex_a",
         "llvm-project_lib_libclangInstallAPI_a",
         "llvm-project_lib_libclangLex_a",
         "llvm-project_lib_libclangOptions_a",
         "llvm-project_lib_libclangParse_a",
         "llvm-project_lib_libclangRewriteFrontend_a",
         "llvm-project_lib_libclangRewrite_a",
+        "llvm-project_lib_libclangScalableStaticAnalysisFrameworkCore_a",
+        "llvm-project_lib_libclangScalableStaticAnalysisFrameworkFrontend_a",
         "llvm-project_lib_libclangSema_a",
         "llvm-project_lib_libclangSerialization_a",
         "llvm-project_lib_libclangStaticAnalyzerCheckers_a",
@@ -901,13 +1004,46 @@ cc_binary {
         "llvm-project_lib_libclangStaticAnalyzerFrontend_a",
         "llvm-project_lib_libclangSupport_a",
         "llvm-project_lib_libclangToolingCore_a",
-        "llvm-project_lib_libclangToolingInclusions_a",
+        "llvm-project_lib_libclangUnifiedSymbolResolution_a",
     ],
     local_include_dirs: [
         "clang/include",
         "clang/tools/driver",
         "cmake_generated/tools/clang/include",
         "cmake_generated/tools/clang/tools/driver",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangUnifiedSymbolResolution_a",
+    srcs: ["clang/lib/UnifiedSymbolResolution/USRGeneration.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/UnifiedSymbolResolution",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangToolingCore_a",
+    srcs: ["clang/lib/Tooling/Core/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Tooling/Core",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangRewrite_a",
+    srcs: ["clang/lib/Rewrite/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Rewrite",
+        "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
@@ -935,11 +1071,32 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangIndex_a",
-    srcs: ["clang/lib/Index/*.cpp"],
+    name: "llvm-project_lib_libclangScalableStaticAnalysisFrameworkFrontend_a",
+    srcs: ["clang/lib/ScalableStaticAnalysisFramework/Frontend/TUSummaryExtractorFrontendAction.cpp"],
     local_include_dirs: [
         "clang/include",
-        "clang/lib/Index",
+        "clang/lib/ScalableStaticAnalysisFramework/Frontend",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangScalableStaticAnalysisFrameworkCore_a",
+    srcs: [
+        "clang/lib/ScalableStaticAnalysisFramework/Core/ASTEntityMapping.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/EntityLinker/EntityLinker.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/Model/*.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/Serialization/JSONFormat/*.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/Serialization/SerializationFormatRegistry.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/SummaryData/*.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/Support/ErrorBuilder.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/TUSummary/*.cpp",
+        "clang/lib/ScalableStaticAnalysisFramework/Core/WholeProgramAnalysis/*.cpp",
+    ],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/ScalableStaticAnalysisFramework/Core",
         "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
@@ -955,6 +1112,17 @@ cc_library_static {
     local_include_dirs: [
         "clang/include",
         "clang/lib/Driver",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangDependencyScanning_a",
+    srcs: ["clang/lib/DependencyScanning/*.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/DependencyScanning",
         "cmake_generated/tools/clang/include",
     ],
     defaults: ["llvm-project-defaults"],
@@ -1077,108 +1245,6 @@ cc_defaults {
         "llvm/include",
     ],
     defaults: ["llvm-project-raw-defaults"],
-}
-
-cc_defaults {
-    name: "llvm-project-all-libs-defaults",
-    header_libs: [
-        "clang-includes",
-        "llvm-includes",
-    ],
-    static_libs: [
-        "llvm-project_lib_libLLVMAggressiveInstCombine_a",
-        "llvm-project_lib_libLLVMAnalysis_a",
-        "llvm-project_lib_libLLVMAsmParser_a",
-        "llvm-project_lib_libLLVMBinaryFormat_a",
-        "llvm-project_lib_libLLVMBitReader_a",
-        "llvm-project_lib_libLLVMBitWriter_a",
-        "llvm-project_lib_libLLVMBitstreamReader_a",
-        "llvm-project_lib_libLLVMCFGuard_a",
-        "llvm-project_lib_libLLVMCGData_a",
-        "llvm-project_lib_libLLVMCodeGenTypes_a",
-        "llvm-project_lib_libLLVMCodeGen_a",
-        "llvm-project_lib_libLLVMCore_a",
-        "llvm-project_lib_libLLVMCoroutines_a",
-        "llvm-project_lib_libLLVMCoverage_a",
-        "llvm-project_lib_libLLVMDebugInfoBTF_a",
-        "llvm-project_lib_libLLVMDebugInfoCodeView_a",
-        "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
-        "llvm-project_lib_libLLVMDebugInfoDWARF_a",
-        "llvm-project_lib_libLLVMDebugInfoGSYM_a",
-        "llvm-project_lib_libLLVMDebugInfoMSF_a",
-        "llvm-project_lib_libLLVMDebugInfoPDB_a",
-        "llvm-project_lib_libLLVMDemangle_a",
-        "llvm-project_lib_libLLVMExtensions_a",
-        "llvm-project_lib_libLLVMFrontendAtomic_a",
-        "llvm-project_lib_libLLVMFrontendDirective_a",
-        "llvm-project_lib_libLLVMFrontendDriver_a",
-        "llvm-project_lib_libLLVMFrontendHLSL_a",
-        "llvm-project_lib_libLLVMFrontendOffloading_a",
-        "llvm-project_lib_libLLVMFrontendOpenMP_a",
-        "llvm-project_lib_libLLVMGlobalISel_a",
-        "llvm-project_lib_libLLVMHipStdPar_a",
-        "llvm-project_lib_libLLVMIRPrinter_a",
-        "llvm-project_lib_libLLVMIRReader_a",
-        "llvm-project_lib_libLLVMInstCombine_a",
-        "llvm-project_lib_libLLVMInstrumentation_a",
-        "llvm-project_lib_libLLVMLTO_a",
-        "llvm-project_lib_libLLVMLinker_a",
-        "llvm-project_lib_libLLVMMCParser_a",
-        "llvm-project_lib_libLLVMMC_a",
-        "llvm-project_lib_libLLVMObjCARCOpts_a",
-        "llvm-project_lib_libLLVMObjectYAML_a",
-        "llvm-project_lib_libLLVMObject_a",
-        "llvm-project_lib_libLLVMOptDriver_a",
-        "llvm-project_lib_libLLVMOption_a",
-        "llvm-project_lib_libLLVMPasses_a",
-        "llvm-project_lib_libLLVMPlugins_a",
-        "llvm-project_lib_libLLVMProfileData_a",
-        "llvm-project_lib_libLLVMRemarks_a",
-        "llvm-project_lib_libLLVMSandboxIR_a",
-        "llvm-project_lib_libLLVMScalarOpts_a",
-        "llvm-project_lib_libLLVMSelectionDAG_a",
-        "llvm-project_lib_libLLVMSupport_a",
-        "llvm-project_lib_libLLVMSymbolize_a",
-        "llvm-project_lib_libLLVMTargetParser_a",
-        "llvm-project_lib_libLLVMTarget_a",
-        "llvm-project_lib_libLLVMTextAPIBinaryReader_a",
-        "llvm-project_lib_libLLVMTextAPI_a",
-        "llvm-project_lib_libLLVMTransformUtils_a",
-        "llvm-project_lib_libLLVMVectorize_a",
-        "llvm-project_lib_libLLVMWindowsDriver_a",
-        "llvm-project_lib_libLLVMipo_a",
-        "llvm-project_lib_libclangAPINotes_a",
-        "llvm-project_lib_libclangASTMatchers_a",
-        "llvm-project_lib_libclangAST_a",
-        "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
-        "llvm-project_lib_libclangAnalysis_a",
-        "llvm-project_lib_libclangBasic_a",
-        "llvm-project_lib_libclangCodeGen_a",
-        "llvm-project_lib_libclangCrossTU_a",
-        "llvm-project_lib_libclangDriver_a",
-        "llvm-project_lib_libclangEdit_a",
-        "llvm-project_lib_libclangExtractAPI_a",
-        "llvm-project_lib_libclangFormat_a",
-        "llvm-project_lib_libclangFrontendTool_a",
-        "llvm-project_lib_libclangFrontend_a",
-        "llvm-project_lib_libclangIndex_a",
-        "llvm-project_lib_libclangInstallAPI_a",
-        "llvm-project_lib_libclangLex_a",
-        "llvm-project_lib_libclangOptions_a",
-        "llvm-project_lib_libclangParse_a",
-        "llvm-project_lib_libclangRewriteFrontend_a",
-        "llvm-project_lib_libclangRewrite_a",
-        "llvm-project_lib_libclangSema_a",
-        "llvm-project_lib_libclangSerialization_a",
-        "llvm-project_lib_libclangStaticAnalyzerCheckers_a",
-        "llvm-project_lib_libclangStaticAnalyzerCore_a",
-        "llvm-project_lib_libclangStaticAnalyzerFrontend_a",
-        "llvm-project_lib_libclangSupport_a",
-        "llvm-project_lib_libclangToolingCore_a",
-        "llvm-project_lib_libclangToolingInclusions_a",
-    ],
-    shared_libs: ["libz"],
-    cflags: ["-DHAVE_LLVM=0x1700"],
 }
 
 filegroup {

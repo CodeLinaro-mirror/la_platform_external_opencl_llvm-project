@@ -2138,6 +2138,9 @@ int priority;
 
 const IdentifierInfo * environment;
 
+VersionTuple origAnyAppleOSVersion;
+
+
 public:
   enum Spelling {
     GNU_availability = 0,
@@ -2148,12 +2151,29 @@ public:
   };
 
   // Factory methods
+  static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, const AttributeCommonInfo &CommonInfo);
+  static AvailabilityAttr *Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, const AttributeCommonInfo &CommonInfo);
+  static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, SourceRange Range = {}, Spelling S = GNU_availability);
+  static AvailabilityAttr *Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, SourceRange Range = {}, Spelling S = GNU_availability);
   static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo);
   static AvailabilityAttr *Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo);
   static AvailabilityAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, SourceRange Range = {}, Spelling S = GNU_availability);
   static AvailabilityAttr *Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, SourceRange Range = {}, Spelling S = GNU_availability);
 
   // Constructors
+  AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , const IdentifierInfo * Platform
+              , VersionTuple Introduced
+              , VersionTuple Deprecated
+              , VersionTuple Obsoleted
+              , bool Unavailable
+              , llvm::StringRef Message
+              , bool Strict
+              , llvm::StringRef Replacement
+              , int Priority
+              , const IdentifierInfo * Environment
+              , VersionTuple OrigAnyAppleOSVersion
+             );
   AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
               , const IdentifierInfo * Platform
               , VersionTuple Introduced
@@ -2238,6 +2258,13 @@ public:
     return environment;
   }
 
+  VersionTuple getOrigAnyAppleOSVersion() const {
+    return origAnyAppleOSVersion;
+  }
+  void setOrigAnyAppleOSVersion(ASTContext &C, VersionTuple V) {
+    origAnyAppleOSVersion = V;
+  }
+
   bool isEquivalent(const AvailabilityAttr &Other, StructuralEquivalenceContext &Context) const;
 static llvm::StringRef getPrettyPlatformName(llvm::StringRef Platform) {
     return llvm::StringSwitch<llvm::StringRef>(Platform)
@@ -2256,6 +2283,7 @@ static llvm::StringRef getPrettyPlatformName(llvm::StringRef Platform) {
              .Case("maccatalyst_app_extension", "macCatalyst (App Extension)")
              .Case("xros", "visionOS")
              .Case("xros_app_extension", "visionOS (App Extension)")
+             .Case("anyappleos", "any Apple OS")
              .Case("swift", "Swift")
              .Case("shadermodel", "Shader Model")
              .Case("ohos", "OpenHarmony OS")
@@ -2275,6 +2303,7 @@ static llvm::StringRef getPlatformNameSourceSpelling(llvm::StringRef Platform) {
              .Case("maccatalyst_app_extension", "macCatalystApplicationExtension")
              .Case("xros", "visionOS")
              .Case("xros_app_extension", "visionOSApplicationExtension")
+             .Case("anyappleos", "anyAppleOS")
              .Case("zos", "z/OS")
              .Case("shadermodel", "ShaderModel")
              .Default(Platform);
@@ -2297,6 +2326,7 @@ static llvm::StringRef canonicalizePlatformName(llvm::StringRef Platform) {
              .Case("visionOSApplicationExtension", "xros_app_extension")
              .Case("visionos", "xros")
              .Case("visionos_app_extension", "xros_app_extension")
+             .Case("anyAppleOS", "anyappleos")
              .Case("ShaderModel", "shadermodel")
              .Default(Platform);
 }
@@ -2328,6 +2358,8 @@ static std::vector<llvm::StringRef> equivalentPlatformNames(llvm::StringRef Plat
              .Case("xros_app_extension", {"visionOSApplicationExtension", "visionos_app_extension", "xros_app_extension"})
              .Case("visionOSApplicationExtension", {"visionOSApplicationExtension", "visionos_app_extension", "xros_app_extension"})
              .Case("visionos_app_extension", {"visionOSApplicationExtension", "visionos_app_extension", "xros_app_extension"})
+             .Case("anyappleos", {"anyappleos", "anyAppleOS"})
+             .Case("anyAppleOS", {"anyappleos", "anyAppleOS"})
              .Default({Platform});
 }
 static llvm::Triple::EnvironmentType getEnvironmentType(llvm::StringRef Environment) {
@@ -6068,27 +6100,33 @@ public:
 };
 
 class CLANG_ABI GuardedByAttr : public InheritableAttr {
-Expr * arg;
+  unsigned args_Size;
+  Expr * *args_;
 
 public:
   // Factory methods
-  static GuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo);
-  static GuardedByAttr *Create(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo);
-  static GuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * Arg, SourceRange Range = {});
-  static GuardedByAttr *Create(ASTContext &Ctx, Expr * Arg, SourceRange Range = {});
+  static GuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
+  static GuardedByAttr *Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
+  static GuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range = {});
+  static GuardedByAttr *Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range = {});
 
   // Constructors
   GuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * Arg
+              , Expr * *Args, unsigned ArgsSize
+             );
+  GuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              );
 
   GuardedByAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  Expr * getArg() const {
-    return arg;
-  }
+  typedef Expr ** args_iterator;
+  args_iterator args_begin() const { return args_; }
+  args_iterator args_end() const { return args_ + args_Size; }
+  unsigned args_size() const { return args_Size; }
+  llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
+
 
   bool isEquivalent(const GuardedByAttr &Other, StructuralEquivalenceContext &Context) const;
 
@@ -6198,6 +6236,35 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLAppliedSemantic; }
+};
+
+class CLANG_ABI HLSLAssociatedResourceDeclAttr : public InheritableAttr {
+VarDecl * resDecl;
+
+public:
+  // Factory methods
+  static HLSLAssociatedResourceDeclAttr *CreateImplicit(ASTContext &Ctx, VarDecl * ResDecl, const AttributeCommonInfo &CommonInfo);
+  static HLSLAssociatedResourceDeclAttr *Create(ASTContext &Ctx, VarDecl * ResDecl, const AttributeCommonInfo &CommonInfo);
+  static HLSLAssociatedResourceDeclAttr *CreateImplicit(ASTContext &Ctx, VarDecl * ResDecl, SourceRange Range = {});
+  static HLSLAssociatedResourceDeclAttr *Create(ASTContext &Ctx, VarDecl * ResDecl, SourceRange Range = {});
+
+  // Constructors
+  HLSLAssociatedResourceDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , VarDecl * ResDecl
+             );
+
+  HLSLAssociatedResourceDeclAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  VarDecl * getResDecl() const {
+    return resDecl;
+  }
+
+  bool isEquivalent(const HLSLAssociatedResourceDeclAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLAssociatedResourceDecl; }
 };
 
 class CLANG_ABI HLSLContainedTypeAttr : public TypeAttr {
@@ -6714,6 +6781,38 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLResourceClass; }
 };
 
+class CLANG_ABI HLSLResourceDimensionAttr : public TypeAttr {
+private:
+  llvm::hlsl::ResourceDimension dimension;
+
+public:
+  // Factory methods
+  static HLSLResourceDimensionAttr *CreateImplicit(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, const AttributeCommonInfo &CommonInfo);
+  static HLSLResourceDimensionAttr *Create(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, const AttributeCommonInfo &CommonInfo);
+  static HLSLResourceDimensionAttr *CreateImplicit(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, SourceRange Range = {});
+  static HLSLResourceDimensionAttr *Create(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, SourceRange Range = {});
+
+  // Constructors
+  HLSLResourceDimensionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , llvm::hlsl::ResourceDimension Dimension
+             );
+
+  HLSLResourceDimensionAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  llvm::hlsl::ResourceDimension getDimension() const {
+    return dimension;
+  }
+
+  static bool ConvertStrToResourceDimension(StringRef Val, llvm::hlsl::ResourceDimension &Out);
+  static const char *ConvertResourceDimensionToStr(llvm::hlsl::ResourceDimension Val);
+  bool isEquivalent(const HLSLResourceDimensionAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLResourceDimension; }
+};
+
 class CLANG_ABI HLSLShaderAttr : public InheritableAttr {
 private:
   llvm::Triple::EnvironmentType type;
@@ -6887,6 +6986,35 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkExtBuiltinInput; }
+};
+
+class CLANG_ABI HLSLVkExtBuiltinOutputAttr : public InheritableAttr {
+unsigned builtIn;
+
+public:
+  // Factory methods
+  static HLSLVkExtBuiltinOutputAttr *CreateImplicit(ASTContext &Ctx, unsigned BuiltIn, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkExtBuiltinOutputAttr *Create(ASTContext &Ctx, unsigned BuiltIn, const AttributeCommonInfo &CommonInfo);
+  static HLSLVkExtBuiltinOutputAttr *CreateImplicit(ASTContext &Ctx, unsigned BuiltIn, SourceRange Range = {});
+  static HLSLVkExtBuiltinOutputAttr *Create(ASTContext &Ctx, unsigned BuiltIn, SourceRange Range = {});
+
+  // Constructors
+  HLSLVkExtBuiltinOutputAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , unsigned BuiltIn
+             );
+
+  HLSLVkExtBuiltinOutputAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  unsigned getBuiltIn() const {
+    return builtIn;
+  }
+
+  bool isEquivalent(const HLSLVkExtBuiltinOutputAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HLSLVkExtBuiltinOutput; }
 };
 
 class CLANG_ABI HLSLVkLocationAttr : public HLSLAnnotationAttr {
@@ -7705,7 +7833,8 @@ public:
     PipelineDisabled,
     PipelineInitiationInterval,
     Distribute,
-    VectorizePredicate
+    VectorizePredicate,
+    LICMDisabled
   };
 private:
   LoopHintAttr::OptionType option;
@@ -7786,6 +7915,7 @@ public:
     case PipelineInitiationInterval: return "pipeline_initiation_interval";
     case Distribute: return "distribute";
     case VectorizePredicate: return "vectorize_predicate";
+    case LICMDisabled: return "licm";
     }
     llvm_unreachable("Unhandled LoopHint option.");
   }
@@ -9125,6 +9255,36 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::NoEscape; }
 };
 
+class CLANG_ABI NoFieldProtectionAttr : public InheritableAttr {
+public:
+  enum Spelling {
+    GNU_no_field_protection = 0,
+    CXX11_clang_no_field_protection = 1,
+    C23_clang_no_field_protection = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static NoFieldProtectionAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static NoFieldProtectionAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static NoFieldProtectionAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_no_field_protection);
+  static NoFieldProtectionAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_no_field_protection);
+
+  // Constructors
+  NoFieldProtectionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  NoFieldProtectionAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const NoFieldProtectionAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::NoFieldProtection; }
+};
+
 class CLANG_ABI NoInlineAttr : public DeclOrStmtAttr {
 public:
   enum Spelling {
@@ -9283,6 +9443,36 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoMips16; }
+};
+
+class CLANG_ABI NoOutlineAttr : public DeclOrStmtAttr {
+public:
+  enum Spelling {
+    GNU_no_outline = 0,
+    CXX11_clang_no_outline = 1,
+    C23_clang_no_outline = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static NoOutlineAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static NoOutlineAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static NoOutlineAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_no_outline);
+  static NoOutlineAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_no_outline);
+
+  // Constructors
+  NoOutlineAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  NoOutlineAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const NoOutlineAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::NoOutline; }
 };
 
 class CLANG_ABI NoProfileFunctionAttr : public InheritableAttr {
@@ -10184,7 +10374,8 @@ public:
   enum MapTypeTy {
     MT_To,
     MT_Enter,
-    MT_Link
+    MT_Link,
+    MT_Local
   };
 private:
   OMPDeclareTargetDeclAttr::MapTypeTy mapType;
@@ -10406,6 +10597,28 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::OMPReferencedVar; }
+};
+
+class CLANG_ABI OMPTargetIndirectCallAttr : public InheritableAttr {
+public:
+  // Factory methods
+  static OMPTargetIndirectCallAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static OMPTargetIndirectCallAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static OMPTargetIndirectCallAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {});
+  static OMPTargetIndirectCallAttr *Create(ASTContext &Ctx, SourceRange Range = {});
+
+  // Constructors
+  OMPTargetIndirectCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  OMPTargetIndirectCallAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const OMPTargetIndirectCallAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::OMPTargetIndirectCall; }
 };
 
 class CLANG_ABI OMPThreadPrivateDeclAttr : public InheritableAttr {
@@ -11913,6 +12126,43 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::OptimizeNone; }
 };
 
+class CLANG_ABI OverflowBehaviorAttr : public TypeAttr {
+const IdentifierInfo * behaviorKind;
+
+public:
+  enum Spelling {
+    GNU_overflow_behavior = 0,
+    CXX11_clang_overflow_behavior = 1,
+    C23_clang_overflow_behavior = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static OverflowBehaviorAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, const AttributeCommonInfo &CommonInfo);
+  static OverflowBehaviorAttr *Create(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, const AttributeCommonInfo &CommonInfo);
+  static OverflowBehaviorAttr *CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, SourceRange Range = {}, Spelling S = GNU_overflow_behavior);
+  static OverflowBehaviorAttr *Create(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, SourceRange Range = {}, Spelling S = GNU_overflow_behavior);
+
+  // Constructors
+  OverflowBehaviorAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , const IdentifierInfo * BehaviorKind
+             );
+
+  OverflowBehaviorAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  const IdentifierInfo * getBehaviorKind() const {
+    return behaviorKind;
+  }
+
+  bool isEquivalent(const OverflowBehaviorAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::OverflowBehavior; }
+};
+
 class CLANG_ABI OverloadableAttr : public Attr {
 public:
   enum Spelling {
@@ -12333,6 +12583,43 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::Pcs; }
 };
 
+class CLANG_ABI PersonalityAttr : public InheritableAttr {
+FunctionDecl * routine;
+
+public:
+  enum Spelling {
+    GNU_personality = 0,
+    CXX11_clang_personality = 1,
+    C23_clang_personality = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static PersonalityAttr *CreateImplicit(ASTContext &Ctx, FunctionDecl * Routine, const AttributeCommonInfo &CommonInfo);
+  static PersonalityAttr *Create(ASTContext &Ctx, FunctionDecl * Routine, const AttributeCommonInfo &CommonInfo);
+  static PersonalityAttr *CreateImplicit(ASTContext &Ctx, FunctionDecl * Routine, SourceRange Range = {}, Spelling S = GNU_personality);
+  static PersonalityAttr *Create(ASTContext &Ctx, FunctionDecl * Routine, SourceRange Range = {}, Spelling S = GNU_personality);
+
+  // Constructors
+  PersonalityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+              , FunctionDecl * Routine
+             );
+
+  PersonalityAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  FunctionDecl * getRoutine() const {
+    return routine;
+  }
+
+  bool isEquivalent(const PersonalityAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::Personality; }
+};
+
 class CLANG_ABI PointerAttr : public InheritableAttr {
 TypeSourceInfo * derefType;
 
@@ -12410,6 +12697,36 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::PointerAuth; }
+};
+
+class CLANG_ABI PointerFieldProtectionAttr : public InheritableAttr {
+public:
+  enum Spelling {
+    GNU_pointer_field_protection = 0,
+    CXX11_clang_pointer_field_protection = 1,
+    C23_clang_pointer_field_protection = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static PointerFieldProtectionAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static PointerFieldProtectionAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static PointerFieldProtectionAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_pointer_field_protection);
+  static PointerFieldProtectionAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_pointer_field_protection);
+
+  // Constructors
+  PointerFieldProtectionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  PointerFieldProtectionAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const PointerFieldProtectionAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::PointerFieldProtection; }
 };
 
 class CLANG_ABI PragmaClangBSSSectionAttr : public InheritableAttr {
@@ -12777,27 +13094,33 @@ public:
 };
 
 class CLANG_ABI PtGuardedByAttr : public InheritableAttr {
-Expr * arg;
+  unsigned args_Size;
+  Expr * *args_;
 
 public:
   // Factory methods
-  static PtGuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo);
-  static PtGuardedByAttr *Create(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo);
-  static PtGuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * Arg, SourceRange Range = {});
-  static PtGuardedByAttr *Create(ASTContext &Ctx, Expr * Arg, SourceRange Range = {});
+  static PtGuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
+  static PtGuardedByAttr *Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo);
+  static PtGuardedByAttr *CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range = {});
+  static PtGuardedByAttr *Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range = {});
 
   // Constructors
   PtGuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * Arg
+              , Expr * *Args, unsigned ArgsSize
+             );
+  PtGuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
              );
 
   PtGuardedByAttr *clone(ASTContext &C) const;
   void printPretty(raw_ostream &OS,
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
-  Expr * getArg() const {
-    return arg;
-  }
+  typedef Expr ** args_iterator;
+  args_iterator args_begin() const { return args_; }
+  args_iterator args_end() const { return args_ + args_Size; }
+  unsigned args_size() const { return args_Size; }
+  llvm::iterator_range<args_iterator> args() const { return llvm::make_range(args_begin(), args_end()); }
+
 
   bool isEquivalent(const PtGuardedByAttr &Other, StructuralEquivalenceContext &Context) const;
 
@@ -14127,6 +14450,36 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::SpeculativeLoadHardening; }
+};
+
+class CLANG_ABI StackProtectorIgnoreAttr : public InheritableAttr {
+public:
+  enum Spelling {
+    GNU_stack_protector_ignore = 0,
+    CXX11_clang_stack_protector_ignore = 1,
+    C23_clang_stack_protector_ignore = 2,
+  SpellingNotCalculated = 15
+
+  };
+
+  // Factory methods
+  static StackProtectorIgnoreAttr *CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static StackProtectorIgnoreAttr *Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo);
+  static StackProtectorIgnoreAttr *CreateImplicit(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_stack_protector_ignore);
+  static StackProtectorIgnoreAttr *Create(ASTContext &Ctx, SourceRange Range = {}, Spelling S = GNU_stack_protector_ignore);
+
+  // Constructors
+  StackProtectorIgnoreAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
+             );
+
+  StackProtectorIgnoreAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  bool isEquivalent(const StackProtectorIgnoreAttr &Other, StructuralEquivalenceContext &Context) const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::StackProtectorIgnore; }
 };
 
 class CLANG_ABI StandaloneDebugAttr : public InheritableAttr {
