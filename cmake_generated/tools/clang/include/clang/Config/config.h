@@ -85,4 +85,10 @@
 /* Whether CIR is built into Clang */
 #define CLANG_ENABLE_CIR 0
 
+/* Whether to use xcselect to find the macOS SDK */
+/* #undef CLANG_USE_XCSELECT */
+
+/* Policy to use for xcselect */
+/* #undef CLANG_XCSELECT_HOST_SDK_POLICY */
+
 #endif
