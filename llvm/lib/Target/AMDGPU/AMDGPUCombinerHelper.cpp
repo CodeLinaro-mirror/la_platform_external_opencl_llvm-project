@@ -143,7 +143,8 @@ static bool allUsesHaveSourceMods(MachineInstr &MI, MachineRegisterInfo &MRI,
 }
 
 static bool mayIgnoreSignedZero(MachineInstr &MI) {
-  return MI.getFlag(MachineInstr::MIFlag::FmNsz);
+  const TargetOptions &Options = MI.getMF()->getTarget().Options;
+  return Options.NoSignedZerosFPMath || MI.getFlag(MachineInstr::MIFlag::FmNsz);
 }
 
 static bool isInv2Pi(const APFloat &APF) {

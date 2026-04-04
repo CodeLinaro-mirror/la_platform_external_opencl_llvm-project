@@ -12,7 +12,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "NVPTX.h"
-#include "NVVMProperties.h"
+#include "NVPTXUtilities.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"

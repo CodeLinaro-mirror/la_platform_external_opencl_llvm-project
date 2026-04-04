@@ -32,7 +32,7 @@ class Operation;
 class RankedTensorType;
 
 namespace detail {
-struct DenseTypedElementsAttrStorage;
+struct DenseIntOrFPElementsAttrStorage;
 struct DenseStringElementsAttrStorage;
 struct StringAttrStorage;
 } // namespace detail
@@ -199,12 +199,25 @@ public:
   ///
   /// The format of the raw buffer is a densely packed array of values that
   /// can be bitcast to the storage format of the element type specified.
-  /// Types that are not byte aligned will be rounded up to the next byte.
+  /// Types that are not byte aligned will be:
+  ///   - For bitwidth > 1: Rounded up to the next byte.
+  ///   - For bitwidth = 1: Packed into 8bit bytes with bits corresponding to
+  ///     the linear order of the shape type from MSB to LSB, padded to on the
+  ///     right.
   static DenseElementsAttr getFromRawBuffer(ShapedType type,
                                             ArrayRef<char> rawBuffer);
 
   /// Returns true if the given buffer is a valid raw buffer for the given type.
-  static bool isValidRawBuffer(ShapedType type, ArrayRef<char> rawBuffer);
+  /// `detectedSplat` is set if the buffer is valid and represents a splat
+  /// buffer. The definition may be expanded over time, but currently, a
+  /// splat buffer is detected if:
+  ///   - For >1bit: The buffer consists of a single element.
+  ///   - For 1bit: The buffer consists of a single byte with value 0 or 255.
+  ///
+  /// User code should be prepared for additional, conformant patterns to be
+  /// identified as splats in the future.
+  static bool isValidRawBuffer(ShapedType type, ArrayRef<char> rawBuffer,
+                               bool &detectedSplat);
 
   //===--------------------------------------------------------------------===//
   // Iterators
@@ -702,12 +715,6 @@ using DenseResourceElementsHandle = DialectResourceBlobHandle<BuiltinDialect>;
 //===----------------------------------------------------------------------===//
 
 namespace mlir {
-/// DenseIntOrFPElementsAttr was renamed to DenseTypedElementsAttr. This alias
-/// is provided for backwards compatibility. It will be removed in the future.
-using DenseIntOrFPElementsAttr [[deprecated(
-    "DenseIntOrFPElementsAttr has been renamed to DenseTypedElementsAttr")]] =
-    DenseTypedElementsAttr;
-
 //===----------------------------------------------------------------------===//
 // DenseArrayAttr
 //===----------------------------------------------------------------------===//
@@ -903,11 +910,11 @@ private:
 
 /// An attribute that represents a reference to a dense float vector or tensor
 /// object. Each element is stored as a double.
-class DenseFPElementsAttr : public DenseTypedElementsAttr {
+class DenseFPElementsAttr : public DenseIntOrFPElementsAttr {
 public:
   using iterator = DenseElementsAttr::FloatElementIterator;
 
-  using DenseTypedElementsAttr::DenseTypedElementsAttr;
+  using DenseIntOrFPElementsAttr::DenseIntOrFPElementsAttr;
 
   /// Get an instance of a DenseFPElementsAttr with the given arguments. This
   /// simply wraps the DenseElementsAttr::get calls.
@@ -942,13 +949,13 @@ public:
 
 /// An attribute that represents a reference to a dense integer vector or tensor
 /// object.
-class DenseIntElementsAttr : public DenseTypedElementsAttr {
+class DenseIntElementsAttr : public DenseIntOrFPElementsAttr {
 public:
   /// DenseIntElementsAttr iterates on APInt, so we can use the raw element
   /// iterator directly.
   using iterator = DenseElementsAttr::IntElementIterator;
 
-  using DenseTypedElementsAttr::DenseTypedElementsAttr;
+  using DenseIntOrFPElementsAttr::DenseIntOrFPElementsAttr;
 
   /// Get an instance of a DenseIntElementsAttr with the given arguments. This
   /// simply wraps the DenseElementsAttr::get calls.

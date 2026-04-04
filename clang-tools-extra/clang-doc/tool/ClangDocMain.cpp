@@ -45,7 +45,6 @@
 
 using namespace clang::tooling;
 using namespace clang;
-using clang::doc::OutputFormatTy;
 
 static llvm::cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
 static llvm::cl::OptionCategory ClangDocCategory("clang-doc options");
@@ -112,23 +111,24 @@ Turn on time profiler. Generates clang-doc-tracing.json)"),
                                       llvm::cl::init(false),
                                       llvm::cl::cat(ClangDocCategory));
 
-static llvm::cl::opt<OutputFormatTy> FormatEnum(
-    "format", llvm::cl::desc("Format for outputted docs."),
-    llvm::cl::values(clEnumValN(OutputFormatTy::yaml, "yaml",
-                                "Documentation in YAML format."),
-                     clEnumValN(OutputFormatTy::md, "md",
-                                "Documentation in MD format."),
-                     clEnumValN(OutputFormatTy::html, "html",
-                                "Documentation in HTML format."),
-                     clEnumValN(OutputFormatTy::json, "json",
-                                "Documentation in JSON format"),
-                     clEnumValN(OutputFormatTy::md_mustache, "md_mustache",
-                                "Documentation in MD format.")),
-    llvm::cl::init(OutputFormatTy::yaml), llvm::cl::cat(ClangDocCategory));
+enum OutputFormatTy { md, yaml, html, json };
+
+static llvm::cl::opt<OutputFormatTy>
+    FormatEnum("format", llvm::cl::desc("Format for outputted docs."),
+               llvm::cl::values(clEnumValN(OutputFormatTy::yaml, "yaml",
+                                           "Documentation in YAML format."),
+                                clEnumValN(OutputFormatTy::md, "md",
+                                           "Documentation in MD format."),
+                                clEnumValN(OutputFormatTy::html, "html",
+                                           "Documentation in HTML format."),
+                                clEnumValN(OutputFormatTy::json, "json",
+                                           "Documentation in JSON format")),
+               llvm::cl::init(OutputFormatTy::yaml),
+               llvm::cl::cat(ClangDocCategory));
 
 static llvm::ExitOnError ExitOnErr;
 
-static llvm::StringRef getFormatString() {
+static std::string getFormatString() {
   switch (FormatEnum) {
   case OutputFormatTy::yaml:
     return "yaml";
@@ -138,8 +138,6 @@ static llvm::StringRef getFormatString() {
     return "html";
   case OutputFormatTy::json:
     return "json";
-  case OutputFormatTy::md_mustache:
-    return "md_mustache";
   }
   llvm_unreachable("Unknown OutputFormatTy");
 }
@@ -181,10 +179,8 @@ static llvm::Error getHtmlFiles(const char *Argv0,
     llvm::outs() << "Asset path supply is not a directory: " << UserAssetPath
                  << " falling back to default\n";
   if (IsDir) {
-    if (FormatEnum == OutputFormatTy::html) {
-      if (auto Err = getAssetFiles(CDCtx))
-        return Err;
-    }
+    if (auto Err = getAssetFiles(CDCtx))
+      return Err;
   }
   void *MainAddr = (void *)(intptr_t)getExecutablePath;
   std::string ClangDocPath = getExecutablePath(Argv0, MainAddr);
@@ -200,39 +196,18 @@ static llvm::Error getHtmlFiles(const char *Argv0,
   return llvm::Error::success();
 }
 
-static llvm::Error getMdFiles(const char *Argv0,
-                              clang::doc::ClangDocContext &CDCtx) {
-  bool IsDir = llvm::sys::fs::is_directory(UserAssetPath);
-  if (!UserAssetPath.empty() && !IsDir)
-    llvm::outs() << "Asset path supply is not a directory: " << UserAssetPath
-                 << " falling back to default\n";
-
-  void *MainAddr = (void *)(intptr_t)getExecutablePath;
-  std::string ClangDocPath = getExecutablePath(Argv0, MainAddr);
-  llvm::SmallString<128> NativeClangDocPath;
-  llvm::sys::path::native(ClangDocPath, NativeClangDocPath);
-
-  llvm::SmallString<128> AssetsPath;
-  AssetsPath = llvm::sys::path::parent_path(NativeClangDocPath);
-  llvm::sys::path::append(AssetsPath, "..", "share", "clang-doc", "md");
-
-  getMdFiles(AssetsPath, CDCtx);
-
-  return llvm::Error::success();
-}
-
 /// Make the output of clang-doc deterministic by sorting the children of
 /// namespaces and records.
 static void
-sortUsrToInfo(llvm::StringMap<doc::OwnedPtr<doc::Info>> &USRToInfo) {
+sortUsrToInfo(llvm::StringMap<std::unique_ptr<doc::Info>> &USRToInfo) {
   for (auto &I : USRToInfo) {
     auto &Info = I.second;
     if (Info->IT == doc::InfoType::IT_namespace) {
-      auto *Namespace = static_cast<clang::doc::NamespaceInfo *>(getPtr(Info));
+      auto *Namespace = static_cast<clang::doc::NamespaceInfo *>(Info.get());
       Namespace->Children.sort();
     }
     if (Info->IT == doc::InfoType::IT_record) {
-      auto *Record = static_cast<clang::doc::RecordInfo *>(getPtr(Info));
+      auto *Record = static_cast<clang::doc::RecordInfo *>(Info.get());
       Record->Children.sort();
     }
   }
@@ -288,7 +263,7 @@ Example usage for a project using a compile commands database:
     llvm::TimeTraceScope("main");
 
     // Fail early if an invalid format was provided.
-    llvm::StringRef Format = getFormatString();
+    std::string Format = getFormatString();
     llvm::outs() << "Emiting docs in " << Format << " format.\n";
     auto G = ExitOnErr(doc::findGeneratorByName(Format));
 
@@ -308,13 +283,10 @@ Example usage for a project using a compile commands database:
     clang::doc::ClangDocContext CDCtx(
         Executor->getExecutionContext(), ProjectName, PublicOnly, OutDirectory,
         SourceRoot, RepositoryUrl, RepositoryCodeLinePrefix, BaseDirectory,
-        {UserStylesheets.begin(), UserStylesheets.end()}, Diags, FormatEnum,
-        FTimeTrace);
+        {UserStylesheets.begin(), UserStylesheets.end()}, Diags, FTimeTrace);
 
     if (Format == "html")
       ExitOnErr(getHtmlFiles(argv[0], CDCtx));
-    else if (Format == "md_mustache")
-      ExitOnErr(getMdFiles(argv[0], CDCtx));
 
     llvm::timeTraceProfilerBegin("Executor Launch", "total runtime");
     // Mapping phase
@@ -339,7 +311,7 @@ Example usage for a project using a compile commands database:
     // Collects all Infos according to their unique USR value. This map is added
     // to from the thread pool below and is protected by the USRToInfoMutex.
     llvm::sys::Mutex USRToInfoMutex;
-    llvm::StringMap<doc::OwnedPtr<doc::Info>> USRToInfo;
+    llvm::StringMap<std::unique_ptr<doc::Info>> USRToInfo;
 
     // First reducing phase (reduce all decls into one info per decl).
     llvm::outs() << "Reducing " << USRToBitcode.size() << " infos...\n";
@@ -361,7 +333,7 @@ Example usage for a project using a compile commands database:
           if (FTimeTrace)
             llvm::timeTraceProfilerInitialize(200, "clang-doc");
 
-          doc::OwningPtrVec<doc::Info> Infos;
+          std::vector<std::unique_ptr<doc::Info>> Infos;
           {
             llvm::TimeTraceScope Red("decoding bitcode");
             for (auto &Bitcode : Group.getValue()) {
@@ -381,7 +353,7 @@ Example usage for a project using a compile commands database:
             }
           } // time trace decoding bitcode
 
-          doc::OwnedPtr<doc::Info> Reduced;
+          std::unique_ptr<doc::Info> Reduced;
 
           {
             llvm::TimeTraceScope Merge("merging bitcode");
@@ -400,7 +372,7 @@ Example usage for a project using a compile commands database:
           {
             llvm::TimeTraceScope Merge("addInfoToIndex");
             std::lock_guard<llvm::sys::Mutex> Guard(IndexMutex);
-            clang::doc::Generator::addInfoToIndex(CDCtx.Idx, getPtr(Reduced));
+            clang::doc::Generator::addInfoToIndex(CDCtx.Idx, Reduced.get());
           }
           // Save in the result map (needs a lock due to threaded access).
           {

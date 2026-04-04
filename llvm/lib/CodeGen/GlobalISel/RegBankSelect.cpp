@@ -51,12 +51,6 @@
 
 using namespace llvm;
 
-/// Cost value representing an impossible or invalid repairing.
-/// This matches the value returned by RegisterBankInfo::copyCost() and
-/// RegisterBankInfo::getBreakDownCost() when the cost cannot be computed.
-static constexpr unsigned ImpossibleRepairCost =
-    std::numeric_limits<unsigned>::max();
-
 static cl::opt<RegBankSelect::Mode> RegBankSelectMode(
     cl::desc("Mode of the RegBankSelect pass"), cl::Hidden, cl::Optional,
     cl::values(clEnumValN(RegBankSelect::Mode::Fast, "regbankselect-fast",
@@ -284,11 +278,12 @@ uint64_t RegBankSelect::getRepairCost(
     // repairing placement.
     unsigned Cost = RBI->copyCost(*DesiredRegBank, *CurRegBank,
                                   RBI->getSizeInBits(MO.getReg(), *MRI, *TRI));
-    if (Cost != ImpossibleRepairCost)
+    // TODO: use a dedicated constant for ImpossibleCost.
+    if (Cost != std::numeric_limits<unsigned>::max())
       return Cost;
     // Return the legalization cost of that repairing.
   }
-  return ImpossibleRepairCost;
+  return std::numeric_limits<unsigned>::max();
 }
 
 const RegisterBankInfo::InstructionMapping &RegBankSelect::findBestMapping(
@@ -540,7 +535,7 @@ RegBankSelect::MappingCost RegBankSelect::computeMapping(
     uint64_t RepairCost = getRepairCost(MO, ValMapping);
 
     // This is an impossible to repair cost.
-    if (RepairCost == ImpossibleRepairCost)
+    if (RepairCost == std::numeric_limits<unsigned>::max())
       return MappingCost::ImpossibleCost();
 
     // Bias used for splitting: 5%.

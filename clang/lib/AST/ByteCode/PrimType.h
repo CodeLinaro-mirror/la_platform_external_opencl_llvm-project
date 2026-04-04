@@ -24,6 +24,7 @@ namespace interp {
 class Pointer;
 class Boolean;
 class Floating;
+class FunctionPointer;
 class MemberPointer;
 class FixedPoint;
 template <bool Signed> class IntegralAP;
@@ -47,26 +48,6 @@ enum PrimType : uint8_t {
   PT_Ptr = 13,
   PT_MemberPtr = 14,
 };
-
-constexpr bool isIntegerOrBoolType(PrimType T) { return T <= PT_Bool; }
-constexpr bool isIntegerType(PrimType T) { return T <= PT_IntAPS; }
-
-inline constexpr bool isPtrType(PrimType T) {
-  return T == PT_Ptr || T == PT_MemberPtr;
-}
-
-inline constexpr bool isSignedType(PrimType T) {
-  switch (T) {
-  case PT_Sint8:
-  case PT_Sint16:
-  case PT_Sint32:
-  case PT_Sint64:
-    return true;
-  default:
-    return false;
-  }
-  return false;
-}
 
 // Like std::optional<PrimType>, but only sizeof(PrimType).
 class OptPrimType final {
@@ -101,6 +82,23 @@ public:
 };
 static_assert(sizeof(OptPrimType) == sizeof(PrimType));
 
+inline constexpr bool isPtrType(PrimType T) {
+  return T == PT_Ptr || T == PT_MemberPtr;
+}
+
+inline constexpr bool isSignedType(PrimType T) {
+  switch (T) {
+  case PT_Sint8:
+  case PT_Sint16:
+  case PT_Sint32:
+  case PT_Sint64:
+    return true;
+  default:
+    return false;
+  }
+  return false;
+}
+
 enum class CastKind : uint8_t {
   Reinterpret,
   ReinterpretLike,
@@ -127,13 +125,13 @@ inline llvm::raw_ostream &operator<<(llvm::raw_ostream &OS,
   return OS;
 }
 
+constexpr bool isIntegralType(PrimType T) { return T <= PT_FixedPoint; }
 template <typename T> constexpr bool needsAlloc() {
   return std::is_same_v<T, IntegralAP<false>> ||
-         std::is_same_v<T, IntegralAP<true>> || std::is_same_v<T, Floating> ||
-         std::is_same_v<T, MemberPointer>;
+         std::is_same_v<T, IntegralAP<true>> || std::is_same_v<T, Floating>;
 }
 constexpr bool needsAlloc(PrimType T) {
-  return T == PT_IntAP || T == PT_IntAPS || T == PT_Float || T == PT_MemberPtr;
+  return T == PT_IntAP || T == PT_IntAPS || T == PT_Float;
 }
 
 /// Mapping from primitive types to their representation.
@@ -274,7 +272,6 @@ static inline bool aligned(const void *P) {
       TYPE_SWITCH_CASE(PT_Float, B)                                            \
       TYPE_SWITCH_CASE(PT_IntAP, B)                                            \
       TYPE_SWITCH_CASE(PT_IntAPS, B)                                           \
-      TYPE_SWITCH_CASE(PT_MemberPtr, B)                                        \
     default:;                                                                  \
     }                                                                          \
   } while (0)

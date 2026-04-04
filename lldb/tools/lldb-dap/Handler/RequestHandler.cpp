@@ -37,7 +37,8 @@ using namespace lldb_dap::protocol;
 
 namespace lldb_dap {
 
-static std::vector<const char *> MakeArgv(const llvm::ArrayRef<String> &strs) {
+static std::vector<const char *>
+MakeArgv(const llvm::ArrayRef<std::string> &strs) {
   // Create and return an array of "const char *", one for each C string in
   // "strs" and terminate the list with a NULL. This can be used for argument
   // vectors (argv) or environment vectors (envp) like those passed to the
@@ -59,8 +60,9 @@ static uint32_t SetLaunchFlag(uint32_t flags, bool flag,
   return flags;
 }
 
-static void SetupIORedirection(const std::vector<std::optional<String>> &stdio,
-                               lldb::SBLaunchInfo &launch_info) {
+static void
+SetupIORedirection(const std::vector<std::optional<std::string>> &stdio,
+                   lldb::SBLaunchInfo &launch_info) {
   for (const auto &[idx, value_opt] : llvm::enumerate(stdio)) {
     if (!value_opt)
       continue;
@@ -103,9 +105,9 @@ RunInTerminal(DAP &dap, const protocol::LaunchRequestArguments &arguments) {
       CreateRunInTerminalCommFile();
   if (!comm_file_or_err)
     return comm_file_or_err.takeError();
-  std::shared_ptr<FifoFile> comm_file = *comm_file_or_err;
+  FifoFile &comm_file = *comm_file_or_err.get();
 
-  RunInTerminalDebugAdapterCommChannel comm_channel(comm_file);
+  RunInTerminalDebugAdapterCommChannel comm_channel(comm_file.m_path);
 
   lldb::pid_t debugger_pid = LLDB_INVALID_PROCESS_ID;
 #if !defined(_WIN32)
@@ -114,7 +116,7 @@ RunInTerminal(DAP &dap, const protocol::LaunchRequestArguments &arguments) {
 
   llvm::json::Object reverse_request = CreateRunInTerminalReverseRequest(
       arguments.configuration.program, arguments.args, arguments.env,
-      arguments.cwd, comm_file->GetPath(), debugger_pid, arguments.stdio,
+      arguments.cwd, comm_file.m_path, debugger_pid, arguments.stdio,
       arguments.console == protocol::eConsoleExternalTerminal);
   dap.SendReverseRequest<LogFailureResponseHandler>("runInTerminal",
                                                     std::move(reverse_request));
@@ -189,7 +191,7 @@ void BaseRequestHandler::Run(const Request &request) {
 
 llvm::Error BaseRequestHandler::LaunchProcess(
     const protocol::LaunchRequestArguments &arguments) const {
-  const std::vector<String> &launchCommands = arguments.launchCommands;
+  const std::vector<std::string> &launchCommands = arguments.launchCommands;
 
   // Instantiate a launch info instance for the target.
   auto launch_info = dap.target.GetLaunchInfo();
@@ -232,10 +234,6 @@ llvm::Error BaseRequestHandler::LaunchProcess(
     ScopeSyncMode scope_sync_mode(dap.debugger);
 
     if (arguments.console != protocol::eConsoleInternal) {
-      if (!dap.clientFeatures.contains(eClientFeatureRunInTerminalRequest))
-        return llvm::make_error<DAPError>(
-            R"(Client does not support RunInTerminal. Please set '"console": "integratedConsole"' in your launch configuration)");
-
       if (llvm::Error err = RunInTerminal(dap, arguments))
         return err;
     } else if (launchCommands.empty()) {
@@ -338,8 +336,8 @@ void BaseRequestHandler::BuildErrorResponse(
         error_message.format = err.getMessage();
         error_message.showUser = err.getShowUser();
         error_message.id = err.convertToErrorCode().value();
-        error_message.url = err.getURL().value_or("");
-        error_message.urlLabel = err.getURLLabel().value_or("");
+        error_message.url = err.getURL();
+        error_message.urlLabel = err.getURLLabel();
         protocol::ErrorResponseBody body;
         body.error = error_message;
 

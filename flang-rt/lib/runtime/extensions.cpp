@@ -478,9 +478,8 @@ void RTNAME(ShowDescriptor)(const Fortran::runtime::Descriptor *descr) {
 namespace io {
 std::int32_t RTNAME(Fseek)(int unitNumber, std::int64_t zeroBasedPos,
     int whence, const char *sourceFileName, int lineNumber) {
-  Terminator terminator{sourceFileName, lineNumber};
-  if (ExternalFileUnit *
-      unit{ExternalFileUnit::LookUp(unitNumber, terminator)}) {
+  if (ExternalFileUnit * unit{ExternalFileUnit::LookUp(unitNumber)}) {
+    Terminator terminator{sourceFileName, lineNumber};
     IoErrorHandler handler{terminator};
     if (unit->Fseek(
             zeroBasedPos, static_cast<enum FseekWhence>(whence), handler)) {
@@ -494,9 +493,7 @@ std::int32_t RTNAME(Fseek)(int unitNumber, std::int64_t zeroBasedPos,
 }
 
 std::int64_t RTNAME(Ftell)(int unitNumber) {
-  Terminator terminator{__FILE__, __LINE__};
-  if (ExternalFileUnit *
-      unit{ExternalFileUnit::LookUp(unitNumber, terminator)}) {
+  if (ExternalFileUnit * unit{ExternalFileUnit::LookUp(unitNumber)}) {
     return unit->InquirePos() - 1; // zero-based result
   } else {
     return -1;
@@ -504,9 +501,7 @@ std::int64_t RTNAME(Ftell)(int unitNumber) {
 }
 
 std::int32_t FORTRAN_PROCEDURE_NAME(fnum)(const int &unitNumber) {
-  Terminator terminator{__FILE__, __LINE__};
-  if (ExternalFileUnit *
-      unit{ExternalFileUnit::LookUp(unitNumber, terminator)}) {
+  if (ExternalFileUnit * unit{ExternalFileUnit::LookUp(unitNumber)}) {
     return unit->fd();
   } else {
     return -1;
@@ -514,5 +509,7 @@ std::int32_t FORTRAN_PROCEDURE_NAME(fnum)(const int &unitNumber) {
 }
 
 } // namespace io
+
 } // extern "C"
+
 } // namespace Fortran::runtime

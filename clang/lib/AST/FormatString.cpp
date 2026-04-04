@@ -371,7 +371,7 @@ static clang::analyze_format_string::ArgType::MatchKind
 matchesSizeTPtrdiffT(ASTContext &C, QualType T, QualType E) {
   using MatchKind = clang::analyze_format_string::ArgType::MatchKind;
 
-  if (!T->isIntegerType() || T->isBooleanType())
+  if (!T->isIntegerType())
     return MatchKind::NoMatch;
 
   if (C.hasSameType(T, E))
@@ -404,9 +404,6 @@ ArgType::matchesType(ASTContext &C, QualType argTy) const {
 
     argTy = PT->getPointeeType();
   }
-
-  if (const auto *OBT = argTy->getAs<OverflowBehaviorType>())
-    argTy = OBT->getUnderlyingType();
 
   switch (K) {
     case InvalidTy:

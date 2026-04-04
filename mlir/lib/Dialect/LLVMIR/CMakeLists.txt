@@ -15,11 +15,10 @@ add_mlir_dialect_library(MLIRLLVMDialect
 
   DEPENDS
   MLIRLLVMDialectBytecodeIncGen
-  MLIRLLVMInterfacesIncGen
-  MLIRLLVMIntrinsicOpsIncGen
   MLIRLLVMOpsIncGen
-  MLIRLLVMTranslationDialectInterfaceIncGen
   MLIRLLVMTypesIncGen
+  MLIRLLVMIntrinsicOpsIncGen
+  MLIRLLVMInterfacesIncGen
   MLIROpenMPOpsIncGen
   intrinsics_gen
 

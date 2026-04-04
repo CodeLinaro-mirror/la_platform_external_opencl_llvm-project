@@ -1506,9 +1506,7 @@ public:
 /// clause with OpenMP keyword 'omp_not_impex`. Other valid keywords that may
 /// appear in this clause are 'omp_import', 'omp_export' and 'omp_impex'.
 ///
-class OMPTransparentClause final
-    : public OMPOneStmtClause<llvm::omp::OMPC_transparent, OMPClause>,
-      public OMPClauseWithPreInit {
+class OMPTransparentClause final : public OMPClause {
   friend class OMPClauseReader;
 
   /// Location of '('.
@@ -1532,18 +1530,15 @@ public:
   /// \param StartLoc Starting location of the clause.
   /// \param LParenLoc Location of '('.
   /// \param EndLoc Ending location of the clause.
-  OMPTransparentClause(Expr *ImpexTypeKind, Stmt *HelperValStmt,
-                       OpenMPDirectiveKind CaptureRegion,
-                       SourceLocation StartLoc, SourceLocation LParenLoc,
-                       SourceLocation EndLoc)
-      : OMPOneStmtClause(ImpexTypeKind, StartLoc, LParenLoc, EndLoc),
-        OMPClauseWithPreInit(this), LParenLoc(LParenLoc),
-        ImpexType(ImpexTypeKind) {
-    setPreInitStmt(HelperValStmt, CaptureRegion);
-  }
+  OMPTransparentClause(Expr *ImpexTypeKind, SourceLocation StartLoc,
+                       SourceLocation LParenLoc, SourceLocation EndLoc)
+      : OMPClause(llvm::omp::OMPC_transparent, StartLoc, EndLoc),
+        LParenLoc(LParenLoc), ImpexType(ImpexTypeKind) {}
 
   /// Build an empty clause.
-  OMPTransparentClause() : OMPOneStmtClause(), OMPClauseWithPreInit(this) {}
+  OMPTransparentClause()
+      : OMPClause(llvm::omp::OMPC_transparent, SourceLocation(),
+                  SourceLocation()) {}
 
   /// Returns the location of '('.
   SourceLocation getLParenLoc() const { return LParenLoc; }

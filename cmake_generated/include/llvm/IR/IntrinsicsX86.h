@@ -8,12 +8,10 @@
 
 #ifndef LLVM_IR_INTRINSIC_X86_ENUMS_H
 #define LLVM_IR_INTRINSIC_X86_ENUMS_H
-
 namespace llvm::Intrinsic {
-
 enum X86Intrinsics : unsigned {
 // Enum values for intrinsics.
-    x86_aadd32 = 14536,                                // llvm.x86.aadd32 (IntrinsicsX86.td:5830)
+    x86_aadd32 = 14431,                                // llvm.x86.aadd32 (IntrinsicsX86.td:5830)
     x86_aadd64,                                // llvm.x86.aadd64 (IntrinsicsX86.td:5833)
     x86_aand32,                                // llvm.x86.aand32 (IntrinsicsX86.td:5836)
     x86_aand64,                                // llvm.x86.aand64 (IntrinsicsX86.td:5839)
@@ -1701,8 +1699,6 @@ enum X86Intrinsics : unsigned {
     x86_xsusldtrk,                             // llvm.x86.xsusldtrk (IntrinsicsX86.td:5372)
     x86_xtest,                                 // llvm.x86.xtest (IntrinsicsX86.td:2766)
 }; // enum
-
 } // namespace llvm::Intrinsic
-
-#endif // LLVM_IR_INTRINSIC_X86_ENUMS_H
+#endif
 

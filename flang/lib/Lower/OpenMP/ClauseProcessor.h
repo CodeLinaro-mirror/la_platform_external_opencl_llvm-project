@@ -68,9 +68,6 @@ public:
                   llvm::SmallVectorImpl<const semantics::Symbol *> &iv) const;
   bool processSizes(StatementContext &stmtCtx,
                     mlir::omp::SizesClauseOps &result) const;
-  bool processLooprange(StatementContext &stmtCtx,
-                        mlir::omp::LooprangeClauseOps &result,
-                        int64_t &count) const;
   bool processDevice(lower::StatementContext &stmtCtx,
                      mlir::omp::DeviceClauseOps &result) const;
   bool processDeviceType(mlir::omp::DeviceTypeClauseOps &result) const;
@@ -116,14 +113,12 @@ public:
   bool processSchedule(lower::StatementContext &stmtCtx,
                        mlir::omp::ScheduleClauseOps &result) const;
   bool processSimdlen(mlir::omp::SimdlenClauseOps &result) const;
-  bool processSimd(mlir::omp::OrderedRegionOperands &result) const;
   bool processThreadLimit(lower::StatementContext &stmtCtx,
                           mlir::omp::ThreadLimitClauseOps &result) const;
   bool processUntied(mlir::omp::UntiedClauseOps &result) const;
 
   bool processDetach(mlir::omp::DetachClauseOps &result) const;
   // 'Repeatable' clauses: They can appear multiple times in the clause list.
-  bool processAffinity(mlir::omp::AffinityClauseOps &result) const;
   bool processAligned(mlir::omp::AlignedClauseOps &result) const;
   bool processAllocate(mlir::omp::AllocateClauseOps &result) const;
   bool processCopyin() const;
@@ -143,8 +138,7 @@ public:
   bool processIsDevicePtr(
       lower::StatementContext &stmtCtx, mlir::omp::IsDevicePtrClauseOps &result,
       llvm::SmallVectorImpl<const semantics::Symbol *> &isDeviceSyms) const;
-  bool processLinear(mlir::omp::LinearClauseOps &result,
-                     bool isDeclareSimd = false) const;
+  bool processLinear(mlir::omp::LinearClauseOps &result) const;
   bool
   processLink(llvm::SmallVectorImpl<DeclareTargetCaptureInfo> &result) const;
 
@@ -211,8 +205,7 @@ private:
       std::map<Object, OmpMapParentAndMemberData> &parentMemberIndices,
       llvm::SmallVectorImpl<mlir::Value> &mapVars,
       llvm::SmallVectorImpl<const semantics::Symbol *> &mapSyms,
-      llvm::StringRef mapperIdNameRef = "",
-      bool isMotionModifier = false) const;
+      llvm::StringRef mapperIdNameRef = "") const;
 
   lower::AbstractConverter &converter;
   semantics::SemanticsContext &semaCtx;

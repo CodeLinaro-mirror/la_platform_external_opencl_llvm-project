@@ -51,7 +51,6 @@ group("unittests") {
     "SandboxIR:SandboxIRTests",
     "Support:SupportTests",
     "Support/DynamicLibrary:DynamicLibraryTests",
-    "Support/HTTP:SupportHTTPTests",
     "Support/LSP:LSPTests",
     "TableGen:TableGenTests",
     "Target:TargetMachineCTests",

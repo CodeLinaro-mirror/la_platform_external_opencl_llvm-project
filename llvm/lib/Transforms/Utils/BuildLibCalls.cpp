@@ -34,6 +34,8 @@ using namespace llvm;
 //- Infer Attributes ---------------------------------------------------------//
 
 STATISTIC(NumReadNone, "Number of functions inferred as readnone");
+STATISTIC(NumInaccessibleMemOnly,
+          "Number of functions inferred as inaccessiblememonly");
 STATISTIC(NumReadOnly, "Number of functions inferred as readonly");
 STATISTIC(NumWriteOnly, "Number of functions inferred as writeonly");
 STATISTIC(NumArgMemOnly, "Number of functions inferred as argmemonly");
@@ -41,12 +43,6 @@ STATISTIC(NumWriteErrnoMemOnly,
           "Number of functions inferred as memory(errnomem: write)");
 STATISTIC(NumInaccessibleMemOrArgMemOnly,
           "Number of functions inferred as inaccessiblemem_or_argmemonly");
-STATISTIC(NumInaccessibleMemOrErrnoMemOnly,
-          "Number of functions inferred as memory(inaccessiblemem: readwrite, "
-          "errnomem: write)");
-STATISTIC(NumInaccessibleMemOrArgMemOrErrnoMemOnly,
-          "Number of functions inferred as memory(argmem: readwrite, "
-          "inaccessiblemem: readwrite, errnomem: write)");
 STATISTIC(
     NumWriteArgumentMemOrErrnoMemOnly,
     "Number of functions inferred as memory(argmem: write, errnomem: write)");
@@ -95,6 +91,13 @@ static bool setMemoryEffects(Function &F, MemoryEffects ME) {
   return true;
 }
 
+static bool setOnlyAccessesInaccessibleMemory(Function &F) {
+  if (!setMemoryEffects(F, MemoryEffects::inaccessibleMemOnly()))
+    return false;
+  ++NumInaccessibleMemOnly;
+  return true;
+}
+
 static bool setOnlyReadsMemory(Function &F) {
   if (!setMemoryEffects(F, MemoryEffects::readOnly()))
     return false;
@@ -120,22 +123,6 @@ static bool setOnlyAccessesInaccessibleMemOrArgMem(Function &F) {
   if (!setMemoryEffects(F, MemoryEffects::inaccessibleOrArgMemOnly()))
     return false;
   ++NumInaccessibleMemOrArgMemOnly;
-  return true;
-}
-
-static bool setOnlyAccessesInaccessibleMemOrErrnoMem(Function &F) {
-  if (!setMemoryEffects(F, MemoryEffects::inaccessibleOrErrnoMemOnly(
-                               ModRefInfo::ModRef, ModRefInfo::Mod)))
-    return false;
-  ++NumInaccessibleMemOrErrnoMemOnly;
-  return true;
-}
-
-static bool setOnlyAccessesInaccessibleMemOrArgMemOrErrnoMem(Function &F) {
-  if (!setMemoryEffects(F, MemoryEffects::inaccessibleOrArgOrErrnoMemOnly(
-                               ModRefInfo::ModRef, ModRefInfo::Mod)))
-    return false;
-  ++NumInaccessibleMemOrArgMemOrErrnoMemOnly;
   return true;
 }
 
@@ -464,7 +451,7 @@ bool llvm::inferNonMandatoryLibFuncAttrs(Function &F,
     [[fallthrough]];
   case LibFunc_strdup:
     Changed |= setAllocFamily(F, "malloc");
-    Changed |= setOnlyAccessesInaccessibleMemOrArgMemOrErrnoMem(F);
+    Changed |= setOnlyAccessesInaccessibleMemOrArgMem(F);
     Changed |= setDoesNotThrow(F);
     Changed |= setRetDoesNotAlias(F);
     Changed |= setWillReturn(F);
@@ -533,7 +520,7 @@ bool llvm::inferNonMandatoryLibFuncAttrs(Function &F,
     Changed |= setAllocFamily(F, TheLibFunc == LibFunc_vec_malloc ? "vec_malloc"
                                                                   : "malloc");
     Changed |= setAllocKind(F, AllocFnKind::Alloc | AllocFnKind::Uninitialized);
-    Changed |= setOnlyAccessesInaccessibleMemOrErrnoMem(F);
+    Changed |= setOnlyAccessesInaccessibleMemory(F);
     Changed |= setRetAndArgsNoUndef(F);
     Changed |= setDoesNotThrow(F);
     Changed |= setRetDoesNotAlias(F);
@@ -608,7 +595,7 @@ bool llvm::inferNonMandatoryLibFuncAttrs(Function &F,
                                    AllocFnKind::Uninitialized);
     Changed |= setAllocSize(F, 1, std::nullopt);
     Changed |= setAlignedAllocParam(F, 0);
-    Changed |= setOnlyAccessesInaccessibleMemOrErrnoMem(F);
+    Changed |= setOnlyAccessesInaccessibleMemory(F);
     Changed |= setRetNoUndef(F);
     Changed |= setDoesNotThrow(F);
     Changed |= setRetDoesNotAlias(F);
@@ -634,7 +621,7 @@ bool llvm::inferNonMandatoryLibFuncAttrs(Function &F,
     Changed |= setAllocKind(F, AllocFnKind::Realloc);
     Changed |= setAllocatedPointerParam(F, 0);
     Changed |= setAllocSize(F, 1, std::nullopt);
-    Changed |= setOnlyAccessesInaccessibleMemOrArgMemOrErrnoMem(F);
+    Changed |= setOnlyAccessesInaccessibleMemOrArgMem(F);
     Changed |= setRetNoUndef(F);
     Changed |= setDoesNotThrow(F);
     Changed |= setRetDoesNotAlias(F);
@@ -647,7 +634,7 @@ bool llvm::inferNonMandatoryLibFuncAttrs(Function &F,
     Changed |= setAllocKind(F, AllocFnKind::Realloc);
     Changed |= setAllocatedPointerParam(F, 0);
     Changed |= setAllocSize(F, 1, 2);
-    Changed |= setOnlyAccessesInaccessibleMemOrArgMemOrErrnoMem(F);
+    Changed |= setOnlyAccessesInaccessibleMemOrArgMem(F);
     Changed |= setRetNoUndef(F);
     Changed |= setDoesNotThrow(F);
     Changed |= setRetDoesNotAlias(F);
@@ -728,7 +715,7 @@ bool llvm::inferNonMandatoryLibFuncAttrs(Function &F,
                                                                   : "malloc");
     Changed |= setAllocKind(F, AllocFnKind::Alloc | AllocFnKind::Zeroed);
     Changed |= setAllocSize(F, 0, 1);
-    Changed |= setOnlyAccessesInaccessibleMemOrErrnoMem(F);
+    Changed |= setOnlyAccessesInaccessibleMemory(F);
     Changed |= setRetAndArgsNoUndef(F);
     Changed |= setDoesNotThrow(F);
     Changed |= setRetDoesNotAlias(F);

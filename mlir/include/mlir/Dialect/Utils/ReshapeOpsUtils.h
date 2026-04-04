@@ -90,14 +90,9 @@ static OpFoldResult foldReshapeOp(ReshapeOpTy reshapeOp,
   if (reshapeOp.getSrcType() == reshapeOp.getType())
     return reshapeOp.getSrc();
 
-  // Reshape of a constant can be replaced with a new constant, but only when
-  // the result type has a static shape. DenseElementsAttr::reshape requires
-  // a static shape to preserve the element count invariant.
-  if (auto elements = dyn_cast_or_null<DenseElementsAttr>(operands.front())) {
-    auto resultType = cast<ShapedType>(reshapeOp.getResult().getType());
-    if (resultType.hasStaticShape())
-      return elements.reshape(resultType);
-  }
+  // Reshape of a constant can be replaced with a new constant.
+  if (auto elements = dyn_cast_or_null<DenseElementsAttr>(operands.front()))
+    return elements.reshape(cast<ShapedType>(reshapeOp.getResult().getType()));
 
   // Fold if the producer reshape source has the same shape with at most 1
   // dynamic dimension.
@@ -337,13 +332,11 @@ struct ComposeCollapseOfExpandOp : public OpRewritePattern<CollapseOpTy> {
         // the first dynamic size.
         Value result = dynamicSizes[0];
         for (Value v : llvm::drop_begin(dynamicSizes))
-          result = arith::MulIOp::create(rewriter, loc, result, v,
-                                         arith::IntegerOverflowFlags::nsw);
+          result = arith::MulIOp::create(rewriter, loc, result, v);
         if (numStaticElems != 1) {
           result = arith::MulIOp::create(
               rewriter, loc, result,
-              arith::ConstantIndexOp::create(rewriter, loc, numStaticElems),
-              arith::IntegerOverflowFlags::nsw);
+              arith::ConstantIndexOp::create(rewriter, loc, numStaticElems));
         }
         newOutputShape.push_back(result);
       }
@@ -377,8 +370,7 @@ struct ComposeExpandOfCollapseOp : public OpRewritePattern<ExpandOpTy> {
     if (hasNonIdentityLayout(expandOp.getSrc().getType()) ||
         hasNonIdentityLayout(collapseOp.getSrc().getType()) ||
         hasNonIdentityLayout(collapseOp.getResult().getType())) {
-      if (srcType.hasStaticShape() &&
-          CastOpTy::areCastCompatible(srcType, resultType)) {
+      if (CastOpTy::areCastCompatible(srcType, resultType)) {
         rewriter.replaceOpWithNewOp<CastOpTy>(expandOp, resultType,
                                               collapseOp.getSrc());
         return success();

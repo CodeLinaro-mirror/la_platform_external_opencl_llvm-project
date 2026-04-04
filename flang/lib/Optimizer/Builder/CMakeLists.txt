@@ -34,7 +34,6 @@ add_flang_library(FIRBuilder
   Runtime/Stop.cpp
   Runtime/Support.cpp
   Runtime/TemporaryStack.cpp
-  Runtime/Trampoline.cpp
   Runtime/Transformational.cpp
   TemporaryStorage.cpp
 
@@ -48,7 +47,6 @@ add_flang_library(FIRBuilder
   LINK_LIBS
   CUFAttrs
   CUFDialect
-  FIRAnalysis
   FIRDialect
   FIRDialectSupport
   FIRSupport

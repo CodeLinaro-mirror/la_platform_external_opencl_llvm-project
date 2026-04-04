@@ -656,14 +656,8 @@ static std::vector<EncodingIsland> getIslands(const KnownBits &EncodingBits,
     if (!IsFiltered && IsKnown) {
       if (OnIsland) {
         // Accumulate island bits.
-        const unsigned BitNo = I - StartBit;
-        FieldVal |= static_cast<uint64_t>(EncodingBits.One[I]) << (BitNo);
-        // If island becomes larger than 64-bits complete the island and start a
-        // new one
-        if (BitNo >= 63) {
-          Islands.push_back({StartBit, 64, FieldVal});
-          OnIsland = false;
-        }
+        FieldVal |= static_cast<uint64_t>(EncodingBits.One[I])
+                    << (I - StartBit);
       } else {
         // Onto an island.
         StartBit = I;

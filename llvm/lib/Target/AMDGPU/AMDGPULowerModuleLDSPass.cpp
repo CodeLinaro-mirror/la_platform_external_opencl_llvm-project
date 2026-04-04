@@ -316,17 +316,20 @@ public:
     // Create a ConstantArray containing the address of each Variable within the
     // kernel corresponding to LDSVarsToConstantGEP, or poison if that kernel
     // does not allocate it
+    // TODO: Drop the ptrtoint conversion
 
-    Type *LocalPtrTy = PointerType::get(Ctx, AMDGPUAS::LOCAL_ADDRESS);
-    ArrayType *KernelOffsetsType = ArrayType::get(LocalPtrTy, Variables.size());
+    Type *I32 = Type::getInt32Ty(Ctx);
+
+    ArrayType *KernelOffsetsType = ArrayType::get(I32, Variables.size());
 
     SmallVector<Constant *> Elements;
     for (GlobalVariable *GV : Variables) {
       auto ConstantGepIt = LDSVarsToConstantGEP.find(GV);
       if (ConstantGepIt != LDSVarsToConstantGEP.end()) {
-        Elements.push_back(ConstantGepIt->second);
+        auto *elt = ConstantExpr::getPtrToInt(ConstantGepIt->second, I32);
+        Elements.push_back(elt);
       } else {
-        Elements.push_back(PoisonValue::get(LocalPtrTy));
+        Elements.push_back(PoisonValue::get(I32));
       }
     }
     return ConstantArray::get(KernelOffsetsType, Elements);
@@ -344,8 +347,8 @@ public:
     const size_t NumberVariables = Variables.size();
     const size_t NumberKernels = kernels.size();
 
-    Type *LocalPtrTy = PointerType::get(Ctx, AMDGPUAS::LOCAL_ADDRESS);
-    ArrayType *KernelOffsetsType = ArrayType::get(LocalPtrTy, NumberVariables);
+    ArrayType *KernelOffsetsType =
+        ArrayType::get(Type::getInt32Ty(Ctx), NumberVariables);
 
     ArrayType *AllKernelsOffsetsType =
         ArrayType::get(KernelOffsetsType, NumberKernels);
@@ -398,8 +401,12 @@ public:
     Value *Address = Builder.CreateInBoundsGEP(
         LookupTable->getValueType(), LookupTable, GEPIdx, GV->getName());
 
-    Value *Loaded = Builder.CreateLoad(GV->getType(), Address);
-    U.set(Loaded);
+    Value *loaded = Builder.CreateLoad(I32, Address);
+
+    Value *replacement =
+        Builder.CreateIntToPtr(loaded, GV->getType(), GV->getName());
+
+    U.set(replacement);
   }
 
   void replaceUsesInInstructionsWithTableLookup(
@@ -605,7 +612,7 @@ public:
 
       GlobalVariable *GV = K.first;
       assert(AMDGPU::isLDSVariableToLower(*GV));
-      assert(!K.second.empty());
+      assert(K.second.size() != 0);
 
       if (AMDGPU::isDynamicLDS(*GV)) {
         DynamicVariables.insert(GV);
@@ -861,7 +868,7 @@ public:
     if (!KernelsThatIndirectlyAllocateDynamicLDS.empty()) {
       LLVMContext &Ctx = M.getContext();
       IRBuilder<> Builder(Ctx);
-      Type *LocalPtrTy = PointerType::get(Ctx, AMDGPUAS::LOCAL_ADDRESS);
+      Type *I32 = Type::getInt32Ty(Ctx);
 
       std::vector<Constant *> newDynamicLDS;
 
@@ -881,14 +888,17 @@ public:
 
           markUsedByKernel(func, N);
 
-          newDynamicLDS.push_back(N);
+          auto *emptyCharArray = ArrayType::get(Type::getInt8Ty(Ctx), 0);
+          auto *GEP = ConstantExpr::getGetElementPtr(
+              emptyCharArray, N, ConstantInt::get(I32, 0), true);
+          newDynamicLDS.push_back(ConstantExpr::getPtrToInt(GEP, I32));
         } else {
-          newDynamicLDS.push_back(PoisonValue::get(LocalPtrTy));
+          newDynamicLDS.push_back(PoisonValue::get(I32));
         }
       }
       assert(OrderedKernels.size() == newDynamicLDS.size());
 
-      ArrayType *t = ArrayType::get(LocalPtrTy, newDynamicLDS.size());
+      ArrayType *t = ArrayType::get(I32, newDynamicLDS.size());
       Constant *init = ConstantArray::get(t, newDynamicLDS);
       GlobalVariable *table = new GlobalVariable(
           M, t, true, GlobalValue::InternalLinkage, init,
@@ -1023,7 +1033,7 @@ public:
           continue;
 
         // All three of these are optional. The first variable is allocated at
-        // zero. They are allocated by AMDGPUMachineFunctionInfo as one block.
+        // zero. They are allocated by AMDGPUMachineFunction as one block.
         // Layout:
         //{
         //  module.lds
@@ -1277,7 +1287,7 @@ private:
     }
 
     // Replace uses of ith variable with a constantexpr to the corresponding
-    // field of the instance that will be allocated by AMDGPUMachineFunctionInfo
+    // field of the instance that will be allocated by AMDGPUMachineFunction
     for (size_t I = 0; I < NumberVars; I++) {
       GlobalVariable *GV = LDSVarsToTransform[I];
       Constant *GEP = Replacement.LDSVarsToConstantGEP.at(GV);

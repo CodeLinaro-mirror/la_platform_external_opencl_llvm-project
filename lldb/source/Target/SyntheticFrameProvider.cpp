@@ -84,8 +84,12 @@ llvm::Expected<SyntheticFrameProviderSP> SyntheticFrameProvider::CreateInstance(
         "cannot create synthetic frame provider: invalid input frames");
 
   // Iterate through all registered ScriptedFrameProvider plugins.
-  for (auto create_callback :
-       PluginManager::GetScriptedFrameProviderCreateCallbacks()) {
+  ScriptedFrameProviderCreateInstance create_callback = nullptr;
+  for (uint32_t idx = 0;
+       (create_callback =
+            PluginManager::GetScriptedFrameProviderCreateCallbackAtIndex(
+                idx)) != nullptr;
+       ++idx) {
     auto provider_or_err = create_callback(input_frames, descriptor);
     if (!provider_or_err) {
       LLDB_LOG_ERROR(GetLog(LLDBLog::Target), provider_or_err.takeError(),

@@ -193,21 +193,25 @@ Constant *SPIRVLegalizeZeroSizeArraysImpl::legalizeConstant(Constant *C) {
 }
 
 void SPIRVLegalizeZeroSizeArraysImpl::visitAllocaInst(AllocaInst &AI) {
-  // Check if allocation size is known-zero
-  const DataLayout &DL = AI.getModule()->getDataLayout();
-  std::optional<TypeSize> Size = AI.getAllocationSize(DL);
-  if (!Size || !Size->isZero())
+  if (!hasZeroSizeArray(AI.getAllocatedType()))
     return;
 
-  // Allocate a byte instead of an empty alloca.
-  IRBuilder<> Builder(&AI);
-  AllocaInst *NewAI = Builder.CreateAlloca(Builder.getInt8Ty());
-  NewAI->takeName(&AI);
-  NewAI->setAlignment(AI.getAlign());
-  NewAI->setDebugLoc(AI.getDebugLoc());
-  AI.replaceAllUsesWith(NewAI);
-  ToErase.push_back(&AI);
-  Modified = true;
+  // TODO: Handle structs containing zero-size arrays.
+  ArrayType *ArrTy = dyn_cast<ArrayType>(AI.getAllocatedType());
+  if (shouldLegalizeInstType(ArrTy)) {
+    // Allocate a generic pointer instead of an empty array.
+    IRBuilder<> Builder(&AI);
+    AllocaInst *NewAI = Builder.CreateAlloca(
+        PointerType::get(
+            ArrTy->getContext(),
+            storageClassToAddressSpace(SPIRV::StorageClass::Generic)),
+        /*ArraySize=*/nullptr, AI.getName());
+    NewAI->setAlignment(AI.getAlign());
+    NewAI->setDebugLoc(AI.getDebugLoc());
+    AI.replaceAllUsesWith(NewAI);
+    ToErase.push_back(&AI);
+    Modified = true;
+  }
 }
 
 void SPIRVLegalizeZeroSizeArraysImpl::visitLoadInst(LoadInst &LI) {
@@ -297,8 +301,7 @@ bool SPIRVLegalizeZeroSizeArraysImpl::runOnModule(Module &M) {
       continue;
 
     Type *NewTy = legalizeType(GV.getValueType());
-    Constant *LegalizedInitializer =
-        GV.hasInitializer() ? legalizeConstant(GV.getInitializer()) : nullptr;
+    Constant *LegalizedInitializer = legalizeConstant(GV.getInitializer());
 
     // Use an empty name for now, we will update it in the
     // following step.

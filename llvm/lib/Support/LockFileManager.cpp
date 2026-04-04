@@ -294,7 +294,7 @@ LockFileManager::waitForUnlockFor(std::chrono::seconds MaxSeconds) {
   return WaitForUnlockResult::Timeout;
 }
 
-std::error_code LockFileManager::unsafeUnlock() {
+std::error_code LockFileManager::unsafeMaybeUnlock() {
   auto BypassSandbox = sys::sandbox::scopedDisable();
 
   return sys::fs::remove(LockFileName);

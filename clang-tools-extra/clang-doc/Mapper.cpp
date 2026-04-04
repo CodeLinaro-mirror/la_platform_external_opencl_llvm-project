@@ -9,7 +9,7 @@
 #include "Mapper.h"
 #include "Serialize.h"
 #include "clang/AST/Comment.h"
-#include "clang/UnifiedSymbolResolution/USRGeneration.h"
+#include "clang/Index/USRGeneration.h"
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/ADT/StringSet.h"
 #include "llvm/Support/Mutex.h"
@@ -62,7 +62,7 @@ bool MapASTVisitor::mapDecl(const T *D, bool IsDefinition) {
       return true;
   }
 
-  std::pair<OwnedPtr<Info>, OwnedPtr<Info>> CP;
+  std::pair<std::unique_ptr<Info>, std::unique_ptr<Info>> CP;
 
   {
     llvm::TimeTraceScope TS("emit info from astnode");
@@ -83,8 +83,7 @@ bool MapASTVisitor::mapDecl(const T *D, bool IsDefinition) {
     bool IsFileInRootDir;
     llvm::SmallString<128> File =
         getFile(D, D->getASTContext(), CDCtx.SourceRoot, IsFileInRootDir);
-    serialize::Serializer Serializer;
-    CP = Serializer.emitInfo(D, getComment(D, D->getASTContext()),
+    CP = serialize::emitInfo(D, getComment(D, D->getASTContext()),
                              getDeclLocation(D), CDCtx.PublicOnly);
   }
 

@@ -21,15 +21,6 @@ class MachineIRBuilder;
 
 namespace AMDGPU {
 
-/// Holds waterfall loop information: the set of SGPR operand registers that
-/// need waterfalling, and an instruction range [Start, End) to wrap in the
-/// loop.
-struct WaterfallInfo {
-  SmallSet<Register, 4> SgprWaterfallOperandRegs;
-  MachineBasicBlock::iterator Start;
-  MachineBasicBlock::iterator End;
-};
-
 // Receives list of RegBankLLTMappingApplyID and applies register banks on all
 // operands. It is user's responsibility to provide RegBankLLTMappingApplyIDs
 // for all register operands, there is no need to specify NonReg for trailing
@@ -96,10 +87,13 @@ public:
   bool findRuleAndApplyMapping(MachineInstr &MI);
 
   // Manual apply helpers.
+  bool applyMappingPHI(MachineInstr &MI);
   void applyMappingTrivial(MachineInstr &MI);
 
 private:
-  bool executeInWaterfallLoop(MachineIRBuilder &B, const WaterfallInfo &WFI);
+  bool executeInWaterfallLoop(MachineIRBuilder &B,
+                              iterator_range<MachineBasicBlock::iterator> Range,
+                              SmallSet<Register, 4> &SgprOperandRegs);
 
   LLT getTyFromID(RegBankLLTMappingApplyID ID);
   LLT getBTyFromID(RegBankLLTMappingApplyID ID, LLT Ty);
@@ -113,7 +107,7 @@ private:
   bool
   applyMappingSrc(MachineInstr &MI, unsigned &OpIdx,
                   const SmallVectorImpl<RegBankLLTMappingApplyID> &MethodIDs,
-                  WaterfallInfo &WFI);
+                  SmallSet<Register, 4> &SgprWaterfallOperandRegs);
 
   bool splitLoad(MachineInstr &MI, ArrayRef<LLT> LLTBreakdown,
                  LLT MergeTy = LLT());
@@ -121,7 +115,7 @@ private:
   bool widenMMOToS32(GAnyLoad &MI) const;
 
   bool lower(MachineInstr &MI, const RegBankLLTMapping &Mapping,
-             WaterfallInfo &WFI);
+             SmallSet<Register, 4> &SgprWaterfallOperandRegs);
 
   bool lowerVccExtToSel(MachineInstr &MI);
   std::pair<Register, Register> unpackZExt(Register Reg);
@@ -137,10 +131,8 @@ private:
   bool lowerSplitTo16(MachineInstr &MI);
   bool lowerSplitTo32Select(MachineInstr &MI);
   bool lowerSplitTo32SExtInReg(MachineInstr &MI);
-  bool lowerSplitBitCount64To32(MachineInstr &MI);
   bool lowerUnpackMinMax(MachineInstr &MI);
   bool lowerUnpackAExt(MachineInstr &MI);
-  bool applyRegisterBanksINTRIN_IMAGE(MachineInstr &MI);
 };
 
 } // end namespace AMDGPU

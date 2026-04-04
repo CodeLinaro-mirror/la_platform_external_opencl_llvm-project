@@ -136,11 +136,9 @@ def DICompileUnitAttr : DialectAttribute<(attr
   Bool:$isOptimized,
   EnumClassFlag<"DIEmissionKind", "getEmissionKind()">:$_rawEmissionKind,
   LocalVar<"DIEmissionKind", "(DIEmissionKind)_rawEmissionKind">:$emissionKind,
-  Bool:$isDebugInfoForProfiling,
   EnumClassFlag<"DINameTableKind", "getNameTableKind()">:$_rawNameTableKind,
   LocalVar<"DINameTableKind",
-           "(DINameTableKind)_rawNameTableKind">:$nameTableKind,
-  OptionalAttribute<"StringAttr">:$splitDebugFilename
+           "(DINameTableKind)_rawNameTableKind">:$nameTableKind
 )>;
 
 //===----------------------------------------------------------------------===//
@@ -196,16 +194,11 @@ def DICompositeTypeAttr : DialectAttribute<(attr
 def DIDerivedTypeAttr : DialectAttribute<(attr
   VarInt:$tag,
   OptionalAttribute<"StringAttr">:$name,
-  OptionalAttribute<"DIFileAttr">:$file,
-  VarInt:$line,
-  OptionalAttribute<"DIScopeAttr">:$scope,
   OptionalAttribute<"DITypeAttr">:$baseType,
   VarInt:$sizeInBits,
   VarInt:$alignInBits,
   VarInt:$offsetInBits,
   OptionalInt<"unsigned">:$dwarfAddressSpace,
-  EnumClassFlag<"DIFlags", "getFlags()">:$_rawflags,
-  LocalVar<"DIFlags", "(DIFlags)_rawflags">:$flags,
   OptionalAttribute<"DINodeAttr">:$extraData
 )>;
 

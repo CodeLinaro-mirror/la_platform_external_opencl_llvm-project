@@ -18,9 +18,7 @@ from hdrgen.yaml_to_classes import load_yaml_file, fill_public_api
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Generate header files from YAML", fromfile_prefix_chars="@"
-    )
+    parser = argparse.ArgumentParser(description="Generate header files from YAML")
     parser.add_argument(
         "yaml_file",
         help="Path to the YAML file containing header specification",

@@ -845,14 +845,14 @@ refInTypeLoc(TypeLoc L, const HeuristicResolver *Resolver) {
 
     void VisitUnresolvedUsingTypeLoc(UnresolvedUsingTypeLoc L) {
       Refs.push_back(ReferenceLoc{L.getQualifierLoc(),
-                                  L.getNameLoc(),
+                                  L.getLocalSourceRange().getBegin(),
                                   /*IsDecl=*/false,
                                   {L.getDecl()}});
     }
 
     void VisitUsingTypeLoc(UsingTypeLoc L) {
       Refs.push_back(ReferenceLoc{L.getQualifierLoc(),
-                                  L.getNameLoc(),
+                                  L.getLocalSourceRange().getBegin(),
                                   /*IsDecl=*/false,
                                   {L.getDecl()}});
     }

@@ -44,7 +44,7 @@ MCAsmInfoELF::MCAsmInfoELF() {
   HasIdentDirective = true;
   HasPreferredAlignment = true;
   WeakRefDirective = "\t.weak\t";
-  InternalSymbolPrefix = ".L";
+  PrivateGlobalPrefix = ".L";
   PrivateLabelPrefix = ".L";
 }
 

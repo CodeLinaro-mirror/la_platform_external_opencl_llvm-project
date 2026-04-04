@@ -181,7 +181,7 @@ void EnumInitialValueCheck::check(const MatchFinder::MatchResult &Result) {
               ECD->getLocation(), 0, *Result.SourceManager, getLangOpts());
           if (EndLoc.isMacroID())
             continue;
-          SmallString<8> Str{" = "};
+          llvm::SmallString<8> Str{" = "};
           ECD->getInitVal().toString(Str);
           Diag << FixItHint::CreateInsertion(EndLoc, Str);
         }

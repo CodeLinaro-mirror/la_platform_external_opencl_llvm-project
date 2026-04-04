@@ -111,41 +111,12 @@ static std::optional<llvm::StringRef> IsNumber(llvm::StringRef &remainder,
   return std::nullopt;
 }
 
-static llvm::Error IsNotAllowedByMode(llvm::StringRef expr, Token token,
-                                      lldb::DILMode mode) {
-  switch (mode) {
-  case lldb::eDILModeSimple:
-    if (!token.IsOneOf({Token::identifier, Token::period, Token::eof})) {
-      return llvm::make_error<DILDiagnosticError>(
-          expr, llvm::formatv("{0} is not allowed in DIL simple mode", token),
-          token.GetLocation());
-    }
-    break;
-  case lldb::eDILModeLegacy:
-    if (!token.IsOneOf({Token::identifier, Token::integer_constant,
-                        Token::period, Token::arrow, Token::star, Token::amp,
-                        Token::l_square, Token::r_square, Token::eof})) {
-      return llvm::make_error<DILDiagnosticError>(
-          expr, llvm::formatv("{0} is not allowed in DIL legacy mode", token),
-          token.GetLocation());
-    }
-    break;
-  case lldb::eDILModeFull:
-    break;
-  }
-  return llvm::Error::success();
-}
-
-llvm::Expected<DILLexer> DILLexer::Create(llvm::StringRef expr,
-                                          lldb::DILMode mode) {
+llvm::Expected<DILLexer> DILLexer::Create(llvm::StringRef expr) {
   std::vector<Token> tokens;
   llvm::StringRef remainder = expr;
   do {
     if (llvm::Expected<Token> t = Lex(expr, remainder)) {
-      Token token = *t;
-      if (llvm::Error error = IsNotAllowedByMode(expr, token, mode))
-        return error;
-      tokens.push_back(std::move(token));
+      tokens.push_back(std::move(*t));
     } else {
       return t.takeError();
     }

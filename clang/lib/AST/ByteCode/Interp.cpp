@@ -28,27 +28,7 @@
 using namespace clang;
 using namespace clang::interp;
 
-#if __has_cpp_attribute(clang::musttail)
-#define MUSTTAIL [[clang::musttail]]
-#elif __has_cpp_attribute(msvc::musttail)
-#define MUSTTAIL [[msvc::musttail]]
-#elif __has_attribute(musttail)
-#define MUSTTAIL __attribute__((musttail))
-#endif
-
-// On MSVC, musttail does not guarantee tail calls in debug mode.
-// We disable it on MSVC generally since it doesn't seem to be able
-// to handle the way we use tailcalls.
-// PPC can't tail-call external calls, which is a problem for InterpNext.
-#if defined(_MSC_VER) || defined(__powerpc__) || !defined(MUSTTAIL)
-#undef MUSTTAIL
-#define MUSTTAIL
-#define USE_TAILCALLS 0
-#else
-#define USE_TAILCALLS 1
-#endif
-
-PRESERVE_NONE static bool RetValue(InterpState &S, CodePtr &Ptr) {
+static bool RetValue(InterpState &S, CodePtr &Pt) {
   llvm::report_fatal_error("Interpreter cannot return values");
 }
 
@@ -58,22 +38,92 @@ PRESERVE_NONE static bool RetValue(InterpState &S, CodePtr &Ptr) {
 
 static bool Jmp(InterpState &S, CodePtr &PC, int32_t Offset) {
   PC += Offset;
-  return S.noteStep(PC);
+  return true;
 }
 
 static bool Jt(InterpState &S, CodePtr &PC, int32_t Offset) {
   if (S.Stk.pop<bool>()) {
     PC += Offset;
   }
-  return S.noteStep(PC);
+  return true;
 }
 
 static bool Jf(InterpState &S, CodePtr &PC, int32_t Offset) {
   if (!S.Stk.pop<bool>()) {
     PC += Offset;
   }
-  return S.noteStep(PC);
+  return true;
 }
+
+// https://github.com/llvm/llvm-project/issues/102513
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(NDEBUG)
+#pragma optimize("", off)
+#endif
+// FIXME: We have the large switch over all opcodes here again, and in
+// Interpret().
+static bool BCP(InterpState &S, CodePtr &RealPC, int32_t Offset, PrimType PT) {
+  [[maybe_unused]] CodePtr PCBefore = RealPC;
+  size_t StackSizeBefore = S.Stk.size();
+
+  auto SpeculativeInterp = [&S, RealPC]() -> bool {
+    const InterpFrame *StartFrame = S.Current;
+    CodePtr PC = RealPC;
+
+    for (;;) {
+      auto Op = PC.read<Opcode>();
+      if (Op == OP_EndSpeculation)
+        return true;
+      CodePtr OpPC = PC;
+
+      switch (Op) {
+#define GET_INTERP
+#include "Opcodes.inc"
+#undef GET_INTERP
+      }
+    }
+    llvm_unreachable("We didn't see an EndSpeculation op?");
+  };
+
+  if (SpeculativeInterp()) {
+    if (PT == PT_Ptr) {
+      const auto &Ptr = S.Stk.pop<Pointer>();
+      assert(S.Stk.size() == StackSizeBefore);
+      S.Stk.push<Integral<32, true>>(
+          Integral<32, true>::from(CheckBCPResult(S, Ptr)));
+    } else {
+      // Pop the result from the stack and return success.
+      TYPE_SWITCH(PT, S.Stk.pop<T>(););
+      assert(S.Stk.size() == StackSizeBefore);
+      S.Stk.push<Integral<32, true>>(Integral<32, true>::from(1));
+    }
+  } else {
+    if (!S.inConstantContext())
+      return Invalid(S, RealPC);
+
+    S.Stk.clearTo(StackSizeBefore);
+    S.Stk.push<Integral<32, true>>(Integral<32, true>::from(0));
+  }
+
+  // RealPC should not have been modified.
+  assert(*RealPC == *PCBefore);
+
+  // Jump to end label. This is a little tricker than just RealPC += Offset
+  // because our usual jump instructions don't have any arguments, to the offset
+  // we get is a little too much and we need to subtract the size of the
+  // bool and PrimType arguments again.
+  int32_t ParamSize = align(sizeof(PrimType));
+  assert(Offset >= ParamSize);
+  RealPC += Offset - ParamSize;
+
+  [[maybe_unused]] CodePtr PCCopy = RealPC;
+  assert(PCCopy.read<Opcode>() == OP_EndSpeculation);
+
+  return true;
+}
+// https://github.com/llvm/llvm-project/issues/102513
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(NDEBUG)
+#pragma optimize("", on)
+#endif
 
 static void diagnoseMissingInitializer(InterpState &S, CodePtr OpPC,
                                        const ValueDecl *VD) {
@@ -180,7 +230,7 @@ static bool CheckTemporary(InterpState &S, CodePtr OpPC, const Block *B,
     // FIXME(perf): Since we do this check on every Load from a static
     // temporary, it might make sense to cache the value of the
     // isUsableInConstantExpressions call.
-    if (B->getEvalID() != S.EvalID &&
+    if (B->getEvalID() != S.Ctx.getEvalID() &&
         !MTE->isUsableInConstantExpressions(S.getASTContext())) {
       const SourceInfo &E = S.Current->getSource(OpPC);
       S.FFDiag(E, diag::note_constexpr_access_static_temporary, 1) << AK;
@@ -208,9 +258,6 @@ static bool CheckGlobal(InterpState &S, CodePtr OpPC, const Pointer &Ptr) {
 
 namespace clang {
 namespace interp {
-PRESERVE_NONE static bool BCP(InterpState &S, CodePtr &RealPC, int32_t Offset,
-                              PrimType PT);
-
 static void popArg(InterpState &S, const Expr *Arg) {
   PrimType Ty = S.getContext().classify(Arg).value_or(PT_Ptr);
   TYPE_SWITCH(Ty, S.Stk.discard<T>());
@@ -249,13 +296,8 @@ void cleanupAfterFunctionCall(InterpState &S, CodePtr OpPC,
 
   // And in any case, remove the fixed parameters (the non-variadic ones)
   // at the end.
-  for (const Function::ParamDescriptor &PDesc : Func->args_reverse())
-    TYPE_SWITCH(PDesc.T, S.Stk.discard<T>());
-
-  if (Func->hasThisPointer() && !Func->isThisPointerExplicit())
-    S.Stk.discard<Pointer>();
-  if (Func->hasRVO())
-    S.Stk.discard<Pointer>();
+  for (PrimType Ty : Func->args_reverse())
+    TYPE_SWITCH(Ty, S.Stk.discard<T>());
 }
 
 bool isConstexprUnknown(const Pointer &P) {
@@ -584,8 +626,16 @@ bool CheckMutable(InterpState &S, CodePtr OpPC, const Pointer &Ptr) {
 
   // In C++14 onwards, it is permitted to read a mutable member whose
   // lifetime began within the evaluation.
-  if (S.getLangOpts().CPlusPlus14 && Ptr.block()->getEvalID() == S.EvalID)
+  if (S.getLangOpts().CPlusPlus14 &&
+      Ptr.block()->getEvalID() == S.Ctx.getEvalID()) {
+    // FIXME: This check is necessary because (of the way) we revisit
+    // variables in Compiler.cpp:visitDeclRef. Revisiting a so far
+    // unknown variable will get the same EvalID and we end up allowing
+    // reads from mutable members of it.
+    if (!S.inConstantContext() && isConstexprUnknown(Ptr))
+      return false;
     return true;
+  }
 
   const SourceInfo &Loc = S.Current->getSource(OpPC);
   const FieldDecl *Field = Ptr.getField();
@@ -1210,8 +1260,7 @@ static bool runRecordDestructor(InterpState &S, CodePtr OpPC,
   const Record *R = Desc->ElemRecord;
   assert(R);
 
-  if (!S.Current->isBottomFrame() && S.Current->hasThisPointer() &&
-      S.Current->getFunction()->isDestructor() &&
+  if (S.Current->hasThisPointer() && S.Current->getFunction()->isDestructor() &&
       Pointer::pointToSameBlock(BasePtr, S.Current->getThis())) {
     const SourceInfo &Loc = S.Current->getSource(OpPC);
     S.FFDiag(Loc, diag::note_constexpr_double_destroy);
@@ -1500,8 +1549,6 @@ bool CheckDestructor(InterpState &S, CodePtr OpPC, const Pointer &Ptr) {
     return false;
   if (!CheckRange(S, OpPC, Ptr, AK_Destroy))
     return false;
-  if (!CheckLifetime(S, OpPC, Ptr.getLifetime(), AK_Destroy))
-    return false;
 
   // Can't call a dtor on a global variable.
   if (Ptr.block()->isStatic()) {
@@ -1614,20 +1661,19 @@ bool CallVar(InterpState &S, CodePtr OpPC, const Function *Func,
   if (!CheckCallDepth(S, OpPC))
     return false;
 
-  auto Memory = new char[InterpFrame::allocSize(Func)];
-  auto NewFrame = new (Memory) InterpFrame(S, Func, OpPC, VarArgSize);
+  auto NewFrame = std::make_unique<InterpFrame>(S, Func, OpPC, VarArgSize);
   InterpFrame *FrameBefore = S.Current;
-  S.Current = NewFrame;
+  S.Current = NewFrame.get();
 
   // Note that we cannot assert(CallResult.hasValue()) here since
   // Ret() above only sets the APValue if the curent frame doesn't
   // have a caller set.
   if (Interpret(S)) {
+    NewFrame.release(); // Frame was delete'd already.
     assert(S.Current == FrameBefore);
     return true;
   }
 
-  InterpFrame::free(NewFrame);
   // Interpreting the function failed somehow. Reset to
   // previous state.
   S.Current = FrameBefore;
@@ -1698,10 +1744,9 @@ bool Call(InterpState &S, CodePtr OpPC, const Function *Func,
   if (!CheckCallDepth(S, OpPC))
     return cleanup();
 
-  auto Memory = new char[InterpFrame::allocSize(Func)];
-  auto NewFrame = new (Memory) InterpFrame(S, Func, OpPC, VarArgSize);
+  auto NewFrame = std::make_unique<InterpFrame>(S, Func, OpPC, VarArgSize);
   InterpFrame *FrameBefore = S.Current;
-  S.Current = NewFrame;
+  S.Current = NewFrame.get();
 
   InterpStateCCOverride CCOverride(S, Func->isImmediate());
   // Note that we cannot assert(CallResult.hasValue()) here since
@@ -1713,18 +1758,18 @@ bool Call(InterpState &S, CodePtr OpPC, const Function *Func,
     S.InitializingBlocks.pop_back();
 
   if (!Success) {
-    InterpFrame::free(NewFrame);
     // Interpreting the function failed somehow. Reset to
     // previous state.
     S.Current = FrameBefore;
     return false;
   }
 
+  NewFrame.release(); // Frame was delete'd already.
   assert(S.Current == FrameBefore);
   return true;
 }
 
-static bool getDynamicDecl(InterpState &S, CodePtr OpPC, Pointer TypePtr,
+static bool GetDynamicDecl(InterpState &S, CodePtr OpPC, Pointer TypePtr,
                            const CXXRecordDecl *&DynamicDecl) {
   TypePtr = TypePtr.stripBaseCasts();
 
@@ -1750,7 +1795,7 @@ static bool getDynamicDecl(InterpState &S, CodePtr OpPC, Pointer TypePtr,
   } else {
     DynamicDecl = DynamicType->getAsCXXRecordDecl();
   }
-  return DynamicDecl != nullptr;
+  return true;
 }
 
 bool CallVirt(InterpState &S, CodePtr OpPC, const Function *Func,
@@ -1763,7 +1808,7 @@ bool CallVirt(InterpState &S, CodePtr OpPC, const Function *Func,
   const FunctionDecl *Callee = Func->getDecl();
 
   const CXXRecordDecl *DynamicDecl = nullptr;
-  if (!getDynamicDecl(S, OpPC, ThisPtr, DynamicDecl))
+  if (!GetDynamicDecl(S, OpPC, ThisPtr, DynamicDecl))
     return false;
   assert(DynamicDecl);
 
@@ -1863,7 +1908,8 @@ bool CallPtr(InterpState &S, CodePtr OpPC, uint32_t ArgSize,
   if (!Ptr.isFunctionPointer())
     return Invalid(S, OpPC);
 
-  const Function *F = Ptr.asFunctionPointer().Func;
+  const FunctionPointer &FuncPtr = Ptr.asFunctionPointer();
+  const Function *F = FuncPtr.getFunction();
   assert(F);
   // Don't allow calling block pointers.
   if (!F->getDecl())
@@ -2290,6 +2336,7 @@ bool arePotentiallyOverlappingStringLiterals(const Pointer &LHS,
 
 static void copyPrimitiveMemory(InterpState &S, const Pointer &Ptr,
                                 PrimType T) {
+
   if (T == PT_IntAPS) {
     auto &Val = Ptr.deref<IntegralAP<true>>();
     if (!Val.singleWord()) {
@@ -2308,30 +2355,16 @@ static void copyPrimitiveMemory(InterpState &S, const Pointer &Ptr,
       uint64_t *NewMemory = new (S.P) uint64_t[Val.numWords()];
       Val.take(NewMemory);
     }
-  } else if (T == PT_MemberPtr) {
-    auto &Val = Ptr.deref<MemberPointer>();
-    unsigned PathLength = Val.getPathLength();
-    auto *NewPath = new (S.P) const CXXRecordDecl *[PathLength];
-    std::copy_n(Val.path(), PathLength, NewPath);
-    Val.takePath(NewPath);
   }
 }
 
 template <typename T>
 static void copyPrimitiveMemory(InterpState &S, const Pointer &Ptr) {
   assert(needsAlloc<T>());
-  if constexpr (std::is_same_v<T, MemberPointer>) {
-    auto &Val = Ptr.deref<MemberPointer>();
-    unsigned PathLength = Val.getPathLength();
-    auto *NewPath = new (S.P) const CXXRecordDecl *[PathLength];
-    std::copy_n(Val.path(), PathLength, NewPath);
-    Val.takePath(NewPath);
-  } else {
-    auto &Val = Ptr.deref<T>();
-    if (!Val.singleWord()) {
-      uint64_t *NewMemory = new (S.P) uint64_t[Val.numWords()];
-      Val.take(NewMemory);
-    }
+  auto &Val = Ptr.deref<T>();
+  if (!Val.singleWord()) {
+    uint64_t *NewMemory = new (S.P) uint64_t[Val.numWords()];
+    Val.take(NewMemory);
   }
 }
 
@@ -2342,9 +2375,9 @@ static void finishGlobalRecurse(InterpState &S, const Pointer &Ptr) {
         TYPE_SWITCH_ALLOC(Fi.Desc->getPrimType(), {
           copyPrimitiveMemory<T>(S, Ptr.atField(Fi.Offset));
         });
-      } else {
+        copyPrimitiveMemory(S, Ptr.atField(Fi.Offset), Fi.Desc->getPrimType());
+      } else
         finishGlobalRecurse(S, Ptr.atField(Fi.Offset));
-      }
     }
     return;
   }
@@ -2458,233 +2491,38 @@ bool Destroy(InterpState &S, CodePtr OpPC, uint32_t I) {
   return true;
 }
 
-// Perform a cast towards the class of the Decl (either up or down the
-// hierarchy).
-static bool castBackMemberPointer(InterpState &S,
-                                  const MemberPointer &MemberPtr,
-                                  int32_t BaseOffset,
-                                  const RecordDecl *BaseDecl) {
-  const CXXRecordDecl *Expected;
-  if (MemberPtr.getPathLength() >= 2)
-    Expected = MemberPtr.getPathEntry(MemberPtr.getPathLength() - 2);
-  else
-    Expected = MemberPtr.getRecordDecl();
-
-  assert(Expected);
-  if (Expected->getCanonicalDecl() != BaseDecl->getCanonicalDecl()) {
-    // C++11 [expr.static.cast]p12: In a conversion from (D::*) to (B::*),
-    // if B does not contain the original member and is not a base or
-    // derived class of the class containing the original member, the result
-    // of the cast is undefined.
-    // C++11 [conv.mem]p2 does not cover this case for a cast from (B::*) to
-    // (D::*). We consider that to be a language defect.
-    return false;
-  }
-
-  unsigned OldPathLength = MemberPtr.getPathLength();
-  unsigned NewPathLength = OldPathLength - 1;
-  bool IsDerivedMember = NewPathLength != 0;
-  auto NewPath = S.allocMemberPointerPath(NewPathLength);
-  std::copy_n(MemberPtr.path(), NewPathLength, NewPath);
-
-  S.Stk.push<MemberPointer>(MemberPtr.atInstanceBase(BaseOffset, NewPathLength,
-                                                     NewPath, IsDerivedMember));
-  return true;
-}
-
-static bool appendToMemberPointer(InterpState &S,
-                                  const MemberPointer &MemberPtr,
-                                  int32_t BaseOffset,
-                                  const RecordDecl *BaseDecl,
-                                  bool IsDerivedMember) {
-  unsigned OldPathLength = MemberPtr.getPathLength();
-  unsigned NewPathLength = OldPathLength + 1;
-
-  auto NewPath = S.allocMemberPointerPath(NewPathLength);
-  std::copy_n(MemberPtr.path(), OldPathLength, NewPath);
-  NewPath[OldPathLength] = cast<CXXRecordDecl>(BaseDecl);
-
-  S.Stk.push<MemberPointer>(MemberPtr.atInstanceBase(BaseOffset, NewPathLength,
-                                                     NewPath, IsDerivedMember));
-  return true;
-}
-
-/// DerivedToBaseMemberPointer
-bool CastMemberPtrBasePop(InterpState &S, CodePtr OpPC, int32_t Off,
-                          const RecordDecl *BaseDecl) {
-  const auto &Ptr = S.Stk.pop<MemberPointer>();
-
-  if (!Ptr.isDerivedMember() && Ptr.hasPath())
-    return castBackMemberPointer(S, Ptr, Off, BaseDecl);
-
-  bool IsDerivedMember = Ptr.isDerivedMember() || !Ptr.hasPath();
-  return appendToMemberPointer(S, Ptr, Off, BaseDecl, IsDerivedMember);
-}
-
-/// BaseToDerivedMemberPointer
-bool CastMemberPtrDerivedPop(InterpState &S, CodePtr OpPC, int32_t Off,
-                             const RecordDecl *BaseDecl) {
-  const auto &Ptr = S.Stk.pop<MemberPointer>();
-
-  if (!Ptr.isDerivedMember()) {
-    // Simply append.
-    return appendToMemberPointer(S, Ptr, Off, BaseDecl,
-                                 /*IsDerivedMember=*/false);
-  }
-
-  return castBackMemberPointer(S, Ptr, Off, BaseDecl);
-}
-
-// FIXME: Would be nice to generate this instead of hardcoding it here.
-constexpr bool OpReturns(Opcode Op) {
-  return Op == OP_RetVoid || Op == OP_RetValue || Op == OP_NoRet ||
-         Op == OP_RetSint8 || Op == OP_RetUint8 || Op == OP_RetSint16 ||
-         Op == OP_RetUint16 || Op == OP_RetSint32 || Op == OP_RetUint32 ||
-         Op == OP_RetSint64 || Op == OP_RetUint64 || Op == OP_RetIntAP ||
-         Op == OP_RetIntAPS || Op == OP_RetBool || Op == OP_RetFixedPoint ||
-         Op == OP_RetPtr || Op == OP_RetMemberPtr || Op == OP_RetFloat ||
-         Op == OP_EndSpeculation;
-}
-
-#if USE_TAILCALLS
-PRESERVE_NONE static bool InterpNext(InterpState &S, CodePtr &PC);
+// https://github.com/llvm/llvm-project/issues/102513
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(NDEBUG)
+#pragma optimize("", off)
 #endif
-
-// The dispatcher functions read the opcode arguments from the
-// bytecode and call the implementation function.
-#define GET_INTERPFN_DISPATCHERS
-#include "Opcodes.inc"
-#undef GET_INTERPFN_DISPATCHERS
-
-using InterpFn = bool (*)(InterpState &, CodePtr &PC) PRESERVE_NONE;
-// Array of the dispatcher functions defined above.
-const InterpFn InterpFunctions[] = {
-#define GET_INTERPFN_LIST
-#include "Opcodes.inc"
-#undef GET_INTERPFN_LIST
-};
-
-#if USE_TAILCALLS
-// Read the next opcode and call the dispatcher function.
-PRESERVE_NONE static bool InterpNext(InterpState &S, CodePtr &PC) {
-  auto Op = PC.read<Opcode>();
-  auto Fn = InterpFunctions[Op];
-  MUSTTAIL return Fn(S, PC);
-}
-#endif
-
 bool Interpret(InterpState &S) {
   // The current stack frame when we started Interpret().
   // This is being used by the ops to determine wheter
   // to return from this function and thus terminate
   // interpretation.
+  const InterpFrame *StartFrame = S.Current;
   assert(!S.Current->isRoot());
   CodePtr PC = S.Current->getPC();
 
-#if USE_TAILCALLS
-  return InterpNext(S, PC);
-#else
-  while (true) {
-    auto Op = PC.read<Opcode>();
-    auto Fn = InterpFunctions[Op];
-
-    if (!Fn(S, PC))
-      return false;
-    if (OpReturns(Op))
-      break;
-  }
-  return true;
-#endif
-}
-
-/// This is used to implement speculative execution via __builtin_constant_p
-/// when we generate bytecode.
-///
-/// The setup here is that we use the same tailcall mechanism for speculative
-/// evaluation that we use for the regular one.
-/// Since each speculative execution ends with an EndSpeculation opcode,
-/// that one does NOT call InterpNext() but simply returns true.
-/// This way, we return back to this function when we see an EndSpeculation,
-/// OR (of course), when we encounter an error and one of the opcodes
-/// returns false.
-PRESERVE_NONE static bool BCP(InterpState &S, CodePtr &RealPC, int32_t Offset,
-                              PrimType PT) {
-  [[maybe_unused]] CodePtr PCBefore = RealPC;
-  size_t StackSizeBefore = S.Stk.size();
-
-  // Speculation depth must be at least 1 here, since we must have
-  // passed a StartSpeculation op before.
-#ifndef NDEBUG
-  [[maybe_unused]] unsigned DepthBefore = S.SpeculationDepth;
-  assert(DepthBefore >= 1);
-#endif
-
-  CodePtr PC = RealPC;
-  auto SpeculativeInterp = [&S, &PC]() -> bool {
-    // Ignore diagnostics during speculative execution.
-    PushIgnoreDiags(S, PC);
-    auto _ = llvm::scope_exit([&]() { PopIgnoreDiags(S, PC); });
-
-#if USE_TAILCALLS
-    auto Op = PC.read<Opcode>();
-    auto Fn = InterpFunctions[Op];
-    return Fn(S, PC);
-#else
-    while (true) {
-      auto Op = PC.read<Opcode>();
-      auto Fn = InterpFunctions[Op];
-
-      if (!Fn(S, PC))
-        return false;
-      if (OpReturns(Op))
-        break;
-    }
+  // Empty program.
+  if (!PC)
     return true;
-#endif
-  };
 
-  if (SpeculativeInterp()) {
-    // Speculation must've ended naturally via a EndSpeculation opcode.
-    assert(S.SpeculationDepth == DepthBefore - 1);
-    if (PT == PT_Ptr) {
-      const auto &Ptr = S.Stk.pop<Pointer>();
-      assert(S.Stk.size() == StackSizeBefore);
-      S.Stk.push<Integral<32, true>>(
-          Integral<32, true>::from(CheckBCPResult(S, Ptr)));
-    } else {
-      // Pop the result from the stack and return success.
-      TYPE_SWITCH(PT, S.Stk.discard<T>(););
-      assert(S.Stk.size() == StackSizeBefore);
-      S.Stk.push<Integral<32, true>>(Integral<32, true>::from(1));
+  for (;;) {
+    auto Op = PC.read<Opcode>();
+    CodePtr OpPC = PC;
+
+    switch (Op) {
+#define GET_INTERP
+#include "Opcodes.inc"
+#undef GET_INTERP
     }
-  } else {
-    // End the speculation manually since we didn't call EndSpeculation
-    // naturally.
-    EndSpeculation(S, RealPC);
-
-    if (!S.inConstantContext())
-      return Invalid(S, RealPC);
-
-    S.Stk.clearTo(StackSizeBefore);
-    S.Stk.push<Integral<32, true>>(Integral<32, true>::from(0));
   }
-
-  // RealPC should not have been modified.
-  assert(*RealPC == *PCBefore);
-
-  // We have already evaluated this speculation's EndSpeculation opcode.
-  assert(S.SpeculationDepth == DepthBefore - 1);
-
-  // Jump to end label. This is a little tricker than just RealPC += Offset
-  // because our usual jump instructions don't have any arguments, to the offset
-  // we get is a little too much and we need to subtract the size of the
-  // bool and PrimType arguments again.
-  int32_t ParamSize = align(sizeof(PrimType));
-  assert(Offset >= ParamSize);
-  RealPC += Offset - ParamSize;
-
-  return true;
 }
+// https://github.com/llvm/llvm-project/issues/102513
+#if defined(_MSC_VER) && !defined(__clang__) && !defined(NDEBUG)
+#pragma optimize("", on)
+#endif
 
 } // namespace interp
 } // namespace clang

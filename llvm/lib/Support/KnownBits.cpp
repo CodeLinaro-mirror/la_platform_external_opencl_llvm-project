@@ -632,31 +632,31 @@ KnownBits KnownBits::clmul(const KnownBits &LHS, const KnownBits &RHS) {
 
 std::optional<bool> KnownBits::eq(const KnownBits &LHS, const KnownBits &RHS) {
   if (LHS.isConstant() && RHS.isConstant())
-    return LHS.getConstant() == RHS.getConstant();
+    return std::optional<bool>(LHS.getConstant() == RHS.getConstant());
   if (LHS.One.intersects(RHS.Zero) || RHS.One.intersects(LHS.Zero))
-    return false;
+    return std::optional<bool>(false);
   return std::nullopt;
 }
 
 std::optional<bool> KnownBits::ne(const KnownBits &LHS, const KnownBits &RHS) {
   if (std::optional<bool> KnownEQ = eq(LHS, RHS))
-    return !*KnownEQ;
+    return std::optional<bool>(!*KnownEQ);
   return std::nullopt;
 }
 
 std::optional<bool> KnownBits::ugt(const KnownBits &LHS, const KnownBits &RHS) {
   // LHS >u RHS -> false if umax(LHS) <= umax(RHS)
   if (LHS.getMaxValue().ule(RHS.getMinValue()))
-    return false;
+    return std::optional<bool>(false);
   // LHS >u RHS -> true if umin(LHS) > umax(RHS)
   if (LHS.getMinValue().ugt(RHS.getMaxValue()))
-    return true;
+    return std::optional<bool>(true);
   return std::nullopt;
 }
 
 std::optional<bool> KnownBits::uge(const KnownBits &LHS, const KnownBits &RHS) {
   if (std::optional<bool> IsUGT = ugt(RHS, LHS))
-    return !*IsUGT;
+    return std::optional<bool>(!*IsUGT);
   return std::nullopt;
 }
 
@@ -671,16 +671,16 @@ std::optional<bool> KnownBits::ule(const KnownBits &LHS, const KnownBits &RHS) {
 std::optional<bool> KnownBits::sgt(const KnownBits &LHS, const KnownBits &RHS) {
   // LHS >s RHS -> false if smax(LHS) <= smax(RHS)
   if (LHS.getSignedMaxValue().sle(RHS.getSignedMinValue()))
-    return false;
+    return std::optional<bool>(false);
   // LHS >s RHS -> true if smin(LHS) > smax(RHS)
   if (LHS.getSignedMinValue().sgt(RHS.getSignedMaxValue()))
-    return true;
+    return std::optional<bool>(true);
   return std::nullopt;
 }
 
 std::optional<bool> KnownBits::sge(const KnownBits &LHS, const KnownBits &RHS) {
   if (std::optional<bool> KnownSGT = sgt(RHS, LHS))
-    return !*KnownSGT;
+    return std::optional<bool>(!*KnownSGT);
   return std::nullopt;
 }
 
@@ -1242,7 +1242,7 @@ KnownBits KnownBits::urem(const KnownBits &LHS, const KnownBits &RHS) {
   if (RHS.isConstant() && RHS.getConstant().isPowerOf2()) {
     // NB: Low bits set in `remGetLowBits`.
     APInt HighBits = ~(RHS.getConstant() - 1);
-    Known.Zero |= std::move(HighBits);
+    Known.Zero |= HighBits;
     return Known;
   }
 

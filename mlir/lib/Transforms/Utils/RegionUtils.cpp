@@ -19,10 +19,10 @@
 #include "mlir/Interfaces/ControlFlowInterfaces.h"
 #include "mlir/Interfaces/SideEffectInterfaces.h"
 #include "mlir/Support/LogicalResult.h"
+
 #include "llvm/ADT/DepthFirstIterator.h"
 #include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/ADT/STLExtras.h"
-#include "llvm/ADT/SmallVectorExtras.h"
 #include "llvm/Support/DebugLog.h"
 
 #include <deque>
@@ -140,8 +140,8 @@ SmallVector<Value> mlir::makeRegionIsolatedFromAbove(
   Block *entryBlock = &region.front();
   SmallVector<Type> newArgTypes =
       llvm::to_vector(entryBlock->getArgumentTypes());
-  SmallVector<Location> newArgLocs = llvm::map_to_vector(
-      entryBlock->getArguments(), [](BlockArgument b) { return b.getLoc(); });
+  SmallVector<Location> newArgLocs = llvm::to_vector(llvm::map_range(
+      entryBlock->getArguments(), [](BlockArgument b) { return b.getLoc(); }));
 
   // Append the types of the captured values.
   for (auto value : finalCapturedValues) {
@@ -157,9 +157,8 @@ SmallVector<Value> mlir::makeRegionIsolatedFromAbove(
   // Create a mapping between the captured values and the new arguments added.
   IRMapping map;
   auto replaceIfFn = [&](OpOperand &use) {
-    return region.isAncestor(use.getOwner()->getParentRegion());
+    return use.getOwner()->getBlock()->getParent() == &region;
   };
-
   for (auto [arg, capturedVal] :
        llvm::zip(newEntryBlockArgs.take_back(finalCapturedValues.size()),
                  finalCapturedValues)) {
@@ -1097,96 +1096,21 @@ LogicalResult mlir::simplifyRegions(RewriterBase &rewriter,
 // Move operation dependencies
 //===---------------------------------------------------------------------===//
 
-/// Check if moving operations in the slice before `insertionPoint` would break
-/// dominance due to block argument operands. Returns true if all block args
-/// dominate the insertion point (no issue), false otherwise. If `failingOp` is
-/// provided, it will be set to the first problematic op.
-///
-/// For operands defined by ops: either the defining op is in the slice (so
-/// dominance preserved), or it already dominates insertionPoint (otherwise it
-/// would be in the slice). So we only need to check block argument operands,
-/// both as direct operands and as values captured inside regions.
-static bool blockArgsDominateInsertionPoint(
-    const llvm::SetVector<Operation *> &slice, Operation *insertionPoint,
-    DominanceInfo &dominance, Operation **failingOp = nullptr) {
-  Block *insertionBlock = insertionPoint->getBlock();
-
-  // Returns true if the block arg dominates, false otherwise. Sets failingOp
-  // on failure.
-  auto argDominates = [&](BlockArgument arg, Operation *op) {
-    Block *argBlock = arg.getOwner();
-    bool dominates = argBlock == insertionBlock ||
-                     dominance.dominates(argBlock, insertionBlock);
-    if (!dominates && failingOp)
-      *failingOp = op;
-    return dominates;
-  };
-
-  for (Operation *op : slice) {
-    // Check direct operands.
-    for (Value operand : op->getOperands()) {
-      auto arg = dyn_cast<BlockArgument>(operand);
-      if (!arg)
-        continue;
-      if (!argDominates(arg, op))
-        return false;
-    }
-
-    // Check block arguments captured inside regions. Process one region at a
-    // time to enable early exit without collecting values from all regions.
-    for (Region &region : op->getRegions()) {
-      SetVector<Value> capturedValues;
-      getUsedValuesDefinedAbove(region, region, capturedValues);
-      for (Value val : capturedValues) {
-        auto arg = dyn_cast<BlockArgument>(val);
-        if (!arg)
-          continue;
-        if (!argDominates(arg, op))
-          return false;
-      }
-    }
-  }
-  return true;
-}
-
-/// Check if any region between an operation and an ancestor block is
-/// isolated from above. If so, moving the operation out would break
-/// the isolation semantics.
-static bool hasIsolatedRegionBetween(Operation *op, Block *ancestorBlock) {
-  Region *ancestorRegion = ancestorBlock->getParent();
-
-  // Walk up from the op's region to find if there's an isolated region
-  // between the op and the ancestor.
-  Region *region = op->getParentRegion();
-  while (region && region != ancestorRegion) {
-    Operation *parentOp = region->getParentOp();
-    if (!parentOp)
-      break;
-
-    if (parentOp->hasTrait<OpTrait::IsIsolatedFromAbove>())
-      return true;
-
-    region = parentOp->getParentRegion();
-  }
-  return false;
-}
-
 LogicalResult mlir::moveOperationDependencies(RewriterBase &rewriter,
                                               Operation *op,
                                               Operation *insertionPoint,
                                               DominanceInfo &dominance) {
-  Block *insertionBlock = insertionPoint->getBlock();
-
-  // If `insertionPoint` does not dominate `op`, do nothing.
+  // Currently unsupported case where the op and insertion point are
+  // in different basic blocks.
+  if (op->getBlock() != insertionPoint->getBlock()) {
+    return rewriter.notifyMatchFailure(
+        op, "unsupported case where operation and insertion point are not in "
+            "the same basic block");
+  }
+  // If `insertionPoint` does not dominate `op`, do nothing
   if (!dominance.properlyDominates(insertionPoint, op)) {
     return rewriter.notifyMatchFailure(op,
                                        "insertion point does not dominate op");
-  }
-
-  // Verify we're not crossing an isolated region.
-  if (hasIsolatedRegionBetween(op, insertionBlock)) {
-    return rewriter.notifyMatchFailure(
-        op, "cannot move operation across isolated-from-above region");
   }
 
   // Find the backward slice of operation for each `Value` the operation
@@ -1195,7 +1119,8 @@ LogicalResult mlir::moveOperationDependencies(RewriterBase &rewriter,
   BackwardSliceOptions options;
   options.inclusive = false;
   options.omitUsesFromAbove = false;
-  // Block arguments cannot be moved; dominance check handles this case.
+  // Since current support is to only move within a same basic block,
+  // the slices dont need to look past block arguments.
   options.omitBlockArguments = true;
   bool dependsOnSideEffectingOp = false;
   options.filter = [&](Operation *sliceBoundaryOp) {
@@ -1233,15 +1158,6 @@ LogicalResult mlir::moveOperationDependencies(RewriterBase &rewriter,
         "cannot move dependencies before operation in backward slice of op");
   }
 
-  // Verify no operation in the slice uses a block argument that wouldn't
-  // dominate at the new location.
-  Operation *badOp = nullptr;
-  if (!blockArgsDominateInsertionPoint(slice, insertionPoint, dominance,
-                                       &badOp)) {
-    return rewriter.notifyMatchFailure(
-        badOp, "moving op would break dominance for block argument operand");
-  }
-
   // We should move the slice in topological order, but `getBackwardSlice`
   // already does that. So no need to sort again.
   for (Operation *op : slice) {
@@ -1272,26 +1188,13 @@ LogicalResult mlir::moveValueDefinitions(RewriterBase &rewriter,
           insertionPoint,
           "unsupported case of moving block argument before insertion point");
     }
-
-    Block *insertionBlock = insertionPoint->getBlock();
-    Operation *definingOp = value.getDefiningOp();
-    Block *definingBlock = definingOp->getBlock();
-
-    // Verify we're not crossing an isolated region.
-    if (hasIsolatedRegionBetween(definingOp, insertionBlock)) {
+    // Check for currently unsupported case if the insertion point is in a
+    // different block.
+    if (value.getDefiningOp()->getBlock() != insertionPoint->getBlock()) {
       return rewriter.notifyMatchFailure(
           insertionPoint,
-          "cannot move value definition across isolated-from-above region");
-    }
-
-    // Verify the insertion point's block dominates the defining block,
-    // otherwise we're trying to move "backwards" in the CFG which doesn't
-    // make sense.
-    if (!dominance.dominates(insertionBlock, definingBlock)) {
-      return rewriter.notifyMatchFailure(
-          insertionPoint,
-          "insertion point block does not dominate the value's defining "
-          "block");
+          "unsupported case of moving definition of value before an insertion "
+          "point in a different basic block");
     }
     prunedValues.push_back(value);
   }
@@ -1302,9 +1205,8 @@ LogicalResult mlir::moveValueDefinitions(RewriterBase &rewriter,
   BackwardSliceOptions options;
   options.inclusive = true;
   options.omitUsesFromAbove = false;
-  // Block arguments cannot be moved, so we stop the slice computation there.
-  // If an op uses a block argument that wouldn't dominate at the new location,
-  // the dominance check will catch it.
+  // Since current support is to only move within a same basic block,
+  // the slices dont need to look past block arguments.
   options.omitBlockArguments = true;
   bool dependsOnSideEffectingOp = false;
   options.filter = [&](Operation *sliceBoundaryOp) {
@@ -1341,19 +1243,8 @@ LogicalResult mlir::moveValueDefinitions(RewriterBase &rewriter,
         "cannot move dependencies before operation in backward slice of op");
   }
 
-  // Sort operations topologically. This is needed because we call
-  // getBackwardSlice multiple times (once per value), and the combined slice
-  // may not be in topological order when independent subgraphs interleave.
+  // Sort operations topologically before moving.
   mlir::topologicalSort(slice);
-
-  // Verify no operation in the slice uses a block argument that wouldn't
-  // dominate at the new location.
-  Operation *badOp = nullptr;
-  if (!blockArgsDominateInsertionPoint(slice, insertionPoint, dominance,
-                                       &badOp)) {
-    return rewriter.notifyMatchFailure(
-        badOp, "moving op would break dominance for block argument operand");
-  }
 
   for (Operation *op : slice)
     rewriter.moveOpBefore(op, insertionPoint);

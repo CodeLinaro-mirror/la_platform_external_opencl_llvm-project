@@ -30,7 +30,8 @@ namespace llvm {
 namespace orc {
 
 class LLVM_ABI SimpleRemoteEPC : public ExecutorProcessControl,
-                                 public SimpleRemoteEPCTransportClient {
+                                 public SimpleRemoteEPCTransportClient,
+                                 private DylibManager {
 public:
   /// A setup object containing callbacks to construct a memory manager and
   /// memory access object. Both are optional. If not specified,
@@ -92,7 +93,9 @@ public:
 private:
   SimpleRemoteEPC(std::shared_ptr<SymbolStringPool> SSP,
                   std::unique_ptr<TaskDispatcher> D)
-      : ExecutorProcessControl(std::move(SSP), std::move(D)) {}
+      : ExecutorProcessControl(std::move(SSP), std::move(D)) {
+    this->DylibMgr = this;
+  }
 
   static Expected<std::unique_ptr<jitlink::JITLinkMemoryManager>>
   createDefaultMemoryManager(SimpleRemoteEPC &SREPC);
@@ -114,6 +117,11 @@ private:
 
   uint64_t getNextSeqNo() { return NextSeqNo++; }
   void releaseSeqNo(uint64_t SeqNo) {}
+
+  Expected<tpctypes::DylibHandle> loadDylib(const char *DylibPath) override;
+
+  void lookupSymbolsAsync(ArrayRef<LookupRequest> Request,
+                          SymbolLookupCompleteFn F) override;
 
   using PendingCallWrapperResultsMap =
     DenseMap<uint64_t, IncomingWFRHandler>;

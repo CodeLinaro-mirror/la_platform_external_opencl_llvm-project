@@ -63,7 +63,9 @@ class GCNPreRAOptimizationsLegacy : public MachineFunctionPass {
 public:
   static char ID;
 
-  GCNPreRAOptimizationsLegacy() : MachineFunctionPass(ID) {}
+  GCNPreRAOptimizationsLegacy() : MachineFunctionPass(ID) {
+    initializeGCNPreRAOptimizationsLegacyPass(*PassRegistry::getPassRegistry());
+  }
 
   bool runOnMachineFunction(MachineFunction &MF) override;
 

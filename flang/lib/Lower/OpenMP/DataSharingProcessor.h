@@ -96,6 +96,8 @@ private:
   // Symbols in private, firstprivate, and/or lastprivate clauses.
   llvm::SetVector<const semantics::Symbol *> explicitlyPrivatizedSymbols;
   llvm::SetVector<const semantics::Symbol *> defaultSymbols;
+  llvm::SetVector<const semantics::Symbol *> implicitSymbols;
+  llvm::SetVector<const semantics::Symbol *> preDeterminedSymbols;
   llvm::SetVector<const semantics::Symbol *> allPrivatizedSymbols;
 
   lower::AbstractConverter &converter;
@@ -111,14 +113,8 @@ private:
   OMPConstructSymbolVisitor visitor;
 
   bool needBarrier();
-  void collectPrivatizedSymbols(
-      std::optional<semantics::Symbol::Flag> flag,
-      const llvm::SetVector<const semantics::Symbol *> &allSymbols,
-      const llvm::SetVector<const semantics::Symbol *> &symbolsInNestedRegions,
-      llvm::SetVector<const semantics::Symbol *> *symbols = nullptr);
-  void
-  collectSymbols(semantics::Symbol::Flag flag,
-                 llvm::SetVector<const semantics::Symbol *> *symbols = nullptr);
+  void collectSymbols(semantics::Symbol::Flag flag,
+                      llvm::SetVector<const semantics::Symbol *> &symbols);
   void collectSymbolsInNestedRegions(
       lower::pft::Evaluation &eval, semantics::Symbol::Flag flag,
       llvm::SetVector<const semantics::Symbol *> &symbolsInNestedRegions);
@@ -130,7 +126,6 @@ private:
   void collectDefaultSymbols();
   void collectImplicitSymbols();
   void collectPreDeterminedSymbols();
-  void collectIndirectReferences();
   void privatize(mlir::omp::PrivateClauseOps *clauseOps,
                  std::optional<llvm::omp::Directive> dir = std::nullopt);
   void copyLastPrivatize(mlir::Operation *op);

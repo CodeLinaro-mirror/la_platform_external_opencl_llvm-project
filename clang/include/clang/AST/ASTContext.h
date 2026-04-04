@@ -25,7 +25,6 @@
 #include "clang/AST/RawCommentList.h"
 #include "clang/AST/SYCLKernelInfo.h"
 #include "clang/AST/TemplateName.h"
-#include "clang/AST/Type.h"
 #include "clang/AST/TypeOrdering.h"
 #include "clang/Basic/LLVM.h"
 #include "clang/Basic/PartialDiagnostic.h"
@@ -216,11 +215,6 @@ struct TypeInfoChars {
   }
 };
 
-struct PFPField {
-  CharUnits Offset;
-  FieldDecl *Field;
-};
-
 /// Holds long-lived AST nodes (such as types and decls) that can be
 /// referred to throughout the semantic analysis of a file.
 class ASTContext : public RefCountedBase<ASTContext> {
@@ -297,7 +291,6 @@ class ASTContext : public RefCountedBase<ASTContext> {
   mutable llvm::ContextualFoldingSet<DependentBitIntType, ASTContext &>
       DependentBitIntTypes;
   mutable llvm::FoldingSet<BTFTagAttributedType> BTFTagAttributedTypes;
-  mutable llvm::FoldingSet<OverflowBehaviorType> OverflowBehaviorTypes;
   llvm::FoldingSet<HLSLAttributedResourceType> HLSLAttributedResourceTypes;
   llvm::FoldingSet<HLSLInlineSpirvType> HLSLInlineSpirvTypes;
 
@@ -389,9 +382,8 @@ class ASTContext : public RefCountedBase<ASTContext> {
   mutable llvm::DenseMap<const CXXDestructorDecl *, FunctionDecl *>
       GlobalArrayOperatorDeletesForVirtualDtor;
 
-  /// To remember for which types we met new[] call, these potentially require a
-  /// vector deleting dtor.
-  llvm::DenseSet<const CXXRecordDecl *> MaybeRequireVectorDeletingDtor;
+  /// To remember which types did require a vector deleting dtor.
+  llvm::DenseSet<const CXXRecordDecl *> RequireVectorDeletingDtor;
 
   /// The next string literal "version" to allocate during constant evaluation.
   /// This is used to distinguish between repeated evaluations of the same
@@ -788,7 +780,7 @@ private:
   const TargetInfo *Target = nullptr;
   const TargetInfo *AuxTarget = nullptr;
   clang::PrintingPolicy PrintingPolicy;
-  mutable std::unique_ptr<interp::Context> InterpContext;
+  std::unique_ptr<interp::Context> InterpContext;
   std::unique_ptr<ParentMapContext> ParentMapCtx;
 
   /// Keeps track of the deallocated DeclListNodes for future reuse.
@@ -804,7 +796,7 @@ public:
   ASTMutationListener *Listener = nullptr;
 
   /// Returns the clang bytecode interpreter context.
-  interp::Context &getInterpContext() const;
+  interp::Context &getInterpContext();
 
   struct CUDAConstantEvalContext {
     /// Do not allow wrong-sided variables in constant expressions.
@@ -964,8 +956,6 @@ public:
   bool isTypeIgnoredBySanitizer(const SanitizerMask &Mask,
                                 const QualType &Ty) const;
 
-  bool isUnaryOverflowPatternExcluded(const UnaryOperator *UO);
-
   const XRayFunctionFilter &getXRayFilter() const {
     return *XRayFilter;
   }
@@ -1065,15 +1055,6 @@ public:
   /// preprocessor is not available.
   comments::FullComment *getCommentForDecl(const Decl *D,
                                            const Preprocessor *PP) const;
-
-  /// Attempts to merge two types that may be OverflowBehaviorTypes.
-  ///
-  /// \returns A QualType if the types were handled, std::nullopt otherwise.
-  /// A null QualType indicates an incompatible merge.
-  std::optional<QualType>
-  tryMergeOverflowBehaviorTypes(QualType LHS, QualType RHS, bool OfBlockPointer,
-                                bool Unqualified, bool BlockReturnType,
-                                bool IsConditionalOperator);
 
   /// Return parsed documentation comment attached to a given declaration.
   /// Returns nullptr if no comment is attached. Does not look at any
@@ -1840,6 +1821,12 @@ private:
   QualType getFunctionTypeInternal(QualType ResultTy, ArrayRef<QualType> Args,
                                    const FunctionProtoType::ExtProtoInfo &EPI,
                                    bool OnlyWantCanonical) const;
+  QualType
+  getAutoTypeInternal(QualType DeducedType, AutoTypeKeyword Keyword,
+                      bool IsDependent, bool IsPack = false,
+                      TemplateDecl *TypeConstraintConcept = nullptr,
+                      ArrayRef<TemplateArgument> TypeConstraintArgs = {},
+                      bool IsCanon = false) const;
 
 public:
   QualType getTypeDeclType(ElaboratedTypeKeyword Keyword,
@@ -1955,13 +1942,6 @@ public:
 
   QualType getBTFTagAttributedType(const BTFTypeTagAttr *BTFAttr,
                                    QualType Wrapped) const;
-
-  QualType getOverflowBehaviorType(const OverflowBehaviorAttr *Attr,
-                                   QualType Wrapped) const;
-
-  QualType
-  getOverflowBehaviorType(OverflowBehaviorType::OverflowBehaviorKind Kind,
-                          QualType Wrapped) const;
 
   QualType getHLSLAttributedResourceType(
       QualType Wrapped, QualType Contained,
@@ -2079,7 +2059,8 @@ public:
 
   /// C++11 deduced auto type.
   QualType
-  getAutoType(DeducedKind DK, QualType DeducedAsType, AutoTypeKeyword Keyword,
+  getAutoType(QualType DeducedType, AutoTypeKeyword Keyword, bool IsDependent,
+              bool IsPack = false,
               TemplateDecl *TypeConstraintConcept = nullptr,
               ArrayRef<TemplateArgument> TypeConstraintArgs = {}) const;
 
@@ -2094,11 +2075,17 @@ public:
   QualType getUnconstrainedType(QualType T) const;
 
   /// C++17 deduced class template specialization type.
-  QualType getDeducedTemplateSpecializationType(DeducedKind DK,
-                                                QualType DeducedAsType,
-                                                ElaboratedTypeKeyword Keyword,
-                                                TemplateName Template) const;
+  QualType getDeducedTemplateSpecializationType(ElaboratedTypeKeyword Keyword,
+                                                TemplateName Template,
+                                                QualType DeducedType,
+                                                bool IsDependent) const;
 
+private:
+  QualType getDeducedTemplateSpecializationTypeInternal(
+      ElaboratedTypeKeyword Keyword, TemplateName Template,
+      QualType DeducedType, bool IsDependent, QualType Canon) const;
+
+public:
   /// Return the unique type for "size_t" (C99 7.17), defined in
   /// <stddef.h>.
   ///
@@ -2653,23 +2640,6 @@ public:
   /// types.
   bool areCompatibleVectorTypes(QualType FirstVec, QualType SecondVec);
 
-  /// Return true if two OverflowBehaviorTypes are compatible for assignment.
-  /// This checks both the underlying type compatibility and the overflow
-  /// behavior kind (trap vs wrap).
-  bool areCompatibleOverflowBehaviorTypes(QualType LHS, QualType RHS);
-
-  enum class OBTAssignResult {
-    Compatible,        // No OBT issues
-    IncompatibleKinds, // __ob_trap vs __ob_wrap (error)
-    Discards,          // OBT -> non-OBT on integer types (warning)
-    NotApplicable      // Not both integers, fall through to normal checking
-  };
-
-  /// Check overflow behavior type compatibility for assignments.
-  /// Returns detailed information about OBT compatibility for assignment
-  /// checking.
-  OBTAssignResult checkOBTAssignmentCompatibility(QualType LHS, QualType RHS);
-
   /// Return true if the given types are an RISC-V vector builtin type and a
   /// VectorType that is a fixed-length representation of the RISC-V vector
   /// builtin type for a specific vector-length.
@@ -2728,8 +2698,7 @@ public:
   CharUnits getTypeSizeInChars(const Type *T) const;
 
   std::optional<CharUnits> getTypeSizeInCharsIfKnown(QualType Ty) const {
-    if (Ty->isIncompleteType() || Ty->isDependentType() ||
-        Ty->isUndeducedType() || Ty->isSizelessType())
+    if (Ty->isIncompleteType() || Ty->isDependentType())
       return std::nullopt;
     return getTypeSizeInChars(Ty);
   }
@@ -2913,8 +2882,6 @@ public:
   /// DeviceLambdaManglingNumber. Currently this asserts that the TargetInfo
   /// (from the AuxTargetInfo) is a an itanium target.
   MangleContext *createDeviceMangleContext(const TargetInfo &T);
-
-  MangleContext *cudaNVInitDeviceMC();
 
   void DeepCollectObjCIvars(const ObjCInterfaceDecl *OI, bool leafClass,
                             SmallVectorImpl<const ObjCIvarDecl*> &Ivars) const;
@@ -3549,8 +3516,8 @@ public:
                                           OperatorDeleteKind K) const;
   bool dtorHasOperatorDelete(const CXXDestructorDecl *Dtor,
                              OperatorDeleteKind K) const;
-  void setClassMaybeNeedsVectorDeletingDestructor(const CXXRecordDecl *RD);
-  bool classMaybeNeedsVectorDeletingDestructor(const CXXRecordDecl *RD);
+  void setClassNeedsVectorDeletingDestructor(const CXXRecordDecl *RD);
+  bool classNeedsVectorDeletingDestructor(const CXXRecordDecl *RD);
 
   /// Retrieve the context for computing mangling numbers in the given
   /// DeclContext.
@@ -3833,24 +3800,6 @@ public:
                                StringRef MangledName);
 
   StringRef getCUIDHash() const;
-
-  /// Returns a list of PFP fields for the given type, including subfields in
-  /// bases or other fields, except for fields contained within fields of union
-  /// type.
-  std::vector<PFPField> findPFPFields(QualType Ty) const;
-
-  bool hasPFPFields(QualType Ty) const;
-  bool isPFPField(const FieldDecl *Field) const;
-
-  /// Returns whether this record's PFP fields (if any) are trivially
-  /// copyable (i.e. may be memcpy'd). This may also return true if the
-  /// record does not have any PFP fields, so it may be necessary for the caller
-  /// to check for PFP fields, e.g. by calling hasPFPFields().
-  bool arePFPFieldsTriviallyCopyable(const RecordDecl *RD) const;
-
-  llvm::SetVector<const FieldDecl *> PFPFieldsWithEvaluatedOffset;
-  void recordMemberDataPointerEvaluation(const ValueDecl *VD);
-  void recordOffsetOfEvaluation(const OffsetOfExpr *E);
 
 private:
   /// All OMPTraitInfo objects live in this collection, one per

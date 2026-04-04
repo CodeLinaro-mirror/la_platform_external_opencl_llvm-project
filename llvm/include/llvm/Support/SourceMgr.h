@@ -106,14 +106,14 @@ public:
   LLVM_ABI SourceMgr();
   /// Create new source manager with the capability of finding include files
   /// via the provided file system.
-  LLVM_ABI explicit SourceMgr(IntrusiveRefCntPtr<vfs::FileSystem> FS);
+  explicit SourceMgr(IntrusiveRefCntPtr<vfs::FileSystem> FS);
   SourceMgr(const SourceMgr &) = delete;
   SourceMgr &operator=(const SourceMgr &) = delete;
-  LLVM_ABI SourceMgr(SourceMgr &&);
-  LLVM_ABI SourceMgr &operator=(SourceMgr &&);
+  SourceMgr(SourceMgr &&);
+  SourceMgr &operator=(SourceMgr &&);
   LLVM_ABI ~SourceMgr();
 
-  LLVM_ABI IntrusiveRefCntPtr<vfs::FileSystem> getVirtualFileSystem() const;
+  IntrusiveRefCntPtr<vfs::FileSystem> getVirtualFileSystem() const;
   LLVM_ABI void setVirtualFileSystem(IntrusiveRefCntPtr<vfs::FileSystem> FS);
 
   /// Return the include directories of this source manager.

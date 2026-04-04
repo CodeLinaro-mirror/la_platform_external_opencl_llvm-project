@@ -77,7 +77,7 @@ struct FrameDataInfo {
   }
 
   void setFieldIndex(Value *V, uint32_t Index) {
-    assert(FieldIndexMap.count(V) == 0 &&
+    assert((LayoutIndexUpdateStarted || FieldIndexMap.count(V) == 0) &&
            "Cannot set the index for the same field twice.");
     FieldIndexMap[V] = Index;
   }
@@ -115,11 +115,16 @@ struct FrameDataInfo {
     FieldOffsetMap.insert({V, Offset});
   }
 
-  // Update field offset and alignment information from FrameTypeBuilder.
-  void updateLayoutInfo(FrameTypeBuilder &B);
+  // Remap the index of every field in the frame, using the final layout index.
+  void updateLayoutIndex(FrameTypeBuilder &B);
 
 private:
-  // Map from values to their slot indexes on the frame (insertion order).
+  // LayoutIndexUpdateStarted is used to avoid updating the index of any field
+  // twice by mistake.
+  bool LayoutIndexUpdateStarted = false;
+  // Map from values to their slot indexes on the frame. They will be first set
+  // with their original insertion field index. After the frame is built, their
+  // indexes will be updated into the final layout index.
   DenseMap<Value *, uint32_t> FieldIndexMap;
   // Map from values to their alignment on the frame. They would be set after
   // the frame is built.
@@ -161,11 +166,15 @@ private:
   struct Field {
     uint64_t Size;
     uint64_t Offset;
+    Type *Ty;
+    FieldIDType LayoutFieldIndex;
     Align Alignment;
+    Align TyAlignment;
     uint64_t DynamicAlignBuffer;
   };
 
   const DataLayout &DL;
+  LLVMContext &Context;
   uint64_t StructSize = 0;
   Align StructAlign;
   bool IsFinished = false;
@@ -176,18 +185,25 @@ private:
   DenseMap<Value*, unsigned> FieldIndexByKey;
 
 public:
-  FrameTypeBuilder(const DataLayout &DL, std::optional<Align> MaxFrameAlignment)
-      : DL(DL), MaxFrameAlignment(MaxFrameAlignment) {}
+  FrameTypeBuilder(LLVMContext &Context, const DataLayout &DL,
+                   std::optional<Align> MaxFrameAlignment)
+      : DL(DL), Context(Context), MaxFrameAlignment(MaxFrameAlignment) {}
 
   /// Add a field to this structure for the storage of an `alloca`
   /// instruction.
   [[nodiscard]] FieldIDType addFieldForAlloca(AllocaInst *AI,
                                               bool IsHeader = false) {
-    auto Size = AI->getAllocationSize(AI->getDataLayout());
-    if (!Size || !Size->isFixed())
-      report_fatal_error(
-          "Coroutines cannot handle non static or vscale allocas yet");
-    return addField(Size->getFixedValue(), AI->getAlign(), IsHeader);
+    Type *Ty = AI->getAllocatedType();
+
+    // Make an array type if this is a static array allocation.
+    if (AI->isArrayAllocation()) {
+      if (auto *CI = dyn_cast<ConstantInt>(AI->getArraySize()))
+        Ty = ArrayType::get(Ty, CI->getValue().getZExtValue());
+      else
+        report_fatal_error("Coroutines cannot handle non static allocas yet");
+    }
+
+    return addField(Ty, AI->getAlign(), IsHeader);
   }
 
   /// We want to put the allocas whose lifetime-ranges are not overlapped
@@ -220,33 +236,31 @@ public:
   void addFieldForAllocas(const Function &F, FrameDataInfo &FrameData,
                           coro::Shape &Shape, bool OptimizeFrame);
 
-  /// Add a field to this structure for a spill.
+  /// Add a field to this structure.
   [[nodiscard]] FieldIDType addField(Type *Ty, MaybeAlign MaybeFieldAlignment,
                                      bool IsHeader = false,
                                      bool IsSpillOfValue = false) {
+    assert(!IsFinished && "adding fields to a finished builder");
     assert(Ty && "must provide a type for a field");
-    // The field size is the alloc size of the type.
+
+    // The field size is always the alloc size of the type.
     uint64_t FieldSize = DL.getTypeAllocSize(Ty);
-    // The field alignment is usually the type alignment.
-    // But if we are spilling values we don't need to worry about ABI alignment
+
+    // For an alloca with size=0, we don't need to add a field and they
+    // can just point to any index in the frame. Use index 0.
+    if (FieldSize == 0) {
+      return 0;
+    }
+
+    // The field alignment might not be the type alignment, but we need
+    // to remember the type alignment anyway to build the type.
+    // If we are spilling values we don't need to worry about ABI alignment
     // concerns.
     Align ABIAlign = DL.getABITypeAlign(Ty);
     Align TyAlignment = ABIAlign;
     if (IsSpillOfValue && MaxFrameAlignment && *MaxFrameAlignment < ABIAlign)
       TyAlignment = *MaxFrameAlignment;
     Align FieldAlignment = MaybeFieldAlignment.value_or(TyAlignment);
-    return addField(FieldSize, FieldAlignment, IsHeader);
-  }
-
-  /// Add a field to this structure.
-  [[nodiscard]] FieldIDType addField(uint64_t FieldSize, Align FieldAlignment,
-                                     bool IsHeader = false) {
-    assert(!IsFinished && "adding fields to a finished builder");
-
-    // For an alloca with size=0, we don't need to add a field and they
-    // can just point to any index in the frame. Use index 0.
-    if (FieldSize == 0)
-      return 0;
 
     // The field alignment could be bigger than the max frame case, in that case
     // we request additional storage to be able to dynamically align the
@@ -270,12 +284,13 @@ public:
       Offset = OptimizedStructLayoutField::FlexibleOffset;
     }
 
-    Fields.push_back({FieldSize, Offset, FieldAlignment, DynamicAlignBuffer});
+    Fields.push_back({FieldSize, Offset, Ty, 0, FieldAlignment, TyAlignment,
+                      DynamicAlignBuffer});
     return Fields.size() - 1;
   }
 
-  /// Finish the layout and compute final size and alignment.
-  void finish();
+  /// Finish the layout and create the struct type with the given name.
+  StructType *finish(StringRef Name);
 
   uint64_t getStructSize() const {
     assert(IsFinished && "not yet finished!");
@@ -287,6 +302,11 @@ public:
     return StructAlign;
   }
 
+  FieldIDType getLayoutFieldIndex(FieldIDType Id) const {
+    assert(IsFinished && "not yet finished!");
+    return Fields[Id].LayoutFieldIndex;
+  }
+
   Field getLayoutField(FieldIDType Id) const {
     assert(IsFinished && "not yet finished!");
     return Fields[Id];
@@ -294,10 +314,10 @@ public:
 };
 } // namespace
 
-void FrameDataInfo::updateLayoutInfo(FrameTypeBuilder &B) {
+void FrameDataInfo::updateLayoutIndex(FrameTypeBuilder &B) {
   auto Updater = [&](Value *I) {
-    uint32_t FieldIndex = getFieldIndex(I);
-    auto Field = B.getLayoutField(FieldIndex);
+    auto Field = B.getLayoutField(getFieldIndex(I));
+    setFieldIndex(I, Field.LayoutFieldIndex);
     setAlign(I, Field.Alignment);
     uint64_t dynamicAlign =
         Field.DynamicAlignBuffer
@@ -306,10 +326,12 @@ void FrameDataInfo::updateLayoutInfo(FrameTypeBuilder &B) {
     setDynamicAlign(I, dynamicAlign);
     setOffset(I, Field.Offset);
   };
+  LayoutIndexUpdateStarted = true;
   for (auto &S : Spills)
     Updater(S.first);
   for (const auto &A : Allocas)
     Updater(A.Alloca);
+  LayoutIndexUpdateStarted = false;
 }
 
 void FrameTypeBuilder::addFieldForAllocas(const Function &F,
@@ -441,7 +463,7 @@ void FrameTypeBuilder::addFieldForAllocas(const Function &F,
   });
 }
 
-void FrameTypeBuilder::finish() {
+StructType *FrameTypeBuilder::finish(StringRef Name) {
   assert(!IsFinished && "already finished!");
 
   // Prepare the optimal-layout field array.
@@ -453,7 +475,7 @@ void FrameTypeBuilder::finish() {
                               Field.Offset);
   }
 
-  // Perform layout to compute size, alignment, and field offsets.
+  // Perform layout.
   auto SizeAndAlign = performOptimizedStructLayout(LayoutFields);
   StructSize = SizeAndAlign.first;
   StructAlign = SizeAndAlign.second;
@@ -462,13 +484,61 @@ void FrameTypeBuilder::finish() {
     return *static_cast<Field *>(const_cast<void*>(LayoutField.Id));
   };
 
-  // Update field offsets from the computed layout.
+  // We need to produce a packed struct type if there's a field whose
+  // assigned offset isn't a multiple of its natural type alignment.
+  bool Packed = [&] {
+    for (auto &LayoutField : LayoutFields) {
+      auto &F = getField(LayoutField);
+      if (!isAligned(F.TyAlignment, LayoutField.Offset))
+        return true;
+    }
+    return false;
+  }();
+
+  // Build the struct body.
+  SmallVector<Type*, 16> FieldTypes;
+  FieldTypes.reserve(LayoutFields.size() * 3 / 2);
+  uint64_t LastOffset = 0;
   for (auto &LayoutField : LayoutFields) {
     auto &F = getField(LayoutField);
-    F.Offset = LayoutField.Offset;
+
+    auto Offset = LayoutField.Offset;
+
+    // Add a padding field if there's a padding gap and we're either
+    // building a packed struct or the padding gap is more than we'd
+    // get from aligning to the field type's natural alignment.
+    assert(Offset >= LastOffset);
+    if (Offset != LastOffset) {
+      if (Packed || alignTo(LastOffset, F.TyAlignment) != Offset)
+        FieldTypes.push_back(ArrayType::get(Type::getInt8Ty(Context),
+                                            Offset - LastOffset));
+    }
+
+    F.Offset = Offset;
+    F.LayoutFieldIndex = FieldTypes.size();
+
+    FieldTypes.push_back(F.Ty);
+    if (F.DynamicAlignBuffer) {
+      FieldTypes.push_back(
+          ArrayType::get(Type::getInt8Ty(Context), F.DynamicAlignBuffer));
+    }
+    LastOffset = Offset + F.Size;
   }
 
+  StructType *Ty = StructType::create(Context, FieldTypes, Name, Packed);
+
+#ifndef NDEBUG
+  // Check that the IR layout matches the offsets we expect.
+  auto Layout = DL.getStructLayout(Ty);
+  for (auto &F : Fields) {
+    assert(Ty->getElementType(F.LayoutFieldIndex) == F.Ty);
+    assert(Layout->getElementOffset(F.LayoutFieldIndex) == F.Offset);
+  }
+#endif
+
   IsFinished = true;
+
+  return Ty;
 }
 
 static void cacheDIVar(FrameDataInfo &FrameData,
@@ -640,95 +710,112 @@ static void buildFrameDebugInfo(Function &F, coro::Shape &Shape,
   unsigned LineNum = DIS->getLine();
 
   DICompositeType *FrameDITy = DBuilder.createStructType(
-      DIS->getUnit(), Twine(F.getName() + ".coro_frame_ty").str(), DFile,
-      LineNum, Shape.FrameSize * 8, Shape.FrameAlign.value() * 8,
-      llvm::DINode::FlagArtificial, nullptr, llvm::DINodeArray());
+      DIS->getUnit(), Twine(F.getName() + ".coro_frame_ty").str(),
+      DFile, LineNum, Shape.FrameSize * 8,
+      Shape.FrameAlign.value() * 8, llvm::DINode::FlagArtificial, nullptr,
+      llvm::DINodeArray());
+  StructType *FrameTy = Shape.FrameTy;
   SmallVector<Metadata *, 16> Elements;
   DataLayout Layout = F.getDataLayout();
 
   DenseMap<Value *, DILocalVariable *> DIVarCache;
   cacheDIVar(FrameData, DIVarCache);
 
+  unsigned ResumeIndex = coro::Shape::SwitchFieldIndex::Resume;
+  unsigned DestroyIndex = coro::Shape::SwitchFieldIndex::Destroy;
+  unsigned IndexIndex = Shape.SwitchLowering.IndexField;
+
+  DenseMap<unsigned, StringRef> NameCache;
+  NameCache.insert({ResumeIndex, "__resume_fn"});
+  NameCache.insert({DestroyIndex, "__destroy_fn"});
+  NameCache.insert({IndexIndex, "__coro_index"});
+
+  Type *ResumeFnTy = FrameTy->getElementType(ResumeIndex),
+       *DestroyFnTy = FrameTy->getElementType(DestroyIndex),
+       *IndexTy = FrameTy->getElementType(IndexIndex);
+
+  DenseMap<unsigned, DIType *> TyCache;
+  TyCache.insert(
+      {ResumeIndex, DBuilder.createPointerType(
+                        nullptr, Layout.getTypeSizeInBits(ResumeFnTy))});
+  TyCache.insert(
+      {DestroyIndex, DBuilder.createPointerType(
+                         nullptr, Layout.getTypeSizeInBits(DestroyFnTy))});
+
+  /// FIXME: If we fill the field `SizeInBits` with the actual size of
+  /// __coro_index in bits, then __coro_index wouldn't show in the debugger.
+  TyCache.insert({IndexIndex, DBuilder.createBasicType(
+                                  "__coro_index",
+                                  (Layout.getTypeSizeInBits(IndexTy) < 8)
+                                      ? 8
+                                      : Layout.getTypeSizeInBits(IndexTy),
+                                  dwarf::DW_ATE_unsigned_char)});
+
+  for (auto *V : FrameData.getAllDefs()) {
+    auto It = DIVarCache.find(V);
+    if (It == DIVarCache.end())
+      continue;
+
+    auto Index = FrameData.getFieldIndex(V);
+
+    NameCache.insert({Index, It->second->getName()});
+    TyCache.insert({Index, It->second->getType()});
+  }
+
+  // Cache from index to (Align, Offset Pair)
+  DenseMap<unsigned, std::pair<unsigned, unsigned>> OffsetCache;
+  // The Align and Offset of Resume function and Destroy function are fixed.
+  OffsetCache.insert({ResumeIndex, {8, 0}});
+  OffsetCache.insert({DestroyIndex, {8, 8}});
+  OffsetCache.insert(
+      {IndexIndex,
+       {Shape.SwitchLowering.IndexAlign, Shape.SwitchLowering.IndexOffset}});
+
+  for (auto *V : FrameData.getAllDefs()) {
+    auto Index = FrameData.getFieldIndex(V);
+
+    OffsetCache.insert(
+        {Index, {FrameData.getAlign(V).value(), FrameData.getOffset(V)}});
+  }
+
+  DenseMap<Type *, DIType *> DITypeCache;
   // This counter is used to avoid same type names. e.g., there would be
   // many i32 and i64 types in one coroutine. And we would use i32_0 and
   // i32_1 to avoid the same type. Since it makes no sense the name of the
   // fields confilicts with each other.
   unsigned UnknownTypeNum = 0;
-  DenseMap<Type *, DIType *> DITypeCache;
-
-  auto addElement = [&](StringRef Name, uint64_t SizeInBits, uint64_t Alignment,
-                        uint64_t Offset, DIType *DITy) {
-    Elements.push_back(DBuilder.createMemberType(
-        FrameDITy, Name, DFile, LineNum, SizeInBits, Alignment, Offset * 8,
-        llvm::DINode::FlagArtificial, DITy));
-  };
-
-  auto addDIDef = [&](Value *V) {
-    // Get the offset and alignment for this value.
-    uint64_t Offset = FrameData.getOffset(V);
-    Align Alignment = FrameData.getAlign(V);
+  for (unsigned Index = 0; Index < FrameTy->getNumElements(); Index++) {
+    auto OCIt = OffsetCache.find(Index);
+    if (OCIt == OffsetCache.end())
+      continue;
 
     std::string Name;
     uint64_t SizeInBits;
+    uint32_t AlignInBits;
+    uint64_t OffsetInBits;
     DIType *DITy = nullptr;
 
-    auto It = DIVarCache.find(V);
-    if (It != DIVarCache.end()) {
-      // Get the type from the debug variable.
-      Name = It->second->getName().str();
-      DITy = It->second->getType();
+    Type *Ty = FrameTy->getElementType(Index);
+    assert(Ty->isSized() && "We can't handle type which is not sized.\n");
+    SizeInBits = Layout.getTypeSizeInBits(Ty).getFixedValue();
+    AlignInBits = OCIt->second.first * 8;
+    OffsetInBits = OCIt->second.second * 8;
+
+    if (auto It = NameCache.find(Index); It != NameCache.end()) {
+      Name = It->second.str();
+      DITy = TyCache[Index];
     } else {
-      if (auto AI = dyn_cast<AllocaInst>(V)) {
-        // Frame alloca
-        DITy = solveDIType(DBuilder, AI->getAllocatedType(), Layout, FrameDITy,
-                           LineNum, DITypeCache);
-      } else {
-        // Spill
-        DITy = solveDIType(DBuilder, V->getType(), Layout, FrameDITy, LineNum,
-                           DITypeCache);
-      }
+      DITy = solveDIType(DBuilder, Ty, Layout, FrameDITy, LineNum, DITypeCache);
       assert(DITy && "SolveDIType shouldn't return nullptr.\n");
       Name = DITy->getName().str();
       Name += "_" + std::to_string(UnknownTypeNum);
       UnknownTypeNum++;
     }
 
-    if (auto AI = dyn_cast<AllocaInst>(V)) {
-      // Lookup the total size of this alloca originally
-      auto Size = AI->getAllocationSize(Layout);
-      assert(Size && Size->isFixed() &&
-             "unreachable due to addFieldForAlloca checks");
-      SizeInBits = Size->getFixedValue() * 8;
-    } else {
-      // Compute the size of the active data of this member for this spill
-      SizeInBits = Layout.getTypeSizeInBits(V->getType());
-    }
-
-    addElement(Name, SizeInBits, Alignment.value() * 8, Offset, DITy);
-  };
-
-  // For Switch ABI, add debug info for the added fields (resume, destroy).
-  if (Shape.ABI == coro::ABI::Switch) {
-    auto *FnPtrTy = Shape.getSwitchResumePointerType();
-    uint64_t PtrSize = Layout.getPointerSizeInBits(FnPtrTy->getAddressSpace());
-    uint64_t PtrAlign =
-        Layout.getPointerABIAlignment(FnPtrTy->getAddressSpace()).value() * 8;
-    auto *DIPtr = DBuilder.createPointerType(nullptr, PtrSize,
-                                             FnPtrTy->getAddressSpace());
-    addElement("__resume_fn", PtrSize, PtrAlign, 0, DIPtr);
-    addElement("__destroy_fn", PtrSize, PtrAlign,
-               Shape.SwitchLowering.DestroyOffset, DIPtr);
-    uint64_t IndexSize =
-        Layout.getTypeSizeInBits(Shape.getIndexType()).getFixedValue();
-    addElement("__coro_index", IndexSize, Shape.SwitchLowering.IndexAlign * 8,
-               Shape.SwitchLowering.IndexOffset,
-               DBuilder.createBasicType("__coro_index",
-                                        (IndexSize < 8) ? 8 : IndexSize,
-                                        dwarf::DW_ATE_unsigned_char));
+    Elements.push_back(DBuilder.createMemberType(
+        FrameDITy, Name, DFile, LineNum, SizeInBits, AlignInBits, OffsetInBits,
+        llvm::DINode::FlagArtificial, DITy));
   }
-  auto Defs = FrameData.getAllDefs();
-  for (auto *V : Defs)
-    addDIDef(V);
 
   DBuilder.replaceArrays(FrameDITy, DBuilder.getOrCreateArray(Elements));
 
@@ -763,34 +850,36 @@ static void buildFrameDebugInfo(Function &F, coro::Shape &Shape,
   It->getParent()->insertDbgRecordBefore(NewDVR, It);
 }
 
-// Build the coroutine frame type as a byte array.
-// The frame layout includes:
-//   - Resume function pointer at offset 0 (Switch ABI only)
-//   - Destroy function pointer at offset ptrsize (Switch ABI only)
-//   - Promise alloca (Switch ABI only, only if present)
-//   - Suspend/Resume index
-//   - Spilled values and allocas
-static void buildFrameLayout(Function &F, coro::Shape &Shape,
-                             FrameDataInfo &FrameData, bool OptimizeFrame) {
+// Build a struct that will keep state for an active coroutine.
+//   struct f.frame {
+//     ResumeFnTy ResumeFnAddr;
+//     ResumeFnTy DestroyFnAddr;
+//     ... promise (if present) ...
+//     int ResumeIndex;
+//     ... spills ...
+//   };
+static StructType *buildFrameType(Function &F, coro::Shape &Shape,
+                                  FrameDataInfo &FrameData,
+                                  bool OptimizeFrame) {
+  LLVMContext &C = F.getContext();
   const DataLayout &DL = F.getDataLayout();
 
   // We will use this value to cap the alignment of spilled values.
   std::optional<Align> MaxFrameAlignment;
   if (Shape.ABI == coro::ABI::Async)
     MaxFrameAlignment = Shape.AsyncLowering.getContextAlignment();
-  FrameTypeBuilder B(DL, MaxFrameAlignment);
+  FrameTypeBuilder B(C, DL, MaxFrameAlignment);
 
   AllocaInst *PromiseAlloca = Shape.getPromiseAlloca();
   std::optional<FieldIDType> SwitchIndexFieldId;
-  IntegerType *SwitchIndexType = nullptr;
 
   if (Shape.ABI == coro::ABI::Switch) {
-    auto *FnPtrTy = Shape.getSwitchResumePointerType();
+    auto *FnPtrTy = PointerType::getUnqual(C);
 
     // Add header fields for the resume and destroy functions.
     // We can rely on these being perfectly packed.
-    (void)B.addField(FnPtrTy, MaybeAlign(), /*header*/ true);
-    (void)B.addField(FnPtrTy, MaybeAlign(), /*header*/ true);
+    (void)B.addField(FnPtrTy, std::nullopt, /*header*/ true);
+    (void)B.addField(FnPtrTy, std::nullopt, /*header*/ true);
 
     // PromiseAlloca field needs to be explicitly added here because it's
     // a header field with a fixed offset based on its alignment. Hence it
@@ -802,9 +891,9 @@ static void buildFrameLayout(Function &F, coro::Shape &Shape,
     // Add a field to store the suspend index.  This doesn't need to
     // be in the header.
     unsigned IndexBits = std::max(1U, Log2_64_Ceil(Shape.CoroSuspends.size()));
-    SwitchIndexType = Type::getIntNTy(F.getContext(), IndexBits);
+    Type *IndexType = Type::getIntNTy(C, IndexBits);
 
-    SwitchIndexFieldId = B.addField(SwitchIndexType, MaybeAlign());
+    SwitchIndexFieldId = B.addField(IndexType, std::nullopt);
   } else {
     assert(PromiseAlloca == nullptr && "lowering doesn't support promises");
   }
@@ -838,21 +927,21 @@ static void buildFrameLayout(Function &F, coro::Shape &Shape,
     FrameData.setFieldIndex(S.first, Id);
   }
 
-  B.finish();
+  StructType *FrameTy = [&] {
+    SmallString<32> Name(F.getName());
+    Name.append(".Frame");
+    return B.finish(Name);
+  }();
 
-  FrameData.updateLayoutInfo(B);
+  FrameData.updateLayoutIndex(B);
   Shape.FrameAlign = B.getStructAlign();
   Shape.FrameSize = B.getStructSize();
 
   switch (Shape.ABI) {
   case coro::ABI::Switch: {
-    // In the switch ABI, remember the function pointer and index field info.
-    // Resume and Destroy function pointers are in the frame header.
-    const DataLayout &DL = F.getDataLayout();
-    Shape.SwitchLowering.DestroyOffset = DL.getPointerSize();
-
+    // In the switch ABI, remember the switch-index field.
     auto IndexField = B.getLayoutField(*SwitchIndexFieldId);
-    Shape.SwitchLowering.IndexType = SwitchIndexType;
+    Shape.SwitchLowering.IndexField = IndexField.LayoutFieldIndex;
     Shape.SwitchLowering.IndexAlign = IndexField.Alignment.value();
     Shape.SwitchLowering.IndexOffset = IndexField.Offset;
 
@@ -887,6 +976,8 @@ static void buildFrameLayout(Function &F, coro::Shape &Shape,
     break;
   }
   }
+
+  return FrameTy;
 }
 
 /// If MaybeArgument is a byval Argument, return its byval type. Also removes
@@ -906,58 +997,64 @@ static Type *extractByvalIfArgument(Value *MaybeArgument) {
 static void createStoreIntoFrame(IRBuilder<> &Builder, Value *Def,
                                  Type *ByValTy, const coro::Shape &Shape,
                                  const FrameDataInfo &FrameData) {
-  LLVMContext &Ctx = Shape.CoroBegin->getContext();
-  uint64_t Offset = FrameData.getOffset(Def);
-
-  Value *G = Shape.FramePtr;
-  if (Offset != 0) {
-    auto *OffsetVal = ConstantInt::get(Type::getInt64Ty(Ctx), Offset);
-    G = Builder.CreateInBoundsPtrAdd(G, OffsetVal,
-                                     Def->getName() + Twine(".spill.addr"));
-  }
+  auto Index = FrameData.getFieldIndex(Def);
+  auto *G = Builder.CreateConstInBoundsGEP2_32(
+      Shape.FrameTy, Shape.FramePtr, 0, Index,
+      Def->getName() + Twine(".spill.addr"));
   auto SpillAlignment = Align(FrameData.getAlign(Def));
 
-  // For byval arguments, copy the pointed-to value to the frame.
-  if (ByValTy) {
-    auto &DL = Builder.GetInsertBlock()->getDataLayout();
-    auto Size = DL.getTypeStoreSize(ByValTy);
-    // Def is a pointer to the byval argument
-    Builder.CreateMemCpy(G, SpillAlignment, Def, SpillAlignment, Size);
-  } else {
+  // For byval arguments, store the pointed-to value in the frame.
+  if (ByValTy)
+    Builder.CreateAlignedStore(Builder.CreateLoad(ByValTy, Def), G,
+                               SpillAlignment);
+  else
     Builder.CreateAlignedStore(Def, G, SpillAlignment);
-  }
 }
 
-/// Returns a pointer into the coroutine frame at the offset where Orig is
-/// located.
+/// Returns a GEP into the coroutine frame at the offset where Orig is located.
 static Value *createGEPToFramePointer(const FrameDataInfo &FrameData,
                                       IRBuilder<> &Builder, coro::Shape &Shape,
                                       Value *Orig) {
   LLVMContext &Ctx = Shape.CoroBegin->getContext();
-  uint64_t Offset = FrameData.getOffset(Orig);
-  auto *OffsetVal = ConstantInt::get(Type::getInt64Ty(Ctx), Offset);
-  Value *Ptr = Builder.CreateInBoundsPtrAdd(Shape.FramePtr, OffsetVal);
+  FieldIDType Index = FrameData.getFieldIndex(Orig);
+  SmallVector<Value *, 3> Indices = {
+      ConstantInt::get(Type::getInt32Ty(Ctx), 0),
+      ConstantInt::get(Type::getInt32Ty(Ctx), Index),
+  };
 
+  // If Orig is an array alloca, preserve the original type by adding an extra
+  // zero offset.
+  if (auto *AI = dyn_cast<AllocaInst>(Orig)) {
+    if (ConstantInt *CI = dyn_cast<ConstantInt>(AI->getArraySize())) {
+      auto Count = CI->getValue().getZExtValue();
+      if (Count > 1)
+        Indices.push_back(ConstantInt::get(Type::getInt32Ty(Ctx), 0));
+    } else {
+      report_fatal_error("Coroutines cannot handle non static allocas yet");
+    }
+  }
+
+  auto *GEP = Builder.CreateInBoundsGEP(Shape.FrameTy, Shape.FramePtr, Indices);
   if (auto *AI = dyn_cast<AllocaInst>(Orig)) {
     if (FrameData.getDynamicAlign(Orig) != 0) {
       assert(FrameData.getDynamicAlign(Orig) == AI->getAlign().value());
       auto *M = AI->getModule();
       auto *IntPtrTy = M->getDataLayout().getIntPtrType(AI->getType());
-      auto *PtrValue = Builder.CreatePtrToInt(Ptr, IntPtrTy);
+      auto *PtrValue = Builder.CreatePtrToInt(GEP, IntPtrTy);
       auto *AlignMask = ConstantInt::get(IntPtrTy, AI->getAlign().value() - 1);
       PtrValue = Builder.CreateAdd(PtrValue, AlignMask);
       PtrValue = Builder.CreateAnd(PtrValue, Builder.CreateNot(AlignMask));
       return Builder.CreateIntToPtr(PtrValue, AI->getType());
     }
-    // If the type of Ptr is not equal to the type of AllocaInst, it implies
+    // If the type of GEP is not equal to the type of AllocaInst, it implies
     // that the AllocaInst may be reused in the Frame slot of other AllocaInst.
     // Note: If the strategy dealing with alignment changes, this cast must be
     // refined
-    if (Ptr->getType() != Orig->getType())
-      Ptr = Builder.CreateAddrSpaceCast(Ptr, Orig->getType(),
+    if (GEP->getType() != Orig->getType())
+      GEP = Builder.CreateAddrSpaceCast(GEP, Orig->getType(),
                                         Orig->getName() + Twine(".cast"));
   }
-  return Ptr;
+  return GEP;
 }
 
 /// Find dbg.declare or dbg.declare_value records referencing `Def`. If none are
@@ -991,19 +1088,6 @@ findDbgRecordsThroughLoads(Function &F, Value *Def) {
   return Records;
 }
 
-// Helper function to handle allocas that may be accessed before CoroBegin.
-// This creates a memcpy from the original alloca to the coroutine frame after
-// CoroBegin, ensuring the frame has the correct initial values.
-static void handleAccessBeforeCoroBegin(const FrameDataInfo &FrameData,
-                                        coro::Shape &Shape,
-                                        IRBuilder<> &Builder,
-                                        AllocaInst *Alloca) {
-  Value *Size = Builder.CreateAllocationSize(Builder.getInt64Ty(), Alloca);
-  auto *G = createGEPToFramePointer(FrameData, Builder, Shape, Alloca);
-  Builder.CreateMemCpy(G, FrameData.getAlign(Alloca), Alloca,
-                       Alloca->getAlign(), Size);
-}
-
 // Replace all alloca and SSA values that are accessed across suspend points
 // with GetElementPointer from coroutine frame + loads and stores. Create an
 // AllocaSpillBB that will become the new entry block for the resume parts of
@@ -1029,6 +1113,7 @@ static void insertSpills(const FrameDataInfo &FrameData, coro::Shape &Shape) {
   LLVMContext &C = Shape.CoroBegin->getContext();
   Function *F = Shape.CoroBegin->getFunction();
   IRBuilder<> Builder(C);
+  StructType *FrameTy = Shape.FrameTy;
   DominatorTree DT(*F);
   SmallDenseMap<Argument *, AllocaInst *, 4> ArgToAllocaMap;
 
@@ -1070,9 +1155,9 @@ static void insertSpills(const FrameDataInfo &FrameData, coro::Shape &Shape) {
           CurrentReload = GEP;
         } else {
           auto SpillAlignment = Align(FrameData.getAlign(Def));
-          auto *LI =
-              Builder.CreateAlignedLoad(E.first->getType(), GEP, SpillAlignment,
-                                        E.first->getName() + Twine(".reload"));
+          auto *LI = Builder.CreateAlignedLoad(
+              FrameTy->getElementType(FrameData.getFieldIndex(E.first)), GEP,
+              SpillAlignment, E.first->getName() + Twine(".reload"));
           if (TBAATag)
             LI->setMetadata(LLVMContext::MD_tbaa, TBAATag);
           CurrentReload = LI;
@@ -1218,7 +1303,13 @@ static void insertSpills(const FrameDataInfo &FrameData, coro::Shape &Shape) {
     AllocaInst *Alloca = A.Alloca;
     if (A.MayWriteBeforeCoroBegin) {
       // isEscaped really means potentially modified before CoroBegin.
-      handleAccessBeforeCoroBegin(FrameData, Shape, Builder, Alloca);
+      if (Alloca->isArrayAllocation())
+        report_fatal_error(
+            "Coroutines cannot handle copying of array allocas yet");
+
+      auto *G = createGEPToFramePointer(FrameData, Builder, Shape, Alloca);
+      auto *Value = Builder.CreateLoad(Alloca->getAllocatedType(), Alloca);
+      Builder.CreateStore(Value, G);
     }
     // For each alias to Alloca created before CoroBegin but used after
     // CoroBegin, we recreate them after CoroBegin by applying the offset
@@ -1229,7 +1320,7 @@ static void insertSpills(const FrameDataInfo &FrameData, coro::Shape &Shape) {
       auto &Value = *Alias.second;
       auto ITy = IntegerType::get(C, Value.getBitWidth());
       auto *AliasPtr =
-          Builder.CreateInBoundsPtrAdd(FramePtr, ConstantInt::get(ITy, Value));
+          Builder.CreatePtrAdd(FramePtr, ConstantInt::get(ITy, Value));
       Alias.first->replaceUsesWithIf(
           AliasPtr, [&](Use &U) { return DT.dominates(Shape.CoroBegin, U); });
     }
@@ -1270,7 +1361,9 @@ static void insertSpills(const FrameDataInfo &FrameData, coro::Shape &Shape) {
     });
     if (HasAccessingPromiseBeforeCB) {
       Builder.SetInsertPoint(&*Shape.getInsertPtAfterFramePtr());
-      handleAccessBeforeCoroBegin(FrameData, Shape, Builder, PA);
+      auto *G = createGEPToFramePointer(FrameData, Builder, Shape, PA);
+      auto *Value = Builder.CreateLoad(PA->getAllocatedType(), PA);
+      Builder.CreateStore(Value, G);
     }
   }
 }
@@ -2034,9 +2127,9 @@ void coro::BaseABI::buildCoroutineFrame(bool OptimizeFrame) {
       Shape.ABI == coro::ABI::Async)
     sinkSpillUsesAfterCoroBegin(DT, Shape.CoroBegin, Spills, Allocas);
 
-  // Build frame layout
+  // Build frame
   FrameDataInfo FrameData(Spills, Allocas);
-  buildFrameLayout(F, Shape, FrameData, OptimizeFrame);
+  Shape.FrameTy = buildFrameType(F, Shape, FrameData, OptimizeFrame);
   Shape.FramePtr = Shape.CoroBegin;
   // For now, this works for C++ programs only.
   buildFrameDebugInfo(F, Shape, FrameData);

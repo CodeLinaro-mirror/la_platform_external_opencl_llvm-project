@@ -73,6 +73,13 @@ static codegen::RegisterSaveStatsFlag SSF;
 static cl::list<const PassInfo *, bool, PassNameParser> PassList(cl::desc(
     "Optimizations available (use \"-passes=\" for the new pass manager)"));
 
+static cl::opt<bool> EnableLegacyPassManager(
+    "bugpoint-enable-legacy-pm",
+    cl::desc(
+        "Enable the legacy pass manager. This is strictly for bugpoint "
+        "due to it not working with the new PM, please do not use otherwise."),
+    cl::init(false));
+
 // This flag specifies a textual description of the optimization pass pipeline
 // to run over the module. This flag switches opt to use the new pass manager
 // infrastructure, completely disabling all of the flags specific to the old
@@ -371,7 +378,7 @@ static bool shouldPinPassToLegacyPM(StringRef Pass) {
       "structurizecfg",
       "fix-irreducible",
       "expand-ir-insts",
-      "inline-asm-prepare",
+      "callbrprepare",
       "scalarizer",
   };
   for (StringLiteral P : PassNamePrefix)
@@ -425,7 +432,7 @@ optMain(int argc, char **argv,
   initializeExpandMemCmpLegacyPassPass(Registry);
   initializeScalarizeMaskedMemIntrinLegacyPassPass(Registry);
   initializeSelectOptimizePass(Registry);
-  initializeInlineAsmPreparePass(Registry);
+  initializeCallBrPreparePass(Registry);
   initializeCodeGenPrepareLegacyPassPass(Registry);
   initializeAtomicExpandLegacyPass(Registry);
   initializeWinEHPreparePass(Registry);
@@ -462,8 +469,8 @@ optMain(int argc, char **argv,
   LLVMContext Context;
 
   // TODO: remove shouldForceLegacyPM().
-  const bool UseNPM =
-      !shouldForceLegacyPM() || PassPipeline.getNumOccurrences() > 0;
+  const bool UseNPM = (!EnableLegacyPassManager && !shouldForceLegacyPM()) ||
+                      PassPipeline.getNumOccurrences() > 0;
 
   if (UseNPM && !PassList.empty()) {
     errs() << "The `opt -passname` syntax for the new pass manager is "
@@ -485,33 +492,6 @@ optMain(int argc, char **argv,
   // PassBuilder for print passes.
   if (PrintPasses) {
     printPasses(outs());
-    return 0;
-  }
-
-  // If user just wants to list available options, skip module loading.
-  auto MAttrs = codegen::getMAttrs();
-  bool SkipModule =
-      codegen::getCPUStr() == "help" || is_contained(MAttrs, "help");
-  if (SkipModule) {
-    Triple TheTriple;
-    if (!TargetTriple.empty())
-      TheTriple = Triple(Triple::normalize(TargetTriple));
-    else
-      TheTriple = Triple(sys::getDefaultTargetTriple());
-
-    // Create the target machine just to print the help info. Use unique_ptr
-    // to avoid a memory leak.
-    Expected<std::unique_ptr<TargetMachine>> ExpectedTM =
-        codegen::createTargetMachineForTriple(TheTriple.str(),
-                                              GetCodeGenOptLevel());
-    if (Error E = ExpectedTM.takeError()) {
-      errs() << argv[0] << ": " << toString(std::move(E)) << "\n";
-      return 1;
-    }
-
-    // If we don't have a module then just exit now. We do this down
-    // here since the CPU/Feature help is underneath the target machine
-    // creation.
     return 0;
   }
 
@@ -684,7 +664,7 @@ optMain(int argc, char **argv,
 
   // Override function attributes based on CPUStr, FeaturesStr, and command line
   // flags.
-  codegen::setFunctionAttributes(*M, CPUStr, FeaturesStr);
+  codegen::setFunctionAttributes(CPUStr, FeaturesStr, *M);
 
   // If the output is set to be emitted to standard out, and standard out is a
   // console, print out a warning message and refuse to do it.  We don't

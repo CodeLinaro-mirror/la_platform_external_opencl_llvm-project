@@ -32,7 +32,6 @@ class LLVM_LIBRARY_VISIBILITY HexagonTargetInfo : public TargetInfo {
   bool HasHVX = false;
   bool HasHVX64B = false;
   bool HasHVX128B = false;
-  bool HasHVXIeeeFp = false;
   bool HasAudio = false;
   bool UseLongCalls = false;
 

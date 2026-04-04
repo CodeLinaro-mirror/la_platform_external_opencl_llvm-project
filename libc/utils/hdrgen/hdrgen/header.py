@@ -177,7 +177,7 @@ class HeaderFile:
                 for typ in self.all_types()
             }
             | {
-                PurePosixPath("llvm-libc-macros") / f"{attr.split('(')[0]}.h"
+                PurePosixPath("llvm-libc-macros") / f"{attr}.h"
                 for attr in self.all_attributes() - COMMON_ATTRIBUTES
             }
         )

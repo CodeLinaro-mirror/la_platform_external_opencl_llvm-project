@@ -74,7 +74,6 @@ struct Scanner {
     LangOpts.ObjC = true;
     LangOpts.LineComment = true;
     LangOpts.RawStringLiterals = true;
-    LangOpts.AllowLiteralDigitSeparator = true;
     // FIXME: we do not enable C11 or C++11, so we are missing u/u8/U"".
     return LangOpts;
   }
@@ -582,12 +581,15 @@ bool Scanner::lexModuleDirectiveBody(DirectiveKind Kind, const char *&First,
     return false;
   }
 
-  const auto &Tok = lexToken(First, End);
   pushDirective(Kind);
-  if (Tok.is(tok::eof) || Tok.is(tok::eod))
+  skipWhitespace(First, End);
+  if (First == End)
     return false;
-  return reportError(DirectiveLoc,
-                     diag::err_dep_source_scanner_unexpected_tokens_at_import);
+  if (!isVerticalWhitespace(*First))
+    return reportError(
+        DirectiveLoc, diag::err_dep_source_scanner_unexpected_tokens_at_import);
+  skipNewline(First, End);
+  return false;
 }
 
 dependency_directives_scan::Token &Scanner::lexToken(const char *&First,
@@ -949,6 +951,10 @@ bool Scanner::lexPPLine(const char *&First, const char *const End) {
     CurDirToks.clear();
   });
 
+  // FIXME: Shoule we handle @import as a preprocessing directive?
+  if (*First == '@')
+    return lexAt(First, End);
+
   bool IsPreprocessedModule =
       isStartWithPreprocessedModuleDirective(First, End);
   if (*First == '_' && !IsPreprocessedModule) {
@@ -962,9 +968,6 @@ bool Scanner::lexPPLine(const char *&First, const char *const End) {
   TheLexer.setParsingPreprocessorDirective(true);
   llvm::scope_exit ScEx2(
       [&]() { TheLexer.setParsingPreprocessorDirective(false); });
-
-  if (*First == '@')
-    return lexAt(First, End);
 
   // Handle module directives for C++20 modules.
   if (*First == 'i' || *First == 'e' || *First == 'm' || IsPreprocessedModule)

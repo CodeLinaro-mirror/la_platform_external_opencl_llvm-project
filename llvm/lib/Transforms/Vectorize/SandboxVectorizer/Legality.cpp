@@ -106,13 +106,10 @@ LegalityAnalysis::notVectorizableBasedOnOpcodesAndTypes(
   }
   case Instruction::Opcode::FCmp:
   case Instruction::Opcode::ICmp: {
-    // We need the same predicate and the same operand type.
+    // We need the same predicate..
     auto Pred0 = cast<CmpInst>(I0)->getPredicate();
-    Type *Ty0 = cast<CmpInst>(I0)->getOperand(0)->getType();
-    bool Same = all_of(Bndl, [Pred0, Ty0](Value *V) {
-      auto *CmpI = cast<CmpInst>(V);
-      return CmpI->getPredicate() == Pred0 &&
-             CmpI->getOperand(0)->getType() == Ty0;
+    bool Same = all_of(Bndl, [Pred0](Value *V) {
+      return cast<CmpInst>(V)->getPredicate() == Pred0;
     });
     if (Same)
       return std::nullopt;
@@ -159,8 +156,7 @@ LegalityAnalysis::notVectorizableBasedOnOpcodesAndTypes(
     return ResultReason::Unimplemented;
   case Instruction::Opcode::Opaque:
     return ResultReason::Unimplemented;
-  case Instruction::Opcode::UncondBr:
-  case Instruction::Opcode::CondBr:
+  case Instruction::Opcode::Br:
   case Instruction::Opcode::Ret:
   case Instruction::Opcode::AddrSpaceCast:
   case Instruction::Opcode::InsertElement:

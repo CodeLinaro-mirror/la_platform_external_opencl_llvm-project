@@ -967,7 +967,7 @@ void LoadStoreOpt::initializeStoreMergeTargetInfo(unsigned AddrSpace) {
       LegalSizes.set(Size);
   }
   assert(LegalSizes.any() && "Expected some store sizes to be legal!");
-  LegalStoreSizes[AddrSpace] = std::move(LegalSizes);
+  LegalStoreSizes[AddrSpace] = LegalSizes;
 }
 
 bool LoadStoreOpt::runOnMachineFunction(MachineFunction &MF) {

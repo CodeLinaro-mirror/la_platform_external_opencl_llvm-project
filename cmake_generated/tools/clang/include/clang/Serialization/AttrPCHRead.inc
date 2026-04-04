@@ -680,8 +680,7 @@
     std::string replacement= Record.readString();
     int priority = Record.readInt();
     const IdentifierInfo * environment = Record.readIdentifier();
-    VersionTuple origAnyAppleOSVersion= Record.readVersionTuple();
-    New = new (Context) AvailabilityAttr(Context, Info, platform, introduced, deprecated, obsoleted, unavailable, message, strict, replacement, priority, environment, origAnyAppleOSVersion);
+    New = new (Context) AvailabilityAttr(Context, Info, platform, introduced, deprecated, obsoleted, unavailable, message, strict, replacement, priority, environment);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1758,12 +1757,8 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    unsigned argsSize = Record.readInt();
-    SmallVector<Expr *, 4> args;
-    args.reserve(argsSize);
-    for (unsigned i = 0; i != argsSize; ++i)
-      args.push_back(Record.readExpr());
-    New = new (Context) GuardedByAttr(Context, Info, args.data(), argsSize);
+    Expr * arg = Record.readExpr();
+    New = new (Context) GuardedByAttr(Context, Info, arg);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1796,17 +1791,6 @@
     std::string semanticName= Record.readString();
     int semanticIndex = Record.readInt();
     New = new (Context) HLSLAppliedSemanticAttr(Context, Info, semanticName, semanticIndex);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::HLSLAssociatedResourceDecl: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    VarDecl * resDecl = Record.readDeclAs<VarDecl >();
-    New = new (Context) HLSLAssociatedResourceDeclAttr(Context, Info, resDecl);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -1939,15 +1923,6 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::HLSLResourceDimension: {
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    llvm::hlsl::ResourceDimension dimension(static_cast<llvm::hlsl::ResourceDimension>(Record.readInt()));
-    New = new (Context) HLSLResourceDimensionAttr(Context, Info, dimension);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
   case attr::HLSLShader: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -2000,17 +1975,6 @@
     bool isPackExpansion = Record.readInt();
     unsigned builtIn = Record.readInt();
     New = new (Context) HLSLVkExtBuiltinInputAttr(Context, Info, builtIn);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::HLSLVkExtBuiltinOutput: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    unsigned builtIn = Record.readInt();
-    New = new (Context) HLSLVkExtBuiltinOutputAttr(Context, Info, builtIn);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -2704,16 +2668,6 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::NoFieldProtection: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) NoFieldProtectionAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
   case attr::NoInline: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -2759,16 +2713,6 @@
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     New = new (Context) NoMips16Attr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::NoOutline: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) NoOutlineAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -3115,16 +3059,6 @@
     bool isPackExpansion = Record.readInt();
     Expr * ref = Record.readExpr();
     New = new (Context) OMPReferencedVarAttr(Context, Info, ref);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::OMPTargetIndirectCall: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) OMPTargetIndirectCallAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -3579,15 +3513,6 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::OverflowBehavior: {
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    const IdentifierInfo * behaviorKind = Record.readIdentifier();
-    New = new (Context) OverflowBehaviorAttr(Context, Info, behaviorKind);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
   case attr::Overloadable: {
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
@@ -3699,17 +3624,6 @@
     New->setPackExpansion(isPackExpansion);
     break;
   }
-  case attr::Personality: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    FunctionDecl * routine = Record.readDeclAs<FunctionDecl >();
-    New = new (Context) PersonalityAttr(Context, Info, routine);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
   case attr::Pointer: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -3728,16 +3642,6 @@
     bool addressDiscriminated = Record.readInt();
     int extraDiscriminator = Record.readInt();
     New = new (Context) PointerAuthAttr(Context, Info, key, addressDiscriminated, extraDiscriminator);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::PointerFieldProtection: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) PointerFieldProtectionAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
     break;
@@ -3853,12 +3757,8 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
-    unsigned argsSize = Record.readInt();
-    SmallVector<Expr *, 4> args;
-    args.reserve(argsSize);
-    for (unsigned i = 0; i != argsSize; ++i)
-      args.push_back(Record.readExpr());
-    New = new (Context) PtGuardedByAttr(Context, Info, args.data(), argsSize);
+    Expr * arg = Record.readExpr();
+    New = new (Context) PtGuardedByAttr(Context, Info, arg);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);
@@ -4248,16 +4148,6 @@
     bool isImplicit = Record.readInt();
     bool isPackExpansion = Record.readInt();
     New = new (Context) SpeculativeLoadHardeningAttr(Context, Info);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    New->setPackExpansion(isPackExpansion);
-    break;
-  }
-  case attr::StackProtectorIgnore: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    bool isPackExpansion = Record.readInt();
-    New = new (Context) StackProtectorIgnoreAttr(Context, Info);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     New->setPackExpansion(isPackExpansion);

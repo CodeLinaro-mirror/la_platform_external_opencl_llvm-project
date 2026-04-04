@@ -12,8 +12,6 @@ import json
 
 @skipIfBuildType(["debug"])
 class TestDAP_runInTerminal(lldbdap_testcase.DAPTestCaseBase):
-    SHARED_BUILD_TESTCASE = False
-
     def read_pid_message(self, fifo_file):
         with open(fifo_file, "r") as file:
             self.assertIn("pid", file.readline())
@@ -40,7 +38,6 @@ class TestDAP_runInTerminal(lldbdap_testcase.DAPTestCaseBase):
         self.build_and_launch(
             program, console="integratedTerminal", args=["foobar"], env=["FOO=bar"]
         )
-        self.dap_server.wait_for_initialized()
 
         self.assertEqual(
             len(self.dap_server.reverse_requests),
@@ -85,7 +82,6 @@ class TestDAP_runInTerminal(lldbdap_testcase.DAPTestCaseBase):
         """
         program = self.getBuildArtifact("a.out")
         self.build_and_launch(program, console="integratedTerminal", env={"FOO": "BAR"})
-        self.dap_server.wait_for_initialized()
 
         self.assertEqual(
             len(self.dap_server.reverse_requests),
@@ -104,11 +100,12 @@ class TestDAP_runInTerminal(lldbdap_testcase.DAPTestCaseBase):
     @skipIfWindows
     def test_runInTerminalInvalidTarget(self):
         self.build_and_create_debug_adapter()
-        response = self.launch_and_configurationDone(
+        response = self.launch(
             "INVALIDPROGRAM",
             console="integratedTerminal",
             args=["foobar"],
             env=["FOO=bar"],
+            waitForResponse=True,
         )
         self.assertFalse(response["success"])
         self.assertIn(
@@ -217,15 +214,3 @@ class TestDAP_runInTerminal(lldbdap_testcase.DAPTestCaseBase):
 
         _, stderr = proc.communicate()
         self.assertIn("Timed out trying to get messages from the debug adapter", stderr)
-
-    def test_client_missing_runInTerminal_feature(self):
-        program = self.getBuildArtifact("a.out")
-        self.build_and_create_debug_adapter()
-        response = self.launch_and_configurationDone(
-            program,
-            console="integratedTerminal",
-            client_features={"supportsRunInTerminalRequest": False},
-        )
-        self.assertFalse(response["success"], f"Expected failure got {response!r}")
-        error_message = response["body"]["error"]["format"]
-        self.assertIn("Client does not support RunInTerminal.", error_message)

@@ -315,8 +315,7 @@ void DereferenceChecker::checkLocation(SVal l, bool isLoad, const Stmt* S,
 
   if (location.isConstant()) {
     const Expr *DerefExpr = getDereferenceExpr(S, isLoad);
-    if (!DerefExpr->getType().isVolatileQualified() &&
-        !suppressReport(C, DerefExpr))
+    if (!suppressReport(C, DerefExpr))
       reportDerefBug(FixedAddressBug, notNullState, DerefExpr, C);
     return;
   }

@@ -6723,55 +6723,6 @@ const char *AtomicAttr::getSpelling() const {
 
 // AvailabilityAttr implementation
 
-AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) AvailabilityAttr(Ctx, CommonInfo, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment, OrigAnyAppleOSVersion);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) AvailabilityAttr(Ctx, CommonInfo, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment, OrigAnyAppleOSVersion);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_availability:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_availability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_availability:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_availability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_availability:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_availability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment, OrigAnyAppleOSVersion, I);
-}
-
-AvailabilityAttr *AvailabilityAttr::Create(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, VersionTuple OrigAnyAppleOSVersion, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_availability:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_availability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_availability:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_availability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_availability:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_availability, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment, OrigAnyAppleOSVersion, I);
-}
-
 AvailabilityAttr *AvailabilityAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * Platform, VersionTuple Introduced, VersionTuple Deprecated, VersionTuple Obsoleted, bool Unavailable, llvm::StringRef Message, bool Strict, llvm::StringRef Replacement, int Priority, const IdentifierInfo * Environment, const AttributeCommonInfo &CommonInfo) {
   auto *A = new (Ctx) AvailabilityAttr(Ctx, CommonInfo, Platform, Introduced, Deprecated, Obsoleted, Unavailable, Message, Strict, Replacement, Priority, Environment);
   A->setImplicit(true);
@@ -6832,7 +6783,6 @@ AvailabilityAttr::AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &C
               , llvm::StringRef Replacement
               , int Priority
               , const IdentifierInfo * Environment
-              , VersionTuple OrigAnyAppleOSVersion
              )
   : InheritableAttr(Ctx, CommonInfo, attr::Availability, /*IsLateParsed=*/false, true)
               , platform(Platform)
@@ -6845,46 +6795,12 @@ AvailabilityAttr::AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &C
               , replacementLength(Replacement.size()),replacement(new (Ctx, 1) char[replacementLength])
               , priority(Priority)
               , environment(Environment)
-              , origAnyAppleOSVersion(OrigAnyAppleOSVersion)
   {
     if (!Message.empty())
       std::memcpy(message, Message.data(), messageLength);
     if (!Replacement.empty())
       std::memcpy(replacement, Replacement.data(), replacementLength);
 }
-
-AvailabilityAttr::AvailabilityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , const IdentifierInfo * Platform
-              , VersionTuple Introduced
-              , VersionTuple Deprecated
-              , VersionTuple Obsoleted
-              , bool Unavailable
-              , llvm::StringRef Message
-              , bool Strict
-              , llvm::StringRef Replacement
-              , int Priority
-              , const IdentifierInfo * Environment
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::Availability, /*IsLateParsed=*/false, true)
-              , platform(Platform)
-              , introduced(Introduced)
-              , deprecated(Deprecated)
-              , obsoleted(Obsoleted)
-              , unavailable(Unavailable)
-              , messageLength(Message.size()),message(new (Ctx, 1) char[messageLength])
-              , strict(Strict)
-              , replacementLength(Replacement.size()),replacement(new (Ctx, 1) char[replacementLength])
-              , priority(Priority)
-              , environment(Environment)
-              , origAnyAppleOSVersion()
-  {
-    if (!Message.empty())
-      std::memcpy(message, Message.data(), messageLength);
-    if (!Replacement.empty())
-      std::memcpy(replacement, Replacement.data(), replacementLength);
-}
-
-
 
 
 
@@ -6927,13 +6843,11 @@ bool AvailabilityAttr::isEquivalent(const AvailabilityAttr &Other, StructuralEqu
     return false;
   if (!equalAttrArgs(getEnvironment(), Other.getEnvironment(), Context))
     return false;
-  if (!equalAttrArgs(getOrigAnyAppleOSVersion(), Other.getOrigAnyAppleOSVersion(), Context))
-    return false;
   return true;
 }
 
 AvailabilityAttr *AvailabilityAttr::clone(ASTContext &C) const {
-  auto *A = new (C) AvailabilityAttr(C, *this, platform, getIntroduced(), getDeprecated(), getObsoleted(), unavailable, getMessage(), strict, getReplacement(), priority, environment, getOrigAnyAppleOSVersion());
+  auto *A = new (C) AvailabilityAttr(C, *this, platform, getIntroduced(), getDeprecated(), getObsoleted(), unavailable, getMessage(), strict, getReplacement(), priority, environment);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -18997,57 +18911,49 @@ const char *GNUInlineAttr::getSpelling() const {
 
 // GuardedByAttr implementation
 
-GuardedByAttr *GuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) GuardedByAttr(Ctx, CommonInfo, Args, ArgsSize);
+GuardedByAttr *GuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) GuardedByAttr(Ctx, CommonInfo, Arg);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-GuardedByAttr *GuardedByAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) GuardedByAttr(Ctx, CommonInfo, Args, ArgsSize);
+GuardedByAttr *GuardedByAttr::Create(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) GuardedByAttr(Ctx, CommonInfo, Arg);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-GuardedByAttr *GuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
+GuardedByAttr *GuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * Arg, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, Args, ArgsSize, I);
+  return CreateImplicit(Ctx, Arg, I);
 }
 
-GuardedByAttr *GuardedByAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
+GuardedByAttr *GuardedByAttr::Create(ASTContext &Ctx, Expr * Arg, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, Args, ArgsSize, I);
+  return Create(Ctx, Arg, I);
 }
 
 GuardedByAttr::GuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * *Args, unsigned ArgsSize
+              , Expr * Arg
              )
   : InheritableAttr(Ctx, CommonInfo, attr::GuardedBy, /*IsLateParsed=*/true, true)
-              , args_Size(ArgsSize), args_(new (Ctx, 16) Expr *[args_Size])
-  {
-  std::copy(Args, Args + args_Size, args_);
-}
-
-GuardedByAttr::GuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::GuardedBy, /*IsLateParsed=*/true, true)
-              , args_Size(0), args_(nullptr)
+              , arg(Arg)
   {
 }
 
 
 
 bool GuardedByAttr::isEquivalent(const GuardedByAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+  if (!equalAttrArgs(getArg(), Other.getArg(), Context))
     return false;
   return true;
 }
 
 GuardedByAttr *GuardedByAttr::clone(ASTContext &C) const {
-  auto *A = new (C) GuardedByAttr(C, *this, args_, args_Size);
+  auto *A = new (C) GuardedByAttr(C, *this, arg);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -19063,12 +18969,10 @@ void GuardedByAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) c
     break;
   case 0 : {
     OS << "__attribute__((guarded_by";
-    OS << "";
-  for (const auto &Val : args()) {
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << Val;
-  }
-  OS << "";
+    OS << "";
+    getArg()->printPretty(OS, nullptr, Policy);
+    OS << "";
     if (!IsFirstArgument)
       OS << ")";
     OS << "))";
@@ -19347,65 +19251,6 @@ void HLSLAppliedSemanticAttr::printPretty(raw_ostream &OS, const PrintingPolicy 
 }
 
 const char *HLSLAppliedSemanticAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
-// HLSLAssociatedResourceDeclAttr implementation
-
-HLSLAssociatedResourceDeclAttr *HLSLAssociatedResourceDeclAttr::CreateImplicit(ASTContext &Ctx, VarDecl * ResDecl, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLAssociatedResourceDeclAttr(Ctx, CommonInfo, ResDecl);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLAssociatedResourceDeclAttr *HLSLAssociatedResourceDeclAttr::Create(ASTContext &Ctx, VarDecl * ResDecl, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLAssociatedResourceDeclAttr(Ctx, CommonInfo, ResDecl);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLAssociatedResourceDeclAttr *HLSLAssociatedResourceDeclAttr::CreateImplicit(ASTContext &Ctx, VarDecl * ResDecl, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, ResDecl, I);
-}
-
-HLSLAssociatedResourceDeclAttr *HLSLAssociatedResourceDeclAttr::Create(ASTContext &Ctx, VarDecl * ResDecl, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, ResDecl, I);
-}
-
-HLSLAssociatedResourceDeclAttr::HLSLAssociatedResourceDeclAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , VarDecl * ResDecl
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::HLSLAssociatedResourceDecl, /*IsLateParsed=*/false, false)
-              , resDecl(ResDecl)
-  {
-}
-
-
-
-bool HLSLAssociatedResourceDeclAttr::isEquivalent(const HLSLAssociatedResourceDeclAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(getResDecl(), Other.getResDecl(), Context))
-    return false;
-  return true;
-}
-
-HLSLAssociatedResourceDeclAttr *HLSLAssociatedResourceDeclAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLAssociatedResourceDeclAttr(C, *this, resDecl);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLAssociatedResourceDeclAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *HLSLAssociatedResourceDeclAttr::getSpelling() const {
   return "(No spelling)";
 }
 
@@ -20644,112 +20489,6 @@ const char *HLSLResourceClassAttr::getSpelling() const {
 }
 
 
-// HLSLResourceDimensionAttr implementation
-
-HLSLResourceDimensionAttr *HLSLResourceDimensionAttr::CreateImplicit(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLResourceDimensionAttr(Ctx, CommonInfo, Dimension);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLResourceDimensionAttr *HLSLResourceDimensionAttr::Create(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLResourceDimensionAttr(Ctx, CommonInfo, Dimension);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLResourceDimensionAttr *HLSLResourceDimensionAttr::CreateImplicit(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, Dimension, I);
-}
-
-HLSLResourceDimensionAttr *HLSLResourceDimensionAttr::Create(ASTContext &Ctx, llvm::hlsl::ResourceDimension Dimension, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, Dimension, I);
-}
-
-HLSLResourceDimensionAttr::HLSLResourceDimensionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , llvm::hlsl::ResourceDimension Dimension
-             )
-  : TypeAttr(Ctx, CommonInfo, attr::HLSLResourceDimension, /*IsLateParsed=*/false)
-              , dimension(Dimension)
-  {
-}
-
-
-
-bool HLSLResourceDimensionAttr::ConvertStrToResourceDimension(StringRef Val, llvm::hlsl::ResourceDimension &Out) {
-  std::optional<llvm::hlsl::ResourceDimension> R = llvm::StringSwitch<std::optional<llvm::hlsl::ResourceDimension>>(Val)
-    .Case("Unknown", llvm::hlsl::ResourceDimension::Unknown)
-    .Case("1D", llvm::hlsl::ResourceDimension::Dim1D)
-    .Case("2D", llvm::hlsl::ResourceDimension::Dim2D)
-    .Case("3D", llvm::hlsl::ResourceDimension::Dim3D)
-    .Case("Cube", llvm::hlsl::ResourceDimension::Cube)
-    .Default(std::optional<llvm::hlsl::ResourceDimension>());
-  if (R) {
-    Out = *R;
-      return true;
-    }
-  return false;
-}
-
-const char *HLSLResourceDimensionAttr::ConvertResourceDimensionToStr(llvm::hlsl::ResourceDimension Val) {
-  switch(Val) {
-  case llvm::hlsl::ResourceDimension::Unknown: return "Unknown";
-  case llvm::hlsl::ResourceDimension::Dim1D: return "1D";
-  case llvm::hlsl::ResourceDimension::Dim2D: return "2D";
-  case llvm::hlsl::ResourceDimension::Dim3D: return "3D";
-  case llvm::hlsl::ResourceDimension::Cube: return "Cube";
-  }
-  llvm_unreachable("No enumerator with that value");
-}
-bool HLSLResourceDimensionAttr::isEquivalent(const HLSLResourceDimensionAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(getDimension(), Other.getDimension(), Context))
-    return false;
-  return true;
-}
-
-HLSLResourceDimensionAttr *HLSLResourceDimensionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLResourceDimensionAttr(C, *this, dimension);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLResourceDimensionAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "[[hlsl::dimension";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "\"" << HLSLResourceDimensionAttr::ConvertResourceDimensionToStr(getDimension()) << "\"";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *HLSLResourceDimensionAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "dimension";
-  }
-}
-
-
 // HLSLShaderAttr implementation
 
 HLSLShaderAttr *HLSLShaderAttr::CreateImplicit(ASTContext &Ctx, llvm::Triple::EnvironmentType Type, const AttributeCommonInfo &CommonInfo) {
@@ -21204,87 +20943,6 @@ const char *HLSLVkExtBuiltinInputAttr::getSpelling() const {
     return "(No spelling)";
   case 0:
     return "ext_builtin_input";
-  }
-}
-
-
-// HLSLVkExtBuiltinOutputAttr implementation
-
-HLSLVkExtBuiltinOutputAttr *HLSLVkExtBuiltinOutputAttr::CreateImplicit(ASTContext &Ctx, unsigned BuiltIn, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLVkExtBuiltinOutputAttr(Ctx, CommonInfo, BuiltIn);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLVkExtBuiltinOutputAttr *HLSLVkExtBuiltinOutputAttr::Create(ASTContext &Ctx, unsigned BuiltIn, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) HLSLVkExtBuiltinOutputAttr(Ctx, CommonInfo, BuiltIn);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-HLSLVkExtBuiltinOutputAttr *HLSLVkExtBuiltinOutputAttr::CreateImplicit(ASTContext &Ctx, unsigned BuiltIn, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, BuiltIn, I);
-}
-
-HLSLVkExtBuiltinOutputAttr *HLSLVkExtBuiltinOutputAttr::Create(ASTContext &Ctx, unsigned BuiltIn, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_CXX11, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, BuiltIn, I);
-}
-
-HLSLVkExtBuiltinOutputAttr::HLSLVkExtBuiltinOutputAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , unsigned BuiltIn
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::HLSLVkExtBuiltinOutput, /*IsLateParsed=*/false, false)
-              , builtIn(BuiltIn)
-  {
-}
-
-
-
-bool HLSLVkExtBuiltinOutputAttr::isEquivalent(const HLSLVkExtBuiltinOutputAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(getBuiltIn(), Other.getBuiltIn(), Context))
-    return false;
-  return true;
-}
-
-HLSLVkExtBuiltinOutputAttr *HLSLVkExtBuiltinOutputAttr::clone(ASTContext &C) const {
-  auto *A = new (C) HLSLVkExtBuiltinOutputAttr(C, *this, builtIn);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void HLSLVkExtBuiltinOutputAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "[[vk::ext_builtin_output";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getBuiltIn() << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *HLSLVkExtBuiltinOutputAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "ext_builtin_output";
   }
 }
 
@@ -23754,7 +23412,6 @@ bool LoopHintAttr::ConvertStrToOptionType(StringRef Val, LoopHintAttr::OptionTyp
     .Case("pipeline_initiation_interval", LoopHintAttr::OptionType::PipelineInitiationInterval)
     .Case("distribute", LoopHintAttr::OptionType::Distribute)
     .Case("vectorize_predicate", LoopHintAttr::OptionType::VectorizePredicate)
-    .Case("licm", LoopHintAttr::OptionType::LICMDisabled)
     .Default(std::optional<LoopHintAttr::OptionType>());
   if (R) {
     Out = *R;
@@ -23777,7 +23434,6 @@ const char *LoopHintAttr::ConvertOptionTypeToStr(LoopHintAttr::OptionType Val) {
   case LoopHintAttr::OptionType::PipelineInitiationInterval: return "pipeline_initiation_interval";
   case LoopHintAttr::OptionType::Distribute: return "distribute";
   case LoopHintAttr::OptionType::VectorizePredicate: return "vectorize_predicate";
-  case LoopHintAttr::OptionType::LICMDisabled: return "licm";
   }
   llvm_unreachable("No enumerator with that value");
 }
@@ -28462,115 +28118,6 @@ const char *NoEscapeAttr::getSpelling() const {
 }
 
 
-// NoFieldProtectionAttr implementation
-
-NoFieldProtectionAttr *NoFieldProtectionAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) NoFieldProtectionAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-NoFieldProtectionAttr *NoFieldProtectionAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) NoFieldProtectionAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-NoFieldProtectionAttr *NoFieldProtectionAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_no_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_no_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_no_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_no_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_no_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_no_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, I);
-}
-
-NoFieldProtectionAttr *NoFieldProtectionAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_no_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_no_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_no_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_no_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_no_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_no_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, I);
-}
-
-NoFieldProtectionAttr::NoFieldProtectionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::NoFieldProtection, /*IsLateParsed=*/false, false)
-  {
-}
-
-bool NoFieldProtectionAttr::isEquivalent(const NoFieldProtectionAttr &Other, StructuralEquivalenceContext &Context) const {
-  return true;
-}
-
-NoFieldProtectionAttr *NoFieldProtectionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) NoFieldProtectionAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void NoFieldProtectionAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((no_field_protection";
-    OS << "))";
-    break;
-  }
-  case 1 : {
-    OS << "[[clang::no_field_protection";
-    OS << "]]";
-    break;
-  }
-  case 2 : {
-    OS << "[[clang::no_field_protection";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *NoFieldProtectionAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "no_field_protection";
-  case 1:
-    return "no_field_protection";
-  case 2:
-    return "no_field_protection";
-  }
-}
-
-
 // NoInlineAttr implementation
 
 NoInlineAttr *NoInlineAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -29178,115 +28725,6 @@ const char *NoMips16Attr::getSpelling() const {
     return "nomips16";
   case 2:
     return "nomips16";
-  }
-}
-
-
-// NoOutlineAttr implementation
-
-NoOutlineAttr *NoOutlineAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) NoOutlineAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-NoOutlineAttr *NoOutlineAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) NoOutlineAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-NoOutlineAttr *NoOutlineAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_no_outline:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_no_outline, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_no_outline:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_no_outline, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_no_outline:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_no_outline, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, I);
-}
-
-NoOutlineAttr *NoOutlineAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_no_outline:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_no_outline, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_no_outline:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_no_outline, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_no_outline:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_no_outline, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, I);
-}
-
-NoOutlineAttr::NoOutlineAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : DeclOrStmtAttr(Ctx, CommonInfo, attr::NoOutline, /*IsLateParsed=*/false, false)
-  {
-}
-
-bool NoOutlineAttr::isEquivalent(const NoOutlineAttr &Other, StructuralEquivalenceContext &Context) const {
-  return true;
-}
-
-NoOutlineAttr *NoOutlineAttr::clone(ASTContext &C) const {
-  auto *A = new (C) NoOutlineAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void NoOutlineAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((no_outline";
-    OS << "))";
-    break;
-  }
-  case 1 : {
-    OS << "[[clang::no_outline";
-    OS << "]]";
-    break;
-  }
-  case 2 : {
-    OS << "[[clang::no_outline";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *NoOutlineAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "no_outline";
-  case 1:
-    return "no_outline";
-  case 2:
-    return "no_outline";
   }
 }
 
@@ -32003,7 +31441,6 @@ bool OMPDeclareTargetDeclAttr::ConvertStrToMapTypeTy(StringRef Val, OMPDeclareTa
     .Case("to", OMPDeclareTargetDeclAttr::MapTypeTy::MT_To)
     .Case("enter", OMPDeclareTargetDeclAttr::MapTypeTy::MT_Enter)
     .Case("link", OMPDeclareTargetDeclAttr::MapTypeTy::MT_Link)
-    .Case("local", OMPDeclareTargetDeclAttr::MapTypeTy::MT_Local)
     .Default(std::optional<OMPDeclareTargetDeclAttr::MapTypeTy>());
   if (R) {
     Out = *R;
@@ -32017,7 +31454,6 @@ const char *OMPDeclareTargetDeclAttr::ConvertMapTypeTyToStr(OMPDeclareTargetDecl
   case OMPDeclareTargetDeclAttr::MapTypeTy::MT_To: return "to";
   case OMPDeclareTargetDeclAttr::MapTypeTy::MT_Enter: return "enter";
   case OMPDeclareTargetDeclAttr::MapTypeTy::MT_Link: return "link";
-  case OMPDeclareTargetDeclAttr::MapTypeTy::MT_Local: return "local";
   }
   llvm_unreachable("No enumerator with that value");
 }
@@ -32333,59 +31769,6 @@ void OMPReferencedVarAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Po
 }
 
 const char *OMPReferencedVarAttr::getSpelling() const {
-  return "(No spelling)";
-}
-
-
-// OMPTargetIndirectCallAttr implementation
-
-OMPTargetIndirectCallAttr *OMPTargetIndirectCallAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) OMPTargetIndirectCallAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-OMPTargetIndirectCallAttr *OMPTargetIndirectCallAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) OMPTargetIndirectCallAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-OMPTargetIndirectCallAttr *OMPTargetIndirectCallAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return CreateImplicit(Ctx, I);
-}
-
-OMPTargetIndirectCallAttr *OMPTargetIndirectCallAttr::Create(ASTContext &Ctx, SourceRange Range) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, AttributeCommonInfo::Form::Implicit());
-  return Create(Ctx, I);
-}
-
-OMPTargetIndirectCallAttr::OMPTargetIndirectCallAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::OMPTargetIndirectCall, /*IsLateParsed=*/false, false)
-  {
-}
-
-bool OMPTargetIndirectCallAttr::isEquivalent(const OMPTargetIndirectCallAttr &Other, StructuralEquivalenceContext &Context) const {
-  return true;
-}
-
-OMPTargetIndirectCallAttr *OMPTargetIndirectCallAttr::clone(ASTContext &C) const {
-  auto *A = new (C) OMPTargetIndirectCallAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void OMPTargetIndirectCallAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-}
-
-const char *OMPTargetIndirectCallAttr::getSpelling() const {
   return "(No spelling)";
 }
 
@@ -37698,133 +37081,6 @@ const char *OptimizeNoneAttr::getSpelling() const {
 }
 
 
-// OverflowBehaviorAttr implementation
-
-OverflowBehaviorAttr *OverflowBehaviorAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) OverflowBehaviorAttr(Ctx, CommonInfo, BehaviorKind);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-OverflowBehaviorAttr *OverflowBehaviorAttr::Create(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) OverflowBehaviorAttr(Ctx, CommonInfo, BehaviorKind);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-OverflowBehaviorAttr *OverflowBehaviorAttr::CreateImplicit(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_overflow_behavior:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_overflow_behavior, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_overflow_behavior:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_overflow_behavior, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_overflow_behavior:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_overflow_behavior, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, BehaviorKind, I);
-}
-
-OverflowBehaviorAttr *OverflowBehaviorAttr::Create(ASTContext &Ctx, const IdentifierInfo * BehaviorKind, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_overflow_behavior:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_overflow_behavior, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_overflow_behavior:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_overflow_behavior, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_overflow_behavior:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_overflow_behavior, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, BehaviorKind, I);
-}
-
-OverflowBehaviorAttr::OverflowBehaviorAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , const IdentifierInfo * BehaviorKind
-             )
-  : TypeAttr(Ctx, CommonInfo, attr::OverflowBehavior, /*IsLateParsed=*/false)
-              , behaviorKind(BehaviorKind)
-  {
-}
-
-
-
-bool OverflowBehaviorAttr::isEquivalent(const OverflowBehaviorAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(getBehaviorKind(), Other.getBehaviorKind(), Context))
-    return false;
-  return true;
-}
-
-OverflowBehaviorAttr *OverflowBehaviorAttr::clone(ASTContext &C) const {
-  auto *A = new (C) OverflowBehaviorAttr(C, *this, behaviorKind);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void OverflowBehaviorAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((overflow_behavior";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << (getBehaviorKind() ? getBehaviorKind()->getName() : "") << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "))";
-    break;
-  }
-  case 1 : {
-    OS << "[[clang::overflow_behavior";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << (getBehaviorKind() ? getBehaviorKind()->getName() : "") << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "]]";
-    break;
-  }
-  case 2 : {
-    OS << "[[clang::overflow_behavior";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << (getBehaviorKind() ? getBehaviorKind()->getName() : "") << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *OverflowBehaviorAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "overflow_behavior";
-  case 1:
-    return "overflow_behavior";
-  case 2:
-    return "overflow_behavior";
-  }
-}
-
-
 // OverloadableAttr implementation
 
 OverloadableAttr *OverloadableAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
@@ -39259,133 +38515,6 @@ const char *PcsAttr::getSpelling() const {
 }
 
 
-// PersonalityAttr implementation
-
-PersonalityAttr *PersonalityAttr::CreateImplicit(ASTContext &Ctx, FunctionDecl * Routine, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PersonalityAttr(Ctx, CommonInfo, Routine);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-PersonalityAttr *PersonalityAttr::Create(ASTContext &Ctx, FunctionDecl * Routine, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PersonalityAttr(Ctx, CommonInfo, Routine);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-PersonalityAttr *PersonalityAttr::CreateImplicit(ASTContext &Ctx, FunctionDecl * Routine, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_personality:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_personality, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_personality:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_personality, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_personality:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_personality, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, Routine, I);
-}
-
-PersonalityAttr *PersonalityAttr::Create(ASTContext &Ctx, FunctionDecl * Routine, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_personality:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_personality, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_personality:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_personality, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_personality:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_personality, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, Routine, I);
-}
-
-PersonalityAttr::PersonalityAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , FunctionDecl * Routine
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::Personality, /*IsLateParsed=*/false, false)
-              , routine(Routine)
-  {
-}
-
-
-
-bool PersonalityAttr::isEquivalent(const PersonalityAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(getRoutine(), Other.getRoutine(), Context))
-    return false;
-  return true;
-}
-
-PersonalityAttr *PersonalityAttr::clone(ASTContext &C) const {
-  auto *A = new (C) PersonalityAttr(C, *this, routine);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void PersonalityAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((personality";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getRoutine()->getNameInfo().getAsString() << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "))";
-    break;
-  }
-  case 1 : {
-    OS << "[[clang::personality";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getRoutine()->getNameInfo().getAsString() << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "]]";
-    break;
-  }
-  case 2 : {
-    OS << "[[clang::personality";
-    DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << "" << getRoutine()->getNameInfo().getAsString() << "";
-    if (!IsFirstArgument)
-      OS << ")";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *PersonalityAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "personality";
-  case 1:
-    return "personality";
-  case 2:
-    return "personality";
-  }
-}
-
-
 // PointerAttr implementation
 
 PointerAttr *PointerAttr::CreateImplicit(ASTContext &Ctx, TypeSourceInfo * DerefType, const AttributeCommonInfo &CommonInfo) {
@@ -39581,115 +38710,6 @@ const char *PointerAuthAttr::getSpelling() const {
     return "(No spelling)";
   case 0:
     return "__ptrauth";
-  }
-}
-
-
-// PointerFieldProtectionAttr implementation
-
-PointerFieldProtectionAttr *PointerFieldProtectionAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PointerFieldProtectionAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-PointerFieldProtectionAttr *PointerFieldProtectionAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PointerFieldProtectionAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-PointerFieldProtectionAttr *PointerFieldProtectionAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_pointer_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_pointer_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_pointer_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_pointer_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_pointer_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_pointer_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, I);
-}
-
-PointerFieldProtectionAttr *PointerFieldProtectionAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_pointer_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_pointer_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_pointer_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_pointer_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_pointer_field_protection:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_pointer_field_protection, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, I);
-}
-
-PointerFieldProtectionAttr::PointerFieldProtectionAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::PointerFieldProtection, /*IsLateParsed=*/false, false)
-  {
-}
-
-bool PointerFieldProtectionAttr::isEquivalent(const PointerFieldProtectionAttr &Other, StructuralEquivalenceContext &Context) const {
-  return true;
-}
-
-PointerFieldProtectionAttr *PointerFieldProtectionAttr::clone(ASTContext &C) const {
-  auto *A = new (C) PointerFieldProtectionAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void PointerFieldProtectionAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((pointer_field_protection";
-    OS << "))";
-    break;
-  }
-  case 1 : {
-    OS << "[[clang::pointer_field_protection";
-    OS << "]]";
-    break;
-  }
-  case 2 : {
-    OS << "[[clang::pointer_field_protection";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *PointerFieldProtectionAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "pointer_field_protection";
-  case 1:
-    return "pointer_field_protection";
-  case 2:
-    return "pointer_field_protection";
   }
 }
 
@@ -40586,57 +39606,49 @@ const char *PreserveNoneAttr::getSpelling() const {
 
 // PtGuardedByAttr implementation
 
-PtGuardedByAttr *PtGuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PtGuardedByAttr(Ctx, CommonInfo, Args, ArgsSize);
+PtGuardedByAttr *PtGuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) PtGuardedByAttr(Ctx, CommonInfo, Arg);
   A->setImplicit(true);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-PtGuardedByAttr *PtGuardedByAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) PtGuardedByAttr(Ctx, CommonInfo, Args, ArgsSize);
+PtGuardedByAttr *PtGuardedByAttr::Create(ASTContext &Ctx, Expr * Arg, const AttributeCommonInfo &CommonInfo) {
+  auto *A = new (Ctx) PtGuardedByAttr(Ctx, CommonInfo, Arg);
   if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
     A->setAttributeSpellingListIndex(0);
   return A;
 }
 
-PtGuardedByAttr *PtGuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
+PtGuardedByAttr *PtGuardedByAttr::CreateImplicit(ASTContext &Ctx, Expr * Arg, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return CreateImplicit(Ctx, Args, ArgsSize, I);
+  return CreateImplicit(Ctx, Arg, I);
 }
 
-PtGuardedByAttr *PtGuardedByAttr::Create(ASTContext &Ctx, Expr * *Args, unsigned ArgsSize, SourceRange Range) {
+PtGuardedByAttr *PtGuardedByAttr::Create(ASTContext &Ctx, Expr * Arg, SourceRange Range) {
   AttributeCommonInfo I(Range, NoSemaHandlerAttribute, {AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/});
-  return Create(Ctx, Args, ArgsSize, I);
+  return Create(Ctx, Arg, I);
 }
 
 PtGuardedByAttr::PtGuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-              , Expr * *Args, unsigned ArgsSize
+              , Expr * Arg
              )
   : InheritableAttr(Ctx, CommonInfo, attr::PtGuardedBy, /*IsLateParsed=*/true, true)
-              , args_Size(ArgsSize), args_(new (Ctx, 16) Expr *[args_Size])
-  {
-  std::copy(Args, Args + args_Size, args_);
-}
-
-PtGuardedByAttr::PtGuardedByAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::PtGuardedBy, /*IsLateParsed=*/true, true)
-              , args_Size(0), args_(nullptr)
+              , arg(Arg)
   {
 }
 
 
 
 bool PtGuardedByAttr::isEquivalent(const PtGuardedByAttr &Other, StructuralEquivalenceContext &Context) const {
-  if (!equalAttrArgs(args_begin(), args_end(), Other.args_begin(), Other.args_end(), Context))
+  if (!equalAttrArgs(getArg(), Other.getArg(), Context))
     return false;
   return true;
 }
 
 PtGuardedByAttr *PtGuardedByAttr::clone(ASTContext &C) const {
-  auto *A = new (C) PtGuardedByAttr(C, *this, args_, args_Size);
+  auto *A = new (C) PtGuardedByAttr(C, *this, arg);
   A->Inherited = Inherited;
   A->IsPackExpansion = IsPackExpansion;
   A->setImplicit(Implicit);
@@ -40652,12 +39664,10 @@ void PtGuardedByAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy)
     break;
   case 0 : {
     OS << "__attribute__((pt_guarded_by";
-    OS << "";
-  for (const auto &Val : args()) {
     DelimitAttributeArgument(OS, IsFirstArgument);
-    OS << Val;
-  }
-  OS << "";
+    OS << "";
+    getArg()->printPretty(OS, nullptr, Policy);
+    OS << "";
     if (!IsFirstArgument)
       OS << ")";
     OS << "))";
@@ -45287,115 +44297,6 @@ const char *SpeculativeLoadHardeningAttr::getSpelling() const {
     return "speculative_load_hardening";
   case 2:
     return "speculative_load_hardening";
-  }
-}
-
-
-// StackProtectorIgnoreAttr implementation
-
-StackProtectorIgnoreAttr *StackProtectorIgnoreAttr::CreateImplicit(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) StackProtectorIgnoreAttr(Ctx, CommonInfo);
-  A->setImplicit(true);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-StackProtectorIgnoreAttr *StackProtectorIgnoreAttr::Create(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo) {
-  auto *A = new (Ctx) StackProtectorIgnoreAttr(Ctx, CommonInfo);
-  if (!A->isAttributeSpellingListCalculated() && !A->getAttrName())
-    A->setAttributeSpellingListIndex(0);
-  return A;
-}
-
-StackProtectorIgnoreAttr *StackProtectorIgnoreAttr::CreateImplicit(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_stack_protector_ignore:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_stack_protector_ignore, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_stack_protector_ignore:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_stack_protector_ignore, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_stack_protector_ignore:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_stack_protector_ignore, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return CreateImplicit(Ctx, I);
-}
-
-StackProtectorIgnoreAttr *StackProtectorIgnoreAttr::Create(ASTContext &Ctx, SourceRange Range, Spelling S) {
-  AttributeCommonInfo I(Range, NoSemaHandlerAttribute, [&]() {
-    switch (S) {
-    case GNU_stack_protector_ignore:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, GNU_stack_protector_ignore, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case CXX11_clang_stack_protector_ignore:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_CXX11, CXX11_clang_stack_protector_ignore, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    case C23_clang_stack_protector_ignore:
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_C23, C23_clang_stack_protector_ignore, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    default:
-      llvm_unreachable("Unknown attribute spelling!");
-      return AttributeCommonInfo::Form{AttributeCommonInfo::AS_GNU, 0, false /*IsAlignas*/, false /*IsRegularKeywordAttribute*/};
-    }
-  }());
-  return Create(Ctx, I);
-}
-
-StackProtectorIgnoreAttr::StackProtectorIgnoreAttr(ASTContext &Ctx, const AttributeCommonInfo &CommonInfo
-             )
-  : InheritableAttr(Ctx, CommonInfo, attr::StackProtectorIgnore, /*IsLateParsed=*/false, false)
-  {
-}
-
-bool StackProtectorIgnoreAttr::isEquivalent(const StackProtectorIgnoreAttr &Other, StructuralEquivalenceContext &Context) const {
-  return true;
-}
-
-StackProtectorIgnoreAttr *StackProtectorIgnoreAttr::clone(ASTContext &C) const {
-  auto *A = new (C) StackProtectorIgnoreAttr(C, *this);
-  A->Inherited = Inherited;
-  A->IsPackExpansion = IsPackExpansion;
-  A->setImplicit(Implicit);
-  return A;
-}
-
-void StackProtectorIgnoreAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
-  bool IsFirstArgument = true; (void)IsFirstArgument;
-  unsigned TrailingOmittedArgs = 0; (void)TrailingOmittedArgs;
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    break;
-  case 0 : {
-    OS << "__attribute__((stack_protector_ignore";
-    OS << "))";
-    break;
-  }
-  case 1 : {
-    OS << "[[clang::stack_protector_ignore";
-    OS << "]]";
-    break;
-  }
-  case 2 : {
-    OS << "[[clang::stack_protector_ignore";
-    OS << "]]";
-    break;
-  }
-}
-}
-
-const char *StackProtectorIgnoreAttr::getSpelling() const {
-  switch (getAttributeSpellingListIndex()) {
-  default:
-    llvm_unreachable("Unknown attribute spelling!");
-    return "(No spelling)";
-  case 0:
-    return "stack_protector_ignore";
-  case 1:
-    return "stack_protector_ignore";
-  case 2:
-    return "stack_protector_ignore";
   }
 }
 
@@ -54224,8 +53125,6 @@ const char *Attr::getSpelling() const {
     return cast<HIPManagedAttr>(this)->getSpelling();
   case attr::HLSLAppliedSemantic:
     return cast<HLSLAppliedSemanticAttr>(this)->getSpelling();
-  case attr::HLSLAssociatedResourceDecl:
-    return cast<HLSLAssociatedResourceDeclAttr>(this)->getSpelling();
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->getSpelling();
   case attr::HLSLControlFlowHint:
@@ -54252,8 +53151,6 @@ const char *Attr::getSpelling() const {
     return cast<HLSLResourceBindingAttr>(this)->getSpelling();
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->getSpelling();
-  case attr::HLSLResourceDimension:
-    return cast<HLSLResourceDimensionAttr>(this)->getSpelling();
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->getSpelling();
   case attr::HLSLUnparsedSemantic:
@@ -54264,8 +53161,6 @@ const char *Attr::getSpelling() const {
     return cast<HLSLVkConstantIdAttr>(this)->getSpelling();
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->getSpelling();
-  case attr::HLSLVkExtBuiltinOutput:
-    return cast<HLSLVkExtBuiltinOutputAttr>(this)->getSpelling();
   case attr::HLSLVkLocation:
     return cast<HLSLVkLocationAttr>(this)->getSpelling();
   case attr::HLSLVkPushConstant:
@@ -54396,8 +53291,6 @@ const char *Attr::getSpelling() const {
     return cast<NoDuplicateAttr>(this)->getSpelling();
   case attr::NoEscape:
     return cast<NoEscapeAttr>(this)->getSpelling();
-  case attr::NoFieldProtection:
-    return cast<NoFieldProtectionAttr>(this)->getSpelling();
   case attr::NoInline:
     return cast<NoInlineAttr>(this)->getSpelling();
   case attr::NoInstrumentFunction:
@@ -54408,8 +53301,6 @@ const char *Attr::getSpelling() const {
     return cast<NoMicroMipsAttr>(this)->getSpelling();
   case attr::NoMips16:
     return cast<NoMips16Attr>(this)->getSpelling();
-  case attr::NoOutline:
-    return cast<NoOutlineAttr>(this)->getSpelling();
   case attr::NoProfileFunction:
     return cast<NoProfileFunctionAttr>(this)->getSpelling();
   case attr::NoRandomizeLayout:
@@ -54464,8 +53355,6 @@ const char *Attr::getSpelling() const {
     return cast<OMPGroupPrivateDeclAttr>(this)->getSpelling();
   case attr::OMPReferencedVar:
     return cast<OMPReferencedVarAttr>(this)->getSpelling();
-  case attr::OMPTargetIndirectCall:
-    return cast<OMPTargetIndirectCallAttr>(this)->getSpelling();
   case attr::OMPThreadPrivateDecl:
     return cast<OMPThreadPrivateDeclAttr>(this)->getSpelling();
   case attr::OSConsumed:
@@ -54562,8 +53451,6 @@ const char *Attr::getSpelling() const {
     return cast<OpenCLUnrollHintAttr>(this)->getSpelling();
   case attr::OptimizeNone:
     return cast<OptimizeNoneAttr>(this)->getSpelling();
-  case attr::OverflowBehavior:
-    return cast<OverflowBehaviorAttr>(this)->getSpelling();
   case attr::Overloadable:
     return cast<OverloadableAttr>(this)->getSpelling();
   case attr::Override:
@@ -54584,14 +53471,10 @@ const char *Attr::getSpelling() const {
     return cast<PatchableFunctionEntryAttr>(this)->getSpelling();
   case attr::Pcs:
     return cast<PcsAttr>(this)->getSpelling();
-  case attr::Personality:
-    return cast<PersonalityAttr>(this)->getSpelling();
   case attr::Pointer:
     return cast<PointerAttr>(this)->getSpelling();
   case attr::PointerAuth:
     return cast<PointerAuthAttr>(this)->getSpelling();
-  case attr::PointerFieldProtection:
-    return cast<PointerFieldProtectionAttr>(this)->getSpelling();
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->getSpelling();
   case attr::PragmaClangDataSection:
@@ -54684,8 +53567,6 @@ const char *Attr::getSpelling() const {
     return cast<SizedByOrNullAttr>(this)->getSpelling();
   case attr::SpeculativeLoadHardening:
     return cast<SpeculativeLoadHardeningAttr>(this)->getSpelling();
-  case attr::StackProtectorIgnore:
-    return cast<StackProtectorIgnoreAttr>(this)->getSpelling();
   case attr::StandaloneDebug:
     return cast<StandaloneDebugAttr>(this)->getSpelling();
   case attr::StdCall:
@@ -55156,8 +54037,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HIPManagedAttr>(this)->clone(C);
   case attr::HLSLAppliedSemantic:
     return cast<HLSLAppliedSemanticAttr>(this)->clone(C);
-  case attr::HLSLAssociatedResourceDecl:
-    return cast<HLSLAssociatedResourceDeclAttr>(this)->clone(C);
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->clone(C);
   case attr::HLSLControlFlowHint:
@@ -55184,8 +54063,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HLSLResourceBindingAttr>(this)->clone(C);
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->clone(C);
-  case attr::HLSLResourceDimension:
-    return cast<HLSLResourceDimensionAttr>(this)->clone(C);
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->clone(C);
   case attr::HLSLUnparsedSemantic:
@@ -55196,8 +54073,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<HLSLVkConstantIdAttr>(this)->clone(C);
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->clone(C);
-  case attr::HLSLVkExtBuiltinOutput:
-    return cast<HLSLVkExtBuiltinOutputAttr>(this)->clone(C);
   case attr::HLSLVkLocation:
     return cast<HLSLVkLocationAttr>(this)->clone(C);
   case attr::HLSLVkPushConstant:
@@ -55328,8 +54203,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<NoDuplicateAttr>(this)->clone(C);
   case attr::NoEscape:
     return cast<NoEscapeAttr>(this)->clone(C);
-  case attr::NoFieldProtection:
-    return cast<NoFieldProtectionAttr>(this)->clone(C);
   case attr::NoInline:
     return cast<NoInlineAttr>(this)->clone(C);
   case attr::NoInstrumentFunction:
@@ -55340,8 +54213,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<NoMicroMipsAttr>(this)->clone(C);
   case attr::NoMips16:
     return cast<NoMips16Attr>(this)->clone(C);
-  case attr::NoOutline:
-    return cast<NoOutlineAttr>(this)->clone(C);
   case attr::NoProfileFunction:
     return cast<NoProfileFunctionAttr>(this)->clone(C);
   case attr::NoRandomizeLayout:
@@ -55396,8 +54267,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<OMPGroupPrivateDeclAttr>(this)->clone(C);
   case attr::OMPReferencedVar:
     return cast<OMPReferencedVarAttr>(this)->clone(C);
-  case attr::OMPTargetIndirectCall:
-    return cast<OMPTargetIndirectCallAttr>(this)->clone(C);
   case attr::OMPThreadPrivateDecl:
     return cast<OMPThreadPrivateDeclAttr>(this)->clone(C);
   case attr::OSConsumed:
@@ -55494,8 +54363,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<OpenCLUnrollHintAttr>(this)->clone(C);
   case attr::OptimizeNone:
     return cast<OptimizeNoneAttr>(this)->clone(C);
-  case attr::OverflowBehavior:
-    return cast<OverflowBehaviorAttr>(this)->clone(C);
   case attr::Overloadable:
     return cast<OverloadableAttr>(this)->clone(C);
   case attr::Override:
@@ -55516,14 +54383,10 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<PatchableFunctionEntryAttr>(this)->clone(C);
   case attr::Pcs:
     return cast<PcsAttr>(this)->clone(C);
-  case attr::Personality:
-    return cast<PersonalityAttr>(this)->clone(C);
   case attr::Pointer:
     return cast<PointerAttr>(this)->clone(C);
   case attr::PointerAuth:
     return cast<PointerAuthAttr>(this)->clone(C);
-  case attr::PointerFieldProtection:
-    return cast<PointerFieldProtectionAttr>(this)->clone(C);
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->clone(C);
   case attr::PragmaClangDataSection:
@@ -55616,8 +54479,6 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<SizedByOrNullAttr>(this)->clone(C);
   case attr::SpeculativeLoadHardening:
     return cast<SpeculativeLoadHardeningAttr>(this)->clone(C);
-  case attr::StackProtectorIgnore:
-    return cast<StackProtectorIgnoreAttr>(this)->clone(C);
   case attr::StandaloneDebug:
     return cast<StandaloneDebugAttr>(this)->clone(C);
   case attr::StdCall:
@@ -56088,8 +54949,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HIPManagedAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLAppliedSemantic:
     return cast<HLSLAppliedSemanticAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLAssociatedResourceDecl:
-    return cast<HLSLAssociatedResourceDeclAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLControlFlowHint:
@@ -56116,8 +54975,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HLSLResourceBindingAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLResourceDimension:
-    return cast<HLSLResourceDimensionAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLUnparsedSemantic:
@@ -56128,8 +54985,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<HLSLVkConstantIdAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->printPretty(OS, Policy);
-  case attr::HLSLVkExtBuiltinOutput:
-    return cast<HLSLVkExtBuiltinOutputAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLVkLocation:
     return cast<HLSLVkLocationAttr>(this)->printPretty(OS, Policy);
   case attr::HLSLVkPushConstant:
@@ -56260,8 +55115,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<NoDuplicateAttr>(this)->printPretty(OS, Policy);
   case attr::NoEscape:
     return cast<NoEscapeAttr>(this)->printPretty(OS, Policy);
-  case attr::NoFieldProtection:
-    return cast<NoFieldProtectionAttr>(this)->printPretty(OS, Policy);
   case attr::NoInline:
     return cast<NoInlineAttr>(this)->printPretty(OS, Policy);
   case attr::NoInstrumentFunction:
@@ -56272,8 +55125,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<NoMicroMipsAttr>(this)->printPretty(OS, Policy);
   case attr::NoMips16:
     return cast<NoMips16Attr>(this)->printPretty(OS, Policy);
-  case attr::NoOutline:
-    return cast<NoOutlineAttr>(this)->printPretty(OS, Policy);
   case attr::NoProfileFunction:
     return cast<NoProfileFunctionAttr>(this)->printPretty(OS, Policy);
   case attr::NoRandomizeLayout:
@@ -56328,8 +55179,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<OMPGroupPrivateDeclAttr>(this)->printPretty(OS, Policy);
   case attr::OMPReferencedVar:
     return cast<OMPReferencedVarAttr>(this)->printPretty(OS, Policy);
-  case attr::OMPTargetIndirectCall:
-    return cast<OMPTargetIndirectCallAttr>(this)->printPretty(OS, Policy);
   case attr::OMPThreadPrivateDecl:
     return cast<OMPThreadPrivateDeclAttr>(this)->printPretty(OS, Policy);
   case attr::OSConsumed:
@@ -56426,8 +55275,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<OpenCLUnrollHintAttr>(this)->printPretty(OS, Policy);
   case attr::OptimizeNone:
     return cast<OptimizeNoneAttr>(this)->printPretty(OS, Policy);
-  case attr::OverflowBehavior:
-    return cast<OverflowBehaviorAttr>(this)->printPretty(OS, Policy);
   case attr::Overloadable:
     return cast<OverloadableAttr>(this)->printPretty(OS, Policy);
   case attr::Override:
@@ -56448,14 +55295,10 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<PatchableFunctionEntryAttr>(this)->printPretty(OS, Policy);
   case attr::Pcs:
     return cast<PcsAttr>(this)->printPretty(OS, Policy);
-  case attr::Personality:
-    return cast<PersonalityAttr>(this)->printPretty(OS, Policy);
   case attr::Pointer:
     return cast<PointerAttr>(this)->printPretty(OS, Policy);
   case attr::PointerAuth:
     return cast<PointerAuthAttr>(this)->printPretty(OS, Policy);
-  case attr::PointerFieldProtection:
-    return cast<PointerFieldProtectionAttr>(this)->printPretty(OS, Policy);
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->printPretty(OS, Policy);
   case attr::PragmaClangDataSection:
@@ -56548,8 +55391,6 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<SizedByOrNullAttr>(this)->printPretty(OS, Policy);
   case attr::SpeculativeLoadHardening:
     return cast<SpeculativeLoadHardeningAttr>(this)->printPretty(OS, Policy);
-  case attr::StackProtectorIgnore:
-    return cast<StackProtectorIgnoreAttr>(this)->printPretty(OS, Policy);
   case attr::StandaloneDebug:
     return cast<StandaloneDebugAttr>(this)->printPretty(OS, Policy);
   case attr::StdCall:
@@ -57022,8 +55863,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<HIPManagedAttr>(this)->isEquivalent(cast<HIPManagedAttr>(Other), Context);
   case attr::HLSLAppliedSemantic:
     return cast<HLSLAppliedSemanticAttr>(this)->isEquivalent(cast<HLSLAppliedSemanticAttr>(Other), Context);
-  case attr::HLSLAssociatedResourceDecl:
-    return cast<HLSLAssociatedResourceDeclAttr>(this)->isEquivalent(cast<HLSLAssociatedResourceDeclAttr>(Other), Context);
   case attr::HLSLContainedType:
     return cast<HLSLContainedTypeAttr>(this)->isEquivalent(cast<HLSLContainedTypeAttr>(Other), Context);
   case attr::HLSLControlFlowHint:
@@ -57050,8 +55889,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<HLSLResourceBindingAttr>(this)->isEquivalent(cast<HLSLResourceBindingAttr>(Other), Context);
   case attr::HLSLResourceClass:
     return cast<HLSLResourceClassAttr>(this)->isEquivalent(cast<HLSLResourceClassAttr>(Other), Context);
-  case attr::HLSLResourceDimension:
-    return cast<HLSLResourceDimensionAttr>(this)->isEquivalent(cast<HLSLResourceDimensionAttr>(Other), Context);
   case attr::HLSLShader:
     return cast<HLSLShaderAttr>(this)->isEquivalent(cast<HLSLShaderAttr>(Other), Context);
   case attr::HLSLUnparsedSemantic:
@@ -57062,8 +55899,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<HLSLVkConstantIdAttr>(this)->isEquivalent(cast<HLSLVkConstantIdAttr>(Other), Context);
   case attr::HLSLVkExtBuiltinInput:
     return cast<HLSLVkExtBuiltinInputAttr>(this)->isEquivalent(cast<HLSLVkExtBuiltinInputAttr>(Other), Context);
-  case attr::HLSLVkExtBuiltinOutput:
-    return cast<HLSLVkExtBuiltinOutputAttr>(this)->isEquivalent(cast<HLSLVkExtBuiltinOutputAttr>(Other), Context);
   case attr::HLSLVkLocation:
     return cast<HLSLVkLocationAttr>(this)->isEquivalent(cast<HLSLVkLocationAttr>(Other), Context);
   case attr::HLSLVkPushConstant:
@@ -57194,8 +56029,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<NoDuplicateAttr>(this)->isEquivalent(cast<NoDuplicateAttr>(Other), Context);
   case attr::NoEscape:
     return cast<NoEscapeAttr>(this)->isEquivalent(cast<NoEscapeAttr>(Other), Context);
-  case attr::NoFieldProtection:
-    return cast<NoFieldProtectionAttr>(this)->isEquivalent(cast<NoFieldProtectionAttr>(Other), Context);
   case attr::NoInline:
     return cast<NoInlineAttr>(this)->isEquivalent(cast<NoInlineAttr>(Other), Context);
   case attr::NoInstrumentFunction:
@@ -57206,8 +56039,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<NoMicroMipsAttr>(this)->isEquivalent(cast<NoMicroMipsAttr>(Other), Context);
   case attr::NoMips16:
     return cast<NoMips16Attr>(this)->isEquivalent(cast<NoMips16Attr>(Other), Context);
-  case attr::NoOutline:
-    return cast<NoOutlineAttr>(this)->isEquivalent(cast<NoOutlineAttr>(Other), Context);
   case attr::NoProfileFunction:
     return cast<NoProfileFunctionAttr>(this)->isEquivalent(cast<NoProfileFunctionAttr>(Other), Context);
   case attr::NoRandomizeLayout:
@@ -57262,8 +56093,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<OMPGroupPrivateDeclAttr>(this)->isEquivalent(cast<OMPGroupPrivateDeclAttr>(Other), Context);
   case attr::OMPReferencedVar:
     return cast<OMPReferencedVarAttr>(this)->isEquivalent(cast<OMPReferencedVarAttr>(Other), Context);
-  case attr::OMPTargetIndirectCall:
-    return cast<OMPTargetIndirectCallAttr>(this)->isEquivalent(cast<OMPTargetIndirectCallAttr>(Other), Context);
   case attr::OMPThreadPrivateDecl:
     return cast<OMPThreadPrivateDeclAttr>(this)->isEquivalent(cast<OMPThreadPrivateDeclAttr>(Other), Context);
   case attr::OSConsumed:
@@ -57360,8 +56189,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<OpenCLUnrollHintAttr>(this)->isEquivalent(cast<OpenCLUnrollHintAttr>(Other), Context);
   case attr::OptimizeNone:
     return cast<OptimizeNoneAttr>(this)->isEquivalent(cast<OptimizeNoneAttr>(Other), Context);
-  case attr::OverflowBehavior:
-    return cast<OverflowBehaviorAttr>(this)->isEquivalent(cast<OverflowBehaviorAttr>(Other), Context);
   case attr::Overloadable:
     return cast<OverloadableAttr>(this)->isEquivalent(cast<OverloadableAttr>(Other), Context);
   case attr::Override:
@@ -57382,14 +56209,10 @@ if (getKind() != Other.getKind()) return false;
     return cast<PatchableFunctionEntryAttr>(this)->isEquivalent(cast<PatchableFunctionEntryAttr>(Other), Context);
   case attr::Pcs:
     return cast<PcsAttr>(this)->isEquivalent(cast<PcsAttr>(Other), Context);
-  case attr::Personality:
-    return cast<PersonalityAttr>(this)->isEquivalent(cast<PersonalityAttr>(Other), Context);
   case attr::Pointer:
     return cast<PointerAttr>(this)->isEquivalent(cast<PointerAttr>(Other), Context);
   case attr::PointerAuth:
     return cast<PointerAuthAttr>(this)->isEquivalent(cast<PointerAuthAttr>(Other), Context);
-  case attr::PointerFieldProtection:
-    return cast<PointerFieldProtectionAttr>(this)->isEquivalent(cast<PointerFieldProtectionAttr>(Other), Context);
   case attr::PragmaClangBSSSection:
     return cast<PragmaClangBSSSectionAttr>(this)->isEquivalent(cast<PragmaClangBSSSectionAttr>(Other), Context);
   case attr::PragmaClangDataSection:
@@ -57482,8 +56305,6 @@ if (getKind() != Other.getKind()) return false;
     return cast<SizedByOrNullAttr>(this)->isEquivalent(cast<SizedByOrNullAttr>(Other), Context);
   case attr::SpeculativeLoadHardening:
     return cast<SpeculativeLoadHardeningAttr>(this)->isEquivalent(cast<SpeculativeLoadHardeningAttr>(Other), Context);
-  case attr::StackProtectorIgnore:
-    return cast<StackProtectorIgnoreAttr>(this)->isEquivalent(cast<StackProtectorIgnoreAttr>(Other), Context);
   case attr::StandaloneDebug:
     return cast<StandaloneDebugAttr>(this)->isEquivalent(cast<StandaloneDebugAttr>(Other), Context);
   case attr::StdCall:

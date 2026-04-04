@@ -1188,8 +1188,7 @@ Decl *Parser::ParseFunctionDefinition(ParsingDeclarator &D,
   // declaration-specifiers are completely optional in the grammar.
   if (getLangOpts().isImplicitIntRequired() && D.getDeclSpec().isEmpty()) {
     Diag(D.getIdentifierLoc(), diag::warn_missing_type_specifier)
-        << D.getDeclSpec().getSourceRange()
-        << FixItHint::CreateInsertion(D.getDeclSpec().getBeginLoc(), "int ");
+        << D.getDeclSpec().getSourceRange();
     const char *PrevSpec;
     unsigned DiagID;
     const PrintingPolicy &Policy = Actions.getASTContext().getPrintingPolicy();
@@ -1853,7 +1852,7 @@ bool Parser::TryKeywordIdentFallback(bool DisableKeyword) {
 }
 
 bool Parser::TryAnnotateTypeOrScopeToken(
-    ImplicitTypenameContext AllowImplicitTypename, bool IsAddressOfOperand) {
+    ImplicitTypenameContext AllowImplicitTypename) {
   assert((Tok.is(tok::identifier) || Tok.is(tok::coloncolon) ||
           Tok.is(tok::kw_typename) || Tok.is(tok::annot_cxxscope) ||
           Tok.is(tok::kw_decltype) || Tok.is(tok::annot_template_id) ||
@@ -1969,11 +1968,9 @@ bool Parser::TryAnnotateTypeOrScopeToken(
 
   CXXScopeSpec SS;
   if (getLangOpts().CPlusPlus)
-    if (ParseOptionalCXXScopeSpecifier(
-            SS, /*ObjectType=*/nullptr,
-            /*ObjectHasErrors=*/false,
-            /*EnteringContext=*/false,
-            /*IsAddressOfOperand=*/IsAddressOfOperand))
+    if (ParseOptionalCXXScopeSpecifier(SS, /*ObjectType=*/nullptr,
+                                       /*ObjectHasErrors=*/false,
+                                       /*EnteringContext*/ false))
       return true;
 
   return TryAnnotateTypeOrScopeTokenAfterScopeSpec(SS, !WasScopeAnnotation,

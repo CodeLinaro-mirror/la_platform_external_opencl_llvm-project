@@ -39,7 +39,8 @@ STAT_COUNTER(NumInlinedCalls, "The # of times we inlined a call");
 STAT_COUNTER(NumReachedInlineCountMax,
              "The # of times we reached inline count maximum");
 
-void ExprEngine::processCallEnter(CallEnter CE, ExplodedNode *Pred) {
+void ExprEngine::processCallEnter(NodeBuilderContext& BC, CallEnter CE,
+                                  ExplodedNode *Pred) {
   // Get the entry block in the CFG of the callee.
   const CFGBlock *Entry = CE.getEntry();
 
@@ -61,13 +62,8 @@ void ExprEngine::processCallEnter(CallEnter CE, ExplodedNode *Pred) {
   ExplodedNode *Node = G.getNode(Loc, state, false, &isNew);
   Node->addPredecessor(Pred, G);
   if (isNew) {
-    // FIXME: In the `processBeginOfFunction` callback
-    // `ExprEngine::getCurrLocationContext()` can be different from the
-    // `LocationContext` queried from e.g. the `ExplodedNode`s. I'm not
-    // touching this now because this commit is NFC; but in the future it would
-    // be nice to avoid this inconsistency.
     ExplodedNodeSet DstBegin;
-    processBeginOfFunction(Node, DstBegin, Loc);
+    processBeginOfFunction(BC, Node, DstBegin, Loc);
     Engine.enqueue(DstBegin);
   }
 }
@@ -162,14 +158,15 @@ static SVal adjustReturnValue(SVal V, QualType ExpectedTy, QualType ActualTy,
   return UnknownVal();
 }
 
-void ExprEngine::removeDeadOnEndOfFunction(ExplodedNode *Pred,
+void ExprEngine::removeDeadOnEndOfFunction(NodeBuilderContext& BC,
+                                           ExplodedNode *Pred,
                                            ExplodedNodeSet &Dst) {
   // Find the last statement in the function and the corresponding basic block.
   const Stmt *LastSt = nullptr;
   const CFGBlock *Blk = nullptr;
   std::tie(LastSt, Blk) = getLastStmt(Pred);
   if (!Blk || !LastSt) {
-    Dst.insert(Pred);
+    Dst.Add(Pred);
     return;
   }
 
@@ -178,6 +175,7 @@ void ExprEngine::removeDeadOnEndOfFunction(ExplodedNode *Pred,
   // point will be associated. However, we only want to use LastStmt as a
   // reference for what to clean up if it's a ReturnStmt; otherwise, everything
   // is dead.
+  SaveAndRestore<const NodeBuilderContext *> NodeContextRAII(currBldrCtx, &BC);
   const LocationContext *LCtx = Pred->getLocationContext();
   removeDead(Pred, Dst, dyn_cast<ReturnStmt>(LastSt), LCtx,
              LCtx->getAnalysisDeclContext()->getBody(),
@@ -247,34 +245,30 @@ ProgramStateRef ExprEngine::removeStateTraitsUsedForArrayEvaluation(
 /// 1. CallExitBegin (triggers the start of call exit sequence)
 /// 2. Bind the return value
 /// 3. Run Remove dead bindings to clean up the dead symbols from the callee.
-/// 4. CallExitEnd
+/// 4. CallExitEnd (switch to the caller context)
 /// 5. PostStmt<CallExpr>
-/// Steps 1-3. happen in the callee context; but there is a context switch and
-/// steps 4-5. happen in the caller context.
 void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
   // Step 1 CEBNode was generated before the call.
-  const StackFrameContext *CalleeCtx = CEBNode->getStackFrame();
+  const StackFrameContext *calleeCtx = CEBNode->getStackFrame();
 
   // The parent context might not be a stack frame, so make sure we
   // look up the first enclosing stack frame.
-  const StackFrameContext *CallerCtx = CalleeCtx->getParent()->getStackFrame();
+  const StackFrameContext *callerCtx =
+    calleeCtx->getParent()->getStackFrame();
 
-  const Stmt *CE = CalleeCtx->getCallSite();
-  ProgramStateRef State = CEBNode->getState();
+  const Stmt *CE = calleeCtx->getCallSite();
+  ProgramStateRef state = CEBNode->getState();
   // Find the last statement in the function and the corresponding basic block.
-  auto [LastSt, Blk] = getLastStmt(CEBNode);
+  const Stmt *LastSt = nullptr;
+  const CFGBlock *Blk = nullptr;
+  std::tie(LastSt, Blk) = getLastStmt(CEBNode);
 
-  const CFGBlock *PrePurgeBlock =
-      isa_and_nonnull<ReturnStmt>(LastSt) ? Blk : &CEBNode->getCFG().getExit();
-  // The first half of this process happens in the callee context:
-  setCurrLocationContextAndBlock(CalleeCtx, PrePurgeBlock);
-
-  // Generate a CallEvent /before/ cleaning the State, so that we can get the
+  // Generate a CallEvent /before/ cleaning the state, so that we can get the
   // correct value for 'this' (if necessary).
   CallEventManager &CEMgr = getStateManager().getCallEventManager();
-  CallEventRef<> Call = CEMgr.getCaller(CalleeCtx, State);
+  CallEventRef<> Call = CEMgr.getCaller(calleeCtx, state);
 
-  // Step 2: generate node with bound return value: CEBNode -> BoundRetNode.
+  // Step 2: generate node with bound return value: CEBNode -> BindedRetNode.
 
   // If this variable is set to 'true' the analyzer will evaluate the call
   // statement we are about to exit again, instead of continuing the execution
@@ -285,11 +279,11 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
 
   if (const auto *DtorDecl =
           dyn_cast_or_null<CXXDestructorDecl>(Call->getDecl())) {
-    if (auto Idx = getPendingArrayDestruction(State, CallerCtx)) {
+    if (auto Idx = getPendingArrayDestruction(state, callerCtx)) {
       ShouldRepeatCall = *Idx > 0;
 
-      auto ThisVal = svalBuilder.getCXXThis(DtorDecl->getParent(), CalleeCtx);
-      State = State->killBinding(ThisVal);
+      auto ThisVal = svalBuilder.getCXXThis(DtorDecl->getParent(), calleeCtx);
+      state = state->killBinding(ThisVal);
     }
   }
 
@@ -297,12 +291,12 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
   if (CE) {
     if (const ReturnStmt *RS = dyn_cast_or_null<ReturnStmt>(LastSt)) {
       const LocationContext *LCtx = CEBNode->getLocationContext();
-      SVal V = State->getSVal(RS, LCtx);
+      SVal V = state->getSVal(RS, LCtx);
 
       // Ensure that the return type matches the type of the returned Expr.
-      if (wasDifferentDeclUsedForInlining(Call, CalleeCtx)) {
+      if (wasDifferentDeclUsedForInlining(Call, calleeCtx)) {
         QualType ReturnedTy =
-            CallEvent::getDeclaredResultType(CalleeCtx->getDecl());
+          CallEvent::getDeclaredResultType(calleeCtx->getDecl());
         if (!ReturnedTy.isNull()) {
           if (const Expr *Ex = dyn_cast<Expr>(CE)) {
             V = adjustReturnValue(V, Ex->getType(), ReturnedTy,
@@ -311,18 +305,18 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
         }
       }
 
-      State = State->BindExpr(CE, CallerCtx, V);
+      state = state->BindExpr(CE, callerCtx, V);
     }
 
     // Bind the constructed object value to CXXConstructExpr.
     if (const CXXConstructExpr *CCE = dyn_cast<CXXConstructExpr>(CE)) {
       loc::MemRegionVal This =
-          svalBuilder.getCXXThis(CCE->getConstructor()->getParent(), CalleeCtx);
-      SVal ThisV = State->getSVal(This);
-      ThisV = State->getSVal(ThisV.castAs<Loc>());
-      State = State->BindExpr(CCE, CallerCtx, ThisV);
+        svalBuilder.getCXXThis(CCE->getConstructor()->getParent(), calleeCtx);
+      SVal ThisV = state->getSVal(This);
+      ThisV = state->getSVal(ThisV.castAs<Loc>());
+      state = state->BindExpr(CCE, callerCtx, ThisV);
 
-      ShouldRepeatCall = shouldRepeatCtorCall(State, CCE, CallerCtx);
+      ShouldRepeatCall = shouldRepeatCtorCall(state, CCE, callerCtx);
     }
 
     if (const auto *CNE = dyn_cast<CXXNewExpr>(CE)) {
@@ -331,85 +325,92 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
       // region for later use.
       // Additionally cast the return value of the inlined operator new
       // (which is of type 'void *') to the correct object type.
-      SVal AllocV = State->getSVal(CNE, CallerCtx);
+      SVal AllocV = state->getSVal(CNE, callerCtx);
       AllocV = svalBuilder.evalCast(
           AllocV, CNE->getType(),
           getContext().getPointerType(getContext().VoidTy));
 
-      State = addObjectUnderConstruction(State, CNE, CalleeCtx->getParent(),
+      state = addObjectUnderConstruction(state, CNE, calleeCtx->getParent(),
                                          AllocV);
     }
   }
 
   if (!ShouldRepeatCall) {
-    State = removeStateTraitsUsedForArrayEvaluation(
-        State, dyn_cast_or_null<CXXConstructExpr>(CE), CallerCtx);
+    state = removeStateTraitsUsedForArrayEvaluation(
+        state, dyn_cast_or_null<CXXConstructExpr>(CE), callerCtx);
   }
 
-  // Step 3: BoundRetNode -> CleanedNodes
+  // Step 3: BindedRetNode -> CleanedNodes
   // If we can find a statement and a block in the inlined function, run remove
   // dead bindings before returning from the call. This is important to ensure
   // that we report the issues such as leaks in the stack contexts in which
   // they occurred.
   ExplodedNodeSet CleanedNodes;
   if (LastSt && Blk && AMgr.options.AnalysisPurgeOpt != PurgeNone) {
-    static SimpleProgramPointTag RetValBind("ExprEngine", "Bind Return Value");
+    static SimpleProgramPointTag retValBind("ExprEngine", "Bind Return Value");
     auto Loc = isa<ReturnStmt>(LastSt)
-                   ? ProgramPoint{PostStmt(LastSt, CalleeCtx, &RetValBind)}
-                   : ProgramPoint{EpsilonPoint(CalleeCtx, /*Data1=*/nullptr,
-                                               /*Data2=*/nullptr, &RetValBind)};
-
-    ExplodedNode *BoundRetNode = Engine.makeNode(Loc, State, CEBNode);
-    if (!BoundRetNode)
+                   ? ProgramPoint{PostStmt(LastSt, calleeCtx, &retValBind)}
+                   : ProgramPoint{EpsilonPoint(calleeCtx, /*Data1=*/nullptr,
+                                               /*Data2=*/nullptr, &retValBind)};
+    const CFGBlock *PrePurgeBlock =
+        isa<ReturnStmt>(LastSt) ? Blk : &CEBNode->getCFG().getExit();
+    bool isNew;
+    ExplodedNode *BindedRetNode = G.getNode(Loc, state, false, &isNew);
+    BindedRetNode->addPredecessor(CEBNode, G);
+    if (!isNew)
       return;
 
-    // We call removeDead in the context of the callee.
-    removeDead(
-        BoundRetNode, CleanedNodes, /*ReferenceStmt=*/nullptr, CalleeCtx,
-        /*DiagnosticStmt=*/CalleeCtx->getAnalysisDeclContext()->getBody(),
-        ProgramPoint::PostStmtPurgeDeadSymbolsKind);
+    NodeBuilderContext Ctx(getCoreEngine(), PrePurgeBlock, BindedRetNode);
+    currBldrCtx = &Ctx;
+    // Here, we call the Symbol Reaper with 0 statement and callee location
+    // context, telling it to clean up everything in the callee's context
+    // (and its children). We use the callee's function body as a diagnostic
+    // statement, with which the program point will be associated.
+    removeDead(BindedRetNode, CleanedNodes, nullptr, calleeCtx,
+               calleeCtx->getAnalysisDeclContext()->getBody(),
+               ProgramPoint::PostStmtPurgeDeadSymbolsKind);
+    currBldrCtx = nullptr;
   } else {
-    CleanedNodes.insert(CEBNode);
+    CleanedNodes.Add(CEBNode);
   }
 
-  // The second half of this process happens in the caller context. This is an
-  // exception to the general rule that the current LocationContext and Block
-  // stay the same within a single call to dispatchWorkItem.
-  resetCurrLocationContextAndBlock();
-  setCurrLocationContextAndBlock(CallerCtx, CalleeCtx->getCallSiteBlock());
-  SaveAndRestore CBISave(currStmtIdx, CalleeCtx->getIndex());
-
   for (ExplodedNode *N : CleanedNodes) {
-    // Step 4: Generate the CallExitEnd node.
+    // Step 4: Generate the CallExit and leave the callee's context.
     // CleanedNodes -> CEENode
-    CallExitEnd Loc(CalleeCtx, CallerCtx);
-    ProgramStateRef CEEState = (N == CEBNode) ? State : N->getState();
+    CallExitEnd Loc(calleeCtx, callerCtx);
+    bool isNew;
+    ProgramStateRef CEEState = (N == CEBNode) ? state : N->getState();
 
-    ExplodedNode *CEENode = Engine.makeNode(Loc, CEEState, N);
-    if (!CEENode)
+    ExplodedNode *CEENode = G.getNode(Loc, CEEState, false, &isNew);
+    CEENode->addPredecessor(N, G);
+    if (!isNew)
       return;
 
     // Step 5: Perform the post-condition check of the CallExpr and enqueue the
     // result onto the work list.
     // CEENode -> Dst -> WorkList
+    NodeBuilderContext Ctx(Engine, calleeCtx->getCallSiteBlock(), CEENode);
+    SaveAndRestore<const NodeBuilderContext *> NBCSave(currBldrCtx, &Ctx);
+    SaveAndRestore CBISave(currStmtIdx, calleeCtx->getIndex());
 
     CallEventRef<> UpdatedCall = Call.cloneWithState(CEEState);
 
-    ExplodedNodeSet DstPostPostCallCallback;
-    getCheckerManager().runCheckersForPostCall(DstPostPostCallCallback, CEENode,
-                                               *UpdatedCall, *this,
-                                               /*wasInlined=*/true);
     ExplodedNodeSet DstPostCall;
     if (llvm::isa_and_nonnull<CXXNewExpr>(CE)) {
+      ExplodedNodeSet DstPostPostCallCallback;
+      getCheckerManager().runCheckersForPostCall(DstPostPostCallCallback,
+                                                 CEENode, *UpdatedCall, *this,
+                                                 /*wasInlined=*/true);
       for (ExplodedNode *I : DstPostPostCallCallback) {
         getCheckerManager().runCheckersForNewAllocator(
             cast<CXXAllocatorCall>(*UpdatedCall), DstPostCall, I, *this,
             /*wasInlined=*/true);
       }
     } else {
-      DstPostCall.insert(DstPostPostCallCallback);
+      getCheckerManager().runCheckersForPostCall(DstPostCall, CEENode,
+                                                 *UpdatedCall, *this,
+                                                 /*wasInlined=*/true);
     }
-
     ExplodedNodeSet Dst;
     if (const ObjCMethodCall *Msg = dyn_cast<ObjCMethodCall>(Call)) {
       getCheckerManager().runCheckersForPostObjCMessage(Dst, DstPostCall, *Msg,
@@ -425,11 +426,11 @@ void ExprEngine::processCallExit(ExplodedNode *CEBNode) {
     }
 
     // Enqueue the next element in the block.
-    for (ExplodedNode *DstNode : Dst) {
-      unsigned Idx = CalleeCtx->getIndex() + (ShouldRepeatCall ? 0 : 1);
+    for (ExplodedNodeSet::iterator PSI = Dst.begin(), PSE = Dst.end();
+         PSI != PSE; ++PSI) {
+      unsigned Idx = calleeCtx->getIndex() + (ShouldRepeatCall ? 0 : 1);
 
-      Engine.getWorkList()->enqueue(DstNode, CalleeCtx->getCallSiteBlock(),
-                                    Idx);
+      Engine.getWorkList()->enqueue(*PSI, calleeCtx->getCallSiteBlock(), Idx);
     }
   }
 }
@@ -550,8 +551,8 @@ void ExprEngine::inlineCall(WorkList *WList, const CallEvent &Call,
   // Construct a new stack frame for the callee.
   AnalysisDeclContext *CalleeADC = AMgr.getAnalysisDeclContext(D);
   const StackFrameContext *CalleeSFC =
-      CalleeADC->getStackFrame(ParentOfCallee, CallE, getCurrBlock(),
-                               getNumVisitedCurrent(), currStmtIdx);
+      CalleeADC->getStackFrame(ParentOfCallee, CallE, currBldrCtx->getBlock(),
+                               currBldrCtx->blockCount(), currStmtIdx);
 
   CallEnter Loc(CallE, CalleeSFC, CurLC);
 
@@ -767,7 +768,7 @@ ProgramStateRef ExprEngine::bindReturnValue(const CallEvent &Call,
 
   SVal R;
   QualType ResultTy = Call.getResultType();
-  unsigned Count = getNumVisitedCurrent();
+  unsigned Count = currBldrCtx->blockCount();
   if (auto RTC = getCurrentCFGElement().getAs<CFGCXXRecordTypedCall>()) {
     // Conjure a temporary if the function returns an object by value.
     SVal Target;
@@ -832,7 +833,7 @@ ProgramStateRef ExprEngine::bindReturnValue(const CallEvent &Call,
 // a conjured return value.
 void ExprEngine::conservativeEvalCall(const CallEvent &Call, NodeBuilder &Bldr,
                                       ExplodedNode *Pred, ProgramStateRef State) {
-  State = Call.invalidateRegions(getNumVisitedCurrent(), State);
+  State = Call.invalidateRegions(currBldrCtx->blockCount(), State);
   State = bindReturnValue(Call, Pred->getLocationContext(), State);
 
   // And make the result node.
@@ -1310,7 +1311,7 @@ void ExprEngine::VisitReturnStmt(const ReturnStmt *RS, ExplodedNode *Pred,
   ExplodedNodeSet dstPreVisit;
   getCheckerManager().runCheckersForPreStmt(dstPreVisit, Pred, RS, *this);
 
-  NodeBuilder B(dstPreVisit, Dst, *currBldrCtx);
+  StmtNodeBuilder B(dstPreVisit, Dst, *currBldrCtx);
 
   if (RS->getRetValue()) {
     for (ExplodedNodeSet::iterator it = dstPreVisit.begin(),

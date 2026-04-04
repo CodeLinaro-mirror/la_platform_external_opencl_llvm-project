@@ -122,8 +122,8 @@ llvm::decomposeBitTestICmp(Value *LHS, Value *RHS, CmpInst::Predicate Pred,
 
     if (FlippedSign.isNegatedPowerOf2()) {
       // X s< 01111100 is equivalent to (X & 11111100 != 01111100)
-      Result.Mask = std::move(FlippedSign);
-      Result.C = std::move(C);
+      Result.Mask = FlippedSign;
+      Result.C = C;
       Result.Pred = ICmpInst::ICMP_NE;
       break;
     }
@@ -142,7 +142,7 @@ llvm::decomposeBitTestICmp(Value *LHS, Value *RHS, CmpInst::Predicate Pred,
     // X u< 11111100 is equivalent to (X & 11111100 != 11111100)
     if (C.isNegatedPowerOf2()) {
       Result.Mask = C;
-      Result.C = std::move(C);
+      Result.C = C;
       Result.Pred = ICmpInst::ICMP_NE;
       break;
     }
@@ -157,7 +157,7 @@ llvm::decomposeBitTestICmp(Value *LHS, Value *RHS, CmpInst::Predicate Pred,
     if (match(LHS, m_And(m_Value(AndVal), m_APIntAllowPoison(AndC)))) {
       LHS = AndVal;
       Result.Mask = *AndC;
-      Result.C = std::move(C);
+      Result.C = C;
       Result.Pred = Pred;
       break;
     }
@@ -166,7 +166,7 @@ llvm::decomposeBitTestICmp(Value *LHS, Value *RHS, CmpInst::Predicate Pred,
     if (LookThroughTrunc && isa<TruncInst>(LHS)) {
       Result.Pred = Pred;
       Result.Mask = APInt::getAllOnes(C.getBitWidth());
-      Result.C = std::move(C);
+      Result.C = C;
       break;
     }
 

@@ -113,41 +113,20 @@ View escape_through_unannotated_call(const MyObj& in [[clang::noescape]]) { // e
   return no_annotation_identity(in); // expected-note {{returned here}}
 }
 
-View global_view; // expected-note {{escapes to this global storage}}
+View global_view;
 
-void escape_through_global_var(const MyObj& in [[clang::noescape]]) { // expected-warning {{parameter is marked [[clang::noescape]] but escapes}}
+// FIXME: Escaping through a global variable is not detected.
+void escape_through_global_var(const MyObj& in [[clang::noescape]]) {
   global_view = in;
 }
-struct ObjWithStaticField {
-  static int *static_field; // expected-note {{escapes to this static storage}}
-}; 
-  
-void escape_to_static_data_member(int *data [[clang::noescape]]) { // expected-warning {{parameter is marked [[clang::noescape]] but escapes}}
-  ObjWithStaticField::static_field = data;
-}
 
-
-
-void escape_through_static_local(int *data [[clang::noescape]]) { // expected-warning {{parameter is marked [[clang::noescape]] but escapes}}
-  static int *static_local; // expected-note {{escapes to this static storage}}
-  static_local = data;
-}
-
-thread_local int *thread_local_storage; // expected-note {{escapes to this global storage}}
-
-void escape_through_thread_local(int *data [[clang::noescape]]) { // expected-warning {{parameter is marked [[clang::noescape]] but escapes}}
-  // FIXME: We might want to report whenever anything derived from a 
-  // noescape parameter is assigned to a global, as this is likely 
-  // undesired behavior in most cases.
-  thread_local_storage = data;
-}
-
+// FIXME: Escaping through a member variable is not detected.
 struct ObjConsumer {
-  void escape_through_member(const MyObj& in [[clang::noescape]]) { // expected-warning {{parameter is marked [[clang::noescape]] but escapes}}
+  void escape_through_member(const MyObj& in [[clang::noescape]]) {
     member_view = in;
   }
 
-  View member_view; // expected-note {{escapes to this field}}
+  View member_view;
 };
 
 // FIXME: Escaping through another param is not detected.

@@ -10,6 +10,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "llvm/ADT/Twine.h"
+
 #include "level_zero/ze_api.h"
 #include <cassert>
 #include <deque>
@@ -17,8 +19,6 @@
 #include <functional>
 #include <iostream>
 #include <limits>
-#include <memory>
-#include <stdexcept>
 #include <unordered_set>
 #include <vector>
 
@@ -71,9 +71,10 @@ static ze_driver_handle_t getDriver(uint32_t idx = 0) {
   drivers.resize(driverCount);
   L0_SAFE_CALL(zeInitDrivers(&driverCount, drivers.data(), &driver_type));
   if (idx >= driverCount)
-    throw std::runtime_error(std::string("Requested driver idx out-of-bound, "
-                                         "number of availabe drivers: ") +
-                             std::to_string(driverCount));
+    throw std::runtime_error((llvm::Twine("Requested driver idx out-of-bound, "
+                                          "number of availabe drivers: ") +
+                              std::to_string(driverCount))
+                                 .str());
   isDriverInitialised = true;
   return drivers[idx];
 }

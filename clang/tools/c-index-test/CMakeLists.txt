@@ -31,7 +31,6 @@ else()
     clangFrontend
     clangIndex
     clangSerialization
-    clangUnifiedSymbolResolution
   )
 endif()
 

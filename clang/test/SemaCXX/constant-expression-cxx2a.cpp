@@ -1241,9 +1241,8 @@ namespace dtor_call {
   }
 
   constexpr void destroy_past_end_array() { // expected-error {{never produces a constant expression}}
-    A a[2]; // expected-note {{array 'a' declared here}}
-    a[2].~A(); // expected-note {{destruction of dereferenced one-past-the-end pointer}} \
-             // expected-warning {{array index 2 is past the end of the array}}
+    A a[2];
+    a[2].~A(); // expected-note {{destruction of dereferenced one-past-the-end pointer}}
   }
 
   union As {

@@ -34,6 +34,7 @@
 #include "lldb/Utility/State.h"
 #include "llvm/BinaryFormat/Magic.h"
 #include "llvm/Support/MemoryBuffer.h"
+#include "llvm/Support/Threading.h"
 
 #include "Plugins/DynamicLoader/POSIX-DYLD/DynamicLoaderPOSIXDYLD.h"
 #include "Plugins/ObjectFile/Placeholder/ObjectFilePlaceholder.h"
@@ -85,12 +86,11 @@ void HashElfTextSection(ModuleSP module_sp, std::vector<uint8_t> &breakpad_uuid,
   // The breakpad code has a bug where it might access beyond the end of a
   // .text section by up to 15 bytes, so we must ensure we round up to the
   // next kMDGUIDSize byte boundary.
-  DataExtractorSP extractor_sp;
+  DataExtractor data;
   const size_t text_size = sect_sp->GetFileSize();
   const size_t read_size = std::min<size_t>(
       llvm::alignTo(text_size, kMDGUIDSize), kBreakpadPageSize);
-  sect_sp->GetObjectFile()->GetData(sect_sp->GetFileOffset(), read_size,
-                                    extractor_sp);
+  sect_sp->GetObjectFile()->GetData(sect_sp->GetFileOffset(), read_size, data);
 
   breakpad_uuid.assign(kMDGUIDSize, 0);
   facebook_uuid.assign(kMDGUIDSize, 0);
@@ -105,8 +105,8 @@ void HashElfTextSection(ModuleSP module_sp, std::vector<uint8_t> &breakpad_uuid,
   // sources, including the error where it might has an extra 15 bytes past the
   // end of the .text section if the .text section is less than a page size in
   // length.
-  const uint8_t *ptr = extractor_sp->GetDataStart();
-  const uint8_t *ptr_end = extractor_sp->GetDataEnd();
+  const uint8_t *ptr = data.GetDataStart();
+  const uint8_t *ptr_end = data.GetDataEnd();
   while (ptr < ptr_end) {
     for (unsigned i = 0; i < kMDGUIDSize; i++) {
       breakpad_uuid[i] ^= ptr[i];
@@ -172,9 +172,13 @@ ProcessMinidump::~ProcessMinidump() {
 }
 
 void ProcessMinidump::Initialize() {
-  PluginManager::RegisterPlugin(GetPluginNameStatic(),
-                                GetPluginDescriptionStatic(),
-                                ProcessMinidump::CreateInstance);
+  static llvm::once_flag g_once_flag;
+
+  llvm::call_once(g_once_flag, []() {
+    PluginManager::RegisterPlugin(GetPluginNameStatic(),
+                                  GetPluginDescriptionStatic(),
+                                  ProcessMinidump::CreateInstance);
+  });
 }
 
 void ProcessMinidump::Terminate() {
@@ -350,7 +354,7 @@ DataExtractor ProcessMinidump::GetAuxvData() {
     return DataExtractor();
 
   return DataExtractor(auxv->data(), auxv->size(), GetByteOrder(),
-                       GetAddressByteSize());
+                       GetAddressByteSize(), GetAddressByteSize());
 }
 
 bool ProcessMinidump::IsLLDBMinidump() {

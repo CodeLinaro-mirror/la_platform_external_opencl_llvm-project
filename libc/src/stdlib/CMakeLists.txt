@@ -492,11 +492,6 @@ if(NOT LIBC_TARGET_OS_IS_BAREMETAL AND NOT LIBC_TARGET_OS_IS_GPU)
       DEPENDS
         ${SCUDO_DEPS}
     )
-    add_entrypoint_external(
-      posix_memalign
-      DEPENDS
-        ${SCUDO_DEPS}
-    )
   else()
     add_entrypoint_external(
       malloc
@@ -515,9 +510,6 @@ if(NOT LIBC_TARGET_OS_IS_BAREMETAL AND NOT LIBC_TARGET_OS_IS_GPU)
     )
     add_entrypoint_external(
       mallopt
-    )
-    add_entrypoint_external(
-      posix_memalign
     )
   endif()
 endif()

@@ -212,144 +212,6 @@ IsMasked = true;
                                    PolicyAttrs, IsMasked, SegInstSEW);
   }
 break;
-case RISCVVector::BI__builtin_rvv_vabd_vv_tu:
-  ID = Intrinsic::riscv_vabd;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabd_vv:
-  ID = Intrinsic::riscv_vabd;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabd_vv_tum:
-  ID = Intrinsic::riscv_vabd_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabd_vv_m:
-  ID = Intrinsic::riscv_vabd_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabd_vv_tumu:
-  ID = Intrinsic::riscv_vabd_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabd_vv_mu:
-  ID = Intrinsic::riscv_vabd_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabdu_vv_tu:
-  ID = Intrinsic::riscv_vabdu;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabdu_vv:
-  ID = Intrinsic::riscv_vabdu;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabdu_vv_tum:
-  ID = Intrinsic::riscv_vabdu_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabdu_vv_m:
-  ID = Intrinsic::riscv_vabdu_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabdu_vv_tumu:
-  ID = Intrinsic::riscv_vabdu_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabdu_vv_mu:
-  ID = Intrinsic::riscv_vabdu_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabs_v_tu:
-  ID = Intrinsic::riscv_vabs;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabs_v:
-  ID = Intrinsic::riscv_vabs;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabs_v_tum:
-  ID = Intrinsic::riscv_vabs_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabs_v_m:
-  ID = Intrinsic::riscv_vabs_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  Ops.insert(Ops.begin(), llvm::PoisonValue::get(ResultType));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabs_v_tumu:
-  ID = Intrinsic::riscv_vabs_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vabs_v_mu:
-  ID = Intrinsic::riscv_vabs_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops.back()->getType()};
-  break;
 case RISCVVector::BI__builtin_rvv_vadc_vvm_tu:
 case RISCVVector::BI__builtin_rvv_vadc_vxm_tu:
   ID = Intrinsic::riscv_vadc;
@@ -1285,208 +1147,6 @@ case RISCVVector::BI__builtin_rvv_vdivu_vx_tumu:
 case RISCVVector::BI__builtin_rvv_vdivu_vv_mu:
 case RISCVVector::BI__builtin_rvv_vdivu_vx_mu:
   ID = Intrinsic::riscv_vdivu_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4_vv_tu:
-case RISCVVector::BI__builtin_rvv_vdota4_vx_tu:
-  ID = Intrinsic::riscv_vdota4;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4_vv:
-case RISCVVector::BI__builtin_rvv_vdota4_vx:
-  ID = Intrinsic::riscv_vdota4;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4_vv_tum:
-case RISCVVector::BI__builtin_rvv_vdota4_vx_tum:
-  ID = Intrinsic::riscv_vdota4_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4_vv_m:
-case RISCVVector::BI__builtin_rvv_vdota4_vx_m:
-  ID = Intrinsic::riscv_vdota4_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4_vv_tumu:
-case RISCVVector::BI__builtin_rvv_vdota4_vx_tumu:
-  ID = Intrinsic::riscv_vdota4_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4_vv_mu:
-case RISCVVector::BI__builtin_rvv_vdota4_vx_mu:
-  ID = Intrinsic::riscv_vdota4_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4su_vv_tu:
-case RISCVVector::BI__builtin_rvv_vdota4su_vx_tu:
-  ID = Intrinsic::riscv_vdota4su;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4su_vv:
-case RISCVVector::BI__builtin_rvv_vdota4su_vx:
-  ID = Intrinsic::riscv_vdota4su;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4su_vv_tum:
-case RISCVVector::BI__builtin_rvv_vdota4su_vx_tum:
-  ID = Intrinsic::riscv_vdota4su_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4su_vv_m:
-case RISCVVector::BI__builtin_rvv_vdota4su_vx_m:
-  ID = Intrinsic::riscv_vdota4su_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4su_vv_tumu:
-case RISCVVector::BI__builtin_rvv_vdota4su_vx_tumu:
-  ID = Intrinsic::riscv_vdota4su_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4su_vv_mu:
-case RISCVVector::BI__builtin_rvv_vdota4su_vx_mu:
-  ID = Intrinsic::riscv_vdota4su_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4u_vv_tu:
-case RISCVVector::BI__builtin_rvv_vdota4u_vx_tu:
-  ID = Intrinsic::riscv_vdota4u;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4u_vv:
-case RISCVVector::BI__builtin_rvv_vdota4u_vx:
-  ID = Intrinsic::riscv_vdota4u;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4u_vv_tum:
-case RISCVVector::BI__builtin_rvv_vdota4u_vx_tum:
-  ID = Intrinsic::riscv_vdota4u_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4u_vv_m:
-case RISCVVector::BI__builtin_rvv_vdota4u_vx_m:
-  ID = Intrinsic::riscv_vdota4u_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4u_vv_tumu:
-case RISCVVector::BI__builtin_rvv_vdota4u_vx_tumu:
-  ID = Intrinsic::riscv_vdota4u_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4u_vv_mu:
-case RISCVVector::BI__builtin_rvv_vdota4u_vx_mu:
-  ID = Intrinsic::riscv_vdota4u_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4us_vx_tu:
-  ID = Intrinsic::riscv_vdota4us;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4us_vx:
-  ID = Intrinsic::riscv_vdota4us;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4us_vx_tum:
-  ID = Intrinsic::riscv_vdota4us_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4us_vx_m:
-  ID = Intrinsic::riscv_vdota4us_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4us_vx_tumu:
-  ID = Intrinsic::riscv_vdota4us_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vdota4us_vx_mu:
-  ID = Intrinsic::riscv_vdota4us_mask;
   PolicyAttrs = 1;
   SegInstSEW = 0;
   std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
@@ -19522,6 +19182,208 @@ case RISCVVector::BI__builtin_rvv_vor_vx_mu:
   Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
   IntrinsicTypes = {ResultType, Ops[2]->getType(), Ops.back()->getType()};
   break;
+case RISCVVector::BI__builtin_rvv_vqdot_vv_tu:
+case RISCVVector::BI__builtin_rvv_vqdot_vx_tu:
+  ID = Intrinsic::riscv_vqdot;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdot_vv:
+case RISCVVector::BI__builtin_rvv_vqdot_vx:
+  ID = Intrinsic::riscv_vqdot;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdot_vv_tum:
+case RISCVVector::BI__builtin_rvv_vqdot_vx_tum:
+  ID = Intrinsic::riscv_vqdot_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdot_vv_m:
+case RISCVVector::BI__builtin_rvv_vqdot_vx_m:
+  ID = Intrinsic::riscv_vqdot_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdot_vv_tumu:
+case RISCVVector::BI__builtin_rvv_vqdot_vx_tumu:
+  ID = Intrinsic::riscv_vqdot_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdot_vv_mu:
+case RISCVVector::BI__builtin_rvv_vqdot_vx_mu:
+  ID = Intrinsic::riscv_vqdot_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotsu_vv_tu:
+case RISCVVector::BI__builtin_rvv_vqdotsu_vx_tu:
+  ID = Intrinsic::riscv_vqdotsu;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotsu_vv:
+case RISCVVector::BI__builtin_rvv_vqdotsu_vx:
+  ID = Intrinsic::riscv_vqdotsu;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotsu_vv_tum:
+case RISCVVector::BI__builtin_rvv_vqdotsu_vx_tum:
+  ID = Intrinsic::riscv_vqdotsu_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotsu_vv_m:
+case RISCVVector::BI__builtin_rvv_vqdotsu_vx_m:
+  ID = Intrinsic::riscv_vqdotsu_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotsu_vv_tumu:
+case RISCVVector::BI__builtin_rvv_vqdotsu_vx_tumu:
+  ID = Intrinsic::riscv_vqdotsu_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotsu_vv_mu:
+case RISCVVector::BI__builtin_rvv_vqdotsu_vx_mu:
+  ID = Intrinsic::riscv_vqdotsu_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotu_vv_tu:
+case RISCVVector::BI__builtin_rvv_vqdotu_vx_tu:
+  ID = Intrinsic::riscv_vqdotu;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotu_vv:
+case RISCVVector::BI__builtin_rvv_vqdotu_vx:
+  ID = Intrinsic::riscv_vqdotu;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotu_vv_tum:
+case RISCVVector::BI__builtin_rvv_vqdotu_vx_tum:
+  ID = Intrinsic::riscv_vqdotu_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotu_vv_m:
+case RISCVVector::BI__builtin_rvv_vqdotu_vx_m:
+  ID = Intrinsic::riscv_vqdotu_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotu_vv_tumu:
+case RISCVVector::BI__builtin_rvv_vqdotu_vx_tumu:
+  ID = Intrinsic::riscv_vqdotu_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotu_vv_mu:
+case RISCVVector::BI__builtin_rvv_vqdotu_vx_mu:
+  ID = Intrinsic::riscv_vqdotu_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotus_vx_tu:
+  ID = Intrinsic::riscv_vqdotus;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotus_vx:
+  ID = Intrinsic::riscv_vqdotus;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotus_vx_tum:
+  ID = Intrinsic::riscv_vqdotus_mask;
+  PolicyAttrs = 2;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotus_vx_m:
+  ID = Intrinsic::riscv_vqdotus_mask;
+  PolicyAttrs = 3;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotus_vx_tumu:
+  ID = Intrinsic::riscv_vqdotus_mask;
+  PolicyAttrs = 0;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
+case RISCVVector::BI__builtin_rvv_vqdotus_vx_mu:
+  ID = Intrinsic::riscv_vqdotus_mask;
+  PolicyAttrs = 1;
+  SegInstSEW = 0;
+  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
+  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
+  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
+  break;
 case RISCVVector::BI__builtin_rvv_vredand_vs_tu:
   ID = Intrinsic::riscv_vredand;
   PolicyAttrs = 2;
@@ -23998,98 +23860,6 @@ IsMasked = true;
           this, E, ReturnValue, ResultType, ID, Ops, PolicyAttrs, IsMasked,
           SegInstSEW);
             break;
-case RISCVVector::BI__builtin_rvv_vwabda_vv_tu:
-  ID = Intrinsic::riscv_vwabda;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabda_vv:
-  ID = Intrinsic::riscv_vwabda;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabda_vv_tum:
-  ID = Intrinsic::riscv_vwabda_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabda_vv_m:
-  ID = Intrinsic::riscv_vwabda_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabda_vv_tumu:
-  ID = Intrinsic::riscv_vwabda_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabda_vv_mu:
-  ID = Intrinsic::riscv_vwabda_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabdau_vv_tu:
-  ID = Intrinsic::riscv_vwabdau;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabdau_vv:
-  ID = Intrinsic::riscv_vwabdau;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabdau_vv_tum:
-  ID = Intrinsic::riscv_vwabdau_mask;
-  PolicyAttrs = 2;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabdau_vv_m:
-  ID = Intrinsic::riscv_vwabdau_mask;
-  PolicyAttrs = 3;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabdau_vv_tumu:
-  ID = Intrinsic::riscv_vwabdau_mask;
-  PolicyAttrs = 0;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
-case RISCVVector::BI__builtin_rvv_vwabdau_vv_mu:
-  ID = Intrinsic::riscv_vwabdau_mask;
-  PolicyAttrs = 1;
-  SegInstSEW = 0;
-  std::rotate(Ops.begin(), Ops.begin() + 1, Ops.end() - 1);
-  Ops.push_back(ConstantInt::get(Ops.back()->getType(), PolicyAttrs));
-  IntrinsicTypes = {ResultType, Ops[1]->getType(), Ops[2]->getType(), Ops.back()->getType()};
-  break;
 case RISCVVector::BI__builtin_rvv_vwadd_vv_tu:
 case RISCVVector::BI__builtin_rvv_vwadd_vx_tu:
   ID = Intrinsic::riscv_vwadd;

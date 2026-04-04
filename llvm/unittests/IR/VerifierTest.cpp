@@ -33,11 +33,11 @@ TEST(VerifierTest, Branch_i1) {
   BasicBlock *Exit = BasicBlock::Create(C, "exit", F);
   ReturnInst::Create(C, Exit);
 
-  // To avoid triggering an assertion in CondBrInst::Create, we first create
+  // To avoid triggering an assertion in BranchInst::Create, we first create
   // a branch with an 'i1' condition ...
 
   Constant *False = ConstantInt::getFalse(C);
-  CondBrInst *BI = CondBrInst::Create(False, Exit, Exit, Entry);
+  BranchInst *BI = BranchInst::Create(Exit, Exit, False, Entry);
 
   // ... then use setOperand to redirect it to a value of different type.
 
@@ -318,9 +318,9 @@ TEST(VerifierTest, SwitchInst) {
 
   BasicBlock *Exit = BasicBlock::Create(C, "exit", F);
 
-  UncondBrInst::Create(Exit, Default);
-  UncondBrInst::Create(Exit, OnTwo);
-  UncondBrInst::Create(Exit, OnOne);
+  BranchInst::Create(Exit, Default);
+  BranchInst::Create(Exit, OnTwo);
+  BranchInst::Create(Exit, OnOne);
   ReturnInst::Create(C, Exit);
 
   Value *Cond = F->getArg(0);

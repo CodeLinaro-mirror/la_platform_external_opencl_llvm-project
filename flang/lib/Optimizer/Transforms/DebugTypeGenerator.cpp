@@ -79,16 +79,8 @@ static mlir::LLVM::DITypeAttr genBasicType(mlir::MLIRContext *context,
       context, llvm::dwarf::DW_TAG_base_type, name, bitSize, decoding);
 }
 
-static mlir::StringAttr getBasicTypeName(mlir::MLIRContext *context,
-                                         llvm::StringRef baseName,
-                                         unsigned bitSize) {
-  std::ostringstream oss;
-  oss << baseName.str() << "(kind=" << (bitSize / 8) << ")";
-  return mlir::StringAttr::get(context, oss.str());
-}
-
 static mlir::LLVM::DITypeAttr genPlaceholderType(mlir::MLIRContext *context) {
-  return genBasicType(context, getBasicTypeName(context, "integer", 32),
+  return genBasicType(context, mlir::StringAttr::get(context, "integer"),
                       /*bitSize=*/32, llvm::dwarf::DW_ATE_signed);
 }
 
@@ -444,10 +436,8 @@ mlir::LLVM::DITypeAttr DebugTypeGenerator::convertRecordType(
     offset = llvm::alignTo(offset, byteAlign);
     mlir::LLVM::DIDerivedTypeAttr tyAttr = mlir::LLVM::DIDerivedTypeAttr::get(
         context, llvm::dwarf::DW_TAG_member,
-        mlir::StringAttr::get(context, fieldName), /*file=*/nullptr, /*line=*/0,
-        /*scope=*/nullptr, elemTy, byteSize * 8, byteAlign * 8, offset * 8,
-        /*optional<address space>=*/std::nullopt,
-        /*flags=*/mlir::LLVM::DIFlags::Zero,
+        mlir::StringAttr::get(context, fieldName), elemTy, byteSize * 8,
+        byteAlign * 8, offset * 8, /*optional<address space>=*/std::nullopt,
         /*extra data=*/nullptr);
     elements.push_back(tyAttr);
     offset += llvm::alignTo(byteSize, byteAlign);
@@ -488,10 +478,8 @@ mlir::LLVM::DITypeAttr DebugTypeGenerator::convertTupleType(
     offset = llvm::alignTo(offset, byteAlign);
     mlir::LLVM::DIDerivedTypeAttr tyAttr = mlir::LLVM::DIDerivedTypeAttr::get(
         context, llvm::dwarf::DW_TAG_member, mlir::StringAttr::get(context, ""),
-        /*file=*/nullptr, /*line=*/0, /*scope=*/nullptr, elemTy, byteSize * 8,
-        byteAlign * 8, offset * 8,
+        elemTy, byteSize * 8, byteAlign * 8, offset * 8,
         /*optional<address space>=*/std::nullopt,
-        /*flags=*/mlir::LLVM::DIFlags::Zero,
         /*extra data=*/nullptr);
     elements.push_back(tyAttr);
     offset += llvm::alignTo(byteSize, byteAlign);
@@ -683,11 +671,19 @@ mlir::LLVM::DITypeAttr DebugTypeGenerator::convertPointerLikeType(
 
   return mlir::LLVM::DIDerivedTypeAttr::get(
       context, llvm::dwarf::DW_TAG_pointer_type,
-      mlir::StringAttr::get(context, ""), /*file=*/nullptr, /*line=*/0,
-      /*scope=*/nullptr, elTyAttr, /*sizeInBits=*/ptrSize * 8,
+      mlir::StringAttr::get(context, ""), elTyAttr, /*sizeInBits=*/ptrSize * 8,
       /*alignInBits=*/0, /*offset=*/0,
-      /*optional<address space>=*/std::nullopt,
-      /*flags=*/mlir::LLVM::DIFlags::Zero, /*extra data=*/nullptr);
+      /*optional<address space>=*/std::nullopt, /*extra data=*/nullptr);
+}
+
+static mlir::StringAttr getBasicTypeName(mlir::MLIRContext *context,
+                                         llvm::StringRef baseName,
+                                         unsigned bitSize) {
+  std::ostringstream oss;
+  oss << baseName.str();
+  if (bitSize != 32)
+    oss << "(kind=" << (bitSize / 8) << ")";
+  return mlir::StringAttr::get(context, oss.str());
 }
 
 mlir::LLVM::DITypeAttr
@@ -744,11 +740,9 @@ DebugTypeGenerator::convertType(mlir::Type Ty, mlir::LLVM::DIFileAttr fileAttr,
 
     return mlir::LLVM::DIDerivedTypeAttr::get(
         context, llvm::dwarf::DW_TAG_pointer_type,
-        mlir::StringAttr::get(context, ""), /*file=*/nullptr, /*line=*/0,
-        /*scope=*/nullptr, subroutineTy,
+        mlir::StringAttr::get(context, ""), subroutineTy,
         /*sizeInBits=*/ptrSize * 8, /*alignInBits=*/0, /*offset=*/0,
-        /*optional<address space>=*/std::nullopt,
-        /*flags=*/mlir::LLVM::DIFlags::Zero, /*extra data=*/nullptr);
+        /*optional<address space>=*/std::nullopt, /*extra data=*/nullptr);
   } else if (auto refTy = mlir::dyn_cast_if_present<fir::ReferenceType>(Ty)) {
     auto elTy = refTy.getEleTy();
     return convertPointerLikeType(elTy, fileAttr, scope, declOp,
@@ -757,9 +751,9 @@ DebugTypeGenerator::convertType(mlir::Type Ty, mlir::LLVM::DIFileAttr fileAttr,
   } else if (auto vecTy = mlir::dyn_cast_if_present<fir::VectorType>(Ty)) {
     return convertVectorType(vecTy, fileAttr, scope, declOp);
   } else if (mlir::isa<mlir::IndexType>(Ty)) {
-    unsigned bitWidth = llvmTypeConverter.getIndexTypeBitwidth();
-    return genBasicType(context, getBasicTypeName(context, "integer", bitWidth),
-                        bitWidth, llvm::dwarf::DW_ATE_signed);
+    return genBasicType(context, mlir::StringAttr::get(context, "integer"),
+                        llvmTypeConverter.getIndexTypeBitwidth(),
+                        llvm::dwarf::DW_ATE_signed);
   } else if (auto boxTy = mlir::dyn_cast_if_present<fir::BaseBoxType>(Ty)) {
     auto elTy = boxTy.getEleTy();
     if (auto seqTy = mlir::dyn_cast_if_present<fir::SequenceType>(elTy))

@@ -44,7 +44,7 @@ private:
   struct GlobListItem {
     bool IsPositive;
     llvm::Regex Regex;
-    StringRef Text;
+    llvm::StringRef Text;
   };
   SmallVector<GlobListItem, 0> Items;
 

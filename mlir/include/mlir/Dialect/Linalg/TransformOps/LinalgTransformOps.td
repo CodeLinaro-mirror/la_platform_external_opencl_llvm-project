@@ -143,28 +143,6 @@ def ApplyFoldPackUnpackIntoEmptyPatternsOp : Op<Transform_Dialect,
   let assemblyFormat = "attr-dict";
 }
 
-def ApplyDataLayoutPropagationPatternsOp : Op<Transform_Dialect,
-    "apply_patterns.linalg.data_layout_propagation",
-    [DeclareOpInterfaceMethods<PatternDescriptorOpInterface>]> {
-  let description = [{
-    Collection of patterns to bubble up or down data layout ops across other
-    operations.
-  }];
-
-  let arguments = (ins DefaultValuedAttr<BoolAttr, "false">:$poison_padding);
-  let assemblyFormat = "attr-dict";
-}
-
-def ApplyExtractSliceSinkingPatternsOp : Op<Transform_Dialect,
-    "apply_patterns.linalg.extract_slice_sinking",
-    [DeclareOpInterfaceMethods<PatternDescriptorOpInterface>]> {
-  let description = [{
-    Patterns to sink extract slice across other operations.
-  }];
-
-  let assemblyFormat = "attr-dict";
-}
-
 //===----------------------------------------------------------------------===//
 // BufferizeToAllocationOp
 //===----------------------------------------------------------------------===//
@@ -310,13 +288,9 @@ def DecomposeOp : Op<Transform_Dialect, "structured.decompose",
      TransformEachOpTrait,
      ReportTrackingListenerFailuresOpTrait]> {
   let description = [{
-    Decomposes higher-dimensional convolution ops into lower-dimensional
-    equivalents when possible. This operates on both named ops and equivalent
-    `linalg.generic` ops that have convolution-like structure (as determined
-    by `inferConvolutionDims`).
-
-    The transformation always attempts to specialize the result back to a named
-    op when possible.
+    Decomposes named complex operations, such as higher-dimensional
+    (depthwise) convolutions, into combinations of lower-dimensional equivalents
+    when possible.
 
     #### Return modes
 
@@ -588,22 +562,20 @@ def SpecializeOp : Op<Transform_Dialect, "structured.specialize",
      TransformOpInterface, TransformEachOpTrait,
      ReportTrackingListenerFailuresOpTrait]> {
   let description = [{
-    Transforms a generic operation into the equivalent named or category form.
-
-    By default, operations are specialized into named forms.
+    Transforms a generic operation into the equivalent named form.
 
     #### Return modes
 
     This operation ignores non-Linalg ops and drops them in the return. If all
     the operations referred to by the `target` handle specialize, the transform
-    succeeds; otherwise, the operation produces a silenceable failure. The return
-    handle points to only the subset of successfully produced equivalent specialized
+    succeeds; otherwise, the operation produces a silenceable failure.  The return
+    handle points to only the subset of successfully produced equivalent named
     operations, which can be empty or contain the original ops if they were already
-    in the target form.
+    in named form. The supported specialization to named Linalg operations are:
+    - linalg.copy of any rank.
   }];
 
-  let arguments = (ins TransformHandleTypeInterface:$target,
-                       DefaultValuedAttr<BoolAttr, "false">:$emit_category);
+  let arguments = (ins TransformHandleTypeInterface:$target);
   let results = (outs TransformHandleTypeInterface:$transformed);
   let assemblyFormat = [{
       $target attr-dict `:` 
@@ -745,7 +717,7 @@ def LowerUnPackOp : Op<Transform_Dialect, "structured.lower_unpack", [
                          ReportTrackingListenerFailuresOpTrait]> {
   let description = [{
     Lower a linalg.unpack into empty + linalg.transpose + tensor.collapse_shape +
-    tensor.extract_slice + linalg.copy.
+    tensor.extract_slice.
 
     #### Return modes
 
@@ -753,7 +725,7 @@ def LowerUnPackOp : Op<Transform_Dialect, "structured.lower_unpack", [
     operation produces a silenceable failure if the rewrite fails for any
     reason. If all the operations referred to by the `target` are rewritten,
     the transform succeeds. Return handles to the newly produced empty,
-    transpose, collapse_shape, extract_slice and copy ops.
+    transpose, collapse_shape and extract_slice ops.
   }];
 
   let arguments = (ins Transform_ConcreteOpType<"linalg.unpack">:$target,
@@ -761,8 +733,7 @@ def LowerUnPackOp : Op<Transform_Dialect, "structured.lower_unpack", [
   let results = (outs Transform_ConcreteOpType<"tensor.empty">:$empty_op,
                       Transform_ConcreteOpType<"linalg.transpose">:$transpose_op,
                       Transform_ConcreteOpType<"tensor.collapse_shape">:$collapse_shape_op,
-                      Transform_ConcreteOpType<"tensor.extract_slice">:$extract_slice_op,
-                      Transform_ConcreteOpType<"linalg.copy">:$copy_op);
+                      Transform_ConcreteOpType<"tensor.extract_slice">:$extract_slice_op);
   let assemblyFormat = [{
     $target attr-dict `:` functional-type(operands, results)
   }];

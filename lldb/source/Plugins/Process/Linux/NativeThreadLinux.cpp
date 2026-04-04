@@ -140,10 +140,12 @@ bool NativeThreadLinux::GetStopReason(ThreadStopInfo &stop_info,
   case eStateRunning:
   case eStateStepping:
   case eStateDetached:
-    LLDB_LOGF(log,
-              "NativeThreadLinux::%s tid %" PRIu64
-              " in state %s cannot answer stop reason",
-              __FUNCTION__, GetID(), StateAsCString(m_state));
+    if (log) {
+      LLDB_LOGF(log,
+                "NativeThreadLinux::%s tid %" PRIu64
+                " in state %s cannot answer stop reason",
+                __FUNCTION__, GetID(), StateAsCString(m_state));
+    }
     return false;
   }
   llvm_unreachable("unhandled StateType!");

@@ -503,7 +503,6 @@ constexpr llvm::StringLiteral constantIdEnumAttrs[] = {
     "SPIRV_MatrixLayoutAttr",
     "SPIRV_TosaExtAccTypeAttr",
     "SPIRV_TosaExtNaNPropagationModeAttr",
-    "SPIRV_QuadSwapDirectionAttr",
 };
 
 /// Generates code to serialize attributes of a SPIRV_Op `op` into `os`. The
@@ -558,10 +557,9 @@ static void emitAttributeSerialization(const Attribute &attr,
     os << tabs << "    return failure();\n";
     os << tabs << "  }\n";
     os << tabs << formatv("  {0}.push_back(attrTypeID);\n", operandList);
-  } else if (llvm::is_contained({"SPIRV_BoolConstAttr",
-                                 "SPIRV_TensorArmAxisAttr",
-                                 "SPIRV_TosaNumericalAttr"},
-                                attr.getAttrDefName())) {
+  } else if (llvm::is_contained(
+                 {"SPIRV_BoolConstAttr", "SPIRV_TensorArmAxisAttr"},
+                 attr.getAttrDefName())) {
     os << tabs
        << formatv(
               "  {0}.push_back(prepareConstantScalar({1}.getLoc(), attr));\n",
@@ -865,9 +863,7 @@ static void emitAttributeDeserialization(const Attribute &attr,
        << formatv("{0}.push_back(opBuilder.getNamedAttr(\"{1}\", "
                   "TypeAttr::get(getType({2}[{3}++]))));\n",
                   attrList, attrName, words, wordIndex);
-  } else if (llvm::is_contained(
-                 {"SPIRV_BoolConstAttr", "SPIRV_TosaNumericalAttr"},
-                 attr.getAttrDefName()) ||
+  } else if (attr.getAttrDefName() == "SPIRV_BoolConstAttr" ||
              attr.getAttrDefName().contains("TensorArm")) {
     os << tabs
        << formatv("std::optional<std::pair<Attribute, Type>> c = "

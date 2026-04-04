@@ -243,7 +243,10 @@ protected:
   detail::ValueImpl *impl;
 };
 
-raw_ostream &operator<<(raw_ostream &os, Value value);
+inline raw_ostream &operator<<(raw_ostream &os, Value value) {
+  value.print(os);
+  return os;
+}
 
 //===----------------------------------------------------------------------===//
 // OpOperand

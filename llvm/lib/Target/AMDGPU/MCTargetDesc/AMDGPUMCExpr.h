@@ -15,6 +15,7 @@
 namespace llvm {
 
 class Function;
+class GCNSubtarget;
 
 enum class LitModifier { None, Lit, Lit64 };
 

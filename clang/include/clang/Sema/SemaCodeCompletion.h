@@ -101,11 +101,9 @@ public:
                             bool AllowNestedNameSpecifiers);
 
   struct CodeCompleteExpressionData;
-  void CodeCompleteExpression(Scope *S, const CodeCompleteExpressionData &Data,
-                              bool IsAddressOfOperand = false);
+  void CodeCompleteExpression(Scope *S, const CodeCompleteExpressionData &Data);
   void CodeCompleteExpression(Scope *S, QualType PreferredType,
-                              bool IsParenthesized = false,
-                              bool IsAddressOfOperand = false);
+                              bool IsParenthesized = false);
   void CodeCompleteMemberReferenceExpr(Scope *S, Expr *Base, Expr *OtherOpBase,
                                        SourceLocation OpLoc, bool IsArrow,
                                        bool IsBaseExprStatement,
@@ -158,8 +156,7 @@ public:
   void CodeCompleteAfterIf(Scope *S, bool IsBracedThen);
 
   void CodeCompleteQualifiedId(Scope *S, CXXScopeSpec &SS, bool EnteringContext,
-                               bool IsUsingDeclaration, bool IsAddressOfOperand,
-                               bool IsInDeclarationContext, QualType BaseType,
+                               bool IsUsingDeclaration, QualType BaseType,
                                QualType PreferredType);
   void CodeCompleteUsing(Scope *S);
   void CodeCompleteUsingDirective(Scope *S);

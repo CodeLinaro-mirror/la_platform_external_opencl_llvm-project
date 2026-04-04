@@ -511,7 +511,6 @@ public:
     common::visit(common::visitors{
                       [&](const CoarraySpec &) { Word("CODIMENSION["); },
                       [&](const ArraySpec &) { Word("DIMENSION("); },
-                      [&](const RankClause &) { Word("RANK("); },
                       [](const auto &) {},
                   },
         x.u);
@@ -520,7 +519,6 @@ public:
     common::visit(common::visitors{
                       [&](const CoarraySpec &) { Put(']'); },
                       [&](const ArraySpec &) { Put(')'); },
-                      [&](const RankClause &) { Put(')'); },
                       [](const auto &) {},
                   },
         x.u);
@@ -1514,7 +1512,9 @@ public:
       Walk(x.count);
       break;
     case format::ControlEditDesc::Kind::X:
-      Walk(x.count);
+      if (x.count != 1) {
+        Walk(x.count);
+      }
       Word("X");
       break;
     case format::ControlEditDesc::Kind::Slash:
@@ -1547,9 +1547,6 @@ public:
       FMT(RP);
       FMT(DC);
       FMT(DP);
-      FMT(LZ);
-      FMT(LZS);
-      FMT(LZP);
 #undef FMT
     case format::ControlEditDesc::Kind::Dollar:
       Put('$');

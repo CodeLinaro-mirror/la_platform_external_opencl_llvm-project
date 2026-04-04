@@ -1908,7 +1908,7 @@ bool BinaryFunction::scanExternalRefs() {
 }
 
 bool BinaryFunction::validateInternalBranches() {
-  if (!hasInstructions() || !isSimple() || TrapsOnEntry)
+  if (!isSimple() || TrapsOnEntry)
     return true;
 
   for (const auto &KV : Labels) {
@@ -3256,30 +3256,6 @@ void BinaryFunction::clearDisasmState() {
   clearList(TakenBranches);
 }
 
-void BinaryFunction::resetState() {
-  clearDisasmState();
-
-  // Clear CFG state too.
-  if (hasCFG()) {
-    releaseCFG();
-
-    for (BinaryBasicBlock *BB : BasicBlocks)
-      delete BB;
-    clearList(BasicBlocks);
-
-    for (BinaryBasicBlock *BB : DeletedBasicBlocks)
-      delete BB;
-    clearList(DeletedBasicBlocks);
-
-    Layout.clear();
-  }
-
-  IsSimple = false;
-  IsIgnored = true;
-
-  CurrentState = State::Empty;
-}
-
 void BinaryFunction::setTrapOnEntry() {
   clearDisasmState();
 
@@ -3314,7 +3290,24 @@ void BinaryFunction::setIgnored() {
   if (CurrentState == State::Empty)
     return;
 
-  resetState();
+  clearDisasmState();
+
+  // Clear CFG state too.
+  if (hasCFG()) {
+    releaseCFG();
+
+    for (BinaryBasicBlock *BB : BasicBlocks)
+      delete BB;
+    clearList(BasicBlocks);
+
+    for (BinaryBasicBlock *BB : DeletedBasicBlocks)
+      delete BB;
+    clearList(DeletedBasicBlocks);
+
+    Layout.clear();
+  }
+
+  CurrentState = State::Empty;
 
   // Fix external references in the original function body.
   if (BC.HasRelocations) {
@@ -3885,9 +3878,8 @@ MCSymbol *BinaryFunction::getSymbolForEntryID(uint64_t EntryID) {
   return nullptr;
 }
 
-std::optional<uint64_t>
-BinaryFunction::getEntryIDForSymbol(const MCSymbol *Symbol) const {
-  if (!isMultiEntry() || !Symbol)
+uint64_t BinaryFunction::getEntryIDForSymbol(const MCSymbol *Symbol) const {
+  if (!isMultiEntry())
     return 0;
 
   for (const MCSymbol *FunctionSymbol : getSymbols())
@@ -3913,7 +3905,8 @@ BinaryFunction::getEntryIDForSymbol(const MCSymbol *Symbol) const {
       return NumEntries;
     ++NumEntries;
   }
-  return std::nullopt;
+
+  llvm_unreachable("symbol not found");
 }
 
 bool BinaryFunction::forEachEntryPoint(EntryPointCallbackTy Callback) const {
@@ -4631,10 +4624,8 @@ uint64_t BinaryFunction::translateInputToOutputAddress(uint64_t Address) const {
 
   // Check if the address is associated with an instruction that is tracked
   // by address translation.
-  if (BC.hasIOAddressMap()) {
-    if (auto OutputAddress = BC.getIOAddressMap().lookup(Address))
-      return *OutputAddress;
-  }
+  if (auto OutputAddress = BC.getIOAddressMap().lookup(Address))
+    return *OutputAddress;
 
   // FIXME: #18950828 - we rely on relative offsets inside basic blocks to stay
   //        intact. Instead we can use pseudo instructions and/or annotations.

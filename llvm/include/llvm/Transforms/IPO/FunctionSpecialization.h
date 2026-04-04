@@ -198,7 +198,7 @@ private:
 
   Cost estimateBasicBlocks(SmallVectorImpl<BasicBlock *> &WorkList);
   Cost estimateSwitchInst(SwitchInst &I);
-  Cost estimateCondBrInst(CondBrInst &I);
+  Cost estimateBranchInst(BranchInst &I);
 
   // Transitively Incoming Values (TIV) is a set of Values that can "feed" a
   // value to the initial PHI-node. It is defined like this:

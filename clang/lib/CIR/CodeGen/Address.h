@@ -14,7 +14,6 @@
 #ifndef CLANG_LIB_CIR_ADDRESS_H
 #define CLANG_LIB_CIR_ADDRESS_H
 
-#include "mlir/Dialect/Ptr/IR/MemorySpaceInterfaces.h"
 #include "mlir/IR/Value.h"
 #include "clang/AST/CharUnits.h"
 #include "clang/CIR/Dialect/IR/CIRAttrs.h"
@@ -128,7 +127,7 @@ public:
     return elementType;
   }
 
-  mlir::ptr::MemorySpaceAttrInterface getAddressSpace() const {
+  cir::TargetAddressSpaceAttr getAddressSpace() const {
     auto ptrTy = mlir::dyn_cast<cir::PointerType>(getType());
     return ptrTy.getAddrSpace();
   }

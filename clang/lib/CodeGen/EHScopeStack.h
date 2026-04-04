@@ -49,7 +49,7 @@ struct BranchFixup {
   unsigned DestinationIndex;
 
   /// The initial branch of the fixup.
-  llvm::UncondBrInst *InitialBranch;
+  llvm::BranchInst *InitialBranch;
 };
 
 template <class T> struct InvariantValue {

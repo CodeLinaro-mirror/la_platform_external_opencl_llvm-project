@@ -1,7 +1,5 @@
 ; RUN: llc -O0 -mtriple=spirv64-unknown-unknown %s -o - | FileCheck %s
-; RUNx: %if spirv-tools %{ llc -O0 -mtriple=spirv64-unknown-unknown %s -o - -filetype=obj | spirv-val %}
-; FIXME: re-enable when validator issue if fixed
-; https://github.com/llvm/llvm-project/issues/186756
+; RUN: %if spirv-tools %{ llc -O0 -mtriple=spirv64-unknown-unknown %s -o - -filetype=obj | spirv-val %}
 
 ; CHECK: %[[Int8Ty:[0-9]+]] = OpTypeInt 8 0
 ; CHECK: %[[Int8PtrTy:[0-9]+]] = OpTypePointer Generic %[[Int8Ty]]

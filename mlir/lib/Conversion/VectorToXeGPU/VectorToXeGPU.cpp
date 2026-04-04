@@ -11,7 +11,6 @@
 //===----------------------------------------------------------------------===//
 
 #include "mlir/Conversion/VectorToXeGPU/VectorToXeGPU.h"
-#include "mlir/Conversion/VectorToGPU/VectorToGPU.h"
 
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
@@ -43,14 +42,15 @@ static bool isZeroConstant(Value val) {
     return false;
 
   return TypeSwitch<Attribute, bool>(constant.getValue())
-      .Case([](FloatAttr floatAttr) { return floatAttr.getValue().isZero(); })
-      .Case([](IntegerAttr intAttr) { return intAttr.getValue().isZero(); })
+      .Case<FloatAttr>(
+          [](auto floatAttr) { return floatAttr.getValue().isZero(); })
+      .Case<IntegerAttr>(
+          [](auto intAttr) { return intAttr.getValue().isZero(); })
       .Default(false);
 }
 
 static LogicalResult storeLoadPreconditions(PatternRewriter &rewriter,
-                                            Operation *op, VectorType vecTy,
-                                            MemRefType memTy) {
+                                            Operation *op, VectorType vecTy) {
   // Validate only vector as the basic vector store and load ops guarantee
   // XeGPU-compatible memref source.
   unsigned vecRank = vecTy.getRank();
@@ -60,14 +60,6 @@ static LogicalResult storeLoadPreconditions(PatternRewriter &rewriter,
   if (!vecTy.getElementType().isIntOrFloat())
     return rewriter.notifyMatchFailure(
         op, "Expected scalar type with known bitwidth");
-
-  // XeGPU requires the memref to have a scalar integer or float element type.
-  // Memrefs with vector element types (e.g. memref<?xvector<4xf32>>) are not
-  // supported because createNdDescriptor computes byte offsets using
-  // getElementTypeBitWidth(), which asserts on non-integer/float types.
-  if (!memTy.getElementType().isIntOrFloat())
-    return rewriter.notifyMatchFailure(
-        op, "Unsupported memref element type: expected integer or float");
 
   return success();
 }
@@ -559,16 +551,14 @@ struct TransferReadLowering : public OpRewritePattern<vector::TransferReadOp> {
       return lowerToScatteredLoadOp(readOp, rewriter);
     }
 
-    VectorType loadedVecTy = readOp.getVectorType();
+    VectorType vecTy = readOp.getVectorType();
 
     // Lower using load.gather in 1D case
-    if (loadedVecTy.getRank() == 1 && !readOp.hasOutOfBoundsDim())
+    if (vecTy.getRank() == 1 && !readOp.hasOutOfBoundsDim())
       return lowerToScatteredLoadOp(readOp, rewriter);
 
     // Perform common data transfer checks.
-    auto readMemTy = cast<MemRefType>(readOp.getShapedType());
-    if (failed(
-            storeLoadPreconditions(rewriter, readOp, loadedVecTy, readMemTy)))
+    if (failed(storeLoadPreconditions(rewriter, readOp, vecTy)))
       return failure();
 
     bool isOutOfBounds = readOp.hasOutOfBoundsDim();
@@ -578,44 +568,40 @@ struct TransferReadLowering : public OpRewritePattern<vector::TransferReadOp> {
 
     AffineMap readMap = readOp.getPermutationMap();
     bool isTransposeLoad = !readMap.isMinorIdentity();
-    auto elementType = loadedVecTy.getElementType();
 
-    SmallVector<int64_t> descShape(loadedVecTy.getShape());
-    if (isTransposeLoad) {
-      // If load is transposed, then the shape of the source-descriptor
-      // is the opposite from the result-shape. Applying the permutation
-      // to get the reversive shape.
-      auto inversedMap = inversePermutation(readMap);
-      descShape = applyPermutationMap(inversedMap, loadedVecTy.getShape());
-      loadedVecTy = VectorType::get(descShape, elementType);
-    }
+    Type elementType = vecTy.getElementType();
+    unsigned minTransposeBitWidth = 32;
+    if (isTransposeLoad &&
+        elementType.getIntOrFloatBitWidth() < minTransposeBitWidth)
+      return rewriter.notifyMatchFailure(
+          readOp, "Unsupported data type for transposition");
+
+    // If load is transposed, get the base shape for the tensor descriptor.
+    SmallVector<int64_t> descShape(vecTy.getShape());
+    if (isTransposeLoad)
+      std::reverse(descShape.begin(), descShape.end());
     auto descType = xegpu::TensorDescType::get(
         descShape, elementType, /*array_length=*/1,
         /*boundary_check=*/isOutOfBounds, xegpu::MemorySpace::Global);
+
+    DenseI64ArrayAttr transposeAttr =
+        !isTransposeLoad ? nullptr
+                         : DenseI64ArrayAttr::get(rewriter.getContext(),
+                                                  ArrayRef<int64_t>{1, 0});
     auto [src, indices] = convertMemrefAndOffsetsToTargetRank(
         rewriter, loc, readOp.getBase(), getAsOpFoldResult(readOp.getIndices()),
-        loadedVecTy.getRank());
+        vecTy.getRank());
     // By default, no specific caching policy is assigned.
     xegpu::CachePolicyAttr hint = nullptr;
     xegpu::CreateNdDescOp ndDesc = createNdDescriptor(
         rewriter, loc, descType, dyn_cast<TypedValue<MemRefType>>(src));
 
-    Operation *loadedOp =
-        xegpu::LoadNdOp::create(rewriter, loc, loadedVecTy, ndDesc, indices,
-                                /*packed=*/nullptr, /*transpose=*/nullptr,
-                                /*l1_hint=*/hint,
-                                /*l2_hint=*/hint, /*l3_hint=*/hint,
-                                /*layout=*/nullptr);
-    if (isTransposeLoad) {
-      // Transposing the loaded vector with a separate vector.transpose
-      // operation
-      auto range = llvm::seq<int64_t>(0, readMap.getResults().size());
-      SmallVector<int64_t> perm(range.begin(), range.end());
-      auto permApplied = applyPermutationMap<int64_t>(readMap, perm);
-      loadedOp = vector::TransposeOp::create(
-          rewriter, loc, loadedOp->getResult(0), permApplied);
-    }
-    rewriter.replaceOp(readOp, loadedOp);
+    auto loadOp = xegpu::LoadNdOp::create(rewriter, loc, vecTy, ndDesc, indices,
+                                          /*packed=*/nullptr, transposeAttr,
+                                          /*l1_hint=*/hint,
+                                          /*l2_hint=*/hint, /*l3_hint=*/hint,
+                                          /*layout=*/nullptr);
+    rewriter.replaceOp(readOp, loadOp);
 
     return success();
   }
@@ -645,8 +631,7 @@ struct TransferWriteLowering
 
     // Perform common data transfer checks.
     VectorType vecTy = writeOp.getVectorType();
-    auto writeMemTy = cast<MemRefType>(writeOp.getShapedType());
-    if (failed(storeLoadPreconditions(rewriter, writeOp, vecTy, writeMemTy)))
+    if (failed(storeLoadPreconditions(rewriter, writeOp, vecTy)))
       return failure();
 
     AffineMap map = writeOp.getPermutationMap();
@@ -752,8 +737,7 @@ struct LoadLowering : public OpRewritePattern<vector::LoadOp> {
     Location loc = loadOp.getLoc();
 
     VectorType vecTy = loadOp.getResult().getType();
-    MemRefType memTy = loadOp.getBase().getType();
-    if (failed(storeLoadPreconditions(rewriter, loadOp, vecTy, memTy)))
+    if (failed(storeLoadPreconditions(rewriter, loadOp, vecTy)))
       return failure();
 
     // Boundary check is available only for block instructions.
@@ -792,8 +776,7 @@ struct StoreLowering : public OpRewritePattern<vector::StoreOp> {
 
     TypedValue<VectorType> vector = storeOp.getValueToStore();
     VectorType vecTy = vector.getType();
-    MemRefType memTy = storeOp.getBase().getType();
-    if (failed(storeLoadPreconditions(rewriter, storeOp, vecTy, memTy)))
+    if (failed(storeLoadPreconditions(rewriter, storeOp, vecTy)))
       return failure();
 
     // Boundary check is available only for block instructions.
@@ -865,7 +848,6 @@ struct ConvertVectorToXeGPUPass
   void runOnOperation() override {
     RewritePatternSet patterns(&getContext());
     populateVectorToXeGPUConversionPatterns(patterns);
-    populatePrepareVectorToMMAPatterns(patterns);
     if (failed(applyPatternsGreedily(getOperation(), std::move(patterns))))
       return signalPassFailure();
   }

@@ -33,7 +33,6 @@ enum EditingFlags {
   blankZero = 1, // BLANK=ZERO or BZ edit
   decimalComma = 2, // DECIMAL=COMMA or DC edit
   signPlus = 4, // SIGN=PLUS or SP edit
-  leadingZeroSuppress = 8, // LZS edit; clear for LZ & LZP
 };
 
 struct MutableModes {
@@ -45,7 +44,7 @@ struct MutableModes {
     return editingFlags & decimalComma ? char32_t{','} : char32_t{'.'};
   }
 
-  std::uint8_t editingFlags{0}; // BN, DP, SS, LZS
+  std::uint8_t editingFlags{0}; // BN, DP, SS
   enum decimal::FortranRounding round{
       executionEnvironment
           .defaultOutputRoundingMode}; // RP/ROUND='PROCESSOR_DEFAULT'

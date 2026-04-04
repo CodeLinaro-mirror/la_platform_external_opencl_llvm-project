@@ -5397,8 +5397,7 @@ public:
       Address resolved_address;
       resolved_address.SetLoadAddress(breakpoint_site->GetLoadAddress(),
                                       &breakpoint_location->GetTarget());
-      const Symbol *resolved_symbol =
-          resolved_address.CalculateSymbolContextSymbol();
+      Symbol *resolved_symbol = resolved_address.CalculateSymbolContextSymbol();
       if (resolved_symbol) {
         StreamString indirect_target_stream;
         indirect_target_stream.PutCString("indirect target = ");

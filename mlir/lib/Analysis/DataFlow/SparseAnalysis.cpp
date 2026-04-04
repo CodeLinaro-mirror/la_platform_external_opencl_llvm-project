@@ -185,10 +185,10 @@ void AbstractSparseForwardDataFlowAnalysis::visitBlock(Block *block) {
                                    block->getParent(), argLattices);
     }
 
-    // All block arguments are non-successor-inputs.
-    return visitNonControlFlowArgumentsImpl(block->getParentOp(),
-                                            RegionSuccessor(block->getParent()),
-                                            block->getArguments(), argLattices);
+    // Otherwise, we can't reason about the data-flow.
+    return visitNonControlFlowArgumentsImpl(
+        block->getParentOp(), RegionSuccessor(block->getParent()), ValueRange(),
+        argLattices, /*firstIndex=*/0);
   }
 
   // Iterate over the predecessors of the non-entry block.
@@ -309,30 +309,23 @@ void AbstractSparseForwardDataFlowAnalysis::visitRegionSuccessors(
     assert(inputs.size() == operands->size() &&
            "expected the same number of successor inputs as operands");
 
-    auto valueToLattices = [&](Value v) { return getLatticeElement(v); };
     unsigned firstIndex = 0;
     if (inputs.size() != lattices.size()) {
       if (!point->isBlockStart()) {
         if (!inputs.empty())
           firstIndex = cast<OpResult>(inputs.front()).getResultNumber();
-        SmallVector<Value> nonSuccessorInputs =
-            branch.getNonSuccessorInputs(RegionSuccessor::parent());
-        SmallVector<AbstractSparseLattice *> nonSuccessorInputLattices =
-            llvm::map_to_vector(nonSuccessorInputs, valueToLattices);
-        visitNonControlFlowArgumentsImpl(branch, RegionSuccessor::parent(),
-                                         nonSuccessorInputs,
-                                         nonSuccessorInputLattices);
+        visitNonControlFlowArgumentsImpl(
+            branch, RegionSuccessor::parent(),
+            branch->getResults().slice(firstIndex, inputs.size()), lattices,
+            firstIndex);
       } else {
         if (!inputs.empty())
           firstIndex = cast<BlockArgument>(inputs.front()).getArgNumber();
         Region *region = point->getBlock()->getParent();
-        SmallVector<Value> nonSuccessorInputs =
-            branch.getNonSuccessorInputs(RegionSuccessor(region));
-        SmallVector<AbstractSparseLattice *> nonSuccessorInputLattices =
-            llvm::map_to_vector(nonSuccessorInputs, valueToLattices);
-        visitNonControlFlowArgumentsImpl(branch, RegionSuccessor(region),
-                                         nonSuccessorInputs,
-                                         nonSuccessorInputLattices);
+        visitNonControlFlowArgumentsImpl(
+            branch, RegionSuccessor(region),
+            region->getArguments().slice(firstIndex, inputs.size()), lattices,
+            firstIndex);
       }
     }
 

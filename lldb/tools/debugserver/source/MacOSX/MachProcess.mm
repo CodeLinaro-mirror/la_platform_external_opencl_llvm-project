@@ -538,7 +538,6 @@ MachProcess::MachProcess()
       m_dyld_process_snapshot_create_for_process(nullptr),
       m_dyld_process_snapshot_get_shared_cache(nullptr),
       m_dyld_shared_cache_for_each_file(nullptr),
-      m_dyld_shared_cache_get_mapped_size(nullptr),
       m_dyld_process_snapshot_dispose(nullptr), m_dyld_process_dispose(nullptr),
       m_dyld_process_info_for_each_image(nullptr),
       m_dyld_process_info_release(nullptr),
@@ -560,8 +559,6 @@ MachProcess::MachProcess()
   m_dyld_shared_cache_for_each_file =
       (void (*)(void *, void (^)(const char *)))dlsym(
           RTLD_DEFAULT, "dyld_shared_cache_for_each_file");
-  m_dyld_shared_cache_get_mapped_size = (uint64_t(*)(void *))dlsym(
-      RTLD_DEFAULT, "dyld_shared_cache_get_mapped_size");
   m_dyld_process_snapshot_dispose =
       (void (*)(void *))dlsym(RTLD_DEFAULT, "dyld_process_snapshot_dispose");
   m_dyld_process_dispose =
@@ -1232,15 +1229,15 @@ bool MachProcess::GetDebugserverSharedCacheInfo(
   return false;
 }
 
-bool MachProcess::GetInferiorSharedCacheFilepathAndSize(
-    std::string &inferior_sc_path, uint64_t &size) {
+bool MachProcess::GetInferiorSharedCacheFilepath(
+    std::string &inferior_sc_path) {
   inferior_sc_path.clear();
 
   if (!m_dyld_process_create_for_task ||
       !m_dyld_process_snapshot_create_for_process ||
       !m_dyld_process_snapshot_get_shared_cache ||
       !m_dyld_shared_cache_for_each_file || !m_dyld_process_snapshot_dispose ||
-      !m_dyld_shared_cache_get_mapped_size || !m_dyld_process_dispose)
+      !m_dyld_process_dispose)
     return false;
 
   __block std::string sc_path;
@@ -1264,8 +1261,6 @@ bool MachProcess::GetInferiorSharedCacheFilepathAndSize(
     done = true;
     sc_path = path;
   });
-  size = m_dyld_shared_cache_get_mapped_size(cache);
-
   m_dyld_process_snapshot_dispose(snapshot);
   m_dyld_process_dispose(process);
 
@@ -1306,28 +1301,26 @@ MachProcess::GetInferiorSharedCacheInfo(nub_process_t pid) {
     }
   }
 
+  // If debugserver and the inferior are have the same cache UUID,
+  // use the simple call to get the filepath to debugserver's shared
+  // cache, return that.
+  uuid_t debugserver_sc_uuid;
+  std::string debugserver_sc_path;
+  bool found_sc_filepath = false;
+  if (GetDebugserverSharedCacheInfo(debugserver_sc_uuid, debugserver_sc_path)) {
+    if (uuid_compare(inferior_sc_uuid, debugserver_sc_uuid) == 0 &&
+        !debugserver_sc_path.empty()) {
+      reply_sp->AddStringItem("shared_cache_path", debugserver_sc_path);
+      found_sc_filepath = true;
+    }
+  }
 
   // Use SPI that are only available on newer OSes to fetch the
   // filepath of the shared cache of the inferior, if available.
-  std::string inferior_sc_path;
-  uint64_t size;
-  if (GetInferiorSharedCacheFilepathAndSize(inferior_sc_path, size)) {
-    reply_sp->AddStringItem("shared_cache_path", inferior_sc_path);
-    reply_sp->AddIntegerItem("shared_cache_size", size);
-  } else {
-    // If debugserver and the inferior are have the same cache UUID,
-    // use the simple call to get the filepath to debugserver's shared
-    // cache, return that.  Can't get the shared cache size this way,
-    // currently.
-    uuid_t debugserver_sc_uuid;
-    std::string debugserver_sc_path;
-    if (GetDebugserverSharedCacheInfo(debugserver_sc_uuid,
-                                      debugserver_sc_path)) {
-      if (uuid_compare(inferior_sc_uuid, debugserver_sc_uuid) == 0 &&
-          !debugserver_sc_path.empty()) {
-        reply_sp->AddStringItem("shared_cache_path", debugserver_sc_path);
-      }
-    }
+  if (!found_sc_filepath) {
+    std::string inferior_sc_path;
+    if (GetInferiorSharedCacheFilepath(inferior_sc_path))
+      reply_sp->AddStringItem("shared_cache_path", inferior_sc_path);
   }
 
   return reply_sp;

@@ -39,10 +39,6 @@ class DeallocOp;
 // Patterns
 //===----------------------------------------------------------------------===//
 
-/// Collects a set of patterns that bypass memref.reinterpet_cast Ops. This
-/// simplifies the IR in the context of lowering to EmitC.
-void populateElideReinterpretCastPatterns(RewritePatternSet &patterns);
-
 /// Collects a set of patterns to rewrite ops within the memref dialect.
 void populateExpandOpsPatterns(RewritePatternSet &patterns);
 
@@ -87,11 +83,9 @@ void populateMemRefWideIntEmulationConversions(
 
 /// Appends patterns for emulating memref operations over narrow types with ops
 /// over wider types.
-/// When `disableAtomicRMW` is true, the store patterns generate non-atomic
-/// read-modify-write sequences instead of atomic operations.
 void populateMemRefNarrowTypeEmulationPatterns(
     const arith::NarrowTypeEmulationConverter &typeConverter,
-    RewritePatternSet &patterns, bool disableAtomicRMW = false);
+    RewritePatternSet &patterns);
 
 /// Appends type conversions for emulating memref operations over narrow types
 /// with ops over wider types.

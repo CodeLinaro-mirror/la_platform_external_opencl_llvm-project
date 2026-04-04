@@ -29,7 +29,7 @@ DIBuilder::DIBuilder(Module &m, bool AllowUnresolvedNodes, DICompileUnit *CU)
       AllowUnresolvedNodes(AllowUnresolvedNodes) {
   if (CUNode) {
     if (const auto &ETs = CUNode->getEnumTypes())
-      EnumTypes.assign(ETs.begin(), ETs.end());
+      AllEnumTypes.assign(ETs.begin(), ETs.end());
     if (const auto &RTs = CUNode->getRetainedTypes())
       AllRetainTypes.assign(RTs.begin(), RTs.end());
     if (const auto &GVs = CUNode->getGlobalVariables())
@@ -53,23 +53,10 @@ void DIBuilder::trackIfUnresolved(MDNode *N) {
 
 void DIBuilder::finalizeSubprogram(DISubprogram *SP) {
   auto PN = SubprogramTrackedNodes.find(SP);
-  if (PN == SubprogramTrackedNodes.end())
-    return;
-
-  SmallVector<Metadata *, 16> RetainedNodes;
-  for (MDNode *N : PN->second) {
-    // If the tracked node N was temporary, and the DIBuilder user replaced it
-    // with a node that does not belong to SP or is non-local, do not add N to
-    // SP's retainedNodes list.
-    DILocalScope *Scope = dyn_cast_or_null<DILocalScope>(
-        DISubprogram::getRawRetainedNodeScope(N));
-    if (!Scope || Scope->getSubprogram() != SP)
-      continue;
-
-    RetainedNodes.push_back(N);
-  }
-
-  SP->replaceRetainedNodes(MDTuple::get(VMContext, RetainedNodes));
+  if (PN != SubprogramTrackedNodes.end())
+    SP->replaceRetainedNodes(
+        MDTuple::get(VMContext, SmallVector<Metadata *, 16>(PN->second.begin(),
+                                                            PN->second.end())));
 }
 
 void DIBuilder::finalize() {
@@ -79,10 +66,10 @@ void DIBuilder::finalize() {
     return;
   }
 
-  if (!EnumTypes.empty())
-    CUNode->replaceEnumTypes(
-        MDTuple::get(VMContext, SmallVector<Metadata *, 16>(EnumTypes.begin(),
-                                                            EnumTypes.end())));
+  if (!AllEnumTypes.empty())
+    CUNode->replaceEnumTypes(MDTuple::get(
+        VMContext, SmallVector<Metadata *, 16>(AllEnumTypes.begin(),
+                                               AllEnumTypes.end())));
 
   SmallVector<Metadata *, 16> RetainValues;
   // Declarations and definitions of the same type may be retained. Some
@@ -276,6 +263,7 @@ DIBasicType *DIBuilder::createBasicType(StringRef Name, uint64_t SizeInBits,
                                         DINode::DIFlags Flags,
                                         uint32_t NumExtraInhabitants,
                                         uint32_t DataSizeInBits) {
+  assert(!Name.empty() && "Unable to create type without name");
   return DIBasicType::get(VMContext, dwarf::DW_TAG_base_type, Name, SizeInBits,
                           0, Encoding, NumExtraInhabitants, DataSizeInBits,
                           Flags);
@@ -391,13 +379,10 @@ DIDerivedType *DIBuilder::createTypedef(DIType *Ty, StringRef Name,
                                         DIScope *Context, uint32_t AlignInBits,
                                         DINode::DIFlags Flags,
                                         DINodeArray Annotations) {
-  auto *T = DIDerivedType::get(
-      VMContext, dwarf::DW_TAG_typedef, Name, File, LineNo,
-      getNonCompileUnitScope(Context), Ty, (uint64_t)0, AlignInBits,
-      (uint64_t)0, std::nullopt, std::nullopt, Flags, nullptr, Annotations);
-  if (isa_and_nonnull<DILocalScope>(Context))
-    getSubprogramNodesTrackingVector(Context).emplace_back(T);
-  return T;
+  return DIDerivedType::get(VMContext, dwarf::DW_TAG_typedef, Name, File,
+                            LineNo, getNonCompileUnitScope(Context), Ty,
+                            (uint64_t)0, AlignInBits, (uint64_t)0, std::nullopt,
+                            std::nullopt, Flags, nullptr, Annotations);
 }
 
 DIDerivedType *
@@ -405,14 +390,10 @@ DIBuilder::createTemplateAlias(DIType *Ty, StringRef Name, DIFile *File,
                                unsigned LineNo, DIScope *Context,
                                DINodeArray TParams, uint32_t AlignInBits,
                                DINode::DIFlags Flags, DINodeArray Annotations) {
-  auto *T =
-      DIDerivedType::get(VMContext, dwarf::DW_TAG_template_alias, Name, File,
-                         LineNo, getNonCompileUnitScope(Context), Ty,
-                         (uint64_t)0, AlignInBits, (uint64_t)0, std::nullopt,
-                         std::nullopt, Flags, TParams.get(), Annotations);
-  if (isa_and_nonnull<DILocalScope>(Context))
-    getSubprogramNodesTrackingVector(Context).emplace_back(T);
-  return T;
+  return DIDerivedType::get(VMContext, dwarf::DW_TAG_template_alias, Name, File,
+                            LineNo, getNonCompileUnitScope(Context), Ty,
+                            (uint64_t)0, AlignInBits, (uint64_t)0, std::nullopt,
+                            std::nullopt, Flags, TParams.get(), Annotations);
 }
 
 DIDerivedType *DIBuilder::createFriend(DIType *Ty, DIType *FriendTy) {
@@ -603,8 +584,6 @@ DICompositeType *DIBuilder::createClassType(
       OffsetInBits, Flags, Elements, RunTimeLang, /*EnumKind=*/std::nullopt,
       VTableHolder, cast_or_null<MDTuple>(TemplateParams), UniqueIdentifier);
   trackIfUnresolved(R);
-  if (isa_and_nonnull<DILocalScope>(Context))
-    getSubprogramNodesTrackingVector(Context).emplace_back(R);
   return R;
 }
 
@@ -621,8 +600,6 @@ DICompositeType *DIBuilder::createStructType(
       nullptr, UniqueIdentifier, nullptr, nullptr, nullptr, nullptr, nullptr,
       nullptr, Specification, NumExtraInhabitants);
   trackIfUnresolved(R);
-  if (isa_and_nonnull<DILocalScope>(Context))
-    getSubprogramNodesTrackingVector(Context).emplace_back(R);
   return R;
 }
 
@@ -639,8 +616,6 @@ DICompositeType *DIBuilder::createStructType(
       nullptr, UniqueIdentifier, nullptr, nullptr, nullptr, nullptr, nullptr,
       nullptr, Specification, NumExtraInhabitants);
   trackIfUnresolved(R);
-  if (isa_and_nonnull<DILocalScope>(Context))
-    getSubprogramNodesTrackingVector(Context).emplace_back(R);
   return R;
 }
 
@@ -654,8 +629,6 @@ DICompositeType *DIBuilder::createUnionType(
       Elements, RunTimeLang, /*EnumKind=*/std::nullopt, nullptr, nullptr,
       UniqueIdentifier);
   trackIfUnresolved(R);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(R);
   return R;
 }
 
@@ -690,10 +663,7 @@ DICompositeType *DIBuilder::createEnumerationType(
       getNonCompileUnitScope(Scope), UnderlyingType, SizeInBits, AlignInBits, 0,
       IsScoped ? DINode::FlagEnumClass : DINode::FlagZero, Elements,
       RunTimeLang, EnumKind, nullptr, nullptr, UniqueIdentifier);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(CTy);
-  else
-    EnumTypes.emplace_back(CTy);
+  AllEnumTypes.emplace_back(CTy);
   trackIfUnresolved(CTy);
   return CTy;
 }
@@ -707,8 +677,6 @@ DIDerivedType *DIBuilder::createSetType(DIScope *Scope, StringRef Name,
                                SizeInBits, AlignInBits, 0, std::nullopt,
                                std::nullopt, DINode::FlagZero);
   trackIfUnresolved(R);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(R);
   return R;
 }
 
@@ -744,8 +712,6 @@ DICompositeType *DIBuilder::createArrayType(
                               : (Metadata *)cast<DIVariable *>(RK),
       nullptr, nullptr, 0, BitStride);
   trackIfUnresolved(R);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(R);
   return R;
 }
 
@@ -804,8 +770,7 @@ void DIBuilder::retainType(DIScope *T) {
   assert((isa<DIType>(T) || (isa<DISubprogram>(T) &&
                              cast<DISubprogram>(T)->isDefinition() == false)) &&
          "Expected type or subprogram declaration");
-  if (!isa_and_nonnull<DILocalScope>(T->getScope()))
-    AllRetainTypes.emplace_back(T);
+  AllRetainTypes.emplace_back(T);
 }
 
 DIBasicType *DIBuilder::createUnspecifiedParameter() { return nullptr; }
@@ -821,8 +786,6 @@ DICompositeType *DIBuilder::createForwardDecl(
       SizeInBits, AlignInBits, 0, DINode::FlagFwdDecl, nullptr, RuntimeLang,
       /*EnumKind=*/EnumKind, nullptr, nullptr, UniqueIdentifier);
   trackIfUnresolved(RetTy);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(RetTy);
   return RetTy;
 }
 
@@ -839,8 +802,6 @@ DICompositeType *DIBuilder::createReplaceableCompositeType(
           nullptr, nullptr, Annotations)
           .release();
   trackIfUnresolved(RetTy);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(RetTy);
   return RetTy;
 }
 
@@ -900,12 +861,9 @@ DISubrangeType *DIBuilder::createSubrangeType(
     uint64_t SizeInBits, uint32_t AlignInBits, DINode::DIFlags Flags,
     DIType *Ty, Metadata *LowerBound, Metadata *UpperBound, Metadata *Stride,
     Metadata *Bias) {
-  auto *T = DISubrangeType::get(VMContext, Name, File, LineNo, Scope,
-                                SizeInBits, AlignInBits, Flags, Ty, LowerBound,
-                                UpperBound, Stride, Bias);
-  if (isa_and_nonnull<DILocalScope>(Scope))
-    getSubprogramNodesTrackingVector(Scope).emplace_back(T);
-  return T;
+  return DISubrangeType::get(VMContext, Name, File, LineNo, Scope, SizeInBits,
+                             AlignInBits, Flags, Ty, LowerBound, UpperBound,
+                             Stride, Bias);
 }
 
 static void checkGlobalVariableScope(DIScope *Context) {

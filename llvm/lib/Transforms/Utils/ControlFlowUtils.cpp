@@ -34,25 +34,27 @@ using EdgeDescriptor = ControlFlowHub::BranchDescriptor;
 //   branch to the FirstGuardBlock.
 static Value *redirectToHub(BasicBlock *BB, BasicBlock *Succ0,
                             BasicBlock *Succ1, BasicBlock *FirstGuardBlock) {
-  if (auto *Branch = dyn_cast<UncondBrInst>(BB->getTerminator())) {
-    assert(Succ0 == Branch->getSuccessor(0));
-    assert(!Succ1);
-    Branch->setSuccessor(FirstGuardBlock);
-    return nullptr;
-  }
-
-  auto *Branch = cast<CondBrInst>(BB->getTerminator());
-  auto *Condition = Branch->getCondition();
+  assert(isa<BranchInst>(BB->getTerminator()) &&
+         "Only support branch terminator.");
+  auto *Branch = cast<BranchInst>(BB->getTerminator());
+  auto *Condition = Branch->isConditional() ? Branch->getCondition() : nullptr;
 
   assert(Succ0 || Succ1);
-  assert(!Succ1 || Succ1 == Branch->getSuccessor(1));
-  if (Succ0 && !Succ1) {
+
+  if (Branch->isUnconditional()) {
+    assert(Succ0 == Branch->getSuccessor(0));
+    assert(!Succ1);
     Branch->setSuccessor(0, FirstGuardBlock);
-  } else if (Succ1 && !Succ0) {
-    Branch->setSuccessor(1, FirstGuardBlock);
   } else {
-    Branch->eraseFromParent();
-    UncondBrInst::Create(FirstGuardBlock, BB);
+    assert(!Succ1 || Succ1 == Branch->getSuccessor(1));
+    if (Succ0 && !Succ1) {
+      Branch->setSuccessor(0, FirstGuardBlock);
+    } else if (Succ1 && !Succ0) {
+      Branch->setSuccessor(1, FirstGuardBlock);
+    } else {
+      Branch->eraseFromParent();
+      BranchInst::Create(FirstGuardBlock, BB);
+    }
   }
 
   return Condition;
@@ -71,11 +73,11 @@ static void setupBranchForGuard(ArrayRef<BasicBlock *> GuardBlocks,
   int I = 0;
   for (int E = GuardBlocks.size() - 1; I != E; ++I) {
     BasicBlock *Out = Outgoing[I];
-    CondBrInst::Create(GuardPredicates[Out], Out, GuardBlocks[I + 1],
+    BranchInst::Create(Out, GuardBlocks[I + 1], GuardPredicates[Out],
                        GuardBlocks[I]);
   }
   BasicBlock *Out = Outgoing[I];
-  CondBrInst::Create(GuardPredicates[Out], Out, Outgoing[I + 1],
+  BranchInst::Create(Out, Outgoing[I + 1], GuardPredicates[Out],
                      GuardBlocks[I]);
 }
 

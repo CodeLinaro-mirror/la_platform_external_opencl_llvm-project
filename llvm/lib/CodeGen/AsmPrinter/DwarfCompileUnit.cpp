@@ -33,6 +33,7 @@
 #include "llvm/MC/MCSymbolWasm.h"
 #include "llvm/MC/MachineLocation.h"
 #include "llvm/Support/CommandLine.h"
+#include "llvm/Support/NVPTXAddrSpace.h"
 #include "llvm/Target/TargetLoweringObjectFile.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Target/TargetOptions.h"
@@ -73,6 +74,26 @@ static dwarf::Tag GetCompileUnitType(UnitKind Kind, DwarfDebug *DW) {
     return dwarf::DW_TAG_skeleton_unit;
 
   return dwarf::DW_TAG_compile_unit;
+}
+
+/// Translate NVVM IR address space code to DWARF correspondent value
+static unsigned translateToNVVMDWARFAddrSpace(unsigned AddrSpace) {
+  switch (AddrSpace) {
+  case NVPTXAS::ADDRESS_SPACE_GENERIC:
+    return NVPTXAS::DWARF_ADDR_generic_space;
+  case NVPTXAS::ADDRESS_SPACE_GLOBAL:
+    return NVPTXAS::DWARF_ADDR_global_space;
+  case NVPTXAS::ADDRESS_SPACE_SHARED:
+    return NVPTXAS::DWARF_ADDR_shared_space;
+  case NVPTXAS::ADDRESS_SPACE_CONST:
+    return NVPTXAS::DWARF_ADDR_const_space;
+  case NVPTXAS::ADDRESS_SPACE_LOCAL:
+    return NVPTXAS::DWARF_ADDR_local_space;
+  default:
+    llvm_unreachable(
+        "Cannot translate unknown address space to DWARF address space");
+    return AddrSpace;
+  }
 }
 
 DwarfCompileUnit::DwarfCompileUnit(unsigned UID, const DICompileUnit *Node,
@@ -224,9 +245,8 @@ void DwarfCompileUnit::addLocationAttribute(
     DIE *VariableDIE, const DIGlobalVariable *GV, ArrayRef<GlobalExpr> GlobalExprs) {
   bool addToAccelTable = false;
   DIELoc *Loc = nullptr;
-  std::optional<unsigned> TargetAddrSpace;
+  std::optional<unsigned> NVPTXAddressSpace;
   std::unique_ptr<DIEDwarfExpression> DwarfExpr;
-  const GlobalVariable *LastGlobal = nullptr;
   for (const auto &GE : GlobalExprs) {
     const GlobalVariable *Global = GE.Var;
     const DIExpression *Expr = GE.Expr;
@@ -265,7 +285,18 @@ void DwarfCompileUnit::addLocationAttribute(
     }
 
     if (Expr) {
-      Expr = DD->adjustExpressionForTarget(Expr, TargetAddrSpace);
+      // cuda-gdb special requirement. See NVPTXAS::DWARF_AddressSpace
+      // Decode DW_OP_constu <DWARF Address Space> DW_OP_swap DW_OP_xderef
+      // sequence to specify corresponding address space.
+      if (Asm->TM.getTargetTriple().isNVPTX() && DD->tuneForGDB()) {
+        unsigned LocalNVPTXAddressSpace;
+        const DIExpression *NewExpr =
+            DIExpression::extractAddressClass(Expr, LocalNVPTXAddressSpace);
+        if (NewExpr != Expr) {
+          Expr = NewExpr;
+          NVPTXAddressSpace = LocalNVPTXAddressSpace;
+        }
+      }
       DwarfExpr->addFragmentOffset(Expr);
     }
 
@@ -350,7 +381,10 @@ void DwarfCompileUnit::addLocationAttribute(
         DD->addArangeLabel(SymbolCU(this, Sym));
         addOpAddress(*Loc, Sym);
       }
-      LastGlobal = Global;
+      if (Asm->TM.getTargetTriple().isNVPTX() && DD->tuneForGDB() &&
+          !NVPTXAddressSpace)
+        NVPTXAddressSpace =
+            translateToNVVMDWARFAddrSpace(Global->getType()->getAddressSpace());
     }
     // Global variables attached to symbols are memory locations.
     // It would be better if this were unconditional, but malformed input that
@@ -360,9 +394,11 @@ void DwarfCompileUnit::addLocationAttribute(
       DwarfExpr->setMemoryLocationKind();
     DwarfExpr->addExpression(Expr);
   }
-  DD->addTargetVariableAttributes(*this, *VariableDIE, TargetAddrSpace,
-                                  DwarfDebug::VariableLocationKind::Global,
-                                  LastGlobal);
+  if (Asm->TM.getTargetTriple().isNVPTX() && DD->tuneForGDB()) {
+    // cuda-gdb special requirement. See NVPTXAS::DWARF_AddressSpace
+    addUInt(*VariableDIE, dwarf::DW_AT_address_class, dwarf::DW_FORM_data1,
+            NVPTXAddressSpace.value_or(NVPTXAS::DWARF_ADDR_global_space));
+  }
   if (Loc)
     addBlock(*VariableDIE, dwarf::DW_AT_location, DwarfExpr->finalize());
 
@@ -608,9 +644,10 @@ void DwarfCompileUnit::constructScopeDIE(LexicalScope *Scope,
     return;
 
   // Emit lexical blocks.
-  DIE *ScopeDIE = getOrCreateLexicalBlockDIE(Scope, ParentScopeDIE);
+  DIE *ScopeDIE = constructLexicalScopeDIE(Scope);
   assert(ScopeDIE && "Scope DIE should not be null.");
 
+  ParentScopeDIE.addChild(ScopeDIE);
   createAndAddScopeChildren(Scope, *ScopeDIE);
 }
 
@@ -731,15 +768,14 @@ DIE *DwarfCompileUnit::constructInlinedScopeDIE(LexicalScope *Scope,
   return ScopeDIE;
 }
 
-DIE *DwarfCompileUnit::getOrCreateLexicalBlockDIE(LexicalScope *Scope,
-                                                  DIE &ParentScopeDIE) {
+// Construct new DW_TAG_lexical_block for this scope and attach
+// DW_AT_low_pc/DW_AT_high_pc labels.
+DIE *DwarfCompileUnit::constructLexicalScopeDIE(LexicalScope *Scope) {
   if (DD->isLexicalScopeDIENull(Scope))
     return nullptr;
   const auto *DS = Scope->getScopeNode();
 
   auto ScopeDIE = DIE::get(DIEValueAllocator, dwarf::DW_TAG_lexical_block);
-  ParentScopeDIE.addChild(ScopeDIE);
-
   if (Scope->isAbstractScope()) {
     assert(!getAbstractScopeDIEs().count(DS) &&
            "Abstract DIE for this scope exists!");
@@ -779,9 +815,13 @@ DIE *DwarfCompileUnit::constructVariableDIE(DbgVariable &DV, bool Abstract) {
 void DwarfCompileUnit::applyConcreteDbgVariableAttributes(
     const Loc::Single &Single, const DbgVariable &DV, DIE &VariableDie) {
   const DbgValueLoc *DVal = &Single.getValueLoc();
-  if (!Single.getExpr())
-    DD->addTargetVariableAttributes(*this, VariableDie, std::nullopt,
-                                    DwarfDebug::VariableLocationKind::Register);
+  if (Asm->TM.getTargetTriple().isNVPTX() && DD->tuneForGDB() &&
+      !Single.getExpr()) {
+    // cuda-gdb special requirement. See NVPTXAS::DWARF_AddressSpace
+    // Lack of expression means it is a register.
+    addUInt(VariableDie, dwarf::DW_AT_address_class, dwarf::DW_FORM_data1,
+            NVPTXAS::DWARF_ADDR_reg_space);
+  }
   if (!DVal->isVariadic()) {
     const DbgValueLocEntry *Entry = DVal->getLocEntries().begin();
     if (Entry->isLocation()) {
@@ -891,7 +931,7 @@ void DwarfCompileUnit::applyConcreteDbgVariableAttributes(
 void DwarfCompileUnit::applyConcreteDbgVariableAttributes(const Loc::MMI &MMI,
                                                           const DbgVariable &DV,
                                                           DIE &VariableDie) {
-  std::optional<unsigned> TargetAddrSpace;
+  std::optional<unsigned> NVPTXAddressSpace;
   DIELoc *Loc = new (DIEValueAllocator) DIELoc;
   DIEDwarfExpression DwarfExpr(*Asm, *this, *Loc);
   for (const auto &Fragment : MMI.getFrameIndexExprs()) {
@@ -906,7 +946,18 @@ void DwarfCompileUnit::applyConcreteDbgVariableAttributes(const Loc::MMI &MMI,
     SmallVector<uint64_t, 8> Ops;
     TRI->getOffsetOpcodes(Offset, Ops);
 
-    Expr = DD->adjustExpressionForTarget(Expr, TargetAddrSpace);
+    // cuda-gdb special requirement. See NVPTXAS::DWARF_AddressSpace.
+    // Decode DW_OP_constu <DWARF Address Space> DW_OP_swap
+    // DW_OP_xderef sequence to specify address space.
+    if (Asm->TM.getTargetTriple().isNVPTX() && DD->tuneForGDB()) {
+      unsigned LocalNVPTXAddressSpace;
+      const DIExpression *NewExpr =
+          DIExpression::extractAddressClass(Expr, LocalNVPTXAddressSpace);
+      if (NewExpr != Expr) {
+        Expr = NewExpr;
+        NVPTXAddressSpace = LocalNVPTXAddressSpace;
+      }
+    }
     if (Expr)
       Ops.append(Expr->elements_begin(), Expr->elements_end());
     DIExpressionCursor Cursor(Ops);
@@ -918,8 +969,11 @@ void DwarfCompileUnit::applyConcreteDbgVariableAttributes(const Loc::MMI &MMI,
           *Asm->MF->getSubtarget().getRegisterInfo(), Cursor, FrameReg);
     DwarfExpr.addExpression(std::move(Cursor));
   }
-  DD->addTargetVariableAttributes(*this, VariableDie, TargetAddrSpace,
-                                  DwarfDebug::VariableLocationKind::FrameIndex);
+  if (Asm->TM.getTargetTriple().isNVPTX() && DD->tuneForGDB()) {
+    // cuda-gdb special requirement. See NVPTXAS::DWARF_AddressSpace.
+    addUInt(VariableDie, dwarf::DW_AT_address_class, dwarf::DW_FORM_data1,
+            NVPTXAddressSpace.value_or(NVPTXAS::DWARF_ADDR_local_space));
+  }
   addBlock(VariableDie, dwarf::DW_AT_location, DwarfExpr.finalize());
   if (DwarfExpr.TagOffset)
     addUInt(VariableDie, dwarf::DW_AT_LLVM_tag_offset, dwarf::DW_FORM_data1,
@@ -1087,11 +1141,7 @@ DIE &DwarfCompileUnit::constructSubprogramScopeDIE(const DISubprogram *Sub,
   }
 
   // If this is a variadic function, add an unspecified parameter.
-  auto *SPTy = Sub->getType();
-  if (!SPTy)
-    return ScopeDIE;
-
-  DITypeArray FnArgs = SPTy->getTypeArray();
+  DITypeArray FnArgs = Sub->getType()->getTypeArray();
 
   // If we have a single element of null, it is a function that returns void.
   // If we have more than one elements and the last one is null, it is a
@@ -1299,7 +1349,11 @@ DIE &DwarfCompileUnit::constructCallSiteEntryDIE(
   } else if (CalleeSP) {
     DIE *CalleeDIE = getOrCreateSubprogramDIE(CalleeSP, CalleeF);
     assert(CalleeDIE && "Could not create DIE for call site entry origin");
-    addLinkageNamesToDeclarations(*DD, *CalleeSP, *CalleeDIE);
+    if (AddLinkageNamesToDeclCallOriginsForTuning(DD) &&
+        !CalleeSP->isDefinition() &&
+        !CalleeDIE->findAttribute(dwarf::DW_AT_linkage_name)) {
+      addLinkageName(*CalleeDIE, CalleeSP->getLinkageName());
+    }
 
     addDIEEntry(CallSiteDIE, getDwarf5OrGNUAttr(dwarf::DW_AT_call_origin),
                 *CalleeDIE);
@@ -1785,7 +1839,7 @@ void DwarfCompileUnit::createBaseTypeDIEs() {
   }
 }
 
-DIE *DwarfCompileUnit::getLocalContextDIE(const DILexicalBlock *LB) {
+DIE *DwarfCompileUnit::getLexicalBlockDIE(const DILexicalBlock *LB) {
   // Assume if there is an abstract tree all the DIEs are already emitted.
   bool isAbstract = getAbstractScopeDIEs().count(LB->getSubprogram());
   if (isAbstract) {
@@ -1795,14 +1849,8 @@ DIE *DwarfCompileUnit::getLocalContextDIE(const DILexicalBlock *LB) {
   }
   assert(!isAbstract && "Missed lexical block DIE in abstract tree!");
 
-  // Check if we have a concrete DIE.
-  if (auto It = LexicalBlockDIEs.find(LB); It != LexicalBlockDIEs.end())
-    return It->second;
-
-  // If nothing available found, we cannot just create a new lexical block,
-  // because it isn't known where to put it into the DIE tree.
-  // So, we may only try to find the most close avaiable parent DIE.
-  return getOrCreateContextDIE(LB->getScope()->getNonLexicalBlockFileScope());
+  // Return a concrete DIE if it exists or nullptr otherwise.
+  return LexicalBlockDIEs.lookup(LB);
 }
 
 DIE *DwarfCompileUnit::getOrCreateContextDIE(const DIScope *Context) {
@@ -1810,7 +1858,7 @@ DIE *DwarfCompileUnit::getOrCreateContextDIE(const DIScope *Context) {
     if (auto *LFScope = dyn_cast<DILexicalBlockFile>(Context))
       Context = LFScope->getNonLexicalBlockFileScope();
     if (auto *LScope = dyn_cast<DILexicalBlock>(Context))
-      return getLocalContextDIE(LScope);
+      return getLexicalBlockDIE(LScope);
 
     // Otherwise the context must be a DISubprogram.
     auto *SPScope = cast<DISubprogram>(Context);
@@ -1836,13 +1884,4 @@ DIE *DwarfCompileUnit::getOrCreateSubprogramDIE(const DISubprogram *SP,
   }
 
   return DwarfUnit::getOrCreateSubprogramDIE(SP, F, Minimal);
-}
-
-void DwarfCompileUnit::addLinkageNamesToDeclarations(
-    const DwarfDebug &DD, const DISubprogram &CalleeSP, DIE &CalleeDIE) {
-  if (AddLinkageNamesToDeclCallOriginsForTuning(&DD) &&
-      !CalleeSP.isDefinition() &&
-      !CalleeDIE.findAttribute(dwarf::DW_AT_linkage_name)) {
-    addLinkageName(CalleeDIE, CalleeSP.getLinkageName());
-  }
 }

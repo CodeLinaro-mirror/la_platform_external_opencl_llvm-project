@@ -439,10 +439,8 @@ private:
           if (symbolTable.lookup(symbolName))
             continue;
 
-          Operation *symbolDef = parentSymbolTable.lookup(symbolName);
-          if (!symbolDef)
-            continue;
-          Operation *symbolDefClone = symbolDef->clone();
+          Operation *symbolDefClone =
+              parentSymbolTable.lookup(symbolName)->clone();
           symbolDefWorklist.push_back(symbolDefClone);
           symbolTable.insert(symbolDefClone);
         }

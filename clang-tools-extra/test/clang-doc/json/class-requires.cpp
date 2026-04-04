@@ -32,7 +32,6 @@ struct MyClass;
 // CHECK-NEXT:        "End": true,
 // CHECK-NEXT:        "typename T"
 // CHECK-NEXT:      }
-// CHECK-NEXT:    ],
-// CHECK-NEXT:    "VerticalDisplay": false
+// CHECK-NEXT:    ]
 // CHECK-NEXT:  },
 // CHECK-NEXT:  "USR": "{{[0-9A-F]*}}"

@@ -351,7 +351,15 @@ void std_forward_rvalue_ref_safe(absl::optional<int>&& opt) {
   std::forward<absl::optional<int>>(opt).value();
 }
 
-#include <vector>
+namespace std {
+
+template <typename T> class vector {
+public:
+  T &operator[](unsigned long index);
+  bool empty();
+};
+
+} // namespace std
 
 struct S {
   absl::optional<float> x;

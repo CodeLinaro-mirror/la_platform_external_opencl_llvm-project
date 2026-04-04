@@ -9,7 +9,6 @@
 #include "clang/Analysis/Analyses/LifetimeSafety/Origins.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/Attr.h"
-#include "clang/AST/Decl.h"
 #include "clang/AST/DeclCXX.h"
 #include "clang/AST/DeclTemplate.h"
 #include "clang/AST/Expr.h"
@@ -51,19 +50,7 @@ private:
 } // namespace
 
 bool hasOrigins(QualType QT) {
-  if (QT->isPointerOrReferenceType() || isGslPointerType(QT))
-    return true;
-  const auto *RD = QT->getAsCXXRecordDecl();
-  if (!RD)
-    return false;
-  // TODO: Limit to lambdas for now. This will be extended to user-defined
-  // structs with pointer-like fields.
-  if (!RD->isLambda())
-    return false;
-  for (const auto *FD : RD->fields())
-    if (hasOrigins(FD->getType()))
-      return true;
-  return false;
+  return QT->isPointerOrReferenceType() || isGslPointerType(QT);
 }
 
 /// Determines if an expression has origins that need to be tracked.
@@ -100,15 +87,9 @@ bool doesDeclHaveStorage(const ValueDecl *D) {
 }
 
 OriginManager::OriginManager(ASTContext &AST, const Decl *D) : AST(AST) {
-  // Create OriginList for 'this' expr.
-  const auto *MD = llvm::dyn_cast_or_null<CXXMethodDecl>(D);
-  if (!MD || !MD->isInstance())
-    return;
-  // Lambdas can capture 'this' from the surrounding context, but in that case
-  // 'this' does not refer to the lambda object itself.
-  if (const CXXRecordDecl *P = MD->getParent(); P && P->isLambda())
-    return;
-  ThisOrigins = buildListForType(MD->getThisType(), MD);
+  if (const auto *MD = llvm::dyn_cast_or_null<CXXMethodDecl>(D);
+      MD && MD->isInstance())
+    ThisOrigins = buildListForType(MD->getThisType(), MD);
 }
 
 OriginList *OriginManager::createNode(const ValueDecl *D, QualType QT) {
@@ -164,36 +145,30 @@ OriginList *OriginManager::getOrCreateList(const Expr *E) {
   QualType Type = E->getType();
   // Special handling for 'this' expressions to share origins with the method's
   // implicit object parameter.
-  if (isa<CXXThisExpr>(E) && ThisOrigins)
+  if (llvm::isa<CXXThisExpr>(E)) {
+    assert(ThisOrigins && "origins for 'this' should be set for a method decl");
     return *ThisOrigins;
+  }
 
-  // Special handling for expressions referring to a decl to share origins with
-  // the underlying decl.
-  const ValueDecl *ReferencedDecl = nullptr;
-  if (auto *DRE = dyn_cast<DeclRefExpr>(E))
-    ReferencedDecl = DRE->getDecl();
-  else if (auto *ME = dyn_cast<MemberExpr>(E))
-    if (auto *Field = dyn_cast<FieldDecl>(ME->getMemberDecl());
-        Field && isa<CXXThisExpr>(ME->getBase()))
-      ReferencedDecl = Field;
-  if (ReferencedDecl) {
+  // Special handling for DeclRefExpr to share origins with the underlying decl.
+  if (auto *DRE = dyn_cast<DeclRefExpr>(E)) {
     OriginList *Head = nullptr;
-    // For non-reference declarations (e.g., `int* p`), the expression is an
+    // For non-reference declarations (e.g., `int* p`), the DeclRefExpr is an
     // lvalue (addressable) that can be borrowed, so we create an outer origin
     // for the lvalue itself, with the pointee being the declaration's list.
     // This models taking the address: `&p` borrows the storage of `p`, not what
     // `p` points to.
-    if (doesDeclHaveStorage(ReferencedDecl)) {
-      Head = createNode(E, QualType{});
-      // This ensures origin sharing: multiple expressions to the same
+    if (doesDeclHaveStorage(DRE->getDecl())) {
+      Head = createNode(DRE, QualType{});
+      // This ensures origin sharing: multiple DeclRefExprs to the same
       // declaration share the same underlying origins.
-      Head->setInnerOriginList(getOrCreateList(ReferencedDecl));
+      Head->setInnerOriginList(getOrCreateList(DRE->getDecl()));
     } else {
       // For reference-typed declarations (e.g., `int& r = p`) which have no
       // storage, the DeclRefExpr directly reuses the declaration's list since
       // references don't add an extra level of indirection at the expression
       // level.
-      Head = getOrCreateList(ReferencedDecl);
+      Head = getOrCreateList(DRE->getDecl());
     }
     return ExprToList[E] = Head;
   }

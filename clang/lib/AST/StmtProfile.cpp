@@ -1410,11 +1410,6 @@ void StmtProfiler::VisitSYCLUniqueStableNameExpr(
   VisitType(S->getTypeSourceInfo()->getType());
 }
 
-void StmtProfiler::VisitUnresolvedSYCLKernelCallStmt(
-    const UnresolvedSYCLKernelCallStmt *S) {
-  VisitStmt(S);
-}
-
 void StmtProfiler::VisitPredefinedExpr(const PredefinedExpr *S) {
   VisitExpr(S);
   ID.AddInteger(llvm::to_underlying(S->getIdentKind()));
@@ -1681,11 +1676,6 @@ void StmtProfiler::VisitImplicitValueInitExpr(const ImplicitValueInitExpr *S) {
 }
 
 void StmtProfiler::VisitExtVectorElementExpr(const ExtVectorElementExpr *S) {
-  VisitExpr(S);
-  VisitName(&S->getAccessor());
-}
-
-void StmtProfiler::VisitMatrixElementExpr(const MatrixElementExpr *S) {
   VisitExpr(S);
   VisitName(&S->getAccessor());
 }
@@ -2198,11 +2188,6 @@ StmtProfiler::VisitLambdaExpr(const LambdaExpr *S) {
   ID.AddInteger(Hasher.CalculateHash());
 }
 
-void StmtProfiler::VisitCXXReflectExpr(const CXXReflectExpr *E) {
-  // TODO(Reflection): Implement this.
-  assert(false && "not implemented yet");
-}
-
 void
 StmtProfiler::VisitCXXScalarValueInitExpr(const CXXScalarValueInitExpr *S) {
   VisitExpr(S);
@@ -2430,24 +2415,20 @@ void StmtProfiler::VisitEmbedExpr(const EmbedExpr *E) { VisitExpr(E); }
 
 void StmtProfiler::VisitRecoveryExpr(const RecoveryExpr *E) { VisitExpr(E); }
 
-void StmtProfiler::VisitObjCObjectLiteral(const ObjCObjectLiteral *E) {
-  VisitExpr(E);
-}
-
 void StmtProfiler::VisitObjCStringLiteral(const ObjCStringLiteral *S) {
-  VisitObjCObjectLiteral(S);
+  VisitExpr(S);
 }
 
 void StmtProfiler::VisitObjCBoxedExpr(const ObjCBoxedExpr *E) {
-  VisitObjCObjectLiteral(E);
+  VisitExpr(E);
 }
 
 void StmtProfiler::VisitObjCArrayLiteral(const ObjCArrayLiteral *E) {
-  VisitObjCObjectLiteral(E);
+  VisitExpr(E);
 }
 
 void StmtProfiler::VisitObjCDictionaryLiteral(const ObjCDictionaryLiteral *E) {
-  VisitObjCObjectLiteral(E);
+  VisitExpr(E);
 }
 
 void StmtProfiler::VisitObjCEncodeExpr(const ObjCEncodeExpr *S) {

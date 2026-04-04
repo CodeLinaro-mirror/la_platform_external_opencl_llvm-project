@@ -1,9 +1,7 @@
 add_flang_library(FIROpenACCTransforms
-  ACCDeclareActionConversion.cpp
-  ACCInitializeFIRAnalyses.cpp
-  ACCOptimizeFirstprivateMap.cpp
-  ACCRecipeBufferization.cpp
   ACCUseDeviceCanonicalizer.cpp
+  ACCInitializeFIRAnalyses.cpp
+  ACCRecipeBufferization.cpp
 
   DEPENDS
   FIROpenACCPassesIncGen
@@ -14,7 +12,6 @@ add_flang_library(FIROpenACCTransforms
   FIRDialect
   FIRDialectSupport
   FIROpenACCAnalysis
-  FIROpenACCSupport
   HLFIRDialect
 
   MLIR_LIBS

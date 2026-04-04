@@ -165,7 +165,7 @@ elif [ "$GOOS" = "netbsd" ]; then
 	"
 elif [ "$GOOS" = "darwin" ]; then
 	OSCFLAGS="-fPIC -Wno-unused-const-variable -Wno-unknown-warning-option -mmacosx-version-min=10.7"
-	OSLDFLAGS="-lpthread -fPIC -fpie -mmacosx-version-min=10.7 -Wl,-U,__dyld_get_dyld_header"
+	OSLDFLAGS="-lpthread -fPIC -fpie -mmacosx-version-min=10.7"
 	SRCS="
 		$SRCS
 		../rtl/tsan_platform_mac.cpp

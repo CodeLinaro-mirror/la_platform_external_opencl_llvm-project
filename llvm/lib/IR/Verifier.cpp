@@ -410,9 +410,10 @@ public:
     // pass manager to provide this as it isolates us from a potentially
     // out-of-date dominator tree and makes it significantly more complex to run
     // this code outside of a pass manager.
+    // FIXME: It's really gross that we have to cast away constness here.
+    if (!F.empty())
+      DT.recalculate(const_cast<Function &>(F));
 
-    // First check that every basic block has a terminator, otherwise we can't
-    // even inspect the CFG.
     for (const BasicBlock &BB : F) {
       if (!BB.empty() && BB.back().isTerminator())
         continue;
@@ -425,10 +426,6 @@ public:
       }
       return false;
     }
-
-    // FIXME: It's really gross that we have to cast away constness here.
-    if (!F.empty())
-      DT.recalculate(const_cast<Function &>(F));
 
     auto FailureCB = [this](const Twine &Message) {
       this->CheckFailed(Message);
@@ -600,7 +597,7 @@ private:
   void verifyDominatesUse(Instruction &I, unsigned i);
   void visitInstruction(Instruction &I);
   void visitTerminator(Instruction &I);
-  void visitCondBrInst(CondBrInst &BI);
+  void visitBranchInst(BranchInst &BI);
   void visitReturnInst(ReturnInst &RI);
   void visitSwitchInst(SwitchInst &SI);
   void visitIndirectBrInst(IndirectBrInst &BI);
@@ -956,15 +953,6 @@ void Verifier::visitGlobalVariable(const GlobalVariable &GV) {
   // used as a global.
   Check(!GVType->containsNonGlobalTargetExtType(),
         "Global @" + GV.getName() + " has illegal target extension type",
-        GVType);
-
-  // Check that the the address space can hold all bits of the type, recognized
-  // by an access in the address space being able to reach all bytes of the
-  // type.
-  Check(!GVType->isSized() ||
-            isUIntN(DL.getAddressSizeInBits(GV.getAddressSpace()),
-                    GV.getGlobalSize(DL)),
-        "Global variable is too large to fit into the address space", &GV,
         GVType);
 
   if (!GV.hasInitializer()) {
@@ -1577,9 +1565,6 @@ void Verifier::visitDICompileUnit(const DICompileUnit &N) {
       auto *Enum = dyn_cast_or_null<DICompositeType>(Op);
       CheckDI(Enum && Enum->getTag() == dwarf::DW_TAG_enumeration_type,
               "invalid enum type", &N, N.getEnumTypes(), Op);
-      CheckDI(!Enum->getScope() || !isa<DILocalScope>(Enum->getScope()),
-              "function-local enum in a DICompileUnit's enum list", &N,
-              N.getEnumTypes(), Op);
     }
   }
   if (auto *Array = N.getRawRetainedTypes()) {
@@ -1601,11 +1586,7 @@ void Verifier::visitDICompileUnit(const DICompileUnit &N) {
   if (auto *Array = N.getRawImportedEntities()) {
     CheckDI(isa<MDTuple>(Array), "invalid imported entity list", &N, Array);
     for (Metadata *Op : N.getImportedEntities()->operands()) {
-      auto *IE = dyn_cast_or_null<DIImportedEntity>(Op);
-      CheckDI(IE, "invalid imported entity ref", &N, Op);
-      CheckDI(!isa_and_nonnull<DILocalScope>(IE->getScope()),
-              "function-local imports are not allowed in a DICompileUnit's "
-              "imported entities list",
+      CheckDI(Op && isa<DIImportedEntity>(Op), "invalid imported entity ref",
               &N, Op);
     }
   }
@@ -1637,18 +1618,16 @@ void Verifier::visitDISubprogram(const DISubprogram &N) {
   if (auto *RawNode = N.getRawRetainedNodes()) {
     auto *Node = dyn_cast<MDTuple>(RawNode);
     CheckDI(Node, "invalid retained nodes list", &N, RawNode);
-
-    DenseMap<unsigned, DILocalVariable *> Args;
     for (Metadata *Op : Node->operands()) {
       CheckDI(Op, "nullptr in retained nodes", &N, Node);
 
       auto True = [](const Metadata *) { return true; };
       auto False = [](const Metadata *) { return false; };
-      bool IsTypeCorrect = DISubprogram::visitRetainedNode<bool>(
-          Op, True, True, True, True, False);
+      bool IsTypeCorrect =
+          DISubprogram::visitRetainedNode<bool>(Op, True, True, True, False);
       CheckDI(IsTypeCorrect,
-              "invalid retained nodes, expected DILocalVariable, DILabel, "
-              "DIImportedEntity or DIType",
+              "invalid retained nodes, expected DILocalVariable, DILabel or "
+              "DIImportedEntity",
               &N, Node, Op);
 
       auto *RetainedNode = cast<DINode>(Op);
@@ -1657,26 +1636,10 @@ void Verifier::visitDISubprogram(const DISubprogram &N) {
       CheckDI(RetainedNodeScope,
               "invalid retained nodes, retained node is not local", &N, Node,
               RetainedNode);
-
-      DISubprogram *RetainedNodeSP = RetainedNodeScope->getSubprogram();
-      DICompileUnit *RetainedNodeUnit =
-          RetainedNodeSP ? RetainedNodeSP->getUnit() : nullptr;
       CheckDI(
-          RetainedNodeSP == &N,
+          RetainedNodeScope->getSubprogram() == &N,
           "invalid retained nodes, retained node does not belong to subprogram",
-          &N, Node, RetainedNode, RetainedNodeScope, RetainedNodeSP,
-          RetainedNodeUnit);
-
-      auto *DV = dyn_cast<DILocalVariable>(RetainedNode);
-      if (!DV)
-        continue;
-      if (unsigned ArgNum = DV->getArg()) {
-        auto [ArgI, Inserted] = Args.insert({ArgNum, DV});
-        CheckDI(Inserted || DV == ArgI->second,
-                "invalid retained nodes, more than one local variable with the "
-                "same argument index",
-                &N, N.getUnit(), Node, RetainedNode, Args[ArgNum]);
-      }
+          &N, Node, RetainedNode, RetainedNodeScope);
     }
   }
   CheckDI(!hasConflictingReferenceFlags(N.getFlags()),
@@ -2657,6 +2620,19 @@ void Verifier::verifyFunctionAttrs(FunctionType *FT, AttributeList Attrs,
       CheckFailed("invalid name for a VFABI variant: " + S, V);
   }
 
+  if (auto A = Attrs.getFnAttr("denormal-fp-math"); A.isValid()) {
+    StringRef S = A.getValueAsString();
+    if (!parseDenormalFPAttribute(S).isValid())
+      CheckFailed("invalid value for 'denormal-fp-math' attribute: " + S, V);
+  }
+
+  if (auto A = Attrs.getFnAttr("denormal-fp-math-f32"); A.isValid()) {
+    StringRef S = A.getValueAsString();
+    if (!parseDenormalFPAttribute(S).isValid())
+      CheckFailed("invalid value for 'denormal-fp-math-f32' attribute: " + S,
+                  V);
+  }
+
   if (auto A = Attrs.getFnAttr("modular-format"); A.isValid()) {
     StringRef S = A.getValueAsString();
     SmallVector<StringRef> Args;
@@ -3466,9 +3442,11 @@ void Verifier::visitTerminator(Instruction &I) {
   visitInstruction(I);
 }
 
-void Verifier::visitCondBrInst(CondBrInst &BI) {
-  Check(BI.getCondition()->getType()->isIntegerTy(1),
-        "Branch condition is not 'i1' type!", &BI, BI.getCondition());
+void Verifier::visitBranchInst(BranchInst &BI) {
+  if (BI.isConditional()) {
+    Check(BI.getCondition()->getType()->isIntegerTy(1),
+          "Branch condition is not 'i1' type!", &BI, BI.getCondition());
+  }
   visitTerminator(BI);
 }
 
@@ -3926,9 +3904,6 @@ void Verifier::visitCallBase(CallBase &Call) {
           "preallocated as a call site attribute can only be on "
           "llvm.call.preallocated.arg");
   }
-
-  Check(!Attrs.hasFnAttr(Attribute::DenormalFPEnv),
-        "denormal_fpenv attribute may not apply to call sites", Call);
 
   // Verify call attributes.
   verifyFunctionAttrs(FTy, Attrs, &Call, IsIntrinsic, Call.isInlineAsm());
@@ -4644,10 +4619,9 @@ void Verifier::visitLoadInst(LoadInst &LI) {
               LI.getOrdering() != AtomicOrdering::AcquireRelease,
           "Load cannot have Release ordering", &LI);
     Check(ElTy->getScalarType()->isIntOrPtrTy() ||
-              ElTy->getScalarType()->isByteTy() ||
               ElTy->getScalarType()->isFloatingPointTy(),
-          "atomic load operand must have integer, byte, pointer, floating "
-          "point, or vector type!",
+          "atomic load operand must have integer, pointer, floating point, "
+          "or vector type!",
           ElTy, &LI);
 
     checkAtomicMemAccessSize(ElTy, &LI);
@@ -4673,10 +4647,9 @@ void Verifier::visitStoreInst(StoreInst &SI) {
               SI.getOrdering() != AtomicOrdering::AcquireRelease,
           "Store cannot have Acquire ordering", &SI);
     Check(ElTy->getScalarType()->isIntOrPtrTy() ||
-              ElTy->getScalarType()->isByteTy() ||
               ElTy->getScalarType()->isFloatingPointTy(),
-          "atomic store operand must have integer, byte, pointer, floating "
-          "point, or vector type!",
+          "atomic store operand must have integer, pointer, floating point, "
+          "or vector type!",
           ElTy, &SI);
     checkAtomicMemAccessSize(ElTy, &SI);
   } else {
@@ -4975,13 +4948,6 @@ void Verifier::visitCatchPadInst(CatchPadInst &CPI) {
   // block.
   Check(&*BB->getFirstNonPHIIt() == &CPI,
         "CatchPadInst not the first non-PHI instruction in the block.", &CPI);
-
-  Check(llvm::all_of(CPI.arg_operands(),
-                     [](Use &U) {
-                       auto *V = U.get();
-                       return isa<Constant>(V) || isa<AllocaInst>(V);
-                     }),
-        "Argument operand must be alloca or constant.", &CPI);
 
   visitEHPadPredecessors(CPI);
   visitFuncletPadInst(CPI);
@@ -5287,7 +5253,7 @@ void Verifier::visitNofreeMetadata(Instruction &I, MDNode *MD) {
 void Verifier::visitProfMetadata(Instruction &I, MDNode *MD) {
   auto GetBranchingTerminatorNumOperands = [&]() {
     unsigned ExpectedNumOperands = 0;
-    if (CondBrInst *BI = dyn_cast<CondBrInst>(&I))
+    if (BranchInst *BI = dyn_cast<BranchInst>(&I))
       ExpectedNumOperands = BI->getNumSuccessors();
     else if (SwitchInst *SI = dyn_cast<SwitchInst>(&I))
       ExpectedNumOperands = SI->getNumSuccessors();
@@ -6901,25 +6867,6 @@ void Verifier::visitIntrinsicCall(Intrinsic::ID ID, CallBase &Call) {
           Call);
     break;
   }
-  case Intrinsic::aarch64_stshh_atomic_store: {
-    uint64_t Order = cast<ConstantInt>(Call.getArgOperand(2))->getZExtValue();
-    Check(Order == static_cast<uint64_t>(AtomicOrderingCABI::relaxed) ||
-              Order == static_cast<uint64_t>(AtomicOrderingCABI::release) ||
-              Order == static_cast<uint64_t>(AtomicOrderingCABI::seq_cst),
-          "order argument to llvm.aarch64.stshh.atomic.store must be 0, 3 or 5",
-          Call);
-
-    Check(cast<ConstantInt>(Call.getArgOperand(3))->getZExtValue() < 2,
-          "policy argument to llvm.aarch64.stshh.atomic.store must be 0 or 1",
-          Call);
-
-    uint64_t Size = cast<ConstantInt>(Call.getArgOperand(4))->getZExtValue();
-    Check(Size == 8 || Size == 16 || Size == 32 || Size == 64,
-          "size argument to llvm.aarch64.stshh.atomic.store must be 8, 16, "
-          "32 or 64",
-          Call);
-    break;
-  }
   case Intrinsic::callbr_landingpad: {
     const auto *CBR = dyn_cast<CallBrInst>(Call.getOperand(0));
     Check(CBR, "intrinstic requires callbr operand", &Call);
@@ -7258,13 +7205,6 @@ void Verifier::visitIntrinsicCall(Intrinsic::ID ID, CallBase &Call) {
     Check(isa<AllocaInst>(Ptr) || isa<PoisonValue>(Ptr),
           "llvm.lifetime.start/end can only be used on alloca or poison",
           &Call);
-    break;
-  }
-  case Intrinsic::sponentry: {
-    const unsigned StackAS = DL.getAllocaAddrSpace();
-    const Type *RetTy = Call.getFunctionType()->getReturnType();
-    Check(RetTy->getPointerAddressSpace() == StackAS,
-          "llvm.sponentry must return a pointer to the stack", &Call);
     break;
   }
   };
@@ -7967,9 +7907,14 @@ struct VerifierLegacyPass : public FunctionPass {
   std::unique_ptr<Verifier> V;
   bool FatalErrors = true;
 
-  VerifierLegacyPass() : FunctionPass(ID) {}
+  VerifierLegacyPass() : FunctionPass(ID) {
+    initializeVerifierLegacyPassPass(*PassRegistry::getPassRegistry());
+  }
   explicit VerifierLegacyPass(bool FatalErrors)
-      : FunctionPass(ID), FatalErrors(FatalErrors) {}
+      : FunctionPass(ID),
+        FatalErrors(FatalErrors) {
+    initializeVerifierLegacyPassPass(*PassRegistry::getPassRegistry());
+  }
 
   bool doInitialization(Module &M) override {
     V = std::make_unique<Verifier>(

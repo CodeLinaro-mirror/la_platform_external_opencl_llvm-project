@@ -1,6 +1,8 @@
 // RUN: %check_clang_tidy \
 // RUN: -std=c++17-or-later %s modernize-use-string-view %t -- \
-// RUN: --config="{CheckOptions: {modernize-use-string-view.ReplacementStringViewClass: 'string=StringRef;u8string=U8StringRef'}}"
+// RUN: --config="{CheckOptions: {modernize-use-string-view.ReplacementStringViewClass: 'string=StringRef;u8string=U8StringRef'}}" \
+// RUN: -- -isystem %clang_tidy_headers
+
 #include <string>
 
 // ==========================================================

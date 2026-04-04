@@ -20,7 +20,7 @@
 
 namespace llvm {
 
-class AMDGPUMachineFunctionInfo;
+class AMDGPUMachineFunction;
 class AMDGPUSubtarget;
 struct ArgDescriptor;
 
@@ -51,7 +51,6 @@ protected:
   /// Split a vector store into multiple scalar stores.
   /// \returns The resulting chain.
 
-  SDValue LowerCTLS(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerFCEIL(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerFTRUNC(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerFRINT(SDValue Op, SelectionDAG &DAG) const;
@@ -86,7 +85,6 @@ protected:
   SDValue lowerFEXP10Unsafe(SDValue Op, const SDLoc &SL, SelectionDAG &DAG,
                             SDNodeFlags Flags) const;
   SDValue lowerFEXP(SDValue Op, SelectionDAG &DAG) const;
-  SDValue lowerFEXPF64(SDValue Op, SelectionDAG &DAG) const;
 
   SDValue lowerCTLZResults(SDValue Op, SelectionDAG &DAG) const;
 
@@ -100,7 +98,6 @@ protected:
   SDValue LowerFP_TO_INT64(SDValue Op, SelectionDAG &DAG, bool Signed) const;
   SDValue LowerFP_TO_FP16(SDValue Op, SelectionDAG &DAG) const;
   SDValue LowerFP_TO_INT(SDValue Op, SelectionDAG &DAG) const;
-  SDValue LowerFP_TO_INT_SAT(SDValue Op, SelectionDAG &DAG) const;
 
   SDValue LowerF64ToF16Safe(SDValue Src, const SDLoc &DL,
                             SelectionDAG &DAG) const;
@@ -108,9 +105,6 @@ protected:
   SDValue LowerSIGN_EXTEND_INREG(SDValue Op, SelectionDAG &DAG) const;
 
 protected:
-  /// Check whether value Val can be supported by v_mov_b64, for the current
-  /// target.
-  bool isInt64ImmLegal(SDNode *Val, SelectionDAG &DAG) const;
   bool shouldCombineMemoryType(EVT VT) const;
   SDValue performLoadCombine(SDNode *N, DAGCombinerInfo &DCI) const;
   SDValue performStoreCombine(SDNode *N, DAGCombinerInfo &DCI) const;
@@ -146,7 +140,7 @@ protected:
 
   static EVT getEquivalentMemType(LLVMContext &Context, EVT VT);
 
-  virtual SDValue LowerGlobalAddress(AMDGPUMachineFunctionInfo *MFI, SDValue Op,
+  virtual SDValue LowerGlobalAddress(AMDGPUMachineFunction *MFI, SDValue Op,
                                      SelectionDAG &DAG) const;
 
   /// Return 64-bit value Op as two 32-bit integers.

@@ -480,9 +480,7 @@ bool GDBRemoteCommunicationClient::GetThreadSuffixSupported() {
   }
   return m_supports_thread_suffix;
 }
-
-bool GDBRemoteCommunicationClient::GetVContSupported(llvm::StringRef flavor) {
-  assert(!flavor.empty());
+bool GDBRemoteCommunicationClient::GetVContSupported(char flavor) {
   if (m_supports_vCont_c == eLazyBoolCalculate) {
     StringExtractorGDBRemote response;
     m_supports_vCont_any = eLazyBoolNo;
@@ -493,16 +491,18 @@ bool GDBRemoteCommunicationClient::GetVContSupported(llvm::StringRef flavor) {
     m_supports_vCont_S = eLazyBoolNo;
     if (SendPacketAndWaitForResponse("vCont?", response) ==
         PacketResult::Success) {
-      for (llvm::StringRef token : llvm::split(response.GetStringRef(), ';')) {
-        if (token == "c")
-          m_supports_vCont_c = eLazyBoolYes;
-        if (token == "C")
-          m_supports_vCont_C = eLazyBoolYes;
-        if (token == "s")
-          m_supports_vCont_s = eLazyBoolYes;
-        if (token == "S")
-          m_supports_vCont_S = eLazyBoolYes;
-      }
+      const char *response_cstr = response.GetStringRef().data();
+      if (::strstr(response_cstr, ";c"))
+        m_supports_vCont_c = eLazyBoolYes;
+
+      if (::strstr(response_cstr, ";C"))
+        m_supports_vCont_C = eLazyBoolYes;
+
+      if (::strstr(response_cstr, ";s"))
+        m_supports_vCont_s = eLazyBoolYes;
+
+      if (::strstr(response_cstr, ";S"))
+        m_supports_vCont_S = eLazyBoolYes;
 
       if (m_supports_vCont_c == eLazyBoolYes &&
           m_supports_vCont_C == eLazyBoolYes &&
@@ -520,14 +520,23 @@ bool GDBRemoteCommunicationClient::GetVContSupported(llvm::StringRef flavor) {
     }
   }
 
-  return llvm::StringSwitch<bool>(flavor)
-      .Case("a", m_supports_vCont_any)
-      .Case("A", m_supports_vCont_all)
-      .Case("c", m_supports_vCont_c)
-      .Case("C", m_supports_vCont_C)
-      .Case("s", m_supports_vCont_s)
-      .Case("S", m_supports_vCont_S)
-      .Default(false);
+  switch (flavor) {
+  case 'a':
+    return m_supports_vCont_any;
+  case 'A':
+    return m_supports_vCont_all;
+  case 'c':
+    return m_supports_vCont_c;
+  case 'C':
+    return m_supports_vCont_C;
+  case 's':
+    return m_supports_vCont_s;
+  case 'S':
+    return m_supports_vCont_S;
+  default:
+    break;
+  }
+  return false;
 }
 
 GDBRemoteCommunication::PacketResult
@@ -2983,9 +2992,7 @@ lldb_private::Status GDBRemoteCommunicationClient::RunShellCommand(
     int *signo_ptr,  // Pass NULL if you don't want the signal that caused the
                      // process to exit
     std::string
-        *command_output, // Pass nullptr if you don't want the command output
-    std::string *separated_error_output, // Pass nullptr if you don't want the
-                                         // command error output
+        *command_output, // Pass NULL if you don't want the command output
     const Timeout<std::micro> &timeout) {
   lldb_private::StreamString stream;
   stream.PutCString("qPlatform_shell:");
@@ -4359,7 +4366,7 @@ bool GDBRemoteCommunicationClient::UsesNativeSignals() {
 
 llvm::Expected<int> GDBRemoteCommunicationClient::KillProcess(lldb::pid_t pid) {
   StringExtractorGDBRemote response;
-  GDBRemoteCommunication::ScopedTimeout timeout(*this, seconds(3));
+  GDBRemoteCommunication::ScopedTimeout(*this, seconds(3));
 
   // LLDB server typically sends no response for "k", so we shouldn't try
   // to sync on timeout.

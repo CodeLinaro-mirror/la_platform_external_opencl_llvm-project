@@ -90,6 +90,8 @@ public:
   static Status PtraceWrapper(int req, lldb::pid_t pid, void *addr = nullptr,
                               int data = 0, int *result = nullptr);
 
+  bool SupportHardwareSingleStepping() const;
+
   llvm::Expected<std::string> SaveCore(llvm::StringRef path_hint) override;
 
 protected:
@@ -99,7 +101,7 @@ protected:
 private:
   MainLoop::SignalHandleUP m_sigchld_handle;
   ArchSpec m_arch;
-  MainLoop &m_main_loop;
+  MainLoop& m_main_loop;
   LazyBool m_supports_mem_region = eLazyBoolCalculate;
   std::vector<std::pair<MemoryRegionInfo, FileSpec>> m_mem_region_cache;
 

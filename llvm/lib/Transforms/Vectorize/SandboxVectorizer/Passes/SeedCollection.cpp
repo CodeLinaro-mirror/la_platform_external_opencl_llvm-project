@@ -32,21 +32,9 @@ cl::opt<std::string> CollectSeeds(
              "list of '" StoreSeedsDef "' and '" LoadSeedsDef "'."));
 
 namespace sandboxir {
-
-SeedCollection::SeedCollection(StringRef Pipeline, StringRef AuxArg)
+SeedCollection::SeedCollection(StringRef Pipeline)
     : FunctionPass("seed-collection"),
-      RPM("rpm", Pipeline, SandboxVectorizerPassBuilder::createRegionPass) {
-  if (!AuxArg.empty()) {
-    if (AuxArg != DiffTypesArgStr) {
-      std::string ErrStr;
-      raw_string_ostream ErrSS(ErrStr);
-      ErrSS << "SeedCollection only supports '" << DiffTypesArgStr
-            << "' aux argument!\n";
-      reportFatalUsageError(ErrStr.c_str());
-    }
-    AllowDiffTypes = true;
-  }
-}
+      RPM("rpm", Pipeline, SandboxVectorizerPassBuilder::createRegionPass) {}
 
 bool SeedCollection::runOnFunction(Function &F, const Analyses &A) {
   bool Change = false;
@@ -62,8 +50,7 @@ bool SeedCollection::runOnFunction(Function &F, const Analyses &A) {
 
   // TODO: Start from innermost BBs first
   for (auto &BB : F) {
-    SeedCollector SC(&BB, A.getScalarEvolution(), CollectStores, CollectLoads,
-                     AllowDiffTypes);
+    SeedCollector SC(&BB, A.getScalarEvolution(), CollectStores, CollectLoads);
     for (SeedBundle &Seeds : SC.getStoreSeeds()) {
       unsigned ElmBits =
           Utils::getNumBits(VecUtils::getElementType(Utils::getExpectedType(

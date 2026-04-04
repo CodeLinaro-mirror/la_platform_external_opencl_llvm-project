@@ -422,8 +422,7 @@ def LLVM_StripInvariantGroupOp
 
 class LLVM_ConstrainedIntr<string mnem, int numArgs,
                            bit overloadedResult, list<int> overloadedOperands,
-                           bit hasRoundingMode,
-                           list<Trait> extraTraits = []>
+                           bit hasRoundingMode>
     : LLVM_OneResultIntrOp<"experimental.constrained." # mnem,
                            /*overloadedResults=*/
                            !cond(!gt(overloadedResult, 0) : [0],
@@ -432,8 +431,7 @@ class LLVM_ConstrainedIntr<string mnem, int numArgs,
                            /*traits=*/[Pure, DeclareOpInterfaceMethods<FPExceptionBehaviorOpInterface>]
                            # !cond(
                                !gt(hasRoundingMode, 0) : [DeclareOpInterfaceMethods<RoundingModeOpInterface>],
-                               true : [])
-                           # extraTraits,
+                               true : []),
                            /*requiresFastmath=*/0,
                            /*requiresArgAndResultAttrs=*/0,
                            /*immArgPositions=*/[],
@@ -494,69 +492,6 @@ class LLVM_ConstrainedIntr<string mnem, int numArgs,
     }], true : "") # [{
     $res = $_qualCppClassName::create($_builder, $_location,
       $_resultType, mlirOperands, mlirAttrs);
-  }];
-}
-
-def LLVM_ConstrainedFAddIntr
-    : LLVM_ConstrainedIntr<"fadd", /*numArgs=*/2,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
-  }];
-}
-
-def LLVM_ConstrainedFSubIntr
-    : LLVM_ConstrainedIntr<"fsub", /*numArgs=*/2,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
-  }];
-}
-
-def LLVM_ConstrainedFMulIntr
-    : LLVM_ConstrainedIntr<"fmul", /*numArgs=*/2,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
-  }];
-}
-
-def LLVM_ConstrainedFDivIntr
-    : LLVM_ConstrainedIntr<"fdiv", /*numArgs=*/2,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
-  }];
-}
-
-def LLVM_ConstrainedFRemIntr
-    : LLVM_ConstrainedIntr<"frem", /*numArgs=*/2,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
-  }];
-}
-
-def LLVM_ConstrainedFMAIntr
-    : LLVM_ConstrainedIntr<"fma", /*numArgs=*/3,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 `,` $arg_2 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
-  }];
-}
-
-def LLVM_ConstrainedFMulAddIntr
-    : LLVM_ConstrainedIntr<"fmuladd", /*numArgs=*/3,
-        /*overloadedResult=*/1, /*overloadedOperands=*/[],
-        /*hasRoundingMode=*/1, [SameOperandsAndResultType]> {
-  let assemblyFormat = [{
-    $arg_0 `,` $arg_1 `,` $arg_2 $roundingmode $fpExceptionBehavior attr-dict `:` type($arg_0)
   }];
 }
 
@@ -624,11 +559,6 @@ def LLVM_USHLSat : LLVM_BinarySameArgsIntrOpI<"ushl.sat">;
 //
 // Optimization hint intrinsics.
 //
-
-def LLVM_FakeUseOp : LLVM_ZeroResultIntrOp<"fake.use"> {
-  let arguments = (ins Variadic<LLVM_Type>:$args);
-  let assemblyFormat = "$args attr-dict `:` type($args)";
-}
 
 def LLVM_AssumeOp
     : LLVM_ZeroResultIntrOp<"assume", /*overloadedOperands=*/[], /*traits=*/[],

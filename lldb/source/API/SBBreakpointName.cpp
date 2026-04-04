@@ -213,7 +213,6 @@ void SBBreakpointName::SetEnabled(bool enable) {
         m_impl_up->GetTarget()->GetAPIMutex());
 
   bp_name->GetOptions().SetEnabled(enable);
-  UpdateName(*bp_name);
 }
 
 void SBBreakpointName::UpdateName(BreakpointName &bp_name) {

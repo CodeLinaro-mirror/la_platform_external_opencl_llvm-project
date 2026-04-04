@@ -117,23 +117,11 @@ class ProcessSaveCoreTestCase(TestBase):
 
         # Create a non-writable temporary directory.
         temp_dir = tempfile.mkdtemp()
-
-        def make_readonly(path):
-            if sys.platform == "win32":
-                os.system(f'icacls "{path}" /deny Everyone:(W)')
-            else:
-                os.chmod(path, stat.S_IRUSR | stat.S_IXUSR)
-
-        def cleanup():
-            if sys.platform == "win32":
-                os.system(f'icacls "{temp_dir}" /grant Everyone:(F)')
-            shutil.rmtree(temp_dir)
-
-        make_readonly(temp_dir)
-        self.addTearDownHook(cleanup)
+        os.chmod(temp_dir, stat.S_IRUSR | stat.S_IXUSR)
+        self.addTearDownHook(lambda: os.rmdir(temp_dir))
 
         target = self.dbg.CreateTarget(exe)
-        target.BreakpointCreateByName("bar")
+        breakpoint = target.BreakpointCreateByName("bar")
         process = target.LaunchSimple(None, None, self.get_process_working_directory())
         self.assertState(process.GetState(), lldb.eStateStopped)
 

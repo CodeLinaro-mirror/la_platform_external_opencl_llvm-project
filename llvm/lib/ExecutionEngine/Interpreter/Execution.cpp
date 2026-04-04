@@ -860,7 +860,7 @@ void Interpreter::popStackAndReturnValueToCaller(Type *RetTy,
 
   if (ECStack.empty()) {  // Finished main.  Put result into exit code...
     if (RetTy && !RetTy->isVoidTy()) {          // Nonvoid return type?
-      ExitValue = std::move(Result); // Capture the exit value of the program
+      ExitValue = Result;   // Capture the exit value of the program
     } else {
       memset(&ExitValue.Untyped, 0, sizeof(ExitValue.Untyped));
     }
@@ -897,15 +897,17 @@ void Interpreter::visitUnreachableInst(UnreachableInst &I) {
   report_fatal_error("Program executed an 'unreachable' instruction!");
 }
 
-void Interpreter::visitUncondBrInst(UncondBrInst &I) {
+void Interpreter::visitBranchInst(BranchInst &I) {
   ExecutionContext &SF = ECStack.back();
-  SwitchToNewBasicBlock(I.getSuccessor(), SF);
-}
+  BasicBlock *Dest;
 
-void Interpreter::visitCondBrInst(CondBrInst &I) {
-  ExecutionContext &SF = ECStack.back();
-  bool Cond = getOperandValue(I.getCondition(), SF).IntVal != 0;
-  SwitchToNewBasicBlock(I.getSuccessor(Cond ? 0 : 1), SF);
+  Dest = I.getSuccessor(0);          // Uncond branches have a fixed dest...
+  if (!I.isUnconditional()) {
+    Value *Cond = I.getCondition();
+    if (getOperandValue(Cond, SF).IntVal == 0) // If false cond...
+      Dest = I.getSuccessor(1);
+  }
+  SwitchToNewBasicBlock(Dest, SF);
 }
 
 void Interpreter::visitSwitchInst(SwitchInst &I) {

@@ -369,8 +369,7 @@ public:
   /// \param BaseExprType the type of expression that precedes the "." or "->"
   /// in a member access expression.
   void AddResult(Result R, DeclContext *CurContext, NamedDecl *Hiding,
-                 bool InBaseClass, QualType BaseExprType,
-                 bool IsInDeclarationContext, bool IsAddressOfOperand);
+                 bool InBaseClass, QualType BaseExprType);
 
   /// Add a new non-declaration result to this result set.
   void AddResult(Result R);
@@ -1366,9 +1365,7 @@ bool ResultBuilder::canFunctionBeCalled(const NamedDecl *ND,
 
 void ResultBuilder::AddResult(Result R, DeclContext *CurContext,
                               NamedDecl *Hiding, bool InBaseClass = false,
-                              QualType BaseExprType = QualType(),
-                              bool IsInDeclarationContext = false,
-                              bool IsAddressOfOperand = false) {
+                              QualType BaseExprType = QualType()) {
   if (R.Kind != Result::RK_Declaration) {
     // For non-declaration results, just add the result.
     Results.push_back(R);
@@ -1506,13 +1503,8 @@ void ResultBuilder::AddResult(Result R, DeclContext *CurContext,
         }
         OverloadSet.Add(Method, Results.size());
       }
-  R.DeclaringEntity = IsInDeclarationContext;
-  R.FunctionCanBeCall =
-      canFunctionBeCalled(R.getDeclaration(), BaseExprType) &&
-      // If the user wrote `&` before the function name, assume the
-      // user is more likely to take the address of the function rather
-      // than call it and take the address of the result.
-      !IsAddressOfOperand;
+
+  R.FunctionCanBeCall = canFunctionBeCalled(R.getDeclaration(), BaseExprType);
 
   // Insert this result into the set of results.
   Results.push_back(R);
@@ -1763,9 +1755,6 @@ class CodeCompletionDeclConsumer : public VisibleDeclConsumer {
   CXXRecordDecl *NamingClass;
   QualType BaseType;
   std::vector<FixItHint> FixIts;
-  bool IsInDeclarationContext;
-  // Completion is invoked after an identifier preceded by '&'.
-  bool IsAddressOfOperand;
 
 public:
   CodeCompletionDeclConsumer(
@@ -1773,8 +1762,7 @@ public:
       QualType BaseType = QualType(),
       std::vector<FixItHint> FixIts = std::vector<FixItHint>())
       : Results(Results), InitialLookupCtx(InitialLookupCtx),
-        FixIts(std::move(FixIts)), IsInDeclarationContext(false),
-        IsAddressOfOperand(false) {
+        FixIts(std::move(FixIts)) {
     NamingClass = llvm::dyn_cast<CXXRecordDecl>(InitialLookupCtx);
     // If BaseType was not provided explicitly, emulate implicit 'this->'.
     if (BaseType.isNull()) {
@@ -1789,22 +1777,13 @@ public:
     this->BaseType = BaseType;
   }
 
-  void setIsInDeclarationContext(bool IsInDeclarationContext) {
-    this->IsInDeclarationContext = IsInDeclarationContext;
-  }
-
-  void setIsAddressOfOperand(bool IsAddressOfOperand) {
-    this->IsAddressOfOperand = IsAddressOfOperand;
-  }
-
   void FoundDecl(NamedDecl *ND, NamedDecl *Hiding, DeclContext *Ctx,
                  bool InBaseClass) override {
     ResultBuilder::Result Result(ND, Results.getBasePriority(ND),
                                  /*Qualifier=*/std::nullopt,
                                  /*QualifierIsInformative=*/false,
                                  IsAccessible(ND, Ctx), FixIts);
-    Results.AddResult(Result, InitialLookupCtx, Hiding, InBaseClass, BaseType,
-                      IsInDeclarationContext, IsAddressOfOperand);
+    Results.AddResult(Result, InitialLookupCtx, Hiding, InBaseClass, BaseType);
   }
 
   void EnteredContext(DeclContext *Ctx) override {
@@ -2064,8 +2043,7 @@ static bool WantTypesInContext(SemaCodeCompletion::ParserCompletionContext CCC,
 static PrintingPolicy getCompletionPrintingPolicy(const ASTContext &Context,
                                                   const Preprocessor &PP) {
   PrintingPolicy Policy = Sema::getPrintingPolicy(Context, PP);
-  Policy.AnonymousTagNameStyle =
-      llvm::to_underlying(PrintingPolicy::AnonymousTagMode::Plain);
+  Policy.AnonymousTagLocations = false;
   Policy.SuppressStrongLifetime = true;
   Policy.SuppressUnwrittenScope = true;
   Policy.CleanUglifiedParameters = true;
@@ -3294,19 +3272,18 @@ static std::string GetDefaultValueString(const ParmVarDecl *Param,
 }
 
 /// Add function parameter chunks to the given code completion string.
-static void AddFunctionParameterChunks(
-    Preprocessor &PP, const PrintingPolicy &Policy,
-    const FunctionDecl *Function, CodeCompletionBuilder &Result,
-    unsigned Start = 0, bool InOptional = false, bool FunctionCanBeCall = true,
-    bool IsInDeclarationContext = false) {
+static void AddFunctionParameterChunks(Preprocessor &PP,
+                                       const PrintingPolicy &Policy,
+                                       const FunctionDecl *Function,
+                                       CodeCompletionBuilder &Result,
+                                       unsigned Start = 0,
+                                       bool InOptional = false) {
   bool FirstParameter = true;
-  bool AsInformativeChunk = !(FunctionCanBeCall || IsInDeclarationContext);
 
   for (unsigned P = Start, N = Function->getNumParams(); P != N; ++P) {
     const ParmVarDecl *Param = Function->getParamDecl(P);
 
-    if (Param->hasDefaultArg() && !InOptional && !IsInDeclarationContext &&
-        !AsInformativeChunk) {
+    if (Param->hasDefaultArg() && !InOptional) {
       // When we see an optional default argument, put that argument and
       // the remaining default arguments into a new, optional string.
       CodeCompletionBuilder Opt(Result.getAllocator(),
@@ -3327,42 +3304,23 @@ static void AddFunctionParameterChunks(
 
     if (FirstParameter)
       FirstParameter = false;
-    else {
-      if (AsInformativeChunk)
-        Result.AddInformativeChunk(", ");
-      else
-        Result.AddChunk(CodeCompletionString::CK_Comma);
-    }
+    else
+      Result.AddChunk(CodeCompletionString::CK_Comma);
 
     InOptional = false;
 
     // Format the placeholder string.
     std::string PlaceholderStr = FormatFunctionParameter(Policy, Param);
-    std::string DefaultValue;
-    if (Param->hasDefaultArg()) {
-      if (IsInDeclarationContext)
-        DefaultValue = GetDefaultValueString(Param, PP.getSourceManager(),
-                                             PP.getLangOpts());
-      else
-        PlaceholderStr += GetDefaultValueString(Param, PP.getSourceManager(),
-                                                PP.getLangOpts());
-    }
+    if (Param->hasDefaultArg())
+      PlaceholderStr +=
+          GetDefaultValueString(Param, PP.getSourceManager(), PP.getLangOpts());
 
     if (Function->isVariadic() && P == N - 1)
       PlaceholderStr += ", ...";
 
     // Add the placeholder string.
-    if (AsInformativeChunk)
-      Result.AddInformativeChunk(
-          Result.getAllocator().CopyString(PlaceholderStr));
-    else if (IsInDeclarationContext) { // No placeholders in declaration context
-      Result.AddTextChunk(Result.getAllocator().CopyString(PlaceholderStr));
-      if (DefaultValue.length() != 0)
-        Result.AddInformativeChunk(
-            Result.getAllocator().CopyString(DefaultValue));
-    } else
-      Result.AddPlaceholderChunk(
-          Result.getAllocator().CopyString(PlaceholderStr));
+    Result.AddPlaceholderChunk(
+        Result.getAllocator().CopyString(PlaceholderStr));
   }
 
   if (const auto *Proto = Function->getType()->getAs<FunctionProtoType>())
@@ -3378,8 +3336,7 @@ static void AddFunctionParameterChunks(
 static void AddTemplateParameterChunks(
     ASTContext &Context, const PrintingPolicy &Policy,
     const TemplateDecl *Template, CodeCompletionBuilder &Result,
-    unsigned MaxParameters = 0, unsigned Start = 0, bool InDefaultArg = false,
-    bool AsInformativeChunk = false) {
+    unsigned MaxParameters = 0, unsigned Start = 0, bool InDefaultArg = false) {
   bool FirstParameter = true;
 
   // Prefer to take the template parameter names from the first declaration of
@@ -3430,7 +3387,7 @@ static void AddTemplateParameterChunks(
       HasDefaultArg = TTP->hasDefaultArgument();
     }
 
-    if (HasDefaultArg && !InDefaultArg && !AsInformativeChunk) {
+    if (HasDefaultArg && !InDefaultArg) {
       // When we see an optional default argument, put that argument and
       // the remaining default arguments into a new, optional string.
       CodeCompletionBuilder Opt(Result.getAllocator(),
@@ -3447,19 +3404,12 @@ static void AddTemplateParameterChunks(
 
     if (FirstParameter)
       FirstParameter = false;
-    else {
-      if (AsInformativeChunk)
-        Result.AddInformativeChunk(", ");
-      else
-        Result.AddChunk(CodeCompletionString::CK_Comma);
-    }
+    else
+      Result.AddChunk(CodeCompletionString::CK_Comma);
 
-    if (AsInformativeChunk)
-      Result.AddInformativeChunk(
-          Result.getAllocator().CopyString(PlaceholderStr));
-    else // Add the placeholder string.
-      Result.AddPlaceholderChunk(
-          Result.getAllocator().CopyString(PlaceholderStr));
+    // Add the placeholder string.
+    Result.AddPlaceholderChunk(
+        Result.getAllocator().CopyString(PlaceholderStr));
   }
 }
 
@@ -3485,32 +3435,22 @@ static void AddQualifierToCompletionString(CodeCompletionBuilder &Result,
 }
 
 static void AddFunctionTypeQuals(CodeCompletionBuilder &Result,
-                                 const Qualifiers Quals,
-                                 bool AsInformativeChunk = true) {
+                                 const Qualifiers Quals) {
   // FIXME: Add ref-qualifier!
 
   // Handle single qualifiers without copying
   if (Quals.hasOnlyConst()) {
-    if (AsInformativeChunk)
-      Result.AddInformativeChunk(" const");
-    else
-      Result.AddTextChunk(" const");
+    Result.AddInformativeChunk(" const");
     return;
   }
 
   if (Quals.hasOnlyVolatile()) {
-    if (AsInformativeChunk)
-      Result.AddInformativeChunk(" volatile");
-    else
-      Result.AddTextChunk(" volatile");
+    Result.AddInformativeChunk(" volatile");
     return;
   }
 
   if (Quals.hasOnlyRestrict()) {
-    if (AsInformativeChunk)
-      Result.AddInformativeChunk(" restrict");
-    else
-      Result.AddTextChunk(" restrict");
+    Result.AddInformativeChunk(" restrict");
     return;
   }
 
@@ -3522,17 +3462,12 @@ static void AddFunctionTypeQuals(CodeCompletionBuilder &Result,
     QualsStr += " volatile";
   if (Quals.hasRestrict())
     QualsStr += " restrict";
-
-  if (AsInformativeChunk)
-    Result.AddInformativeChunk(Result.getAllocator().CopyString(QualsStr));
-  else
-    Result.AddTextChunk(Result.getAllocator().CopyString(QualsStr));
+  Result.AddInformativeChunk(Result.getAllocator().CopyString(QualsStr));
 }
 
 static void
 AddFunctionTypeQualsToCompletionString(CodeCompletionBuilder &Result,
-                                       const FunctionDecl *Function,
-                                       bool AsInformativeChunks = true) {
+                                       const FunctionDecl *Function) {
   if (auto *CxxMethodDecl = llvm::dyn_cast_if_present<CXXMethodDecl>(Function);
       CxxMethodDecl && CxxMethodDecl->hasCXXExplicitFunctionObjectParameter()) {
     // if explicit object method, infer quals from the object parameter
@@ -3540,13 +3475,13 @@ AddFunctionTypeQualsToCompletionString(CodeCompletionBuilder &Result,
     if (!Quals.hasQualifiers())
       return;
 
-    AddFunctionTypeQuals(Result, Quals.getQualifiers(), AsInformativeChunks);
+    AddFunctionTypeQuals(Result, Quals.getQualifiers());
   } else {
     const auto *Proto = Function->getType()->getAs<FunctionProtoType>();
     if (!Proto || !Proto->getMethodQuals())
       return;
 
-    AddFunctionTypeQuals(Result, Proto->getMethodQuals(), AsInformativeChunks);
+    AddFunctionTypeQuals(Result, Proto->getMethodQuals());
   }
 }
 
@@ -3838,21 +3773,10 @@ CodeCompletionString *CodeCompletionResult::createCodeCompletionStringForDecl(
     AddQualifierToCompletionString(Result, Qualifier, QualifierIsInformative,
                                    Ctx, Policy);
     AddTypedNameChunk(Ctx, Policy, ND, Result);
-    bool InsertParameters = FunctionCanBeCall || DeclaringEntity;
-    if (InsertParameters)
-      Result.AddChunk(CodeCompletionString::CK_LeftParen);
-    else
-      Result.AddInformativeChunk("(");
-    AddFunctionParameterChunks(PP, Policy, Function, Result, /*Start=*/0,
-                               /*InOptional=*/false,
-                               /*FunctionCanBeCall=*/FunctionCanBeCall,
-                               /*IsInDeclarationContext=*/DeclaringEntity);
-    if (InsertParameters)
-      Result.AddChunk(CodeCompletionString::CK_RightParen);
-    else
-      Result.AddInformativeChunk(")");
-    AddFunctionTypeQualsToCompletionString(
-        Result, Function, /*AsInformativeChunks=*/!DeclaringEntity);
+    Result.AddChunk(CodeCompletionString::CK_LeftParen);
+    AddFunctionParameterChunks(PP, Policy, Function, Result);
+    Result.AddChunk(CodeCompletionString::CK_RightParen);
+    AddFunctionTypeQualsToCompletionString(Result, Function);
   };
 
   if (const auto *Function = dyn_cast<FunctionDecl>(ND)) {
@@ -3924,35 +3848,16 @@ CodeCompletionString *CodeCompletionResult::createCodeCompletionStringForDecl(
       // e.g.,
       // template <class T> void foo(T);
       // void (*f)(int) = foo;
-      if (!DeclaringEntity)
-        Result.AddChunk(CodeCompletionString::CK_LeftAngle);
-      else
-        Result.AddInformativeChunk("<");
-      AddTemplateParameterChunks(
-          Ctx, Policy, FunTmpl, Result, LastDeducibleArgument, /*Start=*/0,
-          /*InDefaultArg=*/false, /*AsInformativeChunk=*/DeclaringEntity);
-      // Only adds template arguments as informative chunks in declaration
-      // context.
-      if (!DeclaringEntity)
-        Result.AddChunk(CodeCompletionString::CK_RightAngle);
-      else
-        Result.AddInformativeChunk(">");
+      Result.AddChunk(CodeCompletionString::CK_LeftAngle);
+      AddTemplateParameterChunks(Ctx, Policy, FunTmpl, Result,
+                                 LastDeducibleArgument);
+      Result.AddChunk(CodeCompletionString::CK_RightAngle);
     }
 
     // Add the function parameters
-    bool InsertParameters = FunctionCanBeCall || DeclaringEntity;
-    if (InsertParameters)
-      Result.AddChunk(CodeCompletionString::CK_LeftParen);
-    else
-      Result.AddInformativeChunk("(");
-    AddFunctionParameterChunks(PP, Policy, Function, Result, /*Start=*/0,
-                               /*InOptional=*/false,
-                               /*FunctionCanBeCall=*/FunctionCanBeCall,
-                               /*IsInDeclarationContext=*/DeclaringEntity);
-    if (InsertParameters)
-      Result.AddChunk(CodeCompletionString::CK_RightParen);
-    else
-      Result.AddInformativeChunk(")");
+    Result.AddChunk(CodeCompletionString::CK_LeftParen);
+    AddFunctionParameterChunks(PP, Policy, Function, Result);
+    Result.AddChunk(CodeCompletionString::CK_RightParen);
     AddFunctionTypeQualsToCompletionString(Result, Function);
     return Result.TakeString();
   }
@@ -5167,7 +5072,7 @@ static void AddLambdaCompletion(ResultBuilder &Results,
 /// Perform code-completion in an expression context when we know what
 /// type we're looking for.
 void SemaCodeCompletion::CodeCompleteExpression(
-    Scope *S, const CodeCompleteExpressionData &Data, bool IsAddressOfOperand) {
+    Scope *S, const CodeCompleteExpressionData &Data) {
   ResultBuilder Results(
       SemaRef, CodeCompleter->getAllocator(),
       CodeCompleter->getCodeCompletionTUInfo(),
@@ -5195,7 +5100,6 @@ void SemaCodeCompletion::CodeCompleteExpression(
     Results.Ignore(Data.IgnoreDecls[I]);
 
   CodeCompletionDeclConsumer Consumer(Results, SemaRef.CurContext);
-  Consumer.setIsAddressOfOperand(IsAddressOfOperand);
   SemaRef.LookupVisibleDecls(S, Sema::LookupOrdinaryName, Consumer,
                              CodeCompleter->includeGlobals(),
                              CodeCompleter->loadExternal());
@@ -5239,11 +5143,9 @@ void SemaCodeCompletion::CodeCompleteExpression(
 
 void SemaCodeCompletion::CodeCompleteExpression(Scope *S,
                                                 QualType PreferredType,
-                                                bool IsParenthesized,
-                                                bool IsAddressOfOperand) {
+                                                bool IsParenthesized) {
   return CodeCompleteExpression(
-      S, CodeCompleteExpressionData(PreferredType, IsParenthesized),
-      IsAddressOfOperand);
+      S, CodeCompleteExpressionData(PreferredType, IsParenthesized));
 }
 
 void SemaCodeCompletion::CodeCompletePostfixExpression(Scope *S, ExprResult E,
@@ -6918,10 +6820,11 @@ void SemaCodeCompletion::CodeCompleteAfterIf(Scope *S, bool IsBracedThen) {
                             Results.size());
 }
 
-void SemaCodeCompletion::CodeCompleteQualifiedId(
-    Scope *S, CXXScopeSpec &SS, bool EnteringContext, bool IsUsingDeclaration,
-    bool IsAddressOfOperand, bool IsInDeclarationContext, QualType BaseType,
-    QualType PreferredType) {
+void SemaCodeCompletion::CodeCompleteQualifiedId(Scope *S, CXXScopeSpec &SS,
+                                                 bool EnteringContext,
+                                                 bool IsUsingDeclaration,
+                                                 QualType BaseType,
+                                                 QualType PreferredType) {
   if (SS.isEmpty() || !CodeCompleter)
     return;
 
@@ -6955,12 +6858,6 @@ void SemaCodeCompletion::CodeCompleteQualifiedId(
   // Always pretend to enter a context to ensure that a dependent type
   // resolves to a dependent record.
   DeclContext *Ctx = SemaRef.computeDeclContext(SS, /*EnteringContext=*/true);
-
-  std::optional<Sema::ContextRAII> SimulateContext;
-  // When completing a definition, simulate that we are in class scope to access
-  // private methods.
-  if (IsInDeclarationContext && Ctx != nullptr)
-    SimulateContext.emplace(SemaRef, Ctx);
 
   // Try to instantiate any non-dependent declaration contexts before
   // we look in them. Bail out if we fail.
@@ -7008,14 +6905,12 @@ void SemaCodeCompletion::CodeCompleteQualifiedId(
   if (Ctx &&
       (CodeCompleter->includeNamespaceLevelDecls() || !Ctx->isFileContext())) {
     CodeCompletionDeclConsumer Consumer(Results, Ctx, BaseType);
-    Consumer.setIsInDeclarationContext(IsInDeclarationContext);
-    Consumer.setIsAddressOfOperand(IsAddressOfOperand);
     SemaRef.LookupVisibleDecls(Ctx, Sema::LookupOrdinaryName, Consumer,
                                /*IncludeGlobalScope=*/true,
                                /*IncludeDependentBases=*/true,
                                CodeCompleter->loadExternal());
   }
-  SimulateContext.reset();
+
   HandleCodeCompleteResults(&SemaRef, CodeCompleter,
                             Results.getCompletionContext(), Results.data(),
                             Results.size());
@@ -8547,11 +8442,6 @@ void SemaCodeCompletion::CodeCompleteObjCInstanceMessage(
   // If necessary, apply function/array conversion to the receiver.
   // C99 6.7.5.3p[7,8].
   if (RecExpr) {
-    // If the receiver expression has no type (e.g., a parenthesized C-style
-    // cast that hasn't been resolved), bail out to avoid dereferencing a null
-    // type.
-    if (RecExpr->getType().isNull())
-      return;
     ExprResult Conv = SemaRef.DefaultFunctionArrayLvalueConversion(RecExpr);
     if (Conv.isInvalid()) // conversion failed. bail.
       return;
@@ -10476,8 +10366,7 @@ void SemaCodeCompletion::CodeCompleteIncludedFile(llvm::StringRef Dir,
     const StringRef &Dirname = llvm::sys::path::filename(Dir);
     const bool isQt = Dirname.starts_with("Qt") || Dirname == "ActiveQt";
     const bool ExtensionlessHeaders =
-        IsSystem || isQt || Dir.ends_with(".framework/Headers") ||
-        IncludeDir.ends_with("/include") || IncludeDir.ends_with("\\include");
+        IsSystem || isQt || Dir.ends_with(".framework/Headers");
     std::error_code EC;
     unsigned Count = 0;
     for (auto It = FS.dir_begin(Dir, EC);

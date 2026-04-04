@@ -34,8 +34,6 @@ class Operator;
 class OverflowingBinaryOperator;
 class FPMathOperator;
 class Region;
-class UncondBrInst;
-class CondBrInst;
 
 /// Iterator for the `Use` edges of a Value's users.
 /// \Returns a `Use` when dereferenced.
@@ -119,8 +117,7 @@ protected:
   friend class ShuffleVectorInst;     // For getting `Val`.
   friend class ExtractValueInst;      // For getting `Val`.
   friend class InsertValueInst;       // For getting `Val`.
-  friend class UncondBrInst;          // For getting `Val`.
-  friend class CondBrInst;            // For getting `Val`.
+  friend class BranchInst;            // For getting `Val`.
   friend class LoadInst;              // For getting `Val`.
   friend class StoreInst;             // For getting `Val`.
   friend class ReturnInst;            // For getting `Val`.

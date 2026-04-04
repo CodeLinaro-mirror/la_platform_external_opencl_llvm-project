@@ -99,6 +99,7 @@ enum ArchExtKind : unsigned {
   AEK_CCPP,
   AEK_CHK,
   AEK_CLRBHB,
+  AEK_CMH,
   AEK_CMPBR,
   AEK_FCMA,
   AEK_CPA,
@@ -161,6 +162,7 @@ enum ArchExtKind : unsigned {
   AEK_PAN_RWV,
   AEK_PAUTH,
   AEK_PAUTHLR,
+  AEK_PCDPHINT,
   AEK_PERFMON,
   AEK_POE2,
   AEK_POPS,
@@ -253,6 +255,7 @@ inline constexpr ExtensionInfo Extensions[] = {
   {"", {}, AArch64::AEK_CCPP, "FEAT_DPB", "Enable Armv8.2-A data Cache Clean to Point of Persistence", "+ccpp", "-ccpp"},
   {"", {}, AArch64::AEK_CHK, "FEAT_CHK", "Enable Armv8.0-A Check Feature Status Extension", "+chk", "-chk"},
   {"", {}, AArch64::AEK_CLRBHB, "FEAT_CLRBHB", "Enable Clear BHB instruction", "+clrbhb", "-clrbhb"},
+  {"cmh", {}, AArch64::AEK_CMH, "FEAT_CMH", "Enable Armv9.7-A Contention Management Hints", "+cmh", "-cmh"},
   {"cmpbr", {}, AArch64::AEK_CMPBR, "FEAT_CMPBR", "Enable Armv9.6-A base compare and branch instructions", "+cmpbr", "-cmpbr"},
   {"fcma", {}, AArch64::AEK_FCMA, "FEAT_FCMA", "Enable Armv8.3-A Floating-point complex number support", "+complxnum", "-complxnum"},
   {"cpa", {}, AArch64::AEK_CPA, "FEAT_CPA", "Enable Armv9.5-A Checked Pointer Arithmetic", "+cpa", "-cpa"},
@@ -315,6 +318,7 @@ inline constexpr ExtensionInfo Extensions[] = {
   {"", {}, AArch64::AEK_PAN_RWV, "FEAT_PAN2", "Enable Armv8.2-A PAN s1e1R and s1e1W Variants", "+pan-rwv", "-pan-rwv"},
   {"pauth", {}, AArch64::AEK_PAUTH, "FEAT_PAuth", "Enable Armv8.3-A Pointer Authentication extension", "+pauth", "-pauth"},
   {"pauth-lr", {}, AArch64::AEK_PAUTHLR, "FEAT_PAuth_LR", "Enable Armv9.5-A PAC enhancements", "+pauth-lr", "-pauth-lr"},
+  {"pcdphint", {}, AArch64::AEK_PCDPHINT, "FEAT_PCDPHINT", "Enable Armv9.6-A Producer Consumer Data Placement hints", "+pcdphint", "-pcdphint"},
   {"pmuv3", {}, AArch64::AEK_PERFMON, "FEAT_PMUv3", "Enable Armv8.0-A PMUv3 Performance Monitors extension", "+perfmon", "-perfmon"},
   {"poe2", {}, AArch64::AEK_POE2, "FEAT_S1POE2", "Enable Stage 1 Permission Overlays Extension 2 instructions", "+poe2", "-poe2"},
   {"pops", {}, AArch64::AEK_POPS, "FEAT_PoPS", "Enable Armv9.6-A Point Of Physical Storage (PoPS) DC instructions", "+pops", "-pops"},
@@ -473,7 +477,6 @@ inline constexpr ExtensionDependency ExtensionDependencies[] = {
   {AEK_FP16, AEK_F16F32DOT},
   {AEK_SIMD, AEK_F16F32MM},
   {AEK_FP16, AEK_F16F32MM},
-  {AEK_SIMD, AEK_F16MM},
   {AEK_FP16, AEK_F16MM},
   {AEK_SVE, AEK_F32MM},
   {AEK_SVE, AEK_F64MM},
@@ -700,7 +703,7 @@ inline constexpr ArchInfo ARMV9_7A = {
   AProfile,
   "armv9.7-a",
   "+v9.7a",
-  (AArch64::ExtensionBitset({AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_FP16, AArch64::AEK_SVE, AArch64::AEK_SVE2, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_RME, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_WFXT, AArch64::AEK_SPE_EEF, AArch64::AEK_MEC, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_WFXT, AArch64::AEK_SPE_EEF, AArch64::AEK_MOPS, AArch64::AEK_HBC, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_WFXT, AArch64::AEK_SPE_EEF, AArch64::AEK_MOPS, AArch64::AEK_HBC, AArch64::AEK_SPECRES2, AArch64::AEK_CSSC, AArch64::AEK_RASV2, AArch64::AEK_SVE2P1, AArch64::AEK_CPA, AArch64::AEK_LUT, AArch64::AEK_FAMINMAX, AArch64::AEK_CMPBR, AArch64::AEK_LSUI, AArch64::AEK_OCCMO, AArch64::AEK_SVE2P3, AArch64::AEK_FPRCVT, AArch64::AEK_F16F32DOT, }))
+  (AArch64::ExtensionBitset({AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_FP16, AArch64::AEK_SVE, AArch64::AEK_SVE2, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_RME, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_WFXT, AArch64::AEK_SPE_EEF, AArch64::AEK_MEC, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_WFXT, AArch64::AEK_SPE_EEF, AArch64::AEK_MOPS, AArch64::AEK_HBC, AArch64::AEK_FP, AArch64::AEK_SIMD, AArch64::AEK_CRC, AArch64::AEK_LSE, AArch64::AEK_RDM, AArch64::AEK_RAS, AArch64::AEK_FCMA, AArch64::AEK_JSCVT, AArch64::AEK_PAUTH, AArch64::AEK_RCPC, AArch64::AEK_CCIDX, AArch64::AEK_DOTPROD, AArch64::AEK_DIT, AArch64::AEK_FLAGM, AArch64::AEK_PREDRES, AArch64::AEK_SSBS, AArch64::AEK_BTI, AArch64::AEK_SB, AArch64::AEK_BF16, AArch64::AEK_I8MM, AArch64::AEK_WFXT, AArch64::AEK_SPE_EEF, AArch64::AEK_MOPS, AArch64::AEK_HBC, AArch64::AEK_SPECRES2, AArch64::AEK_CSSC, AArch64::AEK_RASV2, AArch64::AEK_SVE2P1, AArch64::AEK_CPA, AArch64::AEK_LUT, AArch64::AEK_FAMINMAX, AArch64::AEK_CMPBR, AArch64::AEK_LSUI, AArch64::AEK_OCCMO, AArch64::AEK_SVE2P3, AArch64::AEK_FPRCVT, }))
 };
 
 /// The set of all architectures

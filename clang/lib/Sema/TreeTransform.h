@@ -1138,21 +1138,24 @@ public:
   /// Build a new C++11 auto type.
   ///
   /// By default, builds a new AutoType with the given deduced type.
-  QualType RebuildAutoType(DeducedKind DK, QualType DeducedAsType,
-                           AutoTypeKeyword Keyword,
+  QualType RebuildAutoType(QualType Deduced, AutoTypeKeyword Keyword,
                            ConceptDecl *TypeConstraintConcept,
                            ArrayRef<TemplateArgument> TypeConstraintArgs) {
-    return SemaRef.Context.getAutoType(
-        DK, DeducedAsType, Keyword, TypeConstraintConcept, TypeConstraintArgs);
+    // Note, IsDependent is always false here: we implicitly convert an 'auto'
+    // which has been deduced to a dependent type into an undeduced 'auto', so
+    // that we'll retry deduction after the transformation.
+    return SemaRef.Context.getAutoType(Deduced, Keyword,
+                                       /*IsDependent*/ false, /*IsPack=*/false,
+                                       TypeConstraintConcept,
+                                       TypeConstraintArgs);
   }
 
   /// By default, builds a new DeducedTemplateSpecializationType with the given
   /// deduced type.
   QualType RebuildDeducedTemplateSpecializationType(
-      DeducedKind DK, QualType DeducedAsType, ElaboratedTypeKeyword Keyword,
-      TemplateName Template) {
+      ElaboratedTypeKeyword Keyword, TemplateName Template, QualType Deduced) {
     return SemaRef.Context.getDeducedTemplateSpecializationType(
-        DK, DeducedAsType, Keyword, Template);
+        Keyword, Template, Deduced, /*IsDependent*/ false);
   }
 
   /// Build a new template specialization type.
@@ -3095,15 +3098,14 @@ public:
                                               Init);
   }
 
-  /// Build a new extended vector or matrix element access expression.
+  /// Build a new extended vector element access expression.
   ///
   /// By default, performs semantic analysis to build the new expression.
   /// Subclasses may override this routine to provide different behavior.
-  ExprResult RebuildExtVectorOrMatrixElementExpr(Expr *Base,
-                                                 SourceLocation OpLoc,
-                                                 bool IsArrow,
-                                                 SourceLocation AccessorLoc,
-                                                 IdentifierInfo &Accessor) {
+  ExprResult RebuildExtVectorElementExpr(Expr *Base, SourceLocation OpLoc,
+                                         bool IsArrow,
+                                         SourceLocation AccessorLoc,
+                                         IdentifierInfo &Accessor) {
 
     CXXScopeSpec SS;
     DeclarationNameInfo NameInfo(&Accessor, AccessorLoc);
@@ -5613,8 +5615,9 @@ QualType TreeTransform<Derived>::RebuildQualifiedType(QualType T,
         Qs.removeObjCLifetime();
         Deduced =
             SemaRef.Context.getQualifiedType(Deduced.getUnqualifiedType(), Qs);
-        T = SemaRef.Context.getAutoType(AutoTy->getDeducedKind(), Deduced,
-                                        AutoTy->getKeyword(),
+        T = SemaRef.Context.getAutoType(Deduced, AutoTy->getKeyword(),
+                                        AutoTy->isDependentType(),
+                                        /*isPack=*/false,
                                         AutoTy->getTypeConstraintConcept(),
                                         AutoTy->getTypeConstraintArguments());
       } else {
@@ -7236,8 +7239,7 @@ QualType TreeTransform<Derived>::TransformDeducedTemplateSpecializationType(
   }
 
   QualType Result = getDerived().RebuildDeducedTemplateSpecializationType(
-      NewDeduced.isNull() ? DeducedKind::Undeduced : DeducedKind::Deduced,
-      NewDeduced, T->getKeyword(), TemplateName);
+      T->getKeyword(), TemplateName, NewDeduced);
   if (Result.isNull())
     return QualType();
 
@@ -7578,9 +7580,8 @@ QualType TreeTransform<Derived>::TransformAutoType(TypeLocBuilder &TLB,
     NewArgList.reserve(NewTemplateArgs.size());
     for (const auto &ArgLoc : NewTemplateArgs.arguments())
       NewArgList.push_back(ArgLoc.getArgument());
-    Result = getDerived().RebuildAutoType(
-        NewDeduced.isNull() ? DeducedKind::Undeduced : DeducedKind::Deduced,
-        NewDeduced, T->getKeyword(), NewCD, NewArgList);
+    Result = getDerived().RebuildAutoType(NewDeduced, T->getKeyword(), NewCD,
+                                          NewArgList);
     if (Result.isNull())
       return QualType();
   }
@@ -7755,27 +7756,6 @@ QualType TreeTransform<Derived>::TransformBTFTagAttributedType(
 }
 
 template <typename Derived>
-QualType TreeTransform<Derived>::TransformOverflowBehaviorType(
-    TypeLocBuilder &TLB, OverflowBehaviorTypeLoc TL) {
-  const OverflowBehaviorType *OldTy = TL.getTypePtr();
-  QualType InnerTy = getDerived().TransformType(TLB, TL.getWrappedLoc());
-  if (InnerTy.isNull())
-    return QualType();
-
-  QualType Result = TL.getType();
-  if (getDerived().AlwaysRebuild() || InnerTy != OldTy->getUnderlyingType()) {
-    Result = SemaRef.Context.getOverflowBehaviorType(OldTy->getBehaviorKind(),
-                                                     InnerTy);
-    if (Result.isNull())
-      return QualType();
-  }
-
-  OverflowBehaviorTypeLoc NewTL = TLB.push<OverflowBehaviorTypeLoc>(Result);
-  NewTL.initializeLocal(SemaRef.Context, TL.getAttrLoc());
-  return Result;
-}
-
-template <typename Derived>
 QualType TreeTransform<Derived>::TransformHLSLAttributedResourceType(
     TypeLocBuilder &TLB, HLSLAttributedResourceTypeLoc TL) {
 
@@ -7787,13 +7767,12 @@ QualType TreeTransform<Derived>::TransformHLSLAttributedResourceType(
 
   QualType ContainedTy = QualType();
   QualType OldContainedTy = oldType->getContainedType();
-  TypeSourceInfo *ContainedTSI = nullptr;
   if (!OldContainedTy.isNull()) {
     TypeSourceInfo *oldContainedTSI = TL.getContainedTypeSourceInfo();
     if (!oldContainedTSI)
       oldContainedTSI = getSema().getASTContext().getTrivialTypeSourceInfo(
           OldContainedTy, SourceLocation());
-    ContainedTSI = getDerived().TransformType(oldContainedTSI);
+    TypeSourceInfo *ContainedTSI = getDerived().TransformType(oldContainedTSI);
     if (!ContainedTSI)
       return QualType();
     ContainedTy = ContainedTSI->getType();
@@ -7806,10 +7785,7 @@ QualType TreeTransform<Derived>::TransformHLSLAttributedResourceType(
         WrappedTy, ContainedTy, oldType->getAttrs());
   }
 
-  HLSLAttributedResourceTypeLoc NewTL =
-      TLB.push<HLSLAttributedResourceTypeLoc>(Result);
-  NewTL.setSourceRange(TL.getLocalSourceRange());
-  NewTL.setContainedTypeSourceInfo(ContainedTSI);
+  TLB.push<HLSLAttributedResourceTypeLoc>(Result);
   return Result;
 }
 
@@ -13074,38 +13050,6 @@ ExprResult TreeTransform<Derived>::TransformSYCLUniqueStableNameExpr(
       E->getLocation(), E->getLParenLocation(), E->getRParenLocation(), NewT);
 }
 
-template <typename Derived>
-StmtResult TreeTransform<Derived>::TransformUnresolvedSYCLKernelCallStmt(
-    UnresolvedSYCLKernelCallStmt *S) {
-  auto *FD = cast<FunctionDecl>(SemaRef.CurContext);
-  const auto *SKEPAttr = FD->template getAttr<SYCLKernelEntryPointAttr>();
-  if (!SKEPAttr || SKEPAttr->isInvalidAttr())
-    return StmtError();
-
-  ExprResult IdExpr = getDerived().TransformExpr(S->getKernelLaunchIdExpr());
-  if (IdExpr.isInvalid())
-    return StmtError();
-
-  StmtResult Body = getDerived().TransformStmt(S->getOriginalStmt());
-  if (Body.isInvalid())
-    return StmtError();
-
-  StmtResult SR = SemaRef.SYCL().BuildSYCLKernelCallStmt(
-      cast<FunctionDecl>(SemaRef.CurContext), cast<CompoundStmt>(Body.get()),
-      IdExpr.get());
-  if (SR.isInvalid())
-    return StmtError();
-
-  return SR;
-}
-
-template <typename Derived>
-ExprResult TreeTransform<Derived>::TransformCXXReflectExpr(CXXReflectExpr *E) {
-  // TODO(reflection): Implement its transform
-  assert(false && "not implemented yet");
-  return ExprError();
-}
-
 template<typename Derived>
 ExprResult
 TreeTransform<Derived>::TransformPredefinedExpr(PredefinedExpr *E) {
@@ -14017,26 +13961,8 @@ TreeTransform<Derived>::TransformExtVectorElementExpr(ExtVectorElementExpr *E) {
   // FIXME: Bad source location
   SourceLocation FakeOperatorLoc =
       SemaRef.getLocForEndOfToken(E->getBase()->getEndLoc());
-  return getDerived().RebuildExtVectorOrMatrixElementExpr(
+  return getDerived().RebuildExtVectorElementExpr(
       Base.get(), FakeOperatorLoc, E->isArrow(), E->getAccessorLoc(),
-      E->getAccessor());
-}
-
-template <typename Derived>
-ExprResult
-TreeTransform<Derived>::TransformMatrixElementExpr(MatrixElementExpr *E) {
-  ExprResult Base = getDerived().TransformExpr(E->getBase());
-  if (Base.isInvalid())
-    return ExprError();
-
-  if (!getDerived().AlwaysRebuild() && Base.get() == E->getBase())
-    return E;
-
-  // FIXME: Bad source location
-  SourceLocation FakeOperatorLoc =
-      SemaRef.getLocForEndOfToken(E->getBase()->getEndLoc());
-  return getDerived().RebuildExtVectorOrMatrixElementExpr(
-      Base.get(), FakeOperatorLoc, /*isArrow*/ false, E->getAccessorLoc(),
       E->getAccessor());
 }
 
@@ -14589,17 +14515,10 @@ TreeTransform<Derived>::TransformCXXTypeidExpr(CXXTypeidExpr *E) {
   // semantic processing can re-transform an already transformed operand.
   Expr *Op = E->getExprOperand();
   auto EvalCtx = Sema::ExpressionEvaluationContext::Unevaluated;
-  if (E->isGLValue()) {
-    QualType OpType = Op->getType();
-    if (auto *RD = OpType->getAsCXXRecordDecl()) {
-      if (SemaRef.RequireCompleteType(E->getBeginLoc(), OpType,
-                                      diag::err_incomplete_typeid))
-        return ExprError();
-
-      if (RD->isPolymorphic())
-        EvalCtx = SemaRef.ExprEvalContexts.back().Context;
-    }
-  }
+  if (E->isGLValue())
+    if (auto *RD = Op->getType()->getAsCXXRecordDecl();
+        RD && RD->isPolymorphic())
+      EvalCtx = SemaRef.ExprEvalContexts.back().Context;
 
   EnterExpressionEvaluationContext Unevaluated(SemaRef, EvalCtx,
                                                Sema::ReuseLambdaContextDecl);

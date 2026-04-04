@@ -290,7 +290,8 @@ module m14d
  contains
   subroutine test
     real :: y
-    y = foo(1.0) ! According to F23 C7108, not ambiguous
+    !PORTABILITY: Reference to generic function 'foo' (resolving to specific 'bar') is ambiguous with a structure constructor of the same name [-Wambiguous-structure-constructor]
+    y = foo(1.0)
     x = foo(2)
   end subroutine
 end module
@@ -301,7 +302,8 @@ module m14e
  contains
   subroutine test
     real :: y
-    y = foo(1.0) ! According to F23 C7108, not ambiguous
+    !PORTABILITY: Reference to generic function 'foo' (resolving to specific 'bar') is ambiguous with a structure constructor of the same name [-Wambiguous-structure-constructor]
+    y = foo(1.0)
     x = foo(2)
   end subroutine
 end module

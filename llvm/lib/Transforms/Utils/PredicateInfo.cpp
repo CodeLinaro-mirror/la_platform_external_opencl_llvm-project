@@ -220,7 +220,7 @@ class PredicateInfoBuilder {
 
   void processAssume(AssumeInst *, BasicBlock *,
                      SmallVectorImpl<Value *> &OpsToRename);
-  void processBranch(CondBrInst *, BasicBlock *,
+  void processBranch(BranchInst *, BasicBlock *,
                      SmallVectorImpl<Value *> &OpsToRename);
   void processSwitch(SwitchInst *, BasicBlock *,
                      SmallVectorImpl<Value *> &OpsToRename);
@@ -365,7 +365,7 @@ void PredicateInfoBuilder::processAssume(
   if (II->hasOperandBundles()) {
     for (auto BOI : II->bundle_op_infos()) {
       if (RetainedKnowledge RK = getKnowledgeFromBundle(*II, BOI)) {
-        if (RK.AttrKind == Attribute::NonNull && shouldRename(RK.WasOn))
+        if (RK.AttrKind == Attribute::NonNull)
           addInfoFor(OpsToRename, RK.WasOn,
                      new (Allocator) PredicateBundleAssume(RK.WasOn, II,
                                                            Attribute::NonNull));
@@ -409,7 +409,7 @@ void PredicateInfoBuilder::processAssume(
 // Process a block terminating branch, and place relevant operations to be
 // renamed into OpsToRename.
 void PredicateInfoBuilder::processBranch(
-    CondBrInst *BI, BasicBlock *BranchBB,
+    BranchInst *BI, BasicBlock *BranchBB,
     SmallVectorImpl<Value *> &OpsToRename) {
   BasicBlock *FirstBB = BI->getSuccessor(0);
   BasicBlock *SecondBB = BI->getSuccessor(1);
@@ -490,7 +490,9 @@ void PredicateInfoBuilder::buildPredicateInfo() {
     if (!DT.isReachableFromEntry(&BB))
       continue;
 
-    if (auto *BI = dyn_cast<CondBrInst>(BB.getTerminator())) {
+    if (auto *BI = dyn_cast<BranchInst>(BB.getTerminator())) {
+      if (!BI->isConditional())
+        continue;
       // Can't insert conditional information if they all go to the same place.
       if (BI->getSuccessor(0) == BI->getSuccessor(1))
         continue;

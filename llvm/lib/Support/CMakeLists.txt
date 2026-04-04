@@ -42,9 +42,6 @@ if( WIN32 )
   # advapi32 required for CryptAcquireContextW in lib/Support/Windows/Path.inc.
   # ntdll required for RtlGetLastNtStatus in lib/Support/ErrorHandling.cpp.
   set(system_libs ${system_libs} psapi shell32 ole32 uuid advapi32 ws2_32 ntdll)
-  if( HAVE_WINDOWS_ICU )
-    list(APPEND system_libs icu)
-  endif()
 elseif( CMAKE_HOST_UNIX )
   if( HAVE_LIBRT )
     set(system_libs ${system_libs} rt)
@@ -138,7 +135,7 @@ if (UNIX AND "${CMAKE_SYSTEM_NAME}" MATCHES "AIX")
 endif()
 
 add_subdirectory(BLAKE3)
-add_subdirectory(HTTP)
+add_subdirectory(LSP)
 
 add_llvm_component_library(LLVMSupport
   ABIBreak.cpp
@@ -325,9 +322,6 @@ add_llvm_component_library(LLVMSupport
   ${LLVM_MAIN_INCLUDE_DIR}/llvm/Support
   ${Backtrace_INCLUDE_DIRS}
 
-  PRECOMPILE_HEADERS
-  [["llvm/Support/pch.h"]]
-
   LINK_LIBS
   ${system_libs} ${imported_libs} ${delayload_flags}
 
@@ -336,7 +330,7 @@ add_llvm_component_library(LLVMSupport
   )
 
 # Link ICU library if it is an external library.
-if(ICU_FOUND AND NOT HAVE_WINDOWS_ICU)
+if(ICU_FOUND)
   target_link_libraries(LLVMSupport
   PRIVATE
   ${ICU_LIBRARIES}
@@ -402,6 +396,3 @@ target_include_directories(LLVMSupport
   PRIVATE
   ${LLVM_THIRD_PARTY_DIR}/siphash/include
 )
-
-# SupportLSP depends on Support and therefore must be included afterwards.
-add_subdirectory(LSP)

@@ -194,7 +194,7 @@ void SPIRVAsmPrinter::emitOpLabel(const MachineBasicBlock &MBB) {
 
 void SPIRVAsmPrinter::emitBasicBlockStart(const MachineBasicBlock &MBB) {
   // Do not emit anything if it's an internal service function.
-  if (MBB.empty() || isHidden())
+  if (MBB.empty())
     return;
 
   // If it's the first MBB in MF, it has OpFunction and OpFunctionParameter, so
@@ -449,7 +449,7 @@ static void addOpsFromMDNode(MDNode *MDN, MCInst &Inst,
       if (ConstantInt *Const = dyn_cast<ConstantInt>(C)) {
         Inst.addOperand(MCOperand::createImm(Const->getZExtValue()));
       } else if (auto *CE = dyn_cast<Function>(C)) {
-        MCRegister FuncReg = MAI->getGlobalObjReg(CE);
+        MCRegister FuncReg = MAI->getFuncReg(CE);
         assert(FuncReg.isValid());
         Inst.addOperand(MCOperand::createReg(FuncReg));
       }
@@ -543,7 +543,7 @@ void SPIRVAsmPrinter::outputExecutionMode(const Module &M) {
     // <Entry Point> operands of OpExecutionMode
     if (F.isDeclaration() || !isEntryPoint(F))
       continue;
-    MCRegister FReg = MAI->getGlobalObjReg(&F);
+    MCRegister FReg = MAI->getFuncReg(&F);
     assert(FReg.isValid());
 
     if (Attribute Attr = F.getFnAttribute("hlsl.shader"); Attr.isValid()) {
@@ -690,13 +690,15 @@ void SPIRVAsmPrinter::outputAnnotations(const Module &M) {
       // The first field of the struct contains a pointer to
       // the annotated variable.
       Value *AnnotatedVar = CS->getOperand(0)->stripPointerCasts();
-      auto *GO = dyn_cast<GlobalObject>(AnnotatedVar);
-      MCRegister Reg = GO ? MAI->getGlobalObjReg(GO) : MCRegister();
+      if (!isa<Function>(AnnotatedVar))
+        report_fatal_error("Unsupported value in llvm.global.annotations");
+      Function *Func = cast<Function>(AnnotatedVar);
+      MCRegister Reg = MAI->getFuncReg(Func);
       if (!Reg.isValid()) {
         std::string DiagMsg;
         raw_string_ostream OS(DiagMsg);
         AnnotatedVar->print(OS);
-        DiagMsg = "Unsupported value in llvm.global.annotations: " + DiagMsg;
+        DiagMsg = "Unknown function in llvm.global.annotations: " + DiagMsg;
         report_fatal_error(DiagMsg.c_str());
       }
 
@@ -769,7 +771,7 @@ void SPIRVAsmPrinter::outputFPFastMathDefaultInfo() {
              "Mismatched float type size");
       MCInst Inst;
       Inst.setOpcode(SPIRV::OpExecutionModeId);
-      MCRegister FuncReg = MAI->getGlobalObjReg(Func);
+      MCRegister FuncReg = MAI->getFuncReg(Func);
       assert(FuncReg.isValid());
       Inst.addOperand(MCOperand::createReg(FuncReg));
       Inst.addOperand(
@@ -819,7 +821,7 @@ void SPIRVAsmPrinter::outputModuleSections() {
   // Get the global subtarget to output module-level info.
   ST = static_cast<const SPIRVTargetMachine &>(TM).getSubtargetImpl();
   TII = ST->getInstrInfo();
-  MAI = &getAnalysis<SPIRVModuleAnalysis>().MAI;
+  MAI = &SPIRVModuleAnalysis::MAI;
   assert(ST && TII && MAI && M && "Module analysis is required");
   // Output instructions according to the Logical Layout of a Module:
   // 1,2. All OpCapability instructions, then optional OpExtension

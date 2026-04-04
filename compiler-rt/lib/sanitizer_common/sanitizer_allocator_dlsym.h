@@ -40,8 +40,8 @@ struct DlSymAllocator {
     return ptr;
   }
 
-  static void* Callocate(usize nmemb, usize size, uptr align = kWordSize) {
-    void* ptr = InternalCalloc(nmemb, size, nullptr, align);
+  static void *Callocate(usize nmemb, usize size) {
+    void *ptr = InternalCalloc(nmemb, size);
     CHECK(internal_allocator()->FromPrimary(ptr));
     Details::OnAllocate(ptr, GetSize(ptr));
     return ptr;

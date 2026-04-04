@@ -29,10 +29,10 @@ add_lldb_library(lldbDAP
 
   Handler/ResponseHandler.cpp
   Handler/AttachRequestHandler.cpp
-  Handler/BreakpointLocationsRequestHandler.cpp
+  Handler/BreakpointLocationsHandler.cpp
   Handler/CancelRequestHandler.cpp
   Handler/CompileUnitsRequestHandler.cpp
-  Handler/CompletionsRequestHandler.cpp
+  Handler/CompletionsHandler.cpp
   Handler/ConfigurationDoneRequestHandler.cpp
   Handler/ContinueRequestHandler.cpp
   Handler/DataBreakpointInfoRequestHandler.cpp
@@ -64,7 +64,6 @@ add_lldb_library(lldbDAP
   Handler/StepOutRequestHandler.cpp
   Handler/TestGetTargetBreakpointsRequestHandler.cpp
   Handler/ThreadsRequestHandler.cpp
-  Handler/UnknownRequestHandler.cpp
   Handler/VariablesRequestHandler.cpp
   Handler/WriteMemoryRequestHandler.cpp
 

@@ -113,13 +113,15 @@ public:
   APSInt extend(uint32_t width) const {
     if (IsUnsigned)
       return APSInt(zext(width), IsUnsigned);
-    return APSInt(sext(width), IsUnsigned);
+    else
+      return APSInt(sext(width), IsUnsigned);
   }
 
   APSInt extOrTrunc(uint32_t width) const {
     if (IsUnsigned)
       return APSInt(zextOrTrunc(width), IsUnsigned);
-    return APSInt(sextOrTrunc(width), IsUnsigned);
+    else
+      return APSInt(sextOrTrunc(width), IsUnsigned);
   }
 
   const APSInt &operator%=(const APSInt &RHS) {

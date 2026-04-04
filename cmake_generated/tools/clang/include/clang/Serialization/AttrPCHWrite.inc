@@ -461,7 +461,6 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.AddString(SA->getReplacement());
     Record.push_back(SA->getPriority());
     Record.AddIdentifierRef(SA->getEnvironment());
-    Record.AddVersionTuple(SA->getOrigAnyAppleOSVersion());
     break;
   }
   case attr::AvailableOnlyInDefaultEvalMethod: {
@@ -1229,9 +1228,7 @@ Record.push_back(static_cast<uint64_t>(SA->getThunkType()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
-    Record.push_back(SA->args_size());
-    for (auto &Val : SA->args())
-      Record.AddStmt(Val);
+    Record.AddStmt(SA->getArg());
     break;
   }
   case attr::GuardedVar: {
@@ -1255,14 +1252,6 @@ Record.push_back(static_cast<uint64_t>(SA->getThunkType()));
     Record.push_back(A->isPackExpansion());
     Record.AddString(SA->getSemanticName());
     Record.push_back(SA->getSemanticIndex());
-    break;
-  }
-  case attr::HLSLAssociatedResourceDecl: {
-    const auto *SA = cast<HLSLAssociatedResourceDeclAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    Record.AddDeclRef(SA->getResDecl());
     break;
   }
   case attr::HLSLContainedType: {
@@ -1356,13 +1345,6 @@ Record.push_back(static_cast<uint64_t>(SA->getThunkType()));
 Record.push_back(static_cast<uint64_t>(SA->getResourceClass()));
     break;
   }
-  case attr::HLSLResourceDimension: {
-    const auto *SA = cast<HLSLResourceDimensionAttr>(A);
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-Record.push_back(static_cast<uint64_t>(SA->getDimension()));
-    break;
-  }
   case attr::HLSLShader: {
     const auto *SA = cast<HLSLShaderAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1399,14 +1381,6 @@ Record.push_back(static_cast<uint64_t>(SA->getType()));
   }
   case attr::HLSLVkExtBuiltinInput: {
     const auto *SA = cast<HLSLVkExtBuiltinInputAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    Record.push_back(SA->getBuiltIn());
-    break;
-  }
-  case attr::HLSLVkExtBuiltinOutput: {
-    const auto *SA = cast<HLSLVkExtBuiltinOutputAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
@@ -1892,13 +1866,6 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
     Record.push_back(A->isPackExpansion());
     break;
   }
-  case attr::NoFieldProtection: {
-    const auto *SA = cast<NoFieldProtectionAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    break;
-  }
   case attr::NoInline: {
     const auto *SA = cast<NoInlineAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1929,13 +1896,6 @@ Record.push_back(static_cast<uint64_t>(SA->getInterrupt()));
   }
   case attr::NoMips16: {
     const auto *SA = cast<NoMips16Attr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    break;
-  }
-  case attr::NoOutline: {
-    const auto *SA = cast<NoOutlineAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
@@ -2179,13 +2139,6 @@ Record.push_back(static_cast<uint64_t>(SA->getDevType()));
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
     Record.AddStmt(SA->getRef());
-    break;
-  }
-  case attr::OMPTargetIndirectCall: {
-    const auto *SA = cast<OMPTargetIndirectCallAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
     break;
   }
   case attr::OMPThreadPrivateDecl: {
@@ -2497,13 +2450,6 @@ Record.push_back(static_cast<uint64_t>(SA->getFamily()));
     Record.push_back(A->isPackExpansion());
     break;
   }
-  case attr::OverflowBehavior: {
-    const auto *SA = cast<OverflowBehaviorAttr>(A);
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    Record.AddIdentifierRef(SA->getBehaviorKind());
-    break;
-  }
   case attr::Overloadable: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
@@ -2583,14 +2529,6 @@ Record.push_back(static_cast<uint64_t>(SA->getParamState()));
 Record.push_back(static_cast<uint64_t>(SA->getPCS()));
     break;
   }
-  case attr::Personality: {
-    const auto *SA = cast<PersonalityAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    Record.AddDeclRef(SA->getRoutine());
-    break;
-  }
   case attr::Pointer: {
     const auto *SA = cast<PointerAttr>(A);
     Record.push_back(SA->isInherited());
@@ -2606,13 +2544,6 @@ Record.push_back(static_cast<uint64_t>(SA->getPCS()));
     Record.push_back(SA->getKey());
     Record.push_back(SA->getAddressDiscriminated());
     Record.push_back(SA->getExtraDiscriminator());
-    break;
-  }
-  case attr::PointerFieldProtection: {
-    const auto *SA = cast<PointerFieldProtectionAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
     break;
   }
   case attr::PragmaClangBSSSection: {
@@ -2697,9 +2628,7 @@ Record.push_back(static_cast<uint64_t>(SA->getPCS()));
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());
-    Record.push_back(SA->args_size());
-    for (auto &Val : SA->args())
-      Record.AddStmt(Val);
+    Record.AddStmt(SA->getArg());
     break;
   }
   case attr::PtGuardedVar: {
@@ -2970,13 +2899,6 @@ Record.push_back(static_cast<uint64_t>(SA->getNewState()));
   }
   case attr::SpeculativeLoadHardening: {
     const auto *SA = cast<SpeculativeLoadHardeningAttr>(A);
-    Record.push_back(SA->isInherited());
-    Record.push_back(A->isImplicit());
-    Record.push_back(A->isPackExpansion());
-    break;
-  }
-  case attr::StackProtectorIgnore: {
-    const auto *SA = cast<StackProtectorIgnoreAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->isPackExpansion());

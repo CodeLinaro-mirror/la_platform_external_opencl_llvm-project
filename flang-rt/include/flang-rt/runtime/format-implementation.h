@@ -193,7 +193,7 @@ static RT_API_ATTRS bool AbsoluteTabbing(CONTEXT &context, int n) {
 
 template <typename CONTEXT>
 static RT_API_ATTRS void HandleControl(
-    CONTEXT &context, char ch, char next, char next2, int n) {
+    CONTEXT &context, char ch, char next, int n) {
   MutableModes &modes{context.mutableModes()};
   switch (ch) {
   case 'B':
@@ -248,16 +248,6 @@ static RT_API_ATTRS void HandleControl(
     break;
   case 'X':
     if (!next && RelativeTabbing(context, n)) {
-      return;
-    }
-    break;
-  case 'L':
-    if (next == 'Z') {
-      if (next2 == 'S') {
-        modes.editingFlags |= leadingZeroSuppress; // LZS
-      } else {
-        modes.editingFlags &= ~leadingZeroSuppress; // LZ or LZP
-      }
       return;
     }
     break;
@@ -465,7 +455,6 @@ RT_API_ATTRS int FormatControl<CONTEXT>::CueUpNextDataEdit(
     } else if (ch >= 'A' && ch <= 'Z') {
       int start{offset_ - 1};
       CharType next{'\0'};
-      CharType next2{'\0'};
       if (ch != 'P') { // 1PE5.2 - comma not required (C1302)
         CharType peek{Capitalize(PeekNext())};
         if (peek >= 'A' && peek <= 'Z') {
@@ -475,15 +464,6 @@ RT_API_ATTRS int FormatControl<CONTEXT>::CueUpNextDataEdit(
             // Assume a two-letter edit descriptor
             next = peek;
             ++offset_;
-          } else if (ch == 'L' && peek == 'Z') {
-            // LZ, LZS, or LZP control edit descriptor
-            next = peek;
-            ++offset_;
-            CharType peek2{Capitalize(PeekNext())};
-            if (peek2 == 'S' || peek2 == 'P') {
-              next2 = peek2;
-              ++offset_;
-            }
           } else {
             // extension: assume a comma between 'ch' and 'peek'
           }
@@ -504,7 +484,7 @@ RT_API_ATTRS int FormatControl<CONTEXT>::CueUpNextDataEdit(
           repeat = GetIntField(context);
         }
         HandleControl(context, static_cast<char>(ch), static_cast<char>(next),
-            static_cast<char>(next2), repeat ? *repeat : 1);
+            repeat ? *repeat : 1);
       }
     } else if (ch == '/') {
       context.AdvanceRecord(repeat && *repeat > 0 ? *repeat : 1);

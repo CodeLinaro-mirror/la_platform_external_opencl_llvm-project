@@ -329,7 +329,9 @@ protected:
 
       if (!thread_sp->IsValid()) {
         // This shouldn't ever happen, but just in case, don't do more harm.
-        LLDB_LOGF(log, "PerformAction got called with an invalid thread.");
+        if (log) {
+          LLDB_LOGF(log, "PerformAction got called with an invalid thread.");
+        }
         m_should_stop = true;
         m_should_stop_is_valid = true;
         return;
@@ -483,11 +485,13 @@ protected:
             // not all of them valid for this thread.  Skip the ones that
             // aren't:
             if (!bp_loc_sp->ValidForThisThread(*thread_sp)) {
-              LLDB_LOGF(log,
-                        "Breakpoint %s hit on thread 0x%llx but it was not "
-                        "for this thread, continuing.",
-                        loc_desc.GetData(),
-                        static_cast<unsigned long long>(thread_sp->GetID()));
+              if (log) {
+                LLDB_LOGF(log,
+                          "Breakpoint %s hit on thread 0x%llx but it was not "
+                          "for this thread, continuing.",
+                          loc_desc.GetData(),
+                          static_cast<unsigned long long>(thread_sp->GetID()));
+              }
               continue;
             }
 

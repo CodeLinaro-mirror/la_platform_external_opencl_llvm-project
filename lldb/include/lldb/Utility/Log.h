@@ -373,13 +373,6 @@ Log *GetLLDBErrorLog();
       log_private->Format(__FILE__, __func__, __VA_ARGS__);                    \
   } while (0)
 
-#define LLDB_LOG_VERBOSE(log, ...)                                             \
-  do {                                                                         \
-    ::lldb_private::Log *log_private = (log);                                  \
-    if (log_private && log_private->GetVerbose())                              \
-      log_private->Format(__FILE__, __func__, __VA_ARGS__);                    \
-  } while (0)
-
 #define LLDB_LOGF(log, ...)                                                    \
   do {                                                                         \
     ::lldb_private::Log *log_private = (log);                                  \
@@ -387,11 +380,11 @@ Log *GetLLDBErrorLog();
       log_private->Formatf(__FILE__, __func__, __VA_ARGS__);                   \
   } while (0)
 
-#define LLDB_LOGF_VERBOSE(log, ...)                                            \
+#define LLDB_LOGV(log, ...)                                                    \
   do {                                                                         \
     ::lldb_private::Log *log_private = (log);                                  \
     if (log_private && log_private->GetVerbose())                              \
-      log_private->Formatf(__FILE__, __func__, __VA_ARGS__);                   \
+      log_private->Format(__FILE__, __func__, __VA_ARGS__);                    \
   } while (0)
 
 // Write message to log, if error is set. In the log message refer to the error

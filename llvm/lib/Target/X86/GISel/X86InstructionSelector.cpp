@@ -304,6 +304,7 @@ bool X86InstructionSelector::selectCopy(MachineInstr &I,
         BuildMI(*I.getParent(), I, I.getDebugLoc(),
                 TII.get(TargetOpcode::SUBREG_TO_REG))
             .addDef(ExtSrc)
+            .addImm(0)
             .addReg(SrcReg)
             .addImm(getSubRegIndex(SrcRC));
 
@@ -321,6 +322,7 @@ bool X86InstructionSelector::selectCopy(MachineInstr &I,
       Register ExtReg = MRI.createVirtualRegister(&X86::GR32RegClass);
       BuildMI(*I.getParent(), I, DL, TII.get(TargetOpcode::SUBREG_TO_REG),
               ExtReg)
+          .addImm(0)
           .addReg(SrcReg)
           .addImm(X86::sub_16bit);
 
@@ -723,9 +725,9 @@ bool X86InstructionSelector::selectLoadStoreOp(MachineInstr &I,
     I.removeOperand(0);
     addFullAddress(MIB, AM).addUse(DefReg);
   }
-  constrainSelectedInstRegOperands(I, TII, TRI, RBI);
+  bool Constrained = constrainSelectedInstRegOperands(I, TII, TRI, RBI);
   I.addImplicitDefUseOperands(MF);
-  return true;
+  return Constrained;
 }
 
 static unsigned getLeaOP(LLT Ty, const X86Subtarget &STI) {
@@ -762,8 +764,7 @@ bool X86InstructionSelector::selectFrameIndexOrGep(MachineInstr &I,
     MIB.addImm(0).addReg(0);
   }
 
-  constrainSelectedInstRegOperands(I, TII, TRI, RBI);
-  return true;
+  return constrainSelectedInstRegOperands(I, TII, TRI, RBI);
 }
 
 bool X86InstructionSelector::selectGlobalValue(MachineInstr &I,
@@ -786,8 +787,7 @@ bool X86InstructionSelector::selectGlobalValue(MachineInstr &I,
   I.removeOperand(1);
   addFullAddress(MIB, AM);
 
-  constrainSelectedInstRegOperands(I, TII, TRI, RBI);
-  return true;
+  return constrainSelectedInstRegOperands(I, TII, TRI, RBI);
 }
 
 bool X86InstructionSelector::selectConstant(MachineInstr &I,
@@ -823,9 +823,8 @@ bool X86InstructionSelector::selectConstant(MachineInstr &I,
     NewOpc = X86::MOV32ri;
     break;
   case 64:
-    if (isUInt<32>(Val))
-      NewOpc = X86::MOV32ri64;
-    else if (isInt<32>(Val))
+    // TODO: in case isUInt<32>(Val), X86::MOV32ri can be used
+    if (isInt<32>(Val))
       NewOpc = X86::MOV64ri32;
     else
       NewOpc = X86::MOV64ri;
@@ -835,8 +834,7 @@ bool X86InstructionSelector::selectConstant(MachineInstr &I,
   }
 
   I.setDesc(TII.get(NewOpc));
-  constrainSelectedInstRegOperands(I, TII, TRI, RBI);
-  return true;
+  return constrainSelectedInstRegOperands(I, TII, TRI, RBI);
 }
 
 // Helper function for selectTruncOrPtrToInt and selectAnyext.
@@ -1042,6 +1040,7 @@ bool X86InstructionSelector::selectAnyext(MachineInstr &I,
   BuildMI(*I.getParent(), I, I.getDebugLoc(),
           TII.get(TargetOpcode::SUBREG_TO_REG))
       .addDef(DstReg)
+      .addImm(0)
       .addReg(SrcReg)
       .addImm(getSubRegIndex(SrcRC));
 
@@ -1302,8 +1301,8 @@ bool X86InstructionSelector::selectUAddSub(MachineInstr &I,
   BuildMI(*I.getParent(), I, I.getDebugLoc(), TII.get(X86::SETCCr), CarryOutReg)
       .addImm(X86::COND_B);
 
-  constrainSelectedInstRegOperands(Inst, TII, TRI, RBI);
-  if (!RBI.constrainGenericRegister(CarryOutReg, *CarryRC, MRI))
+  if (!constrainSelectedInstRegOperands(Inst, TII, TRI, RBI) ||
+      !RBI.constrainGenericRegister(CarryOutReg, *CarryRC, MRI))
     return false;
 
   I.eraseFromParent();
@@ -1364,8 +1363,7 @@ bool X86InstructionSelector::selectExtract(MachineInstr &I,
   Index = Index / DstTy.getSizeInBits();
   I.getOperand(2).setImm(Index);
 
-  constrainSelectedInstRegOperands(I, TII, TRI, RBI);
-  return true;
+  return constrainSelectedInstRegOperands(I, TII, TRI, RBI);
 }
 
 bool X86InstructionSelector::emitExtractSubreg(Register DstReg, Register SrcReg,
@@ -1499,8 +1497,7 @@ bool X86InstructionSelector::selectInsert(MachineInstr &I,
 
   I.getOperand(3).setImm(Index);
 
-  constrainSelectedInstRegOperands(I, TII, TRI, RBI);
-  return true;
+  return constrainSelectedInstRegOperands(I, TII, TRI, RBI);
 }
 
 bool X86InstructionSelector::selectUnmergeValues(
@@ -1873,6 +1870,7 @@ bool X86InstructionSelector::selectMulDivRem(MachineInstr &I,
       } else if (RegTy.getSizeInBits() == 64) {
         BuildMI(*I.getParent(), I, I.getDebugLoc(),
                 TII.get(TargetOpcode::SUBREG_TO_REG), TypeEntry.HighInReg)
+            .addImm(0)
             .addReg(Zero32)
             .addImm(X86::sub_32bit);
       }

@@ -14,6 +14,7 @@
 #include <OffloadAPI.h>
 
 #include <cassert>
+#include <unordered_map>
 #include <vector>
 
 _LIBSYCL_BEGIN_NAMESPACE_SYCL
@@ -30,8 +31,8 @@ template <class T> struct range_view {
   size_t size() const { return len; }
 };
 
-using Platform2DevContainer =
-    std::vector<std::pair<ol_platform_handle_t, ol_device_handle_t>>;
+using PlatformWithDevStorageType =
+    std::unordered_map<ol_platform_handle_t, std::vector<ol_device_handle_t>>;
 
 /// Contiguous global storage of platform handlers and device handles (grouped
 /// by platform) for a backend.
@@ -44,42 +45,71 @@ struct OffloadTopology {
   /// \param B new backend value.
   void setBackend(ol_platform_backend_t B) { MBackend = B; }
 
-  /// Queries backend of this topology.
-  ///
-  /// \returns backend of this topology.
-  ol_platform_backend_t getBackend() const { return MBackend; }
-
   /// Returns all platforms associated with this topology.
   ///
   /// \returns minimal span-like view to platforms associated with this
   /// topology.
-  range_view<const ol_platform_handle_t> getPlatforms() const;
+  range_view<const ol_platform_handle_t> platforms() const {
+    return {MPlatforms.data(), MPlatforms.size()};
+  }
 
   /// Returns all devices associated with specific platform.
   ///
-  /// \param PlatformId is index into MPlatforms.
+  /// \param PlatformId platform_id is index into MPlatforms.
   ///
   /// \returns minimal span-like view to devices associated with specified
   /// platform.
-  range_view<ol_device_handle_t> getDevices(size_t PlatformId) const;
+  range_view<const ol_device_handle_t>
+  devicesForPlatform(size_t PlatformId) const {
+    if (PlatformId >= MDevRangePerPlatformId.size()) {
+      assert(false && "Platform index exceeds number of platforms.");
+      return {nullptr, 0};
+    }
+    return MDevRangePerPlatformId[PlatformId];
+  }
 
   /// Register new platform and devices into this topology.
   ///
-  /// \param PlatformsAndDev collection of platforms & devices.
-  void registerNewPlatformsAndDevices(Platform2DevContainer &PlatformsAndDev);
+  /// \param PlatformsAndDev associative container with platforms & devices.
+  /// \param TotalDevCount total device count for the platform.
+  void
+  registerNewPlatformsAndDevices(PlatformWithDevStorageType &PlatformsAndDev,
+                                 size_t TotalDevCount) {
+    if (!PlatformsAndDev.size())
+      return;
+
+    MPlatforms.reserve(PlatformsAndDev.size());
+    MDevRangePerPlatformId.reserve(MPlatforms.size());
+    MDevices.reserve(TotalDevCount);
+
+    for (auto &[NewPlatform, NewDevs] : PlatformsAndDev) {
+      MPlatforms.push_back(NewPlatform);
+      range_view<const ol_device_handle_t> R{MDevices.data() + MDevices.size(),
+                                             NewDevs.size()};
+      MDevices.insert(MDevices.end(), NewDevs.begin(), NewDevs.end());
+      MDevRangePerPlatformId.push_back(R);
+    }
+
+    assert(TotalDevCount == MDevices.size());
+  }
+
+  /// Queries backend of this topology.
+  ///
+  /// \returns backend of this topology.
+  ol_platform_backend_t backend() const { return MBackend; }
 
 private:
   ol_platform_backend_t MBackend = OL_PLATFORM_BACKEND_UNKNOWN;
 
   // Platforms and devices belonging to this backend (flattened)
   std::vector<ol_platform_handle_t> MPlatforms;
-
-  // Devices are sorted by platform (guarantee from liboffload)
-  std::vector<ol_device_handle_t> MDevices;
+  std::vector<ol_device_handle_t> MDevices; // sorted by platform
 
   // Vector holding range of devices for each platform (index is platform index
-  // within Platforms), so MDeviceRange.size() == MPlatforms.size()
-  std::vector<range_view<ol_device_handle_t>> MDeviceRange;
+  // within MPlatforms)
+  std::vector<range_view<const ol_device_handle_t>>
+      MDevRangePerPlatformId; // MDevRangePerPlatformId.size() ==
+                              // MPlatforms.size()
 };
 
 // Initialize the topologies by calling olIterateDevices.

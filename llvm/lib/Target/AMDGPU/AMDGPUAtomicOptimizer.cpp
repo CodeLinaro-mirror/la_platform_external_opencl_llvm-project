@@ -154,8 +154,6 @@ bool AMDGPUAtomicOptimizerImpl::run() {
   // Scan option None disables the Pass
   if (ScanImpl == ScanOptions::None)
     return false;
-  if (ST.isSingleLaneExecution(F))
-    return false;
 
   visit(F);
   if (ToReplace.empty())
@@ -840,7 +838,7 @@ void AMDGPUAtomicOptimizerImpl::optimizeAtomic(Instruction &I,
     //
     // OriginalBB is known to have a branch as terminator because
     // SplitBlockAndInsertIfThen will have inserted one.
-    CondBrInst *Terminator = cast<CondBrInst>(OriginalBB->getTerminator());
+    BranchInst *Terminator = cast<BranchInst>(OriginalBB->getTerminator());
     B.SetInsertPoint(ComputeEnd);
     Terminator->removeFromParent();
     B.Insert(Terminator);

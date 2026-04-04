@@ -370,9 +370,6 @@ OpFoldResult math::IPowIOp::fold(FoldAdaptor adaptor) {
       [](const APInt &base, const APInt &power) -> std::optional<APInt> {
         unsigned width = base.getBitWidth();
         auto zeroValue = APInt::getZero(width);
-        // i1 folding is ambiguous with signed semantics, don't fold.
-        if (width == 1)
-          return {};
         APInt oneValue{width, 1ULL, /*isSigned=*/true};
         APInt minusOneValue{width, -1ULL, /*isSigned=*/true};
 
@@ -383,7 +380,7 @@ OpFoldResult math::IPowIOp::fold(FoldAdaptor adaptor) {
           // Leave 0 raised to negative power not folded.
           if (base.isZero())
             return {};
-          if (base.isOne())
+          if (base.eq(oneValue))
             return oneValue;
           // If abs(base) > 1, then the result is zero.
           if (base.ne(minusOneValue))
@@ -514,28 +511,6 @@ OpFoldResult math::PowFOp::fold(FoldAdaptor adaptor) {
           return APFloat(powf(a.convertToFloat(), b.convertToFloat()));
 
         return {};
-      });
-}
-
-//===----------------------------------------------------------------------===//
-// RsqrtOp folder
-//===----------------------------------------------------------------------===//
-
-OpFoldResult math::RsqrtOp::fold(FoldAdaptor adaptor) {
-  return constFoldUnaryOpConditional<FloatAttr>(
-      adaptor.getOperands(), [](const APFloat &a) -> std::optional<APFloat> {
-        if (a.isNegative())
-          return {};
-
-        APFloat one(a.getSemantics(), 1);
-        switch (a.getSizeInBits(a.getSemantics())) {
-        case 64:
-          return one / APFloat(sqrt(a.convertToDouble()));
-        case 32:
-          return one / APFloat(sqrtf(a.convertToFloat()));
-        default:
-          return {};
-        }
       });
 }
 

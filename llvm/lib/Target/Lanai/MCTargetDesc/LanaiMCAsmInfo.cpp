@@ -22,7 +22,7 @@ void LanaiMCAsmInfo::anchor() {}
 LanaiMCAsmInfo::LanaiMCAsmInfo(const Triple & /*TheTriple*/,
                                const MCTargetOptions &Options) {
   IsLittleEndian = false;
-  InternalSymbolPrefix = ".L";
+  PrivateGlobalPrefix = ".L";
   WeakRefDirective = "\t.weak\t";
   ExceptionsType = ExceptionHandling::DwarfCFI;
 

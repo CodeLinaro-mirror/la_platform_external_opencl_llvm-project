@@ -38,15 +38,9 @@ void BadSignalToKillThreadCheck::check(const MatchFinder::MatchResult &Result) {
       return std::nullopt;
     const MacroInfo *MI = PP->getMacroInfo(It->first);
     const Token &T = MI->tokens().back();
-
-    if (!T.isLiteral())
+    if (!T.isLiteral() || !T.getLiteralData())
       return std::nullopt;
-
-    SmallVector<char> Buffer;
-    bool Invalid = false;
-    const StringRef ValueStr = PP->getSpelling(T, Buffer, &Invalid);
-    if (Invalid)
-      return std::nullopt;
+    const StringRef ValueStr = StringRef(T.getLiteralData(), T.getLength());
 
     llvm::APInt IntValue;
     constexpr unsigned AutoSenseRadix = 0;

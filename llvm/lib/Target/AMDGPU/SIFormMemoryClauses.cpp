@@ -61,7 +61,9 @@ class SIFormMemoryClausesLegacy : public MachineFunctionPass {
 public:
   static char ID;
 
-  SIFormMemoryClausesLegacy() : MachineFunctionPass(ID) {}
+  SIFormMemoryClausesLegacy() : MachineFunctionPass(ID) {
+    initializeSIFormMemoryClausesLegacyPass(*PassRegistry::getPassRegistry());
+  }
 
   bool runOnMachineFunction(MachineFunction &MF) override;
 

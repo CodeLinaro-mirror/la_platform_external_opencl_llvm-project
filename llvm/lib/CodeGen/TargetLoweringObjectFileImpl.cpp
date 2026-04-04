@@ -1036,8 +1036,8 @@ bool TargetLoweringObjectFileELF::shouldPutJumpTableInFunctionSection(
 /// Given a mergeable constant with the specified size and relocation
 /// information, return a section that it should be placed in.
 MCSection *TargetLoweringObjectFileELF::getSectionForConstant(
-    const DataLayout &DL, SectionKind Kind, const Constant *C, Align &Alignment,
-    const Function *F) const {
+    const DataLayout &DL, SectionKind Kind, const Constant *C,
+    Align &Alignment) const {
   if (Kind.isMergeableConst4() && MergeableConst4Section)
     return MergeableConst4Section;
   if (Kind.isMergeableConst8() && MergeableConst8Section)
@@ -1055,11 +1055,11 @@ MCSection *TargetLoweringObjectFileELF::getSectionForConstant(
 
 MCSection *TargetLoweringObjectFileELF::getSectionForConstant(
     const DataLayout &DL, SectionKind Kind, const Constant *C, Align &Alignment,
-    const Function *F, StringRef SectionSuffix) const {
+    StringRef SectionSuffix) const {
   // TODO: Share code between this function and
   // MCObjectInfo::initELFMCObjectFileInfo.
   if (SectionSuffix.empty())
-    return getSectionForConstant(DL, Kind, C, Alignment, F);
+    return getSectionForConstant(DL, Kind, C, Alignment);
 
   auto &Context = getContext();
   if (Kind.isMergeableConst4() && MergeableConst4Section)
@@ -1472,8 +1472,8 @@ MCSection *TargetLoweringObjectFileMachO::SelectSectionForGlobal(
 }
 
 MCSection *TargetLoweringObjectFileMachO::getSectionForConstant(
-    const DataLayout &DL, SectionKind Kind, const Constant *C, Align &Alignment,
-    const Function *F) const {
+    const DataLayout &DL, SectionKind Kind, const Constant *C,
+    Align &Alignment) const {
   // If this constant requires a relocation, we have to put it in the data
   // segment, not in the text segment.
   if (Kind.isData() || Kind.isReadOnlyWithRel())
@@ -1594,7 +1594,7 @@ const MCExpr *TargetLoweringObjectFileMachO::getIndirectSymViaGOTPCRel(
   // non_lazy_ptr stubs.
   SmallString<128> Name;
   StringRef Suffix = "$non_lazy_ptr";
-  Name += MMI->getModule()->getDataLayout().getInternalSymbolPrefix();
+  Name += MMI->getModule()->getDataLayout().getPrivateGlobalPrefix();
   Name += Sym->getName();
   Name += Suffix;
   MCSymbol *Stub = Ctx.getOrCreateSymbol(Name);
@@ -2126,25 +2126,9 @@ static std::string scalarConstantToHexString(const Constant *C) {
   if (isa<UndefValue>(C)) {
     return APIntToHexString(APInt::getZero(Ty->getPrimitiveSizeInBits()));
   } else if (const auto *CFP = dyn_cast<ConstantFP>(C)) {
-    if (CFP->getType()->isFloatingPointTy())
-      return APIntToHexString(CFP->getValueAPF().bitcastToAPInt());
-
-    std::string HexString;
-    unsigned NumElements =
-        cast<FixedVectorType>(CFP->getType())->getNumElements();
-    for (unsigned I = 0; I < NumElements; ++I)
-      HexString += APIntToHexString(CFP->getValueAPF().bitcastToAPInt());
-    return HexString;
+    return APIntToHexString(CFP->getValueAPF().bitcastToAPInt());
   } else if (const auto *CI = dyn_cast<ConstantInt>(C)) {
-    if (CI->getType()->isIntegerTy())
-      return APIntToHexString(CI->getValue());
-
-    std::string HexString;
-    unsigned NumElements =
-        cast<FixedVectorType>(CI->getType())->getNumElements();
-    for (unsigned I = 0; I < NumElements; ++I)
-      HexString += APIntToHexString(CI->getValue());
-    return HexString;
+    return APIntToHexString(CI->getValue());
   } else {
     unsigned NumElements;
     if (auto *VTy = dyn_cast<VectorType>(Ty))
@@ -2159,8 +2143,8 @@ static std::string scalarConstantToHexString(const Constant *C) {
 }
 
 MCSection *TargetLoweringObjectFileCOFF::getSectionForConstant(
-    const DataLayout &DL, SectionKind Kind, const Constant *C, Align &Alignment,
-    const Function *F) const {
+    const DataLayout &DL, SectionKind Kind, const Constant *C,
+    Align &Alignment) const {
   if (Kind.isMergeableConst() && C &&
       getContext().getAsmInfo()->hasCOFFComdatConstants()) {
     // This creates comdat sections with the given symbol name, but unless
@@ -2200,8 +2184,8 @@ MCSection *TargetLoweringObjectFileCOFF::getSectionForConstant(
                                          COFF::IMAGE_COMDAT_SELECT_ANY);
   }
 
-  return TargetLoweringObjectFile::getSectionForConstant(DL, Kind, C, Alignment,
-                                                         F);
+  return TargetLoweringObjectFile::getSectionForConstant(DL, Kind, C,
+                                                         Alignment);
 }
 
 //===----------------------------------------------------------------------===//
@@ -2408,9 +2392,7 @@ MCSymbol *
 TargetLoweringObjectFileXCOFF::getTargetSymbol(const GlobalValue *GV,
                                                const TargetMachine &TM) const {
   // We always use a qualname symbol for a GV that represents
-  // a declaration, a function descriptor, or a common symbol. An IFunc is
-  // lowered as a special trampoline function which has an entry point and a
-  // descriptor.
+  // a declaration, a function descriptor, or a common symbol.
   // If a GV represents a GlobalVariable and -fdata-sections is enabled, we
   // also return a qualname so that a label symbol could be avoided.
   // It is inherently ambiguous when the GO represents the address of a
@@ -2428,11 +2410,6 @@ TargetLoweringObjectFileXCOFF::getTargetSymbol(const GlobalValue *GV,
         return static_cast<const MCSectionXCOFF *>(
                    SectionForGlobal(GVar, SectionKind::getData(), TM))
             ->getQualNameSymbol();
-
-    if (isa<GlobalIFunc>(GO))
-      return static_cast<const MCSectionXCOFF *>(
-                 getSectionForFunctionDescriptor(GO, TM))
-          ->getQualNameSymbol();
 
     SectionKind GOKind = getKindForGlobal(GO, TM);
     if (GOKind.isText())
@@ -2631,8 +2608,8 @@ bool TargetLoweringObjectFileXCOFF::shouldPutJumpTableInFunctionSection(
 /// Given a mergeable constant with the specified size and relocation
 /// information, return a section that it should be placed in.
 MCSection *TargetLoweringObjectFileXCOFF::getSectionForConstant(
-    const DataLayout &DL, SectionKind Kind, const Constant *C, Align &Alignment,
-    const Function *F) const {
+    const DataLayout &DL, SectionKind Kind, const Constant *C,
+    Align &Alignment) const {
   // TODO: Enable emiting constant pool to unique sections when we support it.
   if (Alignment > Align(16))
     report_fatal_error("Alignments greater than 16 not yet supported.");
@@ -2706,7 +2683,7 @@ TargetLoweringObjectFileXCOFF::getStorageClassForGlobal(const GlobalValue *GV) {
 
 MCSymbol *TargetLoweringObjectFileXCOFF::getFunctionEntryPointSymbol(
     const GlobalValue *Func, const TargetMachine &TM) const {
-  assert((isa<Function>(Func) || isa<GlobalIFunc>(Func) ||
+  assert((isa<Function>(Func) ||
           (isa<GlobalAlias>(Func) &&
            isa_and_nonnull<Function>(
                cast<GlobalAlias>(Func)->getAliaseeObject()))) &&
@@ -2723,7 +2700,7 @@ MCSymbol *TargetLoweringObjectFileXCOFF::getFunctionEntryPointSymbol(
   // undefined symbols gets treated as csect with XTY_ER property.
   if (((TM.getFunctionSections() && !Func->hasSection()) ||
        Func->isDeclarationForLinker()) &&
-      (isa<Function>(Func) || isa<GlobalIFunc>(Func))) {
+      isa<Function>(Func)) {
     return getContext()
         .getXCOFFSection(
             NameStr, SectionKind::getText(),
@@ -2737,9 +2714,7 @@ MCSymbol *TargetLoweringObjectFileXCOFF::getFunctionEntryPointSymbol(
 }
 
 MCSection *TargetLoweringObjectFileXCOFF::getSectionForFunctionDescriptor(
-    const GlobalObject *F, const TargetMachine &TM) const {
-  assert((isa<Function>(F) || isa<GlobalIFunc>(F)) &&
-         "F must be a function or ifunc object.");
+    const Function *F, const TargetMachine &TM) const {
   SmallString<128> NameStr;
   getNameWithPrefix(NameStr, F, TM);
   return getContext().getXCOFFSection(
@@ -2824,11 +2799,6 @@ void TargetLoweringObjectFileGOFF::getModuleMetadata(Module &M) {
   MCSymbolGOFF *ADASym = static_cast<MCSymbolGOFF *>(
       getContext().getOrCreateSymbol(ADAPR->getName()));
   ADAPR->setBeginSymbol(ADASym);
-}
-
-bool TargetLoweringObjectFileGOFF::shouldPutJumpTableInFunctionSection(
-    bool UsesLabelDifference, const Function &F) const {
-  return true;
 }
 
 MCSection *TargetLoweringObjectFileGOFF::getExplicitSectionGlobal(

@@ -1748,10 +1748,6 @@ bool CursorVisitor::VisitBTFTagAttributedTypeLoc(BTFTagAttributedTypeLoc TL) {
   return Visit(TL.getWrappedLoc());
 }
 
-bool CursorVisitor::VisitOverflowBehaviorTypeLoc(OverflowBehaviorTypeLoc TL) {
-  return Visit(TL.getWrappedLoc());
-}
-
 bool CursorVisitor::VisitHLSLAttributedResourceTypeLoc(
     HLSLAttributedResourceTypeLoc TL) {
   return Visit(TL.getWrappedLoc());
@@ -1791,20 +1787,6 @@ bool CursorVisitor::VisitDecayedTypeLoc(DecayedTypeLoc TL) {
 
 bool CursorVisitor::VisitAdjustedTypeLoc(AdjustedTypeLoc TL) {
   return Visit(TL.getOriginalLoc());
-}
-
-bool CursorVisitor::VisitAutoTypeLoc(AutoTypeLoc TL) {
-
-  if (TL.isConstrained()) {
-    if (auto *CR = TL.getConceptReference()) {
-      if (CR->getNamedConcept()) {
-        return Visit(MakeCursorTemplateRef(CR->getNamedConcept(),
-                                           CR->getConceptNameLoc(), TU));
-      }
-    }
-  }
-
-  return false;
 }
 
 bool CursorVisitor::VisitDeducedTemplateSpecializationTypeLoc(
@@ -1907,6 +1889,7 @@ DEFAULT_TYPELOC_IMPL(Enum, TagType)
 DEFAULT_TYPELOC_IMPL(SubstTemplateTypeParm, Type)
 DEFAULT_TYPELOC_IMPL(SubstTemplateTypeParmPack, Type)
 DEFAULT_TYPELOC_IMPL(SubstBuiltinTemplatePack, Type)
+DEFAULT_TYPELOC_IMPL(Auto, Type)
 DEFAULT_TYPELOC_IMPL(BitInt, Type)
 DEFAULT_TYPELOC_IMPL(DependentBitInt, Type)
 
@@ -3239,7 +3222,6 @@ void EnqueueVisitor::VisitStmt(const Stmt *S) { EnqueueChildren(S); }
 void EnqueueVisitor::VisitSwitchStmt(const SwitchStmt *S) {
   AddStmt(S->getBody());
   AddStmt(S->getCond());
-  AddStmt(S->getInit());
   AddDecl(S->getConditionVariable());
 }
 
@@ -5677,9 +5659,7 @@ clang_PrintingPolicy_getProperty(CXPrintingPolicy Policy,
   case CXPrintingPolicy_ConstantArraySizeAsWritten:
     return P->ConstantArraySizeAsWritten;
   case CXPrintingPolicy_AnonymousTagLocations:
-    return P->AnonymousTagNameStyle ==
-           llvm::to_underlying(
-               PrintingPolicy::AnonymousTagMode::SourceLocation);
+    return P->AnonymousTagLocations;
   case CXPrintingPolicy_SuppressStrongLifetime:
     return P->SuppressStrongLifetime;
   case CXPrintingPolicy_SuppressLifetimeQualifiers:
@@ -5753,9 +5733,7 @@ void clang_PrintingPolicy_setProperty(CXPrintingPolicy Policy,
     P->ConstantArraySizeAsWritten = Value;
     return;
   case CXPrintingPolicy_AnonymousTagLocations:
-    P->AnonymousTagNameStyle = llvm::to_underlying(
-        Value ? PrintingPolicy::AnonymousTagMode::SourceLocation
-              : PrintingPolicy::AnonymousTagMode::Plain);
+    P->AnonymousTagLocations = Value;
     return;
   case CXPrintingPolicy_SuppressStrongLifetime:
     P->SuppressStrongLifetime = Value;
@@ -9396,7 +9374,12 @@ CXModule clang_getModuleForFile(CXTranslationUnit TU, CXFile File) {
   return Header.getModule();
 }
 
-CXFile clang_Module_getASTFile(CXModule CXMod) { return nullptr; }
+CXFile clang_Module_getASTFile(CXModule CXMod) {
+  if (!CXMod)
+    return nullptr;
+  Module *Mod = static_cast<Module *>(CXMod);
+  return cxfile::makeCXFile(Mod->getASTFile());
+}
 
 CXModule clang_Module_getParent(CXModule CXMod) {
   if (!CXMod)
@@ -10190,7 +10173,7 @@ cxindex::Logger::~Logger() {
 }
 
 CXString clang_getBinaryOperatorKindSpelling(enum CXBinaryOperatorKind kind) {
-  if (kind <= CXBinaryOperator_Invalid || kind > CXBinaryOperator_Last)
+  if (kind > CXBinaryOperator_Last)
     return cxstring::createEmpty();
 
   return cxstring::createDup(
@@ -10212,9 +10195,6 @@ enum CXBinaryOperatorKind clang_getCursorBinaryOperatorKind(CXCursor cursor) {
 }
 
 CXString clang_getUnaryOperatorKindSpelling(enum CXUnaryOperatorKind kind) {
-  if (kind <= CXUnaryOperator_Invalid || kind > CXUnaryOperator_Last)
-    return cxstring::createEmpty();
-
   return cxstring::createRef(
       UnaryOperator::getOpcodeStr(static_cast<UnaryOperatorKind>(kind - 1)));
 }

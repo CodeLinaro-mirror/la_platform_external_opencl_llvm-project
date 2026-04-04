@@ -46,7 +46,7 @@ static bool allowPromotionAlias(const std::string &Name) {
 // Promote each local-linkage entity defined by ExportM and used by ImportM by
 // changing visibility and appending the given ModuleId.
 void promoteInternals(Module &ExportM, Module &ImportM, StringRef ModuleId,
-                      const SetVector<GlobalValue *> &PromoteExtra) {
+                      SetVector<GlobalValue *> &PromoteExtra) {
   DenseMap<const Comdat *, Comdat *> RenamedComdats;
   for (auto &ExportGV : ExportM.global_values()) {
     if (!ExportGV.hasLocalLinkage())
@@ -411,11 +411,7 @@ void splitAndWriteThinLTOBitcode(
     return true;
   });
 
-  // CfiFunctions contains only symbols from M. promoteInternals tries to find
-  // match values from its first argument (the "exporting module") in
-  // CfiFunctions. So we only need CfiFunctions for the second promotion (M ->
-  // MergedM)
-  promoteInternals(*MergedM, M, ModuleId, {});
+  promoteInternals(*MergedM, M, ModuleId, CfiFunctions);
   promoteInternals(M, *MergedM, ModuleId, CfiFunctions);
 
   auto &Ctx = MergedM->getContext();

@@ -1342,10 +1342,7 @@ QualType Sema::CheckNonTypeTemplateParameterType(TypeSourceInfo *&TSI,
     //    - an identifier associated by name lookup with a non-type
     //      template-parameter declared with a type that contains a
     //      placeholder type (7.1.7.4),
-    TypeSourceInfo *NewTSI = SubstAutoTypeSourceInfoDependent(TSI);
-    if (!NewTSI)
-      return QualType();
-    TSI = NewTSI;
+    TSI = SubstAutoTypeSourceInfoDependent(TSI);
   }
 
   return CheckNonTypeTemplateParameterType(TSI->getType(), Loc);
@@ -3410,9 +3407,6 @@ static QualType checkBuiltinTemplateIdType(
     ArrayRef<TemplateArgument> Converted, SourceLocation TemplateLoc,
     TemplateArgumentListInfo &TemplateArgs) {
   ASTContext &Context = SemaRef.getASTContext();
-
-  assert(Converted.size() == BTD->getTemplateParameters()->size() &&
-         "Builtin template arguments do not match its parameters");
 
   switch (BTD->getBuiltinTemplateKind()) {
   case BTK__make_integer_seq: {
@@ -5972,9 +5966,9 @@ bool Sema::CheckTemplateArgumentList(
                                                   CTAI.CanonicalConverted,
                                                   Params->getDepth()));
         }
-        ArgLoc = TemplateArgumentLoc(
-            TemplateArgument::CreatePackCopy(Context, Args),
-            TemplateArgumentLocInfo(Context, ArgLoc.getLocation()));
+        ArgLoc =
+            TemplateArgumentLoc(TemplateArgument::CreatePackCopy(Context, Args),
+                                ArgLoc.getLocInfo());
       } else {
         SaveAndRestore _1(CTAI.PartialOrdering, false);
         if (CheckTemplateArgument(*Param, ArgLoc, Template, TemplateLoc,
@@ -5987,16 +5981,13 @@ bool Sema::CheckTemplateArgumentList(
                                                 Params->getDepth()));
         if (ArgIsExpansion && NonPackParameter) {
           // CWG1430/CWG2686: we have a pack expansion as an argument to an
-          // alias template, builtin template, or concept, and it's not part of
-          // a parameter pack. This can't be canonicalized, so reject it now.
-          if (isa<TypeAliasTemplateDecl, ConceptDecl, BuiltinTemplateDecl>(
-                  Template)) {
-            unsigned DiagSelect = isa<ConceptDecl>(Template)           ? 1
-                                  : isa<BuiltinTemplateDecl>(Template) ? 2
-                                                                       : 0;
+          // alias template or concept, and it's not part of a parameter pack.
+          // This can't be canonicalized, so reject it now.
+          if (isa<TypeAliasTemplateDecl, ConceptDecl>(Template)) {
             Diag(ArgLoc.getLocation(),
                  diag::err_template_expansion_into_fixed_list)
-                << DiagSelect << ArgLoc.getSourceRange();
+                << (isa<ConceptDecl>(Template) ? 1 : 0)
+                << ArgLoc.getSourceRange();
             NoteTemplateParameterLocation(**Param);
             return true;
           }
@@ -6446,11 +6437,6 @@ bool UnnamedLocalNoLinkageFinder::VisitObjCObjectPointerType(
 
 bool UnnamedLocalNoLinkageFinder::VisitAtomicType(const AtomicType* T) {
   return Visit(T->getValueType());
-}
-
-bool UnnamedLocalNoLinkageFinder::VisitOverflowBehaviorType(
-    const OverflowBehaviorType *T) {
-  return Visit(T->getUnderlyingType());
 }
 
 bool UnnamedLocalNoLinkageFinder::VisitPipeType(const PipeType* T) {
@@ -8140,9 +8126,6 @@ static Expr *BuildExpressionFromNonTypeTemplateArgumentValue(
           S, ElemT, Val.getVectorElt(I), Loc));
     return MakeInitList(Elts);
   }
-
-  case APValue::Matrix:
-    llvm_unreachable("Matrix template argument expression not yet supported");
 
   case APValue::None:
   case APValue::Indeterminate:
@@ -11419,8 +11402,7 @@ Sema::CheckTypenameType(ElaboratedTypeKeyword Keyword,
             QualifierLoc.getNestedNameSpecifier(), /*TemplateKeyword=*/false,
             TemplateName(TD));
         return Context.getDeducedTemplateSpecializationType(
-            DeducedKind::Undeduced, /*DeducedAsType=*/QualType(), Keyword,
-            Name);
+            Keyword, Name, /*DeducedType=*/QualType(), /*IsDependent=*/false);
       }
     }
 

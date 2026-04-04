@@ -222,8 +222,7 @@ TidyProvider disableUnusableChecks(llvm::ArrayRef<std::string> ExtraBadChecks) {
       "-hicpp-invalid-access-moved",
       // Check uses dataflow analysis, which might hang/crash unexpectedly on
       // incomplete code.
-      "-bugprone-unchecked-optional-access",
-      "-abseil-unchecked-statusor-access");
+      "-bugprone-unchecked-optional-access");
 
   size_t Size = BadChecks.size();
   for (const std::string &Str : ExtraBadChecks) {

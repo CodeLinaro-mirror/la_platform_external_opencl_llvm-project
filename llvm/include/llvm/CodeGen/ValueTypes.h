@@ -46,7 +46,11 @@ namespace llvm {
       return !(*this != VT);
     }
     bool operator!=(EVT VT) const {
-      return V.SimpleTy != VT.V.SimpleTy || LLVMTy != VT.LLVMTy;
+      if (V.SimpleTy != VT.V.SimpleTy)
+        return true;
+      if (V.SimpleTy == MVT::INVALID_SIMPLE_VALUE_TYPE)
+        return LLVMTy != VT.LLVMTy;
+      return false;
     }
 
     /// Returns the EVT that represents a floating-point type with the given
@@ -102,18 +106,6 @@ namespace llvm {
           return M;
       }
       return getVectorVT(Context, EltVT, getVectorElementCount());
-    }
-
-    /// Return a VT for a vector type whose attributes match ourselves
-    /// with the exception of the element count that is chosen by the caller.
-    EVT changeVectorElementCount(LLVMContext &Context, ElementCount EC) const {
-      assert(isVector() && "Not a vector EVT!");
-      if (isSimple()) {
-        MVT M = getSimpleVT().changeVectorElementCount(EC);
-        if (M != MVT::INVALID_SIMPLE_VALUE_TYPE)
-          return M;
-      }
-      return getVectorVT(Context, getVectorElementType(), EC);
     }
 
     /// Return a VT for a type whose attributes match ourselves with the
@@ -447,16 +439,8 @@ namespace llvm {
       return getIntegerVT(Context, (EVTSize + 1) / 2);
     }
 
-    /// Return a VT for an integer element type with doubled bit width.
-    /// The type returned may be an extended type.
-    EVT widenIntegerElementType(LLVMContext &Context) const {
-      unsigned EVTSize = getScalarSizeInBits();
-      EVT EltVT = EVT::getIntegerVT(Context, 2 * EVTSize);
-      return changeElementType(Context, EltVT);
-    }
-
     /// Return a VT for an integer vector type with the size of the
-    /// elements doubled. The type returned may be an extended type.
+    /// elements doubled. The typed returned may be an extended type.
     EVT widenIntegerVectorElementType(LLVMContext &Context) const {
       EVT EltVT = getVectorElementType();
       EltVT = EVT::getIntegerVT(Context, 2 * EltVT.getSizeInBits());

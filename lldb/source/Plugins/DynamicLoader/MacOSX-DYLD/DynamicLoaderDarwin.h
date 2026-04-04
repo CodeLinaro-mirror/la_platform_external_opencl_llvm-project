@@ -42,7 +42,7 @@ public:
                                                   bool stop_others) override;
 
   void FindEquivalentSymbols(
-      const lldb_private::Symbol *original_symbol,
+      lldb_private::Symbol *original_symbol,
       lldb_private::ModuleList &module_list,
       lldb_private::SymbolContextList &equivalent_symbols) override;
 

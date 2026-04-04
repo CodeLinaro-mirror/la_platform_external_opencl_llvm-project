@@ -17,10 +17,9 @@ namespace cir {
 
 TargetLoweringInfo::~TargetLoweringInfo() = default;
 
-cir::SyncScopeKind
-TargetLoweringInfo::convertSyncScope(cir::SyncScopeKind syncScope) const {
-  // By default, targets don't deal with sync scopes other than system scope.
-  return cir::SyncScopeKind::System;
+std::string
+TargetLoweringInfo::getLLVMSyncScope(cir::SyncScopeKind syncScope) const {
+  return ""; // default sync scope
 }
 
 } // namespace cir

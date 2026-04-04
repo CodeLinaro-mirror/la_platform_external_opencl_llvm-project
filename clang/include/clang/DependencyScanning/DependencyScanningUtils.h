@@ -147,16 +147,12 @@ public:
     }
   }
 
-  std::unique_ptr<DependencyActionController> clone() const override {
-    return std::make_unique<CallbackActionController>(LookupModuleOutput);
-  }
-
   std::string lookupModuleOutput(const ModuleDeps &MD,
                                  ModuleOutputKind Kind) override {
     return LookupModuleOutput(MD, Kind);
   }
 
-protected:
+private:
   LookupModuleOutputCallback LookupModuleOutput;
 };
 

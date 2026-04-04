@@ -8,12 +8,10 @@
 
 #ifndef LLVM_IR_INTRINSIC_WASM_ENUMS_H
 #define LLVM_IR_INTRINSIC_WASM_ENUMS_H
-
 namespace llvm::Intrinsic {
-
 enum WASMIntrinsics : unsigned {
 // Enum values for intrinsics.
-    wasm_alltrue = 14462,                              // llvm.wasm.alltrue (IntrinsicsWebAssembly.td:221)
+    wasm_alltrue = 14357,                              // llvm.wasm.alltrue (IntrinsicsWebAssembly.td:221)
     wasm_anytrue,                              // llvm.wasm.anytrue (IntrinsicsWebAssembly.td:217)
     wasm_avgr_unsigned,                        // llvm.wasm.avgr.unsigned (IntrinsicsWebAssembly.td:209)
     wasm_bitmask,                              // llvm.wasm.bitmask (IntrinsicsWebAssembly.td:225)
@@ -88,8 +86,6 @@ enum WASMIntrinsics : unsigned {
     wasm_trunc_signed,                         // llvm.wasm.trunc.signed (IntrinsicsWebAssembly.td:107)
     wasm_trunc_unsigned,                       // llvm.wasm.trunc.unsigned (IntrinsicsWebAssembly.td:110)
 }; // enum
-
 } // namespace llvm::Intrinsic
-
-#endif // LLVM_IR_INTRINSIC_WASM_ENUMS_H
+#endif
 

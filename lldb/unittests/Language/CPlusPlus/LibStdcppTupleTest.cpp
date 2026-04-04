@@ -98,13 +98,14 @@ public:
     // Create outer type
     CompilerType outer_type = m_type_system->CreateRecordType(
         m_type_system->getASTContext().getTranslationUnitDecl(),
-        OptionalClangModuleID(), "std::tuple<int>", 0,
-        lldb::LanguageType::eLanguageTypeC_plus_plus);
+        OptionalClangModuleID(), lldb::AccessType::eAccessPublic,
+        "std::tuple<int>", 0, lldb::LanguageType::eLanguageTypeC_plus_plus);
 
     // Create inner _Tuple_impl type
     CompilerType inner_type = m_type_system->CreateRecordType(
         m_type_system->getASTContext().getTranslationUnitDecl(),
-        OptionalClangModuleID(), "std::_Tuple_impl<0, int>", 0,
+        OptionalClangModuleID(), lldb::AccessType::eAccessPublic,
+        "std::_Tuple_impl<0, int>", 0,
         lldb::LanguageType::eLanguageTypeC_plus_plus);
 
     TypeSystemClang::StartTagDeclarationDefinition(inner_type);
@@ -113,7 +114,8 @@ public:
     // Add the inner type as a field of the outer type
     TypeSystemClang::StartTagDeclarationDefinition(outer_type);
     m_type_system->AddFieldToRecordType(outer_type, "std::_Tuple_impl<0, int>",
-                                        inner_type, 0);
+                                        inner_type,
+                                        lldb::AccessType::eAccessPublic, 0);
     TypeSystemClang::CompleteTagDeclarationDefinition(outer_type);
 
     return outer_type;

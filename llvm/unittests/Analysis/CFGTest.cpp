@@ -8,7 +8,6 @@
 
 #include "llvm/Analysis/CFG.h"
 #include "llvm/ADT/SmallPtrSet.h"
-#include "llvm/Analysis/CycleAnalysis.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/AsmParser/Parser.h"
 #include "llvm/IR/Dominators.h"
@@ -82,7 +81,6 @@ protected:
                                      &ID, nullptr, true, true);
          PassRegistry::getPassRegistry()->registerPass(*PI, true);
          initializeLoopInfoWrapperPassPass(*PassRegistry::getPassRegistry());
-         initializeCycleInfoWrapperPassPass(*PassRegistry::getPassRegistry());
          initializeDominatorTreeWrapperPassPass(
              *PassRegistry::getPassRegistry());
          return 0;
@@ -91,7 +89,6 @@ protected:
       void getAnalysisUsage(AnalysisUsage &AU) const override {
         AU.setPreservesAll();
         AU.addRequired<LoopInfoWrapperPass>();
-        AU.addRequired<CycleInfoWrapperPass>();
         AU.addRequired<DominatorTreeWrapperPass>();
       }
 
@@ -100,7 +97,6 @@ protected:
           return false;
 
         LoopInfo *LI = &getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
-        CycleInfo *CI = &getAnalysis<CycleInfoWrapperPass>().getResult();
         DominatorTree *DT =
             &getAnalysis<DominatorTreeWrapperPass>().getDomTree();
         EXPECT_EQ(isPotentiallyReachable(A, B, &ExclusionSet, nullptr, nullptr),
@@ -110,13 +106,6 @@ protected:
         EXPECT_EQ(isPotentiallyReachable(A, B, &ExclusionSet, nullptr, LI),
                   ExpectedResult);
         EXPECT_EQ(isPotentiallyReachable(A, B, &ExclusionSet, DT, LI),
-                  ExpectedResult);
-        EXPECT_EQ(
-            isPotentiallyReachable(A, B, &ExclusionSet, nullptr, nullptr, CI),
-            ExpectedResult);
-        EXPECT_EQ(isPotentiallyReachable(A, B, &ExclusionSet, DT, nullptr, CI),
-                  ExpectedResult);
-        EXPECT_EQ(isPotentiallyReachable(A, B, &ExclusionSet, nullptr, LI, CI),
                   ExpectedResult);
         return false;
       }
@@ -403,12 +392,11 @@ TEST_F(IsPotentiallyReachableTest, BranchInsideLoop) {
 TEST_F(IsPotentiallyReachableTest, ModifyTest) {
   ParseAssembly(BranchInsideLoopIR);
 
-  BasicBlock *LoopBB = &*++M->getFunction("test")->begin();
-  auto *T = cast<CondBrInst>(LoopBB->getTerminator());
-  BasicBlock *OldBB = T->getSuccessor(0);
-  T->setSuccessor(0, T->getSuccessor(1));
+  succ_iterator S = succ_begin(&*++M->getFunction("test")->begin());
+  BasicBlock *OldBB = S[0];
+  S[0] = S[1];
   ExpectPath(false);
-  T->setSuccessor(0, OldBB);
+  S[0] = OldBB;
   ExpectPath(true);
 }
 

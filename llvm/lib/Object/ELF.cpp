@@ -784,7 +784,7 @@ decodeBBAddrMapImpl(const ELFFile<ELFT> &EF,
     }
   }
   auto GetAddressForRelocation =
-      [&](uint64_t RelocationOffsetInSection) -> Expected<uint64_t> {
+      [&](unsigned RelocationOffsetInSection) -> Expected<unsigned> {
     auto FOTIterator =
         FunctionOffsetTranslations.find(RelocationOffsetInSection);
     if (FOTIterator == FunctionOffsetTranslations.end()) {
@@ -819,24 +819,24 @@ decodeBBAddrMapImpl(const ELFFile<ELFT> &EF,
     Content = DecompressedContentRef;
   }
 
-  DataExtractor Data(Content, EF.isLE(),
-                     sizeof(typename ELFFile<ELFT>::uintX_t));
+  DataExtractor Data(Content, EF.isLE(), ELFT::Is64Bits ? 8 : 4);
   std::vector<BBAddrMap> FunctionEntries;
 
   DataExtractor::Cursor Cur(0);
   Error ULEBSizeErr = Error::success();
   Error MetadataDecodeErr = Error::success();
 
-  // Helper lambda to extract the (possibly relocatable) address stored at Cur.
-  auto ExtractAddress = [&]() -> Expected<uint64_t> {
+  // Helper lampda to extract the (possiblly relocatable) address stored at Cur.
+  auto ExtractAddress = [&]() -> Expected<typename ELFFile<ELFT>::uintX_t> {
     uint64_t RelocationOffsetInSection = Cur.tell();
-    uint64_t Address = Data.getAddress(Cur);
+    auto Address =
+        static_cast<typename ELFFile<ELFT>::uintX_t>(Data.getAddress(Cur));
     if (!Cur)
       return Cur.takeError();
     if (!IsRelocatable)
       return Address;
     assert(Address == 0);
-    Expected<uint64_t> AddressOrErr =
+    Expected<unsigned> AddressOrErr =
         GetAddressForRelocation(RelocationOffsetInSection);
     if (!AddressOrErr)
       return AddressOrErr.takeError();
@@ -878,7 +878,7 @@ decodeBBAddrMapImpl(const ELFFile<ELFT> &EF,
                          " feature = " + Twine(static_cast<int>(Feature)));
     uint32_t NumBlocksInBBRange = 0;
     uint32_t NumBBRanges = 1;
-    uint64_t RangeBaseAddress = 0;
+    typename ELFFile<ELFT>::uintX_t RangeBaseAddress = 0;
     if (FeatEnable.MultiBBRange) {
       NumBBRanges = readULEB128As<uint32_t>(Data, Cur, ULEBSizeErr);
       if (!Cur || ULEBSizeErr)

@@ -201,6 +201,33 @@ void BasicBlock::setParent(Function *parent) {
   InstList.setSymTabObject(&Parent, parent);
 }
 
+iterator_range<filter_iterator<BasicBlock::const_iterator,
+                               std::function<bool(const Instruction &)>>>
+BasicBlock::instructionsWithoutDebug(bool SkipPseudoOp) const {
+  std::function<bool(const Instruction &)> Fn = [=](const Instruction &I) {
+    return !isa<DbgInfoIntrinsic>(I) &&
+           !(SkipPseudoOp && isa<PseudoProbeInst>(I));
+  };
+  return make_filter_range(*this, Fn);
+}
+
+iterator_range<
+    filter_iterator<BasicBlock::iterator, std::function<bool(Instruction &)>>>
+BasicBlock::instructionsWithoutDebug(bool SkipPseudoOp) {
+  std::function<bool(Instruction &)> Fn = [=](Instruction &I) {
+    return !isa<DbgInfoIntrinsic>(I) &&
+           !(SkipPseudoOp && isa<PseudoProbeInst>(I));
+  };
+  return make_filter_range(*this, Fn);
+}
+
+filter_iterator<BasicBlock::const_iterator,
+                std::function<bool(const Instruction &)>>::difference_type
+BasicBlock::sizeWithoutDebug() const {
+  return std::distance(instructionsWithoutDebug().begin(),
+                       instructionsWithoutDebug().end());
+}
+
 void BasicBlock::removeFromParent() {
   getParent()->getBasicBlockList().remove(getIterator());
 }
@@ -525,7 +552,11 @@ bool BasicBlock::isEntryBlock() const {
   return this == &F->getEntryBlock();
 }
 
-BasicBlock *BasicBlock::splitBasicBlock(iterator I, const Twine &BBName) {
+BasicBlock *BasicBlock::splitBasicBlock(iterator I, const Twine &BBName,
+                                        bool Before) {
+  if (Before)
+    return splitBasicBlockBefore(I, BBName);
+
   assert(getTerminator() && "Can't use splitBasicBlock on degenerate BB!");
   assert(I != InstList.end() &&
          "Trying to get me to create degenerate basic block!");
@@ -543,7 +574,7 @@ BasicBlock *BasicBlock::splitBasicBlock(iterator I, const Twine &BBName) {
   New->splice(New->end(), this, I, end());
 
   // Add a branch instruction to the newly formed basic block.
-  UncondBrInst *BI = UncondBrInst::Create(New, this);
+  BranchInst *BI = BranchInst::Create(New, this);
   BI->setDebugLoc(Loc);
 
   // Now we must loop through all of the successors of the New block (which
@@ -588,7 +619,7 @@ BasicBlock *BasicBlock::splitBasicBlockBefore(iterator I, const Twine &BBName) {
     this->replacePhiUsesWith(Pred, New);
   }
   // Add a branch instruction from  "New" to "this" Block.
-  UncondBrInst *BI = UncondBrInst::Create(this, New);
+  BranchInst *BI = BranchInst::Create(this, New);
   BI->setDebugLoc(Loc);
 
   return New;

@@ -61,9 +61,6 @@ public:
                                           Value *NewV) const override;
 
   bool allowVectorElementIndexingUsingGEP() const override { return false; }
-
-  bool isLegalMaskedGather(Type *DataType, Align Alignment) const override;
-  bool isLegalMaskedScatter(Type *DataType, Align Alignment) const override;
 };
 
 } // namespace llvm

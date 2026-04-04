@@ -20,8 +20,7 @@ template<> struct MyClass<int> {};
 // BASE-NEXT:        "End": true,
 // BASE-NEXT:        "Param": "typename T"
 // BASE-NEXT:      }
-// BASE-NEXT:    ],
-// BASE-NEXT:    "VerticalDisplay": false
+// BASE-NEXT:    ]
 // BASE-NEXT:  },
 
 // SPECIALIZATION:       "MangledName": "_ZTV7MyClassIiE",
@@ -35,11 +34,10 @@ template<> struct MyClass<int> {};
 // SPECIALIZATION-NEXT:    "Specialization": {
 // SPECIALIZATION-NEXT:      "Parameters": [
 // SPECIALIZATION-NEXT:        {
-// SPECIALIZATION-NEXT:          "Param": "int",
-// SPECIALIZATION-NEXT:          "SpecParamEnd": true
+// SPECIALIZATION-NEXT:          "End": true,
+// SPECIALIZATION-NEXT:          "Param": "int"
 // SPECIALIZATION-NEXT:        }
 // SPECIALIZATION-NEXT:      ],
-// SPECIALIZATION-NEXT:      "SpecializationOf": "{{[0-9A-F]*}}",
-// SPECIALIZATION-NEXT:      "VerticalDisplay": false
+// SPECIALIZATION-NEXT:      "SpecializationOf": "{{[0-9A-F]*}}"
 // SPECIALIZATION-NEXT:    }
 // SPECIALIZATION-NEXT:  },

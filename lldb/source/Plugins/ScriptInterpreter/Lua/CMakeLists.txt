@@ -1,12 +1,11 @@
 add_lldb_library(lldbPluginScriptInterpreterLua PLUGIN
-  LuaState.cpp
+  Lua.cpp
   ScriptInterpreterLua.cpp
 
   LINK_LIBS
     lldbCore
     lldbInterpreter
-    ${LUA_LIBRARIES}
   )
 
-target_include_directories(lldbPluginScriptInterpreterLua
-  PUBLIC ${LUA_INCLUDE_DIR})
+target_include_directories(lldbPluginScriptInterpreterLua PUBLIC ${LUA_INCLUDE_DIR})
+target_link_libraries(lldbPluginScriptInterpreterLua INTERFACE ${LUA_LIBRARIES})

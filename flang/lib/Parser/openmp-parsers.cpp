@@ -58,18 +58,6 @@ constexpr auto endOmpLine = space >> endOfLine;
 constexpr auto logicalConstantExpr{logical(constantExpr)};
 constexpr auto scalarLogicalConstantExpr{scalar(logicalConstantExpr)};
 
-// Prevent accidental use of Parser<OmpClauseList>. Use OmpClauseListParser
-// instead.
-template <>
-auto Parser<OmpClauseList>::Parse(ParseState &state)
-    -> std::optional<OmpClauseList> = delete;
-
-// Prevent accidental use of Parser<OmpDirectiveSpecification>.
-// Use OmpDirectiveSpecificationParser instead.
-template <>
-auto Parser<OmpDirectiveSpecification>::Parse(ParseState &)
-    -> std::optional<OmpDirectiveSpecification> = delete;
-
 // Parser that wraps the result of another parser into a Block. If the given
 // parser succeeds, the result is a block containing the ExecutionPartConstruct
 // result of the argument parser. Otherwise the parser fails.
@@ -160,7 +148,7 @@ template <typename Parser> constexpr auto unwrap(const Parser &p) {
 // parser.
 // The intended use is with the "checker" parser being some token, followed
 // by a more complex parser that consumes the token plus more things, e.g.
-// "PARALLEL"_id >= OmpDirectiveSpecificationParser{}.
+// "PARALLEL"_id >= Parser<OmpDirectiveSpecification>{}.
 //
 // The >= has a higher precedence than ||, so it can be used just like >>
 // in an alternatives parser without parentheses.
@@ -1103,19 +1091,6 @@ TYPE_PARSER(construct<OmpAdjustArgsClause::OmpAdjustOp>(
 
 // --- Parsers for clauses --------------------------------------------
 
-// Declaration of the ODS parser. This type must be complete for some of
-// the clause parsers.
-struct OmpDirectiveSpecificationParser {
-  using resultType = OmpDirectiveSpecification;
-  constexpr OmpDirectiveSpecificationParser(bool allowCommas = true)
-      : allowCommas_(allowCommas) {}
-
-  std::optional<resultType> Parse(ParseState &state) const;
-
-private:
-  const bool allowCommas_;
-};
-
 /// `MOBClause` is a clause that has a
 ///   std::tuple<Modifiers, OmpObjectList, bool>.
 /// Helper function to create a typical modifiers-objects clause, where the
@@ -1170,8 +1145,7 @@ TYPE_PARSER(construct<OmpDefaultClause::DataSharingAttribute>(
 TYPE_PARSER(construct<OmpDefaultClause>(
     construct<OmpDefaultClause>(
         Parser<OmpDefaultClause::DataSharingAttribute>{}) ||
-    construct<OmpDefaultClause>(
-        indirect(OmpDirectiveSpecificationParser(/*allowCommas=*/false)))))
+    construct<OmpDefaultClause>(indirect(Parser<OmpDirectiveSpecification>{}))))
 
 TYPE_PARSER(construct<OmpDynGroupprivateClause>(
     maybe(nonemptyList(Parser<OmpDynGroupprivateClause::Modifier>{}) / ":"),
@@ -1380,12 +1354,12 @@ TYPE_PARSER(construct<OmpMatchClause>(
     Parser<traits::OmpContextSelectorSpecification>{}))
 
 TYPE_PARSER(construct<OmpOtherwiseClause>(
-    maybe(indirect(OmpDirectiveSpecificationParser(/*allowCommas=*/false)))))
+    maybe(indirect(Parser<OmpDirectiveSpecification>{}))))
 
 TYPE_PARSER(construct<OmpWhenClause>(
     maybe(nonemptyList(Parser<OmpWhenClause::Modifier>{}) / ":"),
-    maybe(indirect(OmpStylizedInstanceCreator(
-        OmpDirectiveSpecificationParser(/*allowCommas=*/false))))))
+    maybe(indirect(
+        OmpStylizedInstanceCreator(Parser<OmpDirectiveSpecification>{})))))
 
 // OMP 5.2 12.6.1 grainsize([ prescriptiveness :] scalar-integer-expression)
 TYPE_PARSER(construct<OmpGrainsizeClause>(
@@ -1484,8 +1458,6 @@ TYPE_PARSER( //
                         parenthesized(Parser<OmpDefaultmapClause>{}))) ||
     "DEPEND" >> construct<OmpClause>(construct<OmpClause::Depend>(
                     parenthesized(Parser<OmpDependClause>{}))) ||
-    "DEPTH" >> construct<OmpClause>(construct<OmpClause::Depth>(
-                   parenthesized(scalarIntConstantExpr))) ||
     "DESTROY" >>
         construct<OmpClause>(construct<OmpClause::Destroy>(maybe(parenthesized(
             construct<OmpDestroyClause>(Parser<OmpObject>{}))))) ||
@@ -1634,7 +1606,7 @@ TYPE_PARSER( //
     "SIZES" >> construct<OmpClause>(construct<OmpClause::Sizes>(
                    parenthesized(nonemptyList(scalarIntExpr)))) ||
     "PERMUTATION" >> construct<OmpClause>(construct<OmpClause::Permutation>(
-                         parenthesized(nonemptyList(scalarIntConstantExpr)))) ||
+                         parenthesized(nonemptyList(scalarIntExpr)))) ||
     "THREADS"_id >> construct<OmpClause>(construct<OmpClause::Threads>()) ||
     "THREADSET" >> construct<OmpClause>(construct<OmpClause::Threadset>(
                        parenthesized(Parser<OmpThreadsetClause>{}))) ||
@@ -1670,29 +1642,9 @@ TYPE_PARSER( //
     construct<OmpClause>(construct<OmpClause::CancellationConstructType>(
         Parser<OmpCancellationConstructTypeClause>{})))
 
-// If allowCommas is true:
-//   [[,] OmpClause] ...
-// otherwise
-//   [OmpClause] ...
-struct OmpClauseListParser {
-  using resultType = OmpClauseList;
-
-  constexpr OmpClauseListParser(bool allowCommas = true)
-      : allowCommas_(allowCommas) {}
-
-  std::optional<resultType> Parse(ParseState &state) const {
-    if (allowCommas_) {
-      auto &&p{many(maybe(","_tok) >> sourced(Parser<OmpClause>{}))};
-      return sourced(construct<OmpClauseList>(std::move(p))).Parse(state);
-    } else {
-      auto &&p{many(sourced(Parser<OmpClause>{}))};
-      return sourced(construct<OmpClauseList>(std::move(p))).Parse(state);
-    }
-  }
-
-private:
-  const bool allowCommas_;
-};
+// [Clause, [Clause], ...]
+TYPE_PARSER(sourced(construct<OmpClauseList>(
+    many(maybe(","_tok) >> sourced(Parser<OmpClause>{})))))
 
 // 2.1 (variable | /common-block/ | array-sections)
 TYPE_PARSER(construct<OmpObjectList>(nonemptyList(Parser<OmpObject>{})))
@@ -1727,53 +1679,37 @@ OmpDirectiveSpecification static makeFlushFromOldSyntax(Verbatim &&text,
       std::move(clauses), std::move(flags)};
 }
 
-auto OmpDirectiveSpecificationParser::Parse(ParseState &state) const
-    -> std::optional<resultType> {
-  // Force this old-syntax parser to fail for FLUSH followed by '('.
-  // Otherwise it could succeed on the new syntax but have one of
-  // lists absent in the parsed result.
-  // E.g. for FLUSH(x) SEQ_CST it would find no clauses following
-  // the directive name, parse the argument list "(x)" and stop.
-  auto &&fp{//
-      applyFunction<OmpDirectiveSpecification>(makeFlushFromOldSyntax,
-          verbatim("FLUSH"_tok) / !lookAhead("("_tok),
-          maybe(OmpClauseListParser(allowCommas_)),
-          maybe(parenthesized(
-              OmpArgumentListParser<llvm::omp::Directive::OMPD_flush>{})),
-          pure(OmpDirectiveSpecification::Flags(
-              {OmpDirectiveSpecification::Flag::DeprecatedSyntax})))};
-  if (auto &&ods{attempt(sourced(fp)).Parse(state)}) {
-    return std::move(ods);
-  }
-
-  // Parse DECLARE_VARIANT individually, because the "[base:]variant"
-  // argument will conflict with DECLARE_REDUCTION's "ident:types...".
-  auto &&dvp{//
-      predicated(Parser<OmpDirectiveName>{},
-          IsDirective(llvm::omp::Directive::OMPD_declare_variant)) >=
-      sourced(construct<OmpDirectiveSpecification>(
-          sourced(OmpDirectiveNameParser{}),
-          maybe(parenthesized(OmpArgumentListParser<
-              llvm::omp::Directive::OMPD_declare_variant>{})),
-          maybe(OmpClauseListParser(allowCommas_)),
-          pure(OmpDirectiveSpecification::Flags())))};
-  if (auto &&ods{attempt(dvp).Parse(state)}) {
-    return std::move(ods);
-  }
-
-  // Parse the standard syntax: directive [(arguments)] [clauses]
-  auto &&odsp{//
-      sourced(construct<OmpDirectiveSpecification>( //
-          sourced(OmpDirectiveNameParser{}),
-          maybe(parenthesized(OmpArgumentListParser<>{})),
-          maybe(OmpClauseListParser(allowCommas_)),
-          pure(OmpDirectiveSpecification::Flags())))};
-  if (auto &&ods{attempt(odsp).Parse(state)}) {
-    return std::move(ods);
-  }
-
-  return std::nullopt;
-}
+TYPE_PARSER(
+    // Parse the old syntax: FLUSH [clauses] [(objects)]
+    sourced(construct<OmpDirectiveSpecification>(
+        // Force this old-syntax parser to fail for FLUSH followed by '('.
+        // Otherwise it could succeed on the new syntax but have one of
+        // lists absent in the parsed result.
+        // E.g. for FLUSH(x) SEQ_CST it would find no clauses following
+        // the directive name, parse the argument list "(x)" and stop.
+        applyFunction<OmpDirectiveSpecification>(makeFlushFromOldSyntax,
+            verbatim("FLUSH"_tok) / !lookAhead("("_tok),
+            maybe(Parser<OmpClauseList>{}),
+            maybe(parenthesized(
+                OmpArgumentListParser<llvm::omp::Directive::OMPD_flush>{})),
+            pure(OmpDirectiveSpecification::Flags(
+                {OmpDirectiveSpecification::Flag::DeprecatedSyntax}))))) ||
+    // Parse DECLARE_VARIANT individually, because the "[base:]variant"
+    // argument will conflict with DECLARE_REDUCTION's "ident:types...".
+    predicated(Parser<OmpDirectiveName>{},
+        IsDirective(llvm::omp::Directive::OMPD_declare_variant)) >=
+        sourced(construct<OmpDirectiveSpecification>(
+            sourced(OmpDirectiveNameParser{}),
+            maybe(parenthesized(OmpArgumentListParser<
+                llvm::omp::Directive::OMPD_declare_variant>{})),
+            maybe(Parser<OmpClauseList>{}),
+            pure(OmpDirectiveSpecification::Flags()))) ||
+    // Parse the standard syntax: directive [(arguments)] [clauses]
+    sourced(construct<OmpDirectiveSpecification>( //
+        sourced(OmpDirectiveNameParser{}),
+        maybe(parenthesized(OmpArgumentListParser<>{})),
+        maybe(Parser<OmpClauseList>{}),
+        pure(OmpDirectiveSpecification::Flags()))))
 
 static bool IsStandaloneOrdered(const OmpDirectiveSpecification &dirSpec) {
   // An ORDERED construct is standalone if it has DOACROSS or DEPEND clause.
@@ -1902,12 +1838,12 @@ struct LoopNestParser {
 TYPE_PARSER(construct<OmpErrorDirective>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_error)) >=
-    OmpDirectiveSpecificationParser{}))
+    Parser<OmpDirectiveSpecification>{}))
 
 TYPE_PARSER(construct<OmpNothingDirective>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_nothing)) >=
-    OmpDirectiveSpecificationParser{}))
+    Parser<OmpDirectiveSpecification>{}))
 
 TYPE_PARSER( //
     sourced(construct<OpenMPUtilityConstruct>(Parser<OmpErrorDirective>{})) ||
@@ -1916,7 +1852,7 @@ TYPE_PARSER( //
 TYPE_PARSER(construct<OmpMetadirectiveDirective>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_metadirective)) >=
-    OmpDirectiveSpecificationParser{}))
+    Parser<OmpDirectiveSpecification>{}))
 
 struct OmpBeginDirectiveParser {
   using resultType = OmpDirectiveSpecification;
@@ -1928,7 +1864,7 @@ struct OmpBeginDirectiveParser {
 
   std::optional<resultType> Parse(ParseState &state) const {
     auto &&p{predicated(Parser<OmpDirectiveName>{}, IsMemberOf(dirs_)) >=
-        OmpDirectiveSpecificationParser{}};
+        Parser<OmpDirectiveSpecification>{}};
     return p.Parse(state);
   }
 
@@ -2147,7 +2083,7 @@ struct OmpAtomicConstructParser {
     }
     recursing_ = true;
 
-    auto dirSpec{OmpDirectiveSpecificationParser{}.Parse(state)};
+    auto dirSpec{Parser<OmpDirectiveSpecification>{}.Parse(state)};
     if (!dirSpec || dirSpec->DirId() != llvm::omp::Directive::OMPD_atomic) {
       recursing_ = false;
       return std::nullopt;
@@ -2250,42 +2186,42 @@ static bool IsSimpleStandalone(const OmpDirectiveName &name) {
 TYPE_PARSER(sourced( //
     construct<OpenMPSimpleStandaloneConstruct>(
         predicated(OmpDirectiveNameParser{}, IsSimpleStandalone) >=
-        OmpDirectiveSpecificationParser{}) ||
+        Parser<OmpDirectiveSpecification>{}) ||
     construct<OpenMPSimpleStandaloneConstruct>(
-        predicated(OmpDirectiveSpecificationParser{}, IsStandaloneOrdered))))
+        predicated(Parser<OmpDirectiveSpecification>{}, IsStandaloneOrdered))))
 
 TYPE_PARSER(sourced( //
     construct<OpenMPFlushConstruct>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_flush)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 // 2.14.2 Cancellation Point construct
 TYPE_PARSER(sourced( //
     construct<OpenMPCancellationPointConstruct>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_cancellation_point)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 // 2.14.1 Cancel construct
 TYPE_PARSER(sourced( //
     construct<OpenMPCancelConstruct>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_cancel)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 TYPE_PARSER(sourced( //
     construct<OpenMPDepobjConstruct>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_depobj)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 // OMP 5.2 14.1 Interop construct
 TYPE_PARSER(sourced( //
     construct<OpenMPInteropConstruct>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_interop)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 // Standalone Constructs
 TYPE_PARSER(
@@ -2310,19 +2246,19 @@ TYPE_PARSER(construct<OmpInitializerClause>(Parser<OmpInitializerExpression>{}))
 TYPE_PARSER(sourced(construct<OmpDeclareVariantDirective>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_declare_variant)) >=
-    OmpDirectiveSpecificationParser{})))
+    Parser<OmpDirectiveSpecification>{})))
 
 // 2.16 Declare Reduction Construct
 TYPE_PARSER(sourced(construct<OpenMPDeclareReductionConstruct>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_declare_reduction)) >=
-    OmpStylizedInstanceCreator(OmpDirectiveSpecificationParser{}))))
+    OmpStylizedInstanceCreator(Parser<OmpDirectiveSpecification>{}))))
 
 // 2.10.6 Declare Target Construct
 TYPE_PARSER(sourced(construct<OpenMPDeclareTargetConstruct>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_declare_target)) >=
-    OmpDirectiveSpecificationParser{})))
+    Parser<OmpDirectiveSpecification>{})))
 
 static OmpMapperSpecifier ConstructOmpMapperSpecifier(
     std::optional<Name> &&mapperName, TypeSpec &&typeSpec, Name &&varName) {
@@ -2352,7 +2288,7 @@ TYPE_PARSER(applyFunction<OmpMapperSpecifier>(ConstructOmpMapperSpecifier,
 TYPE_PARSER(sourced(construct<OpenMPDeclareMapperConstruct>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_declare_mapper)) >=
-    OmpDirectiveSpecificationParser{})))
+    Parser<OmpDirectiveSpecification>{})))
 
 TYPE_PARSER(construct<OmpCombinerExpression>(OmpStylizedExpressionParser{}))
 TYPE_PARSER(construct<OmpInitializerExpression>(OmpStylizedExpressionParser{}))
@@ -2364,32 +2300,32 @@ TYPE_PARSER(sourced(construct<OpenMPCriticalConstruct>(
 TYPE_PARSER(sourced(construct<OpenMPDeclareSimdConstruct>(
     predicated(Parser<OmpDirectiveName>{},
         IsDirective(llvm::omp::Directive::OMPD_declare_simd)) >=
-    OmpDirectiveSpecificationParser{})))
+    Parser<OmpDirectiveSpecification>{})))
 
 TYPE_PARSER(sourced( //
     construct<OpenMPGroupprivate>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_groupprivate)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 // 2.4 Requires construct
 TYPE_PARSER(sourced(construct<OpenMPRequiresConstruct>(
     predicated(OmpDirectiveNameParser{},
         IsDirective(llvm::omp::Directive::OMPD_requires)) >=
-    OmpDirectiveSpecificationParser{})))
+    Parser<OmpDirectiveSpecification>{})))
 
 // 2.15.2 Threadprivate directive
 TYPE_PARSER(sourced( //
     construct<OpenMPThreadprivate>(
         predicated(OmpDirectiveNameParser{},
             IsDirective(llvm::omp::Directive::OMPD_threadprivate)) >=
-        OmpDirectiveSpecificationParser{})))
+        Parser<OmpDirectiveSpecification>{})))
 
 // Assumes Construct
 TYPE_PARSER(sourced(construct<OpenMPDeclarativeAssumes>(
     predicated(OmpDirectiveNameParser{},
         IsDirective(llvm::omp::Directive::OMPD_assumes)) >=
-    OmpDirectiveSpecificationParser{})))
+    Parser<OmpDirectiveSpecification>{})))
 
 // Declarative constructs
 TYPE_PARSER(
@@ -2471,7 +2407,7 @@ TYPE_PARSER(construct<OmpEndSectionsDirective>(
 static constexpr auto sectionDir{
     startOmpLine >> (predicated(OmpDirectiveNameParser{},
                          IsDirective(llvm::omp::Directive::OMPD_section)) >=
-                        OmpDirectiveSpecificationParser{})};
+                        Parser<OmpDirectiveSpecification>{})};
 
 // OMP SECTIONS (OpenMP 5.0 - 2.8.1), PARALLEL SECTIONS (OpenMP 5.0 - 2.13.3)
 TYPE_PARSER(sourced(construct<OpenMPSectionsConstruct>(
@@ -2549,7 +2485,6 @@ static constexpr DirectiveSet GetLoopDirectives() {
       unsigned(Directive::OMPD_fuse),
       unsigned(Directive::OMPD_tile),
       unsigned(Directive::OMPD_unroll),
-      unsigned(Directive::OMPD_interchange),
   };
   return loopDirectives;
 }

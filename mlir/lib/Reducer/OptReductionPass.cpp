@@ -17,7 +17,7 @@
 #include "mlir/Reducer/Passes.h"
 #include "mlir/Reducer/Tester.h"
 
-#include "llvm/Support/DebugLog.h"
+#include "llvm/Support/Debug.h"
 
 namespace mlir {
 #define GEN_PASS_DEF_OPTREDUCTIONPASS
@@ -42,7 +42,7 @@ public:
 
 /// Runs the pass instance in the pass pipeline.
 void OptReductionPass::runOnOperation() {
-  LDBG() << "\nOptimization Reduction pass: ";
+  LLVM_DEBUG(llvm::dbgs() << "\nOptimization Reduction pass: ");
 
   Tester test(testerName, testerArgs);
 
@@ -80,12 +80,12 @@ void OptReductionPass::runOnOperation() {
     module.getBody()->clear();
     module.getBody()->getOperations().splice(
         module.getBody()->begin(), moduleVariant.getBody()->getOperations());
-    LDBG() << "\nSuccessful Transformed version\n";
+    LLVM_DEBUG(llvm::dbgs() << "\nSuccessful Transformed version\n\n");
   } else {
-    LDBG() << "\nUnsuccessful Transformed version\n";
+    LLVM_DEBUG(llvm::dbgs() << "\nUnsuccessful Transformed version\n\n");
   }
 
   moduleVariant->destroy();
 
-  LDBG() << "Pass Complete\n";
+  LLVM_DEBUG(llvm::dbgs() << "Pass Complete\n\n");
 }

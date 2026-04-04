@@ -12,7 +12,6 @@
 
 #include "AMDKernelCodeTUtils.h"
 #include "AMDKernelCodeT.h"
-#include "MCTargetDesc/AMDGPUMCTargetDesc.h"
 #include "SIDefines.h"
 #include "Utils/AMDGPUBaseInfo.h"
 #include "Utils/SIDefinesUtils.h"
@@ -22,7 +21,6 @@
 #include "llvm/MC/MCParser/AsmLexer.h"
 #include "llvm/MC/MCParser/MCAsmParser.h"
 #include "llvm/MC/MCStreamer.h"
-#include "llvm/MC/MCSubtargetInfo.h"
 #include "llvm/Support/MathExtras.h"
 #include "llvm/Support/raw_ostream.h"
 
@@ -385,15 +383,13 @@ void AMDGPUMCKernelCodeT::validate(const MCSubtargetInfo *STI, MCContext &Ctx) {
   if (!compute_pgm_resource1_registers->evaluateAsAbsolute(Value))
     return;
 
-  if (G_00B848_DX10_CLAMP(Value) &&
-      !STI->hasFeature(AMDGPU::FeatureDX10ClampAndIEEEMode)) {
-    Ctx.reportError({}, "enable_dx10_clamp=1 is not allowed on GFX1170+");
+  if (G_00B848_DX10_CLAMP(Value) && AMDGPU::isGFX12Plus(*STI)) {
+    Ctx.reportError({}, "enable_dx10_clamp=1 is not allowed on GFX12+");
     return;
   }
 
-  if (G_00B848_IEEE_MODE(Value) &&
-      !STI->hasFeature(AMDGPU::FeatureDX10ClampAndIEEEMode)) {
-    Ctx.reportError({}, "enable_ieee_mode=1 is not allowed on GFX1170+");
+  if (G_00B848_IEEE_MODE(Value) && AMDGPU::isGFX12Plus(*STI)) {
+    Ctx.reportError({}, "enable_ieee_mode=1 is not allowed on GFX12+");
     return;
   }
 

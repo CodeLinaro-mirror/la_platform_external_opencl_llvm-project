@@ -67,7 +67,6 @@
 #include "flang/Support/Flags.h"
 #include "flang/Support/Version.h"
 #include "mlir/Dialect/ControlFlow/IR/ControlFlowOps.h"
-#include "mlir/Dialect/SCF/IR/SCF.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/Matchers.h"
 #include "mlir/IR/PatternMatch.h"
@@ -1645,48 +1644,6 @@ private:
     genConditionalBranch(cond, trueTarget->block, falseTarget->block);
   }
 
-  void
-  genDoWhileAsSCFWhile(const Fortran::parser::ScalarLogicalExpr &whileCondition,
-                       Fortran::lower::pft::Evaluation &doConstructEval,
-                       Fortran::lower::pft::Evaluation &doStmtEval) {
-    mlir::Location loc = toLocation();
-
-    auto scfWhile =
-        mlir::scf::WhileOp::create(*builder, loc,
-                                   /*resultTypes=*/mlir::TypeRange{},
-                                   /*inits=*/mlir::ValueRange{});
-
-    // Fill the "before" region: compute condition.
-    mlir::Block *beforeBlock =
-        builder->createBlock(&scfWhile.getBefore(), scfWhile.getBefore().end());
-    builder->setInsertionPointToStart(beforeBlock);
-    Fortran::lower::StatementContext stmtCtx;
-    mlir::Value cond = createFIRExpr(
-        loc, Fortran::semantics::GetExpr(whileCondition), stmtCtx);
-    stmtCtx.finalizeAndReset();
-    cond = builder->createConvert(loc, builder->getI1Type(), cond);
-    mlir::scf::ConditionOp::create(*builder, loc, cond, mlir::ValueRange{});
-
-    // Fill the "after" region: loop body.
-    mlir::Block *afterBlock =
-        builder->createBlock(&scfWhile.getAfter(), scfWhile.getAfter().end());
-    builder->setInsertionPointToStart(afterBlock);
-
-    // Lower nested evaluations excluding the loop control statement (the
-    // NonLabelDoStmt) and the EndDoStmt.
-    auto iter = doConstructEval.getNestedEvaluations().begin();
-    auto end = doConstructEval.getNestedEvaluations().end();
-    assert(iter != end && "malformed DoConstruct evaluation list");
-    ++iter; // skip the NonLabelDoStmt
-    assert(iter != end && "malformed DoConstruct evaluation list");
-    auto endDoIter = std::prev(end);
-    for (; iter != endDoIter; ++iter)
-      genFIR(*iter, /*unstructuredContext=*/false);
-
-    mlir::scf::YieldOp::create(*builder, loc);
-    builder->setInsertionPointAfter(scfWhile);
-  }
-
   /// Return the nearest active ancestor construct of \p eval, or nullptr.
   Fortran::lower::pft::Evaluation *
   getActiveAncestor(const Fortran::lower::pft::Evaluation &eval) {
@@ -2449,16 +2406,7 @@ private:
             // In some loops, the HLFIR AssignOp operation can be translated
             // into FIR operation(s) containing StoreOp. It is therefore
             // necessary to forward the AccessGroups attribute.
-            assignOp.getOperation()->setAttr(fir::getAccessGroupsAttrName(),
-                                             attrs);
-          } else if (hlfir::RegionAssignOp regionAssignOp =
-                         mlir::dyn_cast<hlfir::RegionAssignOp>(op)) {
-            // User defined assignment, WHERE and FORALL assignments are
-            // abstracted via hlfir.region_assign at that stage. Set the
-            // access group on it so that it can later be propagated to
-            // hlfir.assign/fir.store/fir.loads created to implement it.
-            regionAssignOp.getOperation()->setAttr(
-                fir::getAccessGroupsAttrName(), attrs);
+            assignOp.getOperation()->setAttr("access_groups", attrs);
           } else if (fir::CallOp callOp = mlir::dyn_cast<fir::CallOp>(op)) {
             callOp.setAccessGroupsAttr(attrs);
           }
@@ -2534,16 +2482,6 @@ private:
     } else if ((whileCondition =
                     std::get_if<Fortran::parser::ScalarLogicalExpr>(
                         &loopControl->u))) {
-      // Optionally lower a restricted subset of DO WHILE loops directly to
-      // scf.while. This subset excludes early-exit constructs (EXIT/CYCLE/GOTO,
-      // etc.) by requiring that the loop body is structured (as decided by the
-      // PFT branch analysis), allowing the loop to exit only when the condition
-      // becomes false.
-      if (!unstructuredContext) {
-        genDoWhileAsSCFWhile(*whileCondition, eval, doStmtEval);
-        return;
-      }
-
       assert(unstructuredContext && "while loop must be unstructured");
       maybeStartBlock(preheaderBlock); // no block or empty block
       startBlock(headerBlock);
@@ -2796,6 +2734,8 @@ private:
                 has_attrs = true;
               },
               [&](const Fortran::parser::CompilerDirective::IVDep &iv) {
+                disableVecAttr =
+                    mlir::BoolAttr::get(builder->getContext(), false);
                 aga.push_back(
                     mlir::LLVM::AccessGroupAttr::get(builder->getContext()));
                 has_attrs = true;
@@ -5374,12 +5314,6 @@ private:
                            bool keepLhsLengthInAllocatableAssignment) {
     bool lhsIsDevice = Fortran::evaluate::HasCUDADeviceAttrs(assign.lhs);
     bool rhsIsDevice = Fortran::evaluate::HasCUDADeviceAttrs(assign.rhs);
-    mlir::UnitAttr hasManagedOrUnifedSymbols =
-        (Fortran::evaluate::GetNbOfCUDAManagedOrUnifiedSymbols(assign.lhs) >
-             0 ||
-         Fortran::evaluate::GetNbOfCUDAManagedOrUnifiedSymbols(assign.rhs) > 0)
-            ? mlir::UnitAttr::get(builder.getContext())
-            : nullptr;
 
     auto getRefFromValue = [](mlir::Value val) -> mlir::Value {
       if (auto loadOp =
@@ -5425,43 +5359,38 @@ private:
         // Special case if the rhs is a constant.
         if (matchPattern(base.getDefiningOp(), mlir::m_Constant())) {
           cuf::DataTransferOp::create(builder, loc, base, lhsVal, shape,
-                                      transferKindAttr,
-                                      hasManagedOrUnifedSymbols);
+                                      transferKindAttr);
         } else {
           auto associate = hlfir::genAssociateExpr(
               loc, builder, rhs, rhs.getType(), ".cuf_host_tmp");
           cuf::DataTransferOp::create(builder, loc, associate.getBase(), lhsVal,
-                                      shape, transferKindAttr,
-                                      hasManagedOrUnifedSymbols);
+                                      shape, transferKindAttr);
           hlfir::EndAssociateOp::create(builder, loc, associate);
         }
       } else {
         cuf::DataTransferOp::create(builder, loc, rhsVal, lhsVal, shape,
-                                    transferKindAttr,
-                                    hasManagedOrUnifedSymbols);
+                                    transferKindAttr);
       }
       return;
     }
 
     // host = device
     if (!lhsIsDevice && rhsIsDevice) {
-      auto [firstElOp, elOp] = Fortran::lower::isTransferWithConversion(rhs);
-      if (firstElOp) {
+      if (auto elementalOp = Fortran::lower::isTransferWithConversion(rhs)) {
         mlir::OpBuilder::InsertionGuard insertionGuard(builder);
         auto designateOp =
-            *firstElOp.getBody()->getOps<hlfir::DesignateOp>().begin();
-        builder.setInsertionPoint(firstElOp);
+            *elementalOp.getBody()->getOps<hlfir::DesignateOp>().begin();
+        builder.setInsertionPoint(elementalOp);
         // Create a temp to transfer the rhs before applying the conversion.
         hlfir::Entity entity{designateOp.getMemref()};
         auto [temp, cleanup] = hlfir::createTempFromMold(loc, builder, entity);
         auto transferKindAttr = cuf::DataTransferKindAttr::get(
             builder.getContext(), cuf::DataTransferKind::DeviceHost);
         cuf::DataTransferOp::create(builder, loc, designateOp.getMemref(), temp,
-                                    /*shape=*/mlir::Value{}, transferKindAttr,
-                                    hasManagedOrUnifedSymbols);
+                                    /*shape=*/mlir::Value{}, transferKindAttr);
         designateOp.getMemrefMutable().assign(temp);
-        builder.setInsertionPointAfter(elOp);
-        hlfir::AssignOp::create(builder, loc, elOp, lhs,
+        builder.setInsertionPointAfter(elementalOp);
+        hlfir::AssignOp::create(builder, loc, elementalOp, lhs,
                                 isWholeAllocatableAssignment,
                                 keepLhsLengthInAllocatableAssignment);
         return;
@@ -5469,7 +5398,7 @@ private:
       auto transferKindAttr = cuf::DataTransferKindAttr::get(
           builder.getContext(), cuf::DataTransferKind::DeviceHost);
       cuf::DataTransferOp::create(builder, loc, rhsVal, lhsVal, shape,
-                                  transferKindAttr, hasManagedOrUnifedSymbols);
+                                  transferKindAttr);
       return;
     }
 
@@ -5478,7 +5407,7 @@ private:
       auto transferKindAttr = cuf::DataTransferKindAttr::get(
           builder.getContext(), cuf::DataTransferKind::DeviceDevice);
       cuf::DataTransferOp::create(builder, loc, rhsVal, lhsVal, shape,
-                                  transferKindAttr, hasManagedOrUnifedSymbols);
+                                  transferKindAttr);
       return;
     }
     llvm_unreachable("Unhandled CUDA data transfer");
@@ -6464,8 +6393,6 @@ private:
     builder->setComplexDivisionToRuntimeFlag(
         bridge.getLoweringOptions().getComplexDivisionToRuntime());
     builder->setFastMathFlags(bridge.getLoweringOptions().getMathOptions());
-    builder->setFPMaxminBehavior(
-        bridge.getLoweringOptions().getFPMaxminBehavior());
     builder->setInsertionPointToStart(&func.front());
     if (funit.parent.isA<Fortran::lower::pft::FunctionLikeUnit>()) {
       // Give internal linkage to internal functions. There are no name clash
@@ -6749,8 +6676,6 @@ private:
     builder = new fir::FirOpBuilder(func, bridge.getKindMap(), symbolTable);
     assert(builder && "FirOpBuilder did not instantiate");
     builder->setFastMathFlags(bridge.getLoweringOptions().getMathOptions());
-    builder->setFPMaxminBehavior(
-        bridge.getLoweringOptions().getFPMaxminBehavior());
     createGlobals();
     if (mlir::Region *region = func.getCallableRegion())
       region->dropAllReferences();

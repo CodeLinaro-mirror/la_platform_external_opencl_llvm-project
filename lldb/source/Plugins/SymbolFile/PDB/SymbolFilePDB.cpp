@@ -123,7 +123,7 @@ public:
 
   PluginProperties() {
     m_collection_sp = std::make_shared<OptionValueProperties>(GetSettingName());
-    m_collection_sp->Initialize(g_symbolfilepdb_properties_def);
+    m_collection_sp->Initialize(g_symbolfilepdb_properties);
   }
 
   bool UseNativeReader() const {
@@ -239,8 +239,7 @@ uint32_t SymbolFilePDB::CalculateAbilities() {
 
   if (!m_session_up) {
     // Lazily load and match the PDB file, but only do this once.
-    std::string exePath =
-        m_objfile_sp->GetModule()->GetObjectFile()->GetFileSpec().GetPath();
+    std::string exePath = m_objfile_sp->GetFileSpec().GetPath();
     auto error = loadDataForEXE(PDB_ReaderType::DIA, llvm::StringRef(exePath),
                                 m_session_up);
     if (error) {

@@ -21,7 +21,6 @@
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCInstPrinter.h"
 #include "llvm/MC/MCInstrInfo.h"
-#include "llvm/MC/MCLFI.h"
 #include "llvm/MC/MCObjectFileInfo.h"
 #include "llvm/MC/MCObjectWriter.h"
 #include "llvm/MC/MCParser/AsmLexer.h"
@@ -410,7 +409,6 @@ int main(int argc, char **argv) {
   MCOptions.CompressDebugSections = CompressDebugSections.getValue();
   MCOptions.ShowMCInst = ShowInst;
   MCOptions.AsmVerbose = true;
-  MCOptions.MCNoExecStack = NoExecStack;
   MCOptions.MCUseDwarfDirectory = MCTargetOptions::EnableDwarfDirectory;
   MCOptions.InstPrinterOptions = InstPrinterOptions;
 
@@ -498,7 +496,7 @@ int main(int argc, char **argv) {
   Ctx.setGenDwarfForAssembly(GenDwarfForAssembly);
   // Default to 4 for dwarf version.
   unsigned DwarfVersion = MCOptions.DwarfVersion ? MCOptions.DwarfVersion : 4;
-  if (DwarfVersion < 2 || DwarfVersion > 6) {
+  if (DwarfVersion < 2 || DwarfVersion > 5) {
     errs() << ProgName << ": Dwarf version " << DwarfVersion
            << " is not supported." << '\n';
     return 1;
@@ -586,17 +584,14 @@ int main(int argc, char **argv) {
     TheTarget->createNullTargetStreamer(*FFS);
     Str = std::move(FFS);
   } else if (FileType == OFT_AssemblyFile) {
-    unsigned AsmVariant = OutputAsmVariant.getNumOccurrences()
-                              ? OutputAsmVariant
-                              : MAI->getAssemblerDialect();
-    IP.reset(TheTarget->createMCInstPrinter(Triple(TripleName), AsmVariant,
-                                            *MAI, *MCII, *MRI));
+    IP.reset(TheTarget->createMCInstPrinter(
+        Triple(TripleName), OutputAsmVariant, *MAI, *MCII, *MRI));
 
     if (!IP) {
       WithColor::error()
           << "unable to create instruction printer for target triple '"
-          << TheTriple.normalize() << "' with assembly variant " << AsmVariant
-          << "\n";
+          << TheTriple.normalize() << "' with assembly variant "
+          << OutputAsmVariant << ".\n";
       return 1;
     }
 
@@ -631,9 +626,6 @@ int main(int argc, char **argv) {
     Str.reset(TheTarget->createAsmStreamer(Ctx, std::move(FOut), std::move(IP),
                                            std::move(CE), std::move(MAB)));
 
-    Triple T(TripleName);
-    if (T.isLFI())
-      initializeLFIMCStreamer(*Str.get(), Ctx, T);
   } else if (FileType == OFT_Null) {
     Str.reset(TheTarget->createNullStreamer(Ctx));
   } else {
@@ -651,6 +643,9 @@ int main(int argc, char **argv) {
         DwoOut ? MAB->createDwoObjectWriter(*OS, DwoOut->os())
                : MAB->createObjectWriter(*OS),
         std::unique_ptr<MCCodeEmitter>(CE), *STI));
+    if (NoExecStack)
+      Str->switchSection(
+          Ctx.getAsmInfo()->getStackSection(Ctx, /*Exec=*/false));
     Str->emitVersionForTarget(TheTriple, VersionTuple(), nullptr,
                               VersionTuple());
   }

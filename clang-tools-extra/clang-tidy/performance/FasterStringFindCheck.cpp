@@ -42,6 +42,16 @@ makeCharacterLiteral(const StringLiteral *Literal) {
   return Result;
 }
 
+namespace {
+
+AST_MATCHER_FUNCTION(ast_matchers::internal::Matcher<Expr>,
+                     hasSubstitutedType) {
+  return hasType(qualType(anyOf(substTemplateTypeParmType(),
+                                hasDescendant(substTemplateTypeParmType()))));
+}
+
+} // namespace
+
 FasterStringFindCheck::FasterStringFindCheck(StringRef Name,
                                              ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context),
@@ -56,26 +66,20 @@ void FasterStringFindCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
 
 void FasterStringFindCheck::registerMatchers(MatchFinder *Finder) {
   const auto SingleChar =
-      ignoringParenCasts(stringLiteral(hasSize(1)).bind("literal"));
-
-  const auto StringExpr = expr(hasType(hasUnqualifiedDesugaredType(
-      recordType(hasDeclaration(recordDecl(hasAnyName(StringLikeClasses)))))));
-
-  const auto InterestingStringFunction = hasAnyName(
-      "find", "rfind", "find_first_of", "find_first_not_of", "find_last_of",
-      "find_last_not_of", "starts_with", "ends_with", "contains", "operator+=");
+      expr(ignoringParenCasts(stringLiteral(hasSize(1)).bind("literal")));
+  const auto StringFindFunctions =
+      hasAnyName("find", "rfind", "find_first_of", "find_first_not_of",
+                 "find_last_of", "find_last_not_of");
 
   Finder->addMatcher(
       cxxMemberCallExpr(
-          callee(functionDecl(InterestingStringFunction).bind("func")),
+          callee(functionDecl(StringFindFunctions).bind("func")),
           anyOf(argumentCountIs(1), argumentCountIs(2)),
-          hasArgument(0, SingleChar), on(StringExpr)),
+          hasArgument(0, SingleChar),
+          on(expr(hasType(hasUnqualifiedDesugaredType(recordType(hasDeclaration(
+                      recordDecl(hasAnyName(StringLikeClasses)))))),
+                  unless(hasSubstitutedType())))),
       this);
-
-  Finder->addMatcher(cxxOperatorCallExpr(hasOperatorName("+="),
-                                         hasLHS(StringExpr), hasRHS(SingleChar),
-                                         callee(functionDecl().bind("func"))),
-                     this);
 }
 
 void FasterStringFindCheck::check(const MatchFinder::MatchResult &Result) {
@@ -88,9 +92,12 @@ void FasterStringFindCheck::check(const MatchFinder::MatchResult &Result) {
 
   diag(Literal->getBeginLoc(), "%0 called with a string literal consisting of "
                                "a single character; consider using the more "
-                               "efficient overload accepting a character")
+                               "effective overload accepting a character")
       << FindFunc
-      << FixItHint::CreateReplacement(Literal->getSourceRange(), *Replacement);
+      << FixItHint::CreateReplacement(
+             CharSourceRange::getTokenRange(Literal->getBeginLoc(),
+                                            Literal->getEndLoc()),
+             *Replacement);
 }
 
 } // namespace clang::tidy::performance

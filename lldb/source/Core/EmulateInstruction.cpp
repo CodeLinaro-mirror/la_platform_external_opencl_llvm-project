@@ -57,8 +57,11 @@ EmulateInstruction::FindPlugin(const ArchSpec &arch,
         return emulate_insn_ptr;
     }
   } else {
-    for (auto create_callback :
-         PluginManager::GetEmulateInstructionCreateCallbacks()) {
+    for (uint32_t idx = 0;
+         (create_callback =
+              PluginManager::GetEmulateInstructionCreateCallbackAtIndex(idx)) !=
+         nullptr;
+         ++idx) {
       EmulateInstruction *emulate_insn_ptr =
           create_callback(arch, supported_inst_type);
       if (emulate_insn_ptr)

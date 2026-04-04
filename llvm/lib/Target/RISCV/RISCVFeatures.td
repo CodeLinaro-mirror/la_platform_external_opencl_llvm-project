@@ -390,7 +390,7 @@ def FeatureStdExtZca
 // Note: Zca conditionally implies C (see RISCVISAInfo::updateImplication).
 def HasStdExtZca
     : Predicate<"Subtarget->hasStdExtZca()">,
-      AssemblerPredicate<(all_of FeatureStdExtZca),
+      AssemblerPredicate<(any_of FeatureStdExtZca),
                          "'C' (Compressed Instructions) or "
                          "'Zca' (part of the C extension, excluding "
                          "compressed floating point loads/stores)">;
@@ -398,6 +398,9 @@ def HasStdExtZca
 def FeatureStdExtC
     : RISCVExtension<2, 0, "Compressed Instructions", [FeatureStdExtZca]>,
       RISCVExtensionBitmask<0, 2>;
+def HasStdExtC : Predicate<"Subtarget->hasStdExtC()">,
+                 AssemblerPredicate<(all_of FeatureStdExtC),
+                                    "'C' (Compressed Instructions)">;
 
 def FeatureStdExtZcb
     : RISCVExtension<1, 0, "Compressed basic bit manipulation instructions",
@@ -407,29 +410,23 @@ def HasStdExtZcb : Predicate<"Subtarget->hasStdExtZcb()">,
                    AssemblerPredicate<(all_of FeatureStdExtZcb),
                        "'Zcb' (Compressed basic bit manipulation instructions)">;
 
-def FeatureStdExtZcf
-    : RISCVExtension<1, 0,
-                     "Compressed Single-Precision Floating-Point Instructions",
-                     [FeatureStdExtF, FeatureStdExtZca]>,
-      RISCVExtensionBitmask<1, 5>;
-
-def HasStdExtZcf
-    : Predicate<"Subtarget->hasStdExtZcf()">,
-      AssemblerPredicate<(all_of FeatureStdExtZcf),
-                         "'C' (Compressed Instructions) and 'F' (Single-Precision Floating-Point) or "
-                         "'Zcf' (Compressed Single-Precision Floating-Point Instructions)">;
-
 def FeatureStdExtZcd
     : RISCVExtension<1, 0,
                      "Compressed Double-Precision Floating-Point Instructions",
                      [FeatureStdExtD, FeatureStdExtZca]>,
       RISCVExtensionBitmask<1, 4>;
 
-def HasStdExtZcd
-    : Predicate<"Subtarget->hasStdExtZcd()">,
-      AssemblerPredicate<(all_of FeatureStdExtZcd),
-                         "'C' (Compressed Instructions) and 'D' (Double-Precision Floating-Point) or "
+def HasStdExtCOrZcd
+    : Predicate<"Subtarget->hasStdExtCOrZcd()">,
+      AssemblerPredicate<(any_of FeatureStdExtC, FeatureStdExtZcd),
+                         "'C' (Compressed Instructions) or "
                          "'Zcd' (Compressed Double-Precision Floating-Point Instructions)">;
+
+def FeatureStdExtZcf
+    : RISCVExtension<1, 0,
+                     "Compressed Single-Precision Floating-Point Instructions",
+                     [FeatureStdExtF, FeatureStdExtZca]>,
+      RISCVExtensionBitmask<1, 5>;
 
 def FeatureStdExtZclsd
     : RISCVExtension<1, 0,
@@ -445,7 +442,7 @@ def FeatureStdExtZcmp
                      "sequenced instructions for code-size reduction",
                      [FeatureStdExtZca]>,
       RISCVExtensionBitmask<1, 10>;
-def HasStdExtZcmp : Predicate<"Subtarget->hasStdExtZcmp()">,
+def HasStdExtZcmp : Predicate<"Subtarget->hasStdExtZcmp() && !Subtarget->hasStdExtC()">,
                     AssemblerPredicate<(all_of FeatureStdExtZcmp),
                         "'Zcmp' (sequenced instructions for code-size reduction)">;
 
@@ -462,6 +459,14 @@ def FeatureStdExtZce
                      "Compressed extensions for microcontrollers",
                      [FeatureStdExtZca, FeatureStdExtZcb, FeatureStdExtZcmp,
                       FeatureStdExtZcmt]>;
+
+def HasStdExtCOrZcfOrZce
+    : Predicate<"Subtarget->hasStdExtC() || Subtarget->hasStdExtZcf() ||"
+                "Subtarget->hasStdExtZce()">,
+      AssemblerPredicate<(any_of FeatureStdExtC, FeatureStdExtZcf,
+                                 FeatureStdExtZce),
+                         "'C' (Compressed Instructions) or "
+                         "'Zcf' (Compressed Single-Precision Floating-Point Instructions)">;
 
 def FeatureStdExtZcmop
     : RISCVExtension<1, 0, "Compressed May-Be-Operations",
@@ -489,6 +494,13 @@ def HasStdExtZbb : Predicate<"Subtarget->hasStdExtZbb()">,
                                       "'Zbb' (Basic Bit-Manipulation)">;
 def NoStdExtZbb : Predicate<"!Subtarget->hasStdExtZbb()">,
                   AssemblerPredicate<(all_of (not FeatureStdExtZbb))>;
+
+def FeatureStdExtZbc
+    : RISCVExtension<1, 0, "Carry-Less Multiplication">,
+      RISCVExtensionBitmask<0, 29>;
+def HasStdExtZbc : Predicate<"Subtarget->hasStdExtZbc()">,
+                   AssemblerPredicate<(all_of FeatureStdExtZbc),
+                                      "'Zbc' (Carry-Less Multiplication)">;
 
 def FeatureStdExtZbs
     : RISCVExtension<1, 0, "Single-Bit Instructions">,
@@ -536,17 +548,14 @@ def FeatureStdExtZbkc
 def HasStdExtZbkc
     : Predicate<"Subtarget->hasStdExtZbkc()">,
       AssemblerPredicate<(all_of FeatureStdExtZbkc),
+          "'Zbkc' (Carry-less multiply instructions for Cryptography)">;
+
+def HasStdExtZbcOrZbkc
+    : Predicate<"Subtarget->hasStdExtZbc() || Subtarget->hasStdExtZbkc()">,
+      AssemblerPredicate<(any_of FeatureStdExtZbc, FeatureStdExtZbkc),
                          "'Zbc' (Carry-Less Multiplication) or "
                          "'Zbkc' (Carry-less multiply instructions "
                          "for Cryptography)">;
-
-def FeatureStdExtZbc
-    : RISCVExtension<1, 0, "Carry-Less Multiplication",
-                     [FeatureStdExtZbkc]>,
-      RISCVExtensionBitmask<0, 29>;
-def HasStdExtZbc : Predicate<"Subtarget->hasStdExtZbc()">,
-                   AssemblerPredicate<(all_of FeatureStdExtZbc),
-                                      "'Zbc' (Carry-Less Multiplication)">;
 
 // Cryptography Extensions
 
@@ -682,12 +691,6 @@ def FeatureStdExtV
                      [FeatureStdExtZvl128b, FeatureStdExtZve64d]>,
       RISCVExtensionBitmask<0, 21>;
 
-def FeatureStdExtZvabd
-    : RISCVExperimentalExtension<0, 7, "Vector Absolute Difference">;
-def HasStdExtZvabd : Predicate<"Subtarget->hasStdExtZvabd()">,
-                     AssemblerPredicate<(all_of FeatureStdExtZvabd),
-                                        "'Zvabd' (Vector Absolute Difference)">;
-
 def FeatureStdExtZvfbfa
     : RISCVExperimentalExtension<0, 1, "Additional BF16 vector compute support",
                                  [FeatureStdExtZve32f, FeatureStdExtZfbfmin]>;
@@ -772,8 +775,6 @@ def FeatureStdExtZvbc32e
                                  "Vector Carryless Multiplication with 32-bits elements",
                                  [FeatureStdExtZve32x]>;
 
-def HasStdExtZvbc32e : Predicate<"Subtarget->hasStdExtZvbc32e()">;
-
 def HasStdExtZvbcOrZvbc32e : Predicate<"Subtarget->hasStdExtZvbc() || Subtarget->hasStdExtZvbc32e()">,
                              AssemblerPredicate<(any_of FeatureStdExtZvbc, FeatureStdExtZvbc32e),
                              "'Zvbc' or 'Zvbc32e' (Vector Carryless Multiplication)">;
@@ -813,11 +814,15 @@ def HasStdExtZvknha : Predicate<"Subtarget->hasStdExtZvknha()">,
 
 def FeatureStdExtZvknhb
     : RISCVExtension<1, 0, "Vector SHA-2 (SHA-256 and SHA-512)",
-                     [FeatureStdExtZve64x, FeatureStdExtZvknha]>,
+                     [FeatureStdExtZve64x]>,
       RISCVExtensionBitmask<0, 56>;
 def HasStdExtZvknhb : Predicate<"Subtarget->hasStdExtZvknhb()">,
                       AssemblerPredicate<(all_of FeatureStdExtZvknhb),
                           "'Zvknhb' (Vector SHA-2 (SHA-256 and SHA-512))">;
+
+def HasStdExtZvknhaOrZvknhb : Predicate<"Subtarget->hasStdExtZvknha() || Subtarget->hasStdExtZvknhb()">,
+                              AssemblerPredicate<(any_of FeatureStdExtZvknha, FeatureStdExtZvknhb),
+                                  "'Zvknha' or 'Zvknhb' (Vector SHA-2)">;
 
 def FeatureStdExtZvksed
     : RISCVExtension<1, 0, "SM4 Block Cipher Instructions",
@@ -871,20 +876,12 @@ def FeatureStdExtZvksg
 
 // Vector quad widening dot product
 
-def FeatureStdExtZvdot4a8i
-    : RISCVExperimentalExtension<0, 1, "Vector 4-element Dot Product of packed 8-bit Integers",
+def FeatureStdExtZvqdotq
+    : RISCVExperimentalExtension<0, 0, "Vector quad widening 4D Dot Product",
                                  [FeatureStdExtZve32x]>;
-def HasStdExtZvdot4a8i : Predicate<"Subtarget->hasStdExtZvdot4a8i()">,
-                         AssemblerPredicate<(all_of FeatureStdExtZvdot4a8i),
-                         "'Zvdot4a8i' (Vector 4-element Dot Product of packed 8-bit Integers)">;
-
-// Vector Reordering Structured Data
-def FeatureStdExtZvzip
-    : RISCVExperimentalExtension<0, 1, "Vector Reordering Structured Data",
-                                 [FeatureStdExtZve32x]>;
-def HasStdExtZvzip : Predicate<"Subtarget->hasStdExtZvzip()">,
-                     AssemblerPredicate<(all_of FeatureStdExtZvzip),
-                         "'Zvzip' (Vector Reordering Structured Data)">;
+def HasStdExtZvqdotq : Predicate<"Subtarget->hasStdExtZvqdotq()">,
+                       AssemblerPredicate<(all_of FeatureStdExtZvqdotq),
+                           "'Zvqdotq' (Vector quad widening 4D Dot Product)">;
 
 // Vector instruction predicates
 
@@ -1114,10 +1111,8 @@ def HasStdExtSmctrOrSsctr : Predicate<"Subtarget->hasStdExtSmctrOrSsctr()">,
 
 // Packed SIMD Extensions
 def FeatureStdExtP
-    : RISCVExperimentalExtension<0, 21,
-                                 "'Base P' (Packed SIMD)",
-                                 [FeatureStdExtZmmul, FeatureStdExtZba,
-                                  FeatureStdExtZbb, FeatureStdExtZicsr]>;
+    : RISCVExperimentalExtension<0, 18,
+                                 "'Base P' (Packed SIMD)">;
 def HasStdExtP : Predicate<"Subtarget->hasStdExtP()">,
                  AssemblerPredicate<(all_of FeatureStdExtP),
                                     "'Base P' (Packed SIMD)">;
@@ -1302,11 +1297,6 @@ def FeatureVendorXSfmm128t
     : RISCVExtension<0, 6,
                      "TE=128 configuration",
                      [FeatureVendorXSfmmbase, FeatureStdExtZvl512b], "XSfmmTE", "128">;
-
-def FeatureVendorXSfmm32a
-    : RISCVExtension<0, 6,
-                     "TEW=32-bit accumulation operands - int: 8b; float: fp16, bf16, fp32",
-                     [FeatureVendorXSfmm32a8i, FeatureVendorXSfmm32a16f, FeatureVendorXSfmm32a32f]>;
 
 def FeatureVendorXSfvqmaccdod
     : RISCVExtension<1, 0,
@@ -1670,6 +1660,13 @@ def FeatureVendorXqci
 
 // Rivos Extension(s)
 
+def FeatureVendorXRivosVisni
+    :  RISCVExperimentalExtension<0, 1, "Rivos Vector Integer Small New">;
+def HasVendorXRivosVisni
+    : Predicate<"Subtarget->hasVendorXRivosVisni()">,
+      AssemblerPredicate<(all_of FeatureVendorXRivosVisni),
+                         "'XRivosVisni' (Rivos Vector Integer Small New)">;
+
 def FeatureVendorXRivosVizip
     :  RISCVExperimentalExtension<0, 1, "Rivos Vector Register Zips">;
 def HasVendorXRivosVizip
@@ -1751,21 +1748,6 @@ def HasXAIFET : Predicate<"Subtarget->hasXAIFET()">,
 //===----------------------------------------------------------------------===//
 // LLVM specific features and extensions
 //===----------------------------------------------------------------------===//
-
-class RISCVTuneFeature<string name, string pos_directive, string neg_directive,
-                       string field_name, string value, string description,
-                       list<RISCVTuneFeature> implied_features = []>
-    : SubtargetFeature<name, field_name, value, description> {
-  let Implies = implied_features;
-
-  string PositiveDirectiveName = pos_directive;
-  string NegativeDirectiveName = neg_directive;
-}
-class RISCVSimpleTuneFeature<string name, string field_name, string value,
-                             string description,
-                             list<RISCVTuneFeature> implied_features = []>
-    : RISCVTuneFeature<name, name, "no-"#name, field_name, value, description,
-                       implied_features>;
 
 // Feature32Bit exists to mark CPUs that support RV32 to distinguish them from
 // tuning CPU names.
@@ -1857,63 +1839,37 @@ def TuneNLogNVRGather
    : SubtargetFeature<"log-vrgather", "RISCVVRGatherCostModel", "NLog2N",
                       "Has vrgather.vv with LMUL*log2(LMUL) latency">;
 
-def TunePostRAScheduler
-    : RISCVSimpleTuneFeature<"use-postra-scheduler", "UsePostRAScheduler",
-                             "true",
-                             "Schedule again after register allocation">;
+def TunePostRAScheduler : SubtargetFeature<"use-postra-scheduler",
+    "UsePostRAScheduler", "true", "Schedule again after register allocation">;
 
-def TuneDisableMISchedLoadClustering
-    : RISCVTuneFeature<
-          "disable-misched-load-clustering", "disable-misched-load-clustering",
-          "enable-misched-load-clustering", "EnableMISchedLoadClustering",
-          "false", "Disable load clustering in the machine scheduler">;
+def TuneDisableMISchedLoadClustering : SubtargetFeature<"disable-misched-load-clustering",
+    "EnableMISchedLoadClustering", "false", "Disable load clustering in the machine scheduler">;
 
-def TuneDisableMISchedStoreClustering
-    : RISCVTuneFeature<"disable-misched-store-clustering",
-                       "disable-misched-store-clustering",
-                       "enable-misched-store-clustering",
-                       "EnableMISchedStoreClustering", "false",
-                       "Disable store clustering in the machine scheduler">;
+def TuneDisableMISchedStoreClustering : SubtargetFeature<"disable-misched-store-clustering",
+    "EnableMISchedStoreClustering", "false", "Disable store clustering in the machine scheduler">;
 
-def TuneDisablePostMISchedLoadClustering
-    : RISCVTuneFeature<
-          "disable-postmisched-load-clustering",
-          "disable-postmisched-load-clustering",
-          "enable-postmisched-load-clustering",
-          "EnablePostMISchedLoadClustering", "false",
-          "Disable PostRA load clustering in the machine scheduler">;
+def TuneDisablePostMISchedLoadClustering : SubtargetFeature<"disable-postmisched-load-clustering",
+    "EnablePostMISchedLoadClustering", "false", "Disable PostRA load clustering in the machine scheduler">;
 
-def TuneDisablePostMISchedStoreClustering
-    : RISCVTuneFeature<
-          "disable-postmisched-store-clustering",
-          "disable-postmisched-store-clustering",
-          "enable-postmisched-store-clustering",
-          "EnablePostMISchedStoreClustering", "false",
-          "Disable PostRA store clustering in the machine scheduler">;
+def TuneDisablePostMISchedStoreClustering : SubtargetFeature<"disable-postmisched-store-clustering",
+    "EnablePostMISchedStoreClustering", "false", "Disable PostRA store clustering in the machine scheduler">;
 
 def TuneDisableLatencySchedHeuristic
-    : RISCVTuneFeature<
-          "disable-latency-sched-heuristic", "disable-latency-sched-heuristic",
-          "enable-latency-sched-heuristic", "DisableLatencySchedHeuristic",
-          "true", "Disable latency scheduling heuristic">;
+    : SubtargetFeature<"disable-latency-sched-heuristic", "DisableLatencySchedHeuristic", "true",
+                       "Disable latency scheduling heuristic">;
 
 def TuneEnableVsetvliSchedHeuristic
     : SubtargetFeature<"enable-vsetvli-sched-heuristic", "EnableVsetvliSchedHeuristic", "true",
                        "Enable vsetvli-based scheduling heuristic">;
 
 def TunePredictableSelectIsExpensive
-    : RISCVSimpleTuneFeature<"predictable-select-expensive",
-                             "PredictableSelectIsExpensive", "true",
-                             "Prefer likely predicted branches over selects">;
+    : SubtargetFeature<"predictable-select-expensive", "PredictableSelectIsExpensive", "true",
+                       "Prefer likely predicted branches over selects">;
 
 def TuneOptimizedZeroStrideLoad
    : SubtargetFeature<"optimized-zero-stride-load", "HasOptimizedZeroStrideLoad",
                       "true", "Optimized (perform fewer memory operations)"
                       "zero-stride vector load">;
-
-def TuneEnableSelectOptimize
-    : SubtargetFeature<"enable-select-opt", "EnableSelectOptimize", "true",
-                       "Enable the select optimize pass for select loop heuristics">;
 
 foreach nf = {2-8} in
   def TuneOptimizedNF#nf#SegmentLoadStore :
@@ -1923,10 +1879,9 @@ foreach nf = {2-8} in
                        "implemented as a wide memory op and shuffle">;
 
 def TuneVLDependentLatency
-    : RISCVSimpleTuneFeature<
-          "vl-dependent-latency", "HasVLDependentLatency", "true",
-          "Latency of vector instructions is dependent on the "
-          "dynamic value of vl">;
+    : SubtargetFeature<"vl-dependent-latency", "HasVLDependentLatency", "true",
+                       "Latency of vector instructions is dependent on the "
+                       "dynamic value of vl">;
 
 def Experimental
    : SubtargetFeature<"experimental", "HasExperimental",
@@ -1940,8 +1895,7 @@ def TuneDLenFactor2
                       "Vector unit DLEN(data path width) is half of VLEN">;
 
 def TuneNoDefaultUnroll
-    : RISCVTuneFeature<"no-default-unroll", "no-default-unroll",
-                       "enable-default-unroll", "EnableDefaultUnroll", "false",
+    : SubtargetFeature<"no-default-unroll", "EnableDefaultUnroll", "false",
                        "Disable default unroll preference.">;
 
 // Many Microarchitectures are able to fuse a branch over a single instruction
@@ -1966,81 +1920,59 @@ def TuneNoDefaultUnroll
 // the vendor-specific instructions should only be enabled for vendor
 // cores.
 def TuneShortForwardBranchIALU
-    : RISCVSimpleTuneFeature<
-          "short-forward-branch-ialu", "HasShortForwardBranchIALU", "true",
-          "Enable short forward branch optimization for RVI base instructions">;
+    : SubtargetFeature<"short-forward-branch-ialu", "HasShortForwardBranchIALU",
+                       "true", "Enable short forward branch optimization for RVI base instructions">;
 def HasShortForwardBranchIALU : Predicate<"Subtarget->hasShortForwardBranchIALU()">;
 def NoShortForwardBranch : Predicate<"!Subtarget->hasShortForwardBranchIALU()">;
 
 def TuneShortForwardBranchIMinMax
-    : RISCVSimpleTuneFeature<"short-forward-branch-iminmax",
-                             "HasShortForwardBranchIMinMax", "true",
-                             "Enable short forward branch optimization for "
-                             "MIN,MAX instructions in Zbb",
-                             [TuneShortForwardBranchIALU]>;
+    : SubtargetFeature<"short-forward-branch-iminmax", "HasShortForwardBranchIMinMax",
+                       "true", "Enable short forward branch optimization for MIN,MAX instructions in Zbb",
+                       [TuneShortForwardBranchIALU]>;
 def HasShortForwardBranchIMinMax : Predicate<"Subtarget->hasShortForwardBranchIMinMax()">;
 
 def TuneShortForwardBranchIMul
-    : RISCVSimpleTuneFeature<
-          "short-forward-branch-imul", "HasShortForwardBranchIMul", "true",
-          "Enable short forward branch optimization for MUL instruction",
-          [TuneShortForwardBranchIALU]>;
+    : SubtargetFeature<"short-forward-branch-imul", "HasShortForwardBranchIMul",
+                       "true", "Enable short forward branch optimization for MUL instruction",
+                       [TuneShortForwardBranchIALU]>;
 def HasShortForwardBranchIMul : Predicate<"Subtarget->hasShortForwardBranchIMul()">;
 
 def TuneShortForwardBranchILoad
-    : RISCVSimpleTuneFeature<
-          "short-forward-branch-iload", "HasShortForwardBranchILoad", "true",
-          "Enable short forward branch optimization for load instructions",
-          [TuneShortForwardBranchIALU]>;
-def HasShortForwardBranchILoad : Predicate<"Subtarget->hasShortForwardBranchILoad()">;
-
-def TuneShortForwardBranchImm
-    : SubtargetFeature<"short-forward-branch-imm", "HasShortForwardBranchImm",
-                       "true", "Enable short forward branch optimization for branches with immediates",
+    : SubtargetFeature<"short-forward-branch-iload", "HasShortForwardBranchILoad",
+                       "true", "Enable short forward branch optimization for load instructions",
                        [TuneShortForwardBranchIALU]>;
-def HasShortForwardBranchImm : Predicate<"Subtarget->hasShortForwardBranchImm()">;
-def NoShortForwardBranchImm : Predicate<"!Subtarget->hasShortForwardBranchImm()">;
+def HasShortForwardBranchILoad : Predicate<"Subtarget->hasShortForwardBranchILoad()">;
 
 // Some subtargets require a S2V transfer buffer to move scalars into vectors.
 // FIXME: Forming .vx/.vf/.wx/.wf can reduce register pressure.
 def TuneNoSinkSplatOperands
-    : RISCVTuneFeature<"no-sink-splat-operands", "no-sink-splat-operands",
-                       "sink-splat-operands", "SinkSplatOperands", "false",
-                       "Disable sink splat operands to enable .vx, .vf,.wx, "
-                       "and .wf instructions">;
+    : SubtargetFeature<"no-sink-splat-operands", "SinkSplatOperands",
+                       "false", "Disable sink splat operands to enable .vx, .vf,"
+                       ".wx, and .wf instructions">;
 
 def TunePreferWInst
-    : RISCVSimpleTuneFeature<"prefer-w-inst", "PreferWInst", "true",
-                             "Prefer instructions with W suffix">;
+    : SubtargetFeature<"prefer-w-inst", "PreferWInst", "true",
+                       "Prefer instructions with W suffix">;
 
 def TuneConditionalCompressedMoveFusion
-    : RISCVSimpleTuneFeature<"conditional-cmv-fusion",
-                             "HasConditionalCompressedMoveFusion", "true",
-                             "Enable branch+c.mv fusion">;
+    : SubtargetFeature<"conditional-cmv-fusion", "HasConditionalCompressedMoveFusion",
+                       "true", "Enable branch+c.mv fusion">;
 def HasConditionalMoveFusion : Predicate<"Subtarget->hasConditionalMoveFusion()">;
 def NoConditionalMoveFusion  : Predicate<"!Subtarget->hasConditionalMoveFusion()">;
 
 def TuneHasSingleElementVecFP64
-    : RISCVTuneFeature<"single-element-vec-fp64",
-          "single-element-vec-fp64", "full-vec-fp64",
-          "HasSingleElementVectorFP64", "true",
-          "Certain vector FP64 operations produce a single result "
-          "element per cycle">;
+    : SubtargetFeature<"single-element-vec-fp64", "HasSingleElementVectorFP64", "true",
+                       "Certain vector FP64 operations produce a single result "
+                       "element per cycle">;
 
-def TuneVXRMPipelineFlush
-    : RISCVSimpleTuneFeature<"vxrm-pipeline-flush", "HasVXRMPipelineFlush",
-                             "true", "VXRM writes causes pipeline flush">;
-
-def TunePreferAscendingLoadStore
-    : RISCVSimpleTuneFeature<"prefer-ascending-load-store",
-                             "PreferAscendingLoadStore", "true",
-                             "Prefer ascending load/store order for better "
-                             "clustering and performance">;
+def TuneVXRMPipelineFlush : SubtargetFeature<"vxrm-pipeline-flush", "HasVXRMPipelineFlush",
+                                             "true", "VXRM writes causes pipeline flush">;
 
 def TunePreferVsetvliOverReadVLENB
-    : RISCVSimpleTuneFeature<
-          "prefer-vsetvli-over-read-vlenb", "PreferVsetvliOverReadVLENB",
-          "true", "Prefer vsetvli over read vlenb CSR to calculate VLEN">;
+    : SubtargetFeature<"prefer-vsetvli-over-read-vlenb",
+                       "PreferVsetvliOverReadVLENB",
+                       "true",
+                       "Prefer vsetvli over read vlenb CSR to calculate VLEN">;
 
 //===----------------------------------------------------------------------===//
 // CPU Families (alphabetized by vendor).

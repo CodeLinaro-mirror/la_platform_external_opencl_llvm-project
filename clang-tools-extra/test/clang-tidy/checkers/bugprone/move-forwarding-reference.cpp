@@ -1,6 +1,18 @@
 // RUN: %check_clang_tidy -std=c++14-or-later %s bugprone-move-forwarding-reference %t -- -- -fno-delayed-template-parsing
 
-#include <utility>
+namespace std {
+template <typename> struct remove_reference;
+
+template <typename _Tp> struct remove_reference { typedef _Tp type; };
+
+template <typename _Tp> struct remove_reference<_Tp &> { typedef _Tp type; };
+
+template <typename _Tp> struct remove_reference<_Tp &&> { typedef _Tp type; };
+
+template <typename _Tp>
+constexpr typename std::remove_reference<_Tp>::type &&move(_Tp &&__t);
+
+} // namespace std
 
 // Standard case.
 template <typename T, typename U> void f1(U &&SomeU) {

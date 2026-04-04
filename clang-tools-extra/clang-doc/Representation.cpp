@@ -85,21 +85,22 @@ llvm::StringRef commentKindToString(CommentKind Kind) {
 const SymbolID EmptySID = SymbolID();
 
 template <typename T>
-static llvm::Expected<OwnedPtr<Info>> reduce(OwningPtrArray<Info> &Values) {
+static llvm::Expected<std::unique_ptr<Info>>
+reduce(std::vector<std::unique_ptr<Info>> &Values) {
   if (Values.empty() || !Values[0])
     return llvm::createStringError(llvm::inconvertibleErrorCode(),
                                    "no value to reduce");
-  OwnedPtr<Info> Merged = allocatePtr<T>(Values[0]->USR);
-  T *Tmp = static_cast<T *>(getPtr(Merged));
+  std::unique_ptr<Info> Merged = std::make_unique<T>(Values[0]->USR);
+  T *Tmp = static_cast<T *>(Merged.get());
   for (auto &I : Values)
-    Tmp->merge(std::move(*static_cast<T *>(getPtr(I))));
+    Tmp->merge(std::move(*static_cast<T *>(I.get())));
   return std::move(Merged);
 }
 
 // Return the index of the matching child in the vector, or -1 if merge is not
 // necessary.
 template <typename T>
-static int getChildIndexIfExists(OwningVec<T> &Children, T &ChildToMerge) {
+static int getChildIndexIfExists(std::vector<T> &Children, T &ChildToMerge) {
   for (unsigned long I = 0; I < Children.size(); I++) {
     if (ChildToMerge.USR == Children[I].USR)
       return I;
@@ -108,8 +109,8 @@ static int getChildIndexIfExists(OwningVec<T> &Children, T &ChildToMerge) {
 }
 
 template <typename T>
-static void reduceChildren(OwningVec<T> &Children,
-                           OwningVec<T> &&ChildrenToMerge) {
+static void reduceChildren(std::vector<T> &Children,
+                           std::vector<T> &&ChildrenToMerge) {
   for (auto &ChildToMerge : ChildrenToMerge) {
     int MergeIdx = getChildIndexIfExists(Children, ChildToMerge);
     if (MergeIdx == -1) {
@@ -121,7 +122,8 @@ static void reduceChildren(OwningVec<T> &Children,
 }
 
 // Dispatch function.
-llvm::Expected<OwnedPtr<Info>> mergeInfos(OwningPtrArray<Info> &Values) {
+llvm::Expected<std::unique_ptr<Info>>
+mergeInfos(std::vector<std::unique_ptr<Info>> &Values) {
   if (Values.empty() || !Values[0])
     return llvm::createStringError(llvm::inconvertibleErrorCode(),
                                    "no info values to merge");
@@ -470,18 +472,9 @@ bool Index::operator<(const Index &Other) const {
   return Name.size() < Other.Name.size();
 }
 
-OwningVec<const Index *> Index::getSortedChildren() const {
-  OwningVec<const Index *> SortedChildren;
-  SortedChildren.reserve(Children.size());
-  for (const auto &[_, C] : Children)
-    SortedChildren.push_back(&C);
-  llvm::sort(SortedChildren,
-             [](const Index *A, const Index *B) { return *A < *B; });
-  return SortedChildren;
-}
-
 void Index::sort() {
-  for (auto &[_, C] : Children)
+  llvm::sort(Children);
+  for (auto &C : Children)
     C.sort();
 }
 
@@ -492,11 +485,10 @@ ClangDocContext::ClangDocContext(tooling::ExecutionContext *ECtx,
                                  StringRef RepositoryLinePrefix, StringRef Base,
                                  std::vector<std::string> UserStylesheets,
                                  clang::DiagnosticsEngine &Diags,
-                                 OutputFormatTy Format, bool FTimeTrace)
+                                 bool FTimeTrace)
     : ECtx(ECtx), ProjectName(ProjectName), OutDirectory(OutDirectory),
       SourceRoot(std::string(SourceRoot)), UserStylesheets(UserStylesheets),
-      Base(Base), Diags(Diags), Format(Format), PublicOnly(PublicOnly),
-      FTimeTrace(FTimeTrace) {
+      Base(Base), Diags(Diags), PublicOnly(PublicOnly), FTimeTrace(FTimeTrace) {
   llvm::SmallString<128> SourceRootDir(SourceRoot);
   if (SourceRoot.empty())
     // If no SourceRoot was provided the current path is used as the default

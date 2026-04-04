@@ -9,7 +9,6 @@
 #ifndef LLVM_LIBC_SHARED_MATH_HYPOTF_H
 #define LLVM_LIBC_SHARED_MATH_HYPOTF_H
 
-#include "shared/libc_common.h"
 #include "src/__support/math/hypotf.h"
 
 namespace LIBC_NAMESPACE_DECL {

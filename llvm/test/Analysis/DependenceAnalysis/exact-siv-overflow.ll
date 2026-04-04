@@ -9,8 +9,9 @@
 ;;   if (i)
 ;;     A[3*i - 2] = 1;
 ;; }
-;; There is a bidirectional dependency between `A[-6*i + INT64_MAX]`
-;; and `A[3*i - 2]`, for example,
+;;
+;; FIXME: DependencyAnalsysis currently detects no dependency between
+;; `A[-6*i + INT64_MAX]` and `A[3*i - 2]`, but it does exist. For example,
 ;;
 ;; | memory location        | -6*i + INT64_MAX       | 3*i - 2
 ;; |------------------------|------------------------|-----------
@@ -27,17 +28,17 @@ define void @exactsiv_const_ovfl(ptr %A) {
 ; CHECK-NEXT:  Src: store i8 0, ptr %idx.0, align 1 --> Dst: store i8 0, ptr %idx.0, align 1
 ; CHECK-NEXT:    da analyze - none!
 ; CHECK-NEXT:  Src: store i8 0, ptr %idx.0, align 1 --> Dst: store i8 1, ptr %idx.1, align 1
-; CHECK-NEXT:    da analyze - output [*|<]!
+; CHECK-NEXT:    da analyze - none!
 ; CHECK-NEXT:  Src: store i8 1, ptr %idx.1, align 1 --> Dst: store i8 1, ptr %idx.1, align 1
 ; CHECK-NEXT:    da analyze - none!
 ;
 ; CHECK-EXACT-SIV-LABEL: 'exactsiv_const_ovfl'
 ; CHECK-EXACT-SIV-NEXT:  Src: store i8 0, ptr %idx.0, align 1 --> Dst: store i8 0, ptr %idx.0, align 1
-; CHECK-EXACT-SIV-NEXT:    da analyze - output [*]!
+; CHECK-EXACT-SIV-NEXT:    da analyze - consistent output [*]!
 ; CHECK-EXACT-SIV-NEXT:  Src: store i8 0, ptr %idx.0, align 1 --> Dst: store i8 1, ptr %idx.1, align 1
 ; CHECK-EXACT-SIV-NEXT:    da analyze - output [*|<]!
 ; CHECK-EXACT-SIV-NEXT:  Src: store i8 1, ptr %idx.1, align 1 --> Dst: store i8 1, ptr %idx.1, align 1
-; CHECK-EXACT-SIV-NEXT:    da analyze - output [*]!
+; CHECK-EXACT-SIV-NEXT:    da analyze - consistent output [*]!
 ;
 entry:
   br label %loop.header
@@ -86,11 +87,11 @@ define void @exactsiv_param_ovfl(ptr %A, i64 %n) {
 ;
 ; CHECK-EXACT-SIV-LABEL: 'exactsiv_param_ovfl'
 ; CHECK-EXACT-SIV-NEXT:  Src: store i8 0, ptr %idx.0, align 1 --> Dst: store i8 0, ptr %idx.0, align 1
-; CHECK-EXACT-SIV-NEXT:    da analyze - output [*]!
+; CHECK-EXACT-SIV-NEXT:    da analyze - consistent output [*]!
 ; CHECK-EXACT-SIV-NEXT:  Src: store i8 0, ptr %idx.0, align 1 --> Dst: store i8 1, ptr %idx.1, align 1
 ; CHECK-EXACT-SIV-NEXT:    da analyze - output [*|<]!
 ; CHECK-EXACT-SIV-NEXT:  Src: store i8 1, ptr %idx.1, align 1 --> Dst: store i8 1, ptr %idx.1, align 1
-; CHECK-EXACT-SIV-NEXT:    da analyze - output [*]!
+; CHECK-EXACT-SIV-NEXT:    da analyze - consistent output [*]!
 ;
 entry:
   %bound = sdiv i64 %n, 6

@@ -68,8 +68,7 @@ class SemanticsContext {
 public:
   SemanticsContext(const common::IntrinsicTypeDefaultKinds &,
       const common::LanguageFeatureControl &, const common::LangOptions &,
-      parser::AllCookedSources &,
-      common::FPMaxminBehavior = common::FPMaxminBehavior::Legacy);
+      parser::AllCookedSources &);
   ~SemanticsContext();
 
   const common::IntrinsicTypeDefaultKinds &defaultKinds() const {
@@ -333,7 +332,6 @@ public:
   void NoteDefinedSymbol(const Symbol &);
   bool IsSymbolDefined(const Symbol &) const;
   void NoteUsedSymbol(const Symbol &);
-  void NoteUsedSymbols(const UnorderedSymbolSet &);
   bool IsSymbolUsed(const Symbol &) const;
 
   void DumpSymbols(llvm::raw_ostream &);

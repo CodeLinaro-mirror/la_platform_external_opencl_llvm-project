@@ -33,7 +33,6 @@ jobs:
   backport-commits:
     name: Backport Commits
     runs-on: ubuntu-24.04
-    environment: main-branch-only
     permissions:
       issues: write
       pull-requests: write

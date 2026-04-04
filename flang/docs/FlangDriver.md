@@ -559,7 +559,7 @@ See the
 documentation for more details.
 
 ## Ofast and Fast Math
-`-Ofast` in Flang means `-O3 -ffast-math -fstack-arrays -fno-protect-parens`.
+`-Ofast` in Flang means `-O3 -ffast-math -fstack-arrays`.
 
 `-ffast-math` means the following:
  - `-fno-honor-infinities`

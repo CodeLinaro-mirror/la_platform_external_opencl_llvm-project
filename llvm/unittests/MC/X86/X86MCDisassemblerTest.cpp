@@ -26,7 +26,6 @@ struct Context {
   static constexpr char TripleName[] = "x86_64-unknown-elf";
   const Triple TheTriple;
   std::unique_ptr<MCRegisterInfo> MRI;
-  MCTargetOptions MCOptions;
   std::unique_ptr<MCAsmInfo> MAI;
   std::unique_ptr<MCContext> Ctx;
   std::unique_ptr<MCSubtargetInfo> STI;
@@ -44,7 +43,7 @@ struct Context {
       return;
 
     MRI.reset(TheTarget->createMCRegInfo(TheTriple));
-    MAI.reset(TheTarget->createMCAsmInfo(*MRI, TheTriple, MCOptions));
+    MAI.reset(TheTarget->createMCAsmInfo(*MRI, TheTriple, MCTargetOptions()));
     STI.reset(TheTarget->createMCSubtargetInfo(TheTriple, "", ""));
     Ctx =
         std::make_unique<MCContext>(TheTriple, MAI.get(), MRI.get(), STI.get());

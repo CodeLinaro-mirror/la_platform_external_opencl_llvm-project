@@ -25,10 +25,9 @@ def SIEncodingFamily {
   int GFX90A = 8;
   int GFX940 = 9;
   int GFX11 = 10;
-  int GFX1170 = 11;
-  int GFX12 = 12;
-  int GFX1250 = 13;
-  int GFX13 = 14;
+  int GFX12 = 11;
+  int GFX1250 = 12;
+  int GFX13 = 13;
 }
 
 //===----------------------------------------------------------------------===//
@@ -42,14 +41,11 @@ class GFXGen<Predicate pred, string dn, string suffix, int sub> {
   int Subtarget = sub;
 }
 
-def GFX13Gen         : GFXGen<isGFX13Only, "GFX13", "_gfx13", SIEncodingFamily.GFX13>;
 def GFX1250Gen       : GFXGen<isGFX125xOnly, "GFX1250", "_gfx1250", SIEncodingFamily.GFX1250>;
 def GFX12Not12_50Gen : GFXGen<isGFX12Not12_50, "GFX12", "_gfx12", SIEncodingFamily.GFX12>;
-def GFX12Gen         : GFXGen<isGFX12Only, "GFX12", "_gfx12", SIEncodingFamily.GFX12>;
-def GFX1170Gen       : GFXGen<isGFX1170Only, "GFX1170", "_gfx1170", SIEncodingFamily.GFX1170>;
-def GFX11Not11_70Gen : GFXGen<isGFX11Not11_70, "GFX11", "_gfx11", SIEncodingFamily.GFX11>;
-def GFX11Gen         : GFXGen<isGFX11Only, "GFX11", "_gfx11", SIEncodingFamily.GFX11>;
-def GFX10Gen         : GFXGen<isGFX10Only, "GFX10", "_gfx10", SIEncodingFamily.GFX10>;
+def GFX12Gen : GFXGen<isGFX12Only, "GFX12", "_gfx12", SIEncodingFamily.GFX12>;
+def GFX11Gen : GFXGen<isGFX11Only, "GFX11", "_gfx11", SIEncodingFamily.GFX11>;
+def GFX10Gen : GFXGen<isGFX10Only, "GFX10", "_gfx10", SIEncodingFamily.GFX10>;
 
 //===----------------------------------------------------------------------===//
 // SI DAG Nodes
@@ -902,13 +898,10 @@ def as_hw_round_mode : SDNodeXForm<timm, [{
 }]>;
 
 def SupportedRoundMode : TImmLeaf<i32, [{
-  return Imm == (int)RoundingMode::NearestTiesToEven ||
+  return Imm == (int)RoundingMode::TowardZero ||
+         Imm == (int)RoundingMode::NearestTiesToEven ||
          Imm == (int)RoundingMode::TowardPositive ||
          Imm == (int)RoundingMode::TowardNegative;
-}]>;
-
-def RtzRoundMode : TImmLeaf<i32, [{
-  return Imm == (int)RoundingMode::TowardZero;
 }]>;
 
 def VOP3PModsNeg : SDNodeXForm<timm, [{
@@ -1010,13 +1003,11 @@ def MFMALdScaleXForm : SDNodeXForm<timm, [{
   return CurDAG->getTargetConstant(New, SDLoc(N), MVT::i32);
 }]>;
 
-def fcanonicalize_canonicalized
-    : PatFrag<(ops node:$op), (fcanonicalize node:$op), [{
+def is_canonicalized : PatLeaf<(fAny srcvalue:$src), [{
   const SITargetLowering &Lowering =
       *static_cast<const SITargetLowering *>(getTargetLowering());
-  return Lowering.isCanonicalized(*CurDAG, Op->getOperand(0), N->getFlags());
+  return Lowering.isCanonicalized(*CurDAG, Op);
 }]> {
-  // FIXME: This predicate for GlobalISel is dead code.
   let GISelPredicateCode = [{
     const SITargetLowering *TLI = static_cast<const SITargetLowering *>(
         MF.getSubtarget().getTargetLowering());
@@ -1094,8 +1085,6 @@ def VReg32OrOffClass : AsmOperandClass {
 }
 
 def SendMsg : CustomOperand<i32>;
-
-def WaitEvent : CustomOperand<i16>;
 
 def Swizzle : CustomOperand<i16, 1>;
 
@@ -1210,12 +1199,12 @@ class NamedIntOperand<string prefix, bit Optional = 1, string name = NAME>
                     !if(AlwaysPrint, "true", "false")#"); }";
 }
 
-class NamedBitOperand<string Id, string Name = NAME, bit AlwaysIgnoreNegative = 0>
+class NamedBitOperand<string Id, string Name = NAME>
     : CustomOperand<i1, 1, Name> {
   let PredicateMethod = "isImmTy<AMDGPUOperand::"#ImmTy#">";
   let ParserMethod =
     "[this](OperandVector &Operands) -> ParseStatus { "#
-    "return parseNamedBit(\""#Id#"\", Operands, AMDGPUOperand::"#ImmTy# !if(AlwaysIgnoreNegative, ", true", ", false")#"); }";
+    "return parseNamedBit(\""#Id#"\", Operands, AMDGPUOperand::"#ImmTy#"); }";
   let PrintMethod = "[this](const MCInst *MI, unsigned OpNo, "#
     "const MCSubtargetInfo &STI, raw_ostream &O) { "#
     "printNamedBit(MI, OpNo, O, \""#Id#"\"); }";
@@ -1273,8 +1262,6 @@ def CPol_NonGLC : ValuePredicatedOperand<CPol, "!(Op.getImm() & CPol::GLC)", 1>;
 def CPol_GLC_WithDefault : DefaultOperand<CPol_GLC, !shl(1, CPolBit.GLC)>;
 def CPol_NonGLC_WithDefault : DefaultOperand<CPol_NonGLC, 0>;
 
-def IsAsync : NamedBitOperand<"isasync">;
-
 def TFE : NamedBitOperand<"tfe">;
 def UNorm : NamedBitOperand<"unorm">;
 def DA : NamedBitOperand<"da">;
@@ -1282,10 +1269,8 @@ def R128A16 : CustomOperand<i1, 1>;
 def A16 : NamedBitOperand<"a16">;
 def D16 : NamedBitOperand<"d16">;
 def LWE : NamedBitOperand<"lwe">;
-def exp_compr : NamedBitOperand<"compr", "ExpCompr", 1>;
-def exp_vm : NamedBitOperand<"vm", "ExpVM", 1>;
-def exp_done : NamedBitOperand<"done", "Done", 1>;
-def exp_row_en : NamedBitOperand<"row_en", "RowEn", 1>;
+def exp_compr : NamedBitOperand<"compr", "ExpCompr">;
+def exp_vm : NamedBitOperand<"vm", "ExpVM">;
 
 def FORMAT : CustomOperand<i8>;
 
@@ -1706,10 +1691,6 @@ def VOP3OMods : ComplexPattern<untyped, 3, "SelectVOP3OMods">;
 def VOP3PMods  : ComplexPattern<untyped, 2, "SelectVOP3PMods">;
 
 def VOP3PModsDOT  : ComplexPattern<untyped, 2, "SelectVOP3PModsDOT">;
-def VOP3PNoModsDOT  : ComplexPattern<untyped, 1, "SelectVOP3PNoModsDOT">;
-def VOP3PModsF32  : ComplexPattern<untyped, 2, "SelectVOP3PModsF32">;
-def VOP3PNoModsF32  : ComplexPattern<untyped, 1, "SelectVOP3PNoModsF32">;
-
 def WMMAOpSelVOP3PMods  : ComplexPattern<untyped, 1, "SelectWMMAOpSelVOP3PMods">;
 
 def WMMAModsF32NegAbs  : ComplexPattern<untyped, 2, "SelectWMMAModsF32NegAbs">;
@@ -3384,7 +3365,6 @@ def getMCOpcodeGen : InstrMapping {
                    [!cast<string>(SIEncodingFamily.GFX90A)],
                    [!cast<string>(SIEncodingFamily.GFX940)],
                    [!cast<string>(SIEncodingFamily.GFX11)],
-                   [!cast<string>(SIEncodingFamily.GFX1170)],
                    [!cast<string>(SIEncodingFamily.GFX12)],
                    [!cast<string>(SIEncodingFamily.GFX1250)],
                    [!cast<string>(SIEncodingFamily.GFX13)]];

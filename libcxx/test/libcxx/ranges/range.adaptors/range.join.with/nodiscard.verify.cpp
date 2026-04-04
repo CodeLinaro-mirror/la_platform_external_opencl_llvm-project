@@ -10,6 +10,7 @@
 
 // Test that functions are marked [[nodiscard]].
 
+#include <array>
 #include <ranges>
 #include <utility>
 
@@ -22,37 +23,77 @@ void test() {
 
   std::ranges::join_with_view view(range, pattern);
 
-  // [range.join.with.view]
+  // clang-format off
+  view.base(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::as_const(view).base(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::move(std::as_const(view)).base(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::move(view).base(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
 
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  std::as_const(view).base();
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  std::move(view).base();
+  // clang-format off
+  view.begin(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::as_const(view).begin(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
 
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  view.begin();
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  std::as_const(view).begin();
+  // clang-format off
+  view.end(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::as_const(view).end(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
+}
 
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  view.end();
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  std::as_const(view).end();
+void test_iterator() {
+  char range[3][2] = {{'x', 'x'}, {'y', 'y'}, {'z', 'z'}};
+  char pattern[2]  = {',', ' '};
 
-  // [range.join.with.iterator]
+  std::ranges::join_with_view view(range, pattern);
 
-  auto cIt = std::as_const(view).begin();
+  // clang-format off
+  *view.begin(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  *std::as_const(view).begin(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
 
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  *cIt;
+  // clang-format off
+  (view.begin() == view.end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  (std::as_const(view).begin() == view.end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  (view.begin() == std::as_const(view).end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  (std::as_const(view).begin() == std::as_const(view).end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
 
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  iter_move(cIt);
+  // clang-format off
+  iter_move(view.begin()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  iter_move(std::as_const(view).begin()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
+}
 
-  // [range.join.with.overview]
+void test_sentinel() {
+  std::array<test_range<cpp20_input_iterator>, 0> range;
+  std::array<int, 0> pattern;
 
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  std::views::join_with(range, pattern);
-  // expected-warning@+1 {{ignoring return value of function declared with 'nodiscard' attribute}}
-  std::views::join_with(pattern);
+  std::ranges::join_with_view view(range, pattern);
+  static_assert(!std::ranges::common_range<decltype(view)>);
+
+  // clang-format off
+  (view.begin() == view.end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  (std::as_const(view).begin() == view.end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  (view.begin() == std::as_const(view).end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  (std::as_const(view).begin() == std::as_const(view).end()); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
+}
+
+void test_overview() {
+  int range[3][3]     = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+  int pattern_base[2] = {-1, -1};
+  auto pattern        = std::views::all(pattern_base);
+
+  // clang-format off
+  std::views::join_with(pattern); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::views::join_with(range, pattern); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  range | std::views::join_with(pattern); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::views::reverse | std::views::join_with(pattern); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+
+  std::views::join_with(0); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::views::join_with(range, 0); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  range | std::views::join_with(0); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  std::views::reverse | std::views::join_with(0); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+  // clang-format on
 }

@@ -22,7 +22,7 @@
 using namespace llvm;
 
 //
-// ARMTargetStreamer Implementation
+// ARMTargetStreamer Implemenation
 //
 
 ARMTargetStreamer::ARMTargetStreamer(MCStreamer &S)

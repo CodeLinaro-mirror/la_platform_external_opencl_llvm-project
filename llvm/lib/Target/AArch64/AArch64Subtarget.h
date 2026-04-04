@@ -263,8 +263,7 @@ public:
   bool hasFusion() const {
     return hasArithmeticBccFusion() || hasArithmeticCbzFusion() ||
            hasFuseAES() || hasFuseArithmeticLogic() || hasFuseCmpCSel() ||
-           hasFuseFCmpFCSel() || hasFuseCmpCSet() || hasFuseAdrpAdd() ||
-           hasFuseLiterals();
+           hasFuseCmpCSet() || hasFuseAdrpAdd() || hasFuseLiterals();
   }
 
   unsigned getEpilogueVectorizationMinVF() const {

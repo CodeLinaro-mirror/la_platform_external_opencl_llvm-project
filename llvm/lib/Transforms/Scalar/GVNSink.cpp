@@ -730,7 +730,7 @@ unsigned GVNSink::sinkBB(BasicBlock *BBEnd) {
     if (!RPOTOrder.count(B))
       return 0;
     auto *T = B->getTerminator();
-    if (isa<UncondBrInst, CondBrInst, SwitchInst>(T))
+    if (isa<BranchInst>(T) || isa<SwitchInst>(T))
       Preds.push_back(B);
     else
       return 0;

@@ -32,6 +32,8 @@ public:
 
   lldb::ChildCacheState Update() override;
 
+  llvm::Expected<size_t> GetIndexOfChildWithName(ConstString name) override;
+
 private:
   // The lifetime of a ValueObject and all its derivative ValueObjects
   // (children, clones, etc.) is managed by a ClusterManager. These
@@ -94,6 +96,16 @@ LibStdcppTupleSyntheticFrontEnd::GetChildAtIndex(uint32_t idx) {
 llvm::Expected<uint32_t>
 LibStdcppTupleSyntheticFrontEnd::CalculateNumChildren() {
   return m_members.size();
+}
+
+llvm::Expected<size_t>
+LibStdcppTupleSyntheticFrontEnd::GetIndexOfChildWithName(ConstString name) {
+  auto optional_idx = formatters::ExtractIndexFromString(name.GetCString());
+  if (!optional_idx) {
+    return llvm::createStringError("Type has no child named '%s'",
+                                   name.AsCString());
+  }
+  return *optional_idx;
 }
 
 SyntheticChildrenFrontEnd *

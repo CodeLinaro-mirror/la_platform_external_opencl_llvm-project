@@ -202,10 +202,6 @@ struct TestVectorUnrollingPatterns
                       resultShape[1] == 32) {
                     return SmallVector<int64_t>{1, 16};
                   }
-                  if (resultShape.size() == 2 && resultShape[0] == 2 &&
-                      resultShape[1] == 1) {
-                    return SmallVector<int64_t>{1, 1};
-                  }
                   // Default case: [2,4] for all tests.
                   return SmallVector<int64_t>{2, 4};
                 })
@@ -686,9 +682,9 @@ struct TestVectorDistribution
     }
     WarpExecuteOnLane0LoweringOptions options;
     options.warpAllocationFn = allocateGlobalSharedMemory;
-    options.warpSynchronizationFn = [](Location loc, OpBuilder &builder,
-                                       gpu::WarpExecuteOnLane0Op warpOp) {
-      gpu::BarrierOp::create(builder, loc, gpu::AddressSpace::Workgroup);
+    options.warpSyncronizationFn = [](Location loc, OpBuilder &builder,
+                                      gpu::WarpExecuteOnLane0Op warpOp) {
+      gpu::BarrierOp::create(builder, loc);
     };
     // Test on one pattern in isolation.
     if (warpOpToSCF) {
@@ -783,8 +779,8 @@ struct TestVectorGatherLowering
            "loads";
   }
   void getDependentDialects(DialectRegistry &registry) const override {
-    registry.insert<affine::AffineDialect, arith::ArithDialect,
-                    func::FuncDialect, memref::MemRefDialect, scf::SCFDialect,
+    registry.insert<arith::ArithDialect, func::FuncDialect,
+                    memref::MemRefDialect, scf::SCFDialect,
                     tensor::TensorDialect, vector::VectorDialect>();
   }
 

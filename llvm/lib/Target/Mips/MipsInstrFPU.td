@@ -63,7 +63,6 @@ def MipsExtractElementF64 : SDNode<"MipsISD::ExtractElementF64",
 // Node used to generate an MTC1 i32 to f64 instruction
 def MipsMTC1_D64 : SDNode<"MipsISD::MTC1_D64", SDT_MipsMTC1_D64>;
 
-
 // Operand for printing out a condition code.
 let PrintMethod = "printFCCOperand", DecoderMethod = "DecodeCondCode" in
   def condcode : Operand<i32>;
@@ -90,8 +89,8 @@ def HasMips3D        : Predicate<"Subtarget->has3D()">,
 // They are mutually exclusive.
 //===----------------------------------------------------------------------===//
 
-class FGR_32 { list<Predicate> FGRPredicates = [NotFP64bit, IsNotSingleFloat]; }
-class FGR_64 { list<Predicate> FGRPredicates = [IsFP64bit, IsNotSingleFloat]; }
+class FGR_32 { list<Predicate> FGRPredicates = [NotFP64bit]; }
+class FGR_64 { list<Predicate> FGRPredicates = [IsFP64bit]; }
 class HARDFLOAT { list<Predicate> HardFloatPredicate = [IsNotSoftFloat]; }
 
 //===----------------------------------------------------------------------===//
@@ -135,9 +134,6 @@ multiclass ADDS_M<string opstr, InstrItinClass Itin, bit IsComm,
   }
 }
 
-class ABSS_FT_PatFrag<SDPatternOperator OpNode>:
-  PatFrag<(ops node:$fs), (OpNode node:$fs),
-          [{ return Subtarget->inAbs2008Mode() || N->getFlags().hasNoNaNs(); }]>;
 class ABSS_FT<string opstr, RegisterOperand DstRC, RegisterOperand SrcRC,
               InstrItinClass Itin, SDPatternOperator OpNode= null_frag> :
   InstSE<(outs DstRC:$fd), (ins SrcRC:$fs), !strconcat(opstr, "\t$fd, $fs"),
@@ -220,10 +216,6 @@ class MADDS_FT<string opstr, RegisterOperand RC, InstrItinClass Itin,
          [(set RC:$fd, (OpNode (any_fmul RC:$fs, RC:$ft), RC:$fr))], Itin,
          FrmFR, opstr>, HARDFLOAT;
 
-class NMADDS_FT_PatFrag<SDPatternOperator OpNode> :
-  PatFrag<(ops node:$fr, node:$fs, node:$ft),
-          (any_fsub fpimm0, (OpNode (any_fmul node:$fs, node:$ft), node:$fr)),
-          [{ return N->getFlags().hasNoNaNs(); }]>;
 class NMADDS_FT<string opstr, RegisterOperand RC, InstrItinClass Itin,
                 SDPatternOperator OpNode = null_frag> :
   InstSE<(outs RC:$fd), (ins RC:$fr, RC:$fs, RC:$ft),
@@ -305,26 +297,14 @@ multiclass C_COND_M<string TypeStr, RegisterOperand RC, bits<5> fmt,
     let BaseOpcode = "c.f."#NAME;
     let isCommutable = 1;
   }
-  def C_EQ_#NAME : MMRel, C_COND_FT<"eq", TypeStr, RC, itin>,
-                   C_COND_FM<fmt, 2> {
-    let BaseOpcode = "c.eq."#NAME;
-    let isCommutable = 1;
-  }
-  def C_OLT_#NAME : MMRel, C_COND_FT<"olt", TypeStr, RC, itin>,
-                    C_COND_FM<fmt, 4> {
-    let BaseOpcode = "c.olt."#NAME;
-  }
-  def C_OLE_#NAME : MMRel, C_COND_FT<"ole", TypeStr, RC, itin>,
-                    C_COND_FM<fmt, 6> {
-    let BaseOpcode = "c.ole."#NAME;
-  }
-}
-
-multiclass C_COND_NOTR5900_M<string TypeStr, RegisterOperand RC, bits<5> fmt,
-                             InstrItinClass itin> {
   def C_UN_#NAME : MMRel, C_COND_FT<"un", TypeStr, RC, itin>,
                    C_COND_FM<fmt, 1> {
     let BaseOpcode = "c.un."#NAME;
+    let isCommutable = 1;
+  }
+  def C_EQ_#NAME : MMRel, C_COND_FT<"eq", TypeStr, RC, itin>,
+                   C_COND_FM<fmt, 2> {
+    let BaseOpcode = "c.eq."#NAME;
     let isCommutable = 1;
   }
   def C_UEQ_#NAME : MMRel, C_COND_FT<"ueq", TypeStr, RC, itin>,
@@ -332,9 +312,17 @@ multiclass C_COND_NOTR5900_M<string TypeStr, RegisterOperand RC, bits<5> fmt,
     let BaseOpcode = "c.ueq."#NAME;
     let isCommutable = 1;
   }
+  def C_OLT_#NAME : MMRel, C_COND_FT<"olt", TypeStr, RC, itin>,
+                    C_COND_FM<fmt, 4> {
+    let BaseOpcode = "c.olt."#NAME;
+  }
   def C_ULT_#NAME : MMRel, C_COND_FT<"ult", TypeStr, RC, itin>,
                     C_COND_FM<fmt, 5> {
     let BaseOpcode = "c.ult."#NAME;
+  }
+  def C_OLE_#NAME : MMRel, C_COND_FT<"ole", TypeStr, RC, itin>,
+                    C_COND_FM<fmt, 6> {
+    let BaseOpcode = "c.ole."#NAME;
   }
   def C_ULE_#NAME : MMRel, C_COND_FT<"ule", TypeStr, RC, itin>,
                      C_COND_FM<fmt, 7> {
@@ -388,44 +376,29 @@ multiclass C_COND_NOTR5900_M<string TypeStr, RegisterOperand RC, bits<5> fmt,
 
 let AdditionalPredicates = [NotInMicroMips] in {
 defm S : C_COND_M<"s", FGR32Opnd, 16, II_C_CC_S>, ISA_MIPS1_NOT_32R6_64R6;
-defm S : C_COND_NOTR5900_M<"s", FGR32Opnd, 16, II_C_CC_S>,
-         ISA_MIPS1_NOT_32R6_64R6_R5900;
 defm D32 : C_COND_M<"d", AFGR64Opnd, 17, II_C_CC_D>, ISA_MIPS1_NOT_32R6_64R6,
            FGR_32;
-defm D32 : C_COND_NOTR5900_M<"d", AFGR64Opnd, 17, II_C_CC_D>,
-           ISA_MIPS1_NOT_32R6_64R6, FGR_32;
-let DecoderNamespace = "MipsFP64" in {
+let DecoderNamespace = "MipsFP64" in
 defm D64 : C_COND_M<"d", FGR64Opnd, 17, II_C_CC_D>, ISA_MIPS1_NOT_32R6_64R6,
            FGR_64;
-defm D64 : C_COND_NOTR5900_M<"d", FGR64Opnd, 17, II_C_CC_D>,
-           ISA_MIPS1_NOT_32R6_64R6, FGR_64;
-}
 }
 //===----------------------------------------------------------------------===//
 // Floating Point Instructions
 //===----------------------------------------------------------------------===//
 let AdditionalPredicates = [NotInMicroMips], mayRaiseFPException = 1 in {
-  def ROUND_W_S : MMRel,
-                  StdMMR6Rel,
+  def ROUND_W_S : MMRel, StdMMR6Rel,
                   ABSS_FT<"round.w.s", FGR32Opnd, FGR32Opnd, II_ROUND>,
-                  ABSS_FM<0xc, 16>,
-                  ISA_MIPS2_NOT_R5900;
+                  ABSS_FM<0xc, 16>, ISA_MIPS2;
   defm ROUND_W  : ROUND_M<"round.w.d", II_ROUND>, ABSS_FM<0xc, 17>, ISA_MIPS2;
-  def TRUNC_W_S : MMRel,
-                  StdMMR6Rel,
+  def TRUNC_W_S : MMRel, StdMMR6Rel,
                   ABSS_FT<"trunc.w.s", FGR32Opnd, FGR32Opnd, II_TRUNC>,
-                  ABSS_FM<0xd, 16>,
-                  ISA_MIPS2_NOT_R5900;
-  def CEIL_W_S : MMRel,
-                 StdMMR6Rel,
-                 ABSS_FT<"ceil.w.s", FGR32Opnd, FGR32Opnd, II_CEIL>,
-                 ABSS_FM<0xe, 16>,
-                 ISA_MIPS2_NOT_R5900;
-  def FLOOR_W_S : MMRel,
-                  StdMMR6Rel,
+                  ABSS_FM<0xd, 16>, ISA_MIPS2;
+  def CEIL_W_S  : MMRel, StdMMR6Rel,
+                  ABSS_FT<"ceil.w.s", FGR32Opnd, FGR32Opnd, II_CEIL>,
+                  ABSS_FM<0xe, 16>, ISA_MIPS2;
+  def FLOOR_W_S : MMRel, StdMMR6Rel,
                   ABSS_FT<"floor.w.s", FGR32Opnd, FGR32Opnd, II_FLOOR>,
-                  ABSS_FM<0xf, 16>,
-                  ISA_MIPS2_NOT_R5900;
+                  ABSS_FM<0xf, 16>, ISA_MIPS2;
 
   defm TRUNC_W : ROUND_M<"trunc.w.d", II_TRUNC>, ABSS_FM<0xd, 17>, ISA_MIPS2;
   defm CEIL_W  : ROUND_M<"ceil.w.d", II_CEIL>, ABSS_FM<0xe, 17>, ISA_MIPS2;
@@ -568,25 +541,17 @@ let DecoderNamespace = "MipsFP64", mayRaiseFPException = 1, Uses = [FCR31] in {
 
 let isPseudo = 1, isCodeGenOnly = 1 in {
   def PseudoCVT_S_W : ABSS_FT<"", FGR32Opnd, GPR32Opnd, II_CVT>;
-  let Predicates = [IsNotSingleFloat] in {
-    def PseudoCVT_D32_W : ABSS_FT<"", AFGR64Opnd, GPR32Opnd, II_CVT>;
-    def PseudoCVT_S_L : ABSS_FT<"", FGR64Opnd, GPR64Opnd, II_CVT>;
-    def PseudoCVT_D64_W : ABSS_FT<"", FGR64Opnd, GPR32Opnd, II_CVT>;
-    def PseudoCVT_D64_L : ABSS_FT<"", FGR64Opnd, GPR64Opnd, II_CVT>;
-  }
+  def PseudoCVT_D32_W : ABSS_FT<"", AFGR64Opnd, GPR32Opnd, II_CVT>;
+  def PseudoCVT_S_L : ABSS_FT<"", FGR64Opnd, GPR64Opnd, II_CVT>;
+  def PseudoCVT_D64_W : ABSS_FT<"", FGR64Opnd, GPR32Opnd, II_CVT>;
+  def PseudoCVT_D64_L : ABSS_FT<"", FGR64Opnd, GPR64Opnd, II_CVT>;
 }
 
-let AdditionalPredicates = [NotInMicroMips] in {
-  def FABS_S : MMRel, ABSS_FT<"abs.s", FGR32Opnd, FGR32Opnd, II_ABS>,
+let AdditionalPredicates = [NotInMicroMips, UseAbs] in {
+  def FABS_S : MMRel, ABSS_FT<"abs.s", FGR32Opnd, FGR32Opnd, II_ABS, fabs>,
                ABSS_FM<0x5, 16>, ISA_MIPS1;
-  defm FABS : ABSS_M<"abs.d", II_ABS>, ABSS_FM<0x5, 17>, ISA_MIPS1;
+  defm FABS : ABSS_M<"abs.d", II_ABS, fabs>, ABSS_FM<0x5, 17>, ISA_MIPS1;
 }
-let Predicates = FABS_S.Predicates in
-def : Pat<(ABSS_FT_PatFrag<fabs> FGR32Opnd:$fs), (FABS_S FGR32Opnd:$fs)>;
-let Predicates = FABS_D32.Predicates in
-def : Pat<(ABSS_FT_PatFrag<fabs> AFGR64Opnd:$fs), (FABS_D32 AFGR64Opnd:$fs)>;
-let Predicates = FABS_D64.Predicates in
-def : Pat<(ABSS_FT_PatFrag<fabs> FGR64Opnd:$fs), (FABS_D64 FGR64Opnd:$fs)>;
 
 def FNEG_S : MMRel, ABSS_FT<"neg.s", FGR32Opnd, FGR32Opnd, II_NEG, fneg>,
              ABSS_FM<0x7, 16>, ISA_MIPS1;
@@ -640,14 +605,10 @@ let AdditionalPredicates = [NotInMicroMips] in {
     let DecoderNamespace = "MipsFP64";
   }
 
-  let AdditionalPredicates = [IsNotSingleFloat] in {
-    def DMTC1 : MTC1_FT<"dmtc1", FGR64Opnd, GPR64Opnd, II_DMTC1, bitconvert>,
-                MFC1_FM<5>,
-                ISA_MIPS3;
-    def DMFC1 : MFC1_FT<"dmfc1", GPR64Opnd, FGR64Opnd, II_DMFC1, bitconvert>,
-                MFC1_FM<1>,
-                ISA_MIPS3;
-  }
+  def DMTC1 : MTC1_FT<"dmtc1", FGR64Opnd, GPR64Opnd, II_DMTC1,
+              bitconvert>, MFC1_FM<5>, ISA_MIPS3;
+  def DMFC1 : MFC1_FT<"dmfc1", GPR64Opnd, FGR64Opnd, II_DMFC1,
+                      bitconvert>, MFC1_FM<1>, ISA_MIPS3;
   let isMoveReg = 1 in {
     def FMOV_S   : MMRel, ABSS_FT<"mov.s", FGR32Opnd, FGR32Opnd, II_MOV_S>,
                    ABSS_FM<0x6, 16>, ISA_MIPS1;
@@ -759,42 +720,24 @@ let AdditionalPredicates = [NotInMicroMips, HasMadd4], mayRaiseFPException = 1, 
   }
 }
 
-let AdditionalPredicates = [HasMadd4, NotInMicroMips], mayRaiseFPException = 1, Uses = [FCR31] in {
-  def NMADD_S : MMRel, NMADDS_FT<"nmadd.s", FGR32Opnd, II_NMADD_S>,
+let AdditionalPredicates = [NoNaNsFPMath, HasMadd4, NotInMicroMips], mayRaiseFPException = 1, Uses = [FCR31] in {
+  def NMADD_S : MMRel, NMADDS_FT<"nmadd.s", FGR32Opnd, II_NMADD_S, any_fadd>,
                 MADDS_FM<6, 0>, INSN_MIPS4_32R2_NOT_32R6_64R6;
-  def NMSUB_S : MMRel, NMADDS_FT<"nmsub.s", FGR32Opnd, II_NMSUB_S>,
+  def NMSUB_S : MMRel, NMADDS_FT<"nmsub.s", FGR32Opnd, II_NMSUB_S, any_fsub>,
                 MADDS_FM<7, 0>, INSN_MIPS4_32R2_NOT_32R6_64R6;
 
-  def NMADD_D32 : MMRel, NMADDS_FT<"nmadd.d", AFGR64Opnd, II_NMADD_D>,
+  def NMADD_D32 : MMRel, NMADDS_FT<"nmadd.d", AFGR64Opnd, II_NMADD_D, any_fadd>,
                   MADDS_FM<6, 1>, INSN_MIPS4_32R2_NOT_32R6_64R6, FGR_32;
-  def NMSUB_D32 : MMRel, NMADDS_FT<"nmsub.d", AFGR64Opnd, II_NMSUB_D>,
+  def NMSUB_D32 : MMRel, NMADDS_FT<"nmsub.d", AFGR64Opnd, II_NMSUB_D, any_fsub>,
                   MADDS_FM<7, 1>, INSN_MIPS4_32R2_NOT_32R6_64R6, FGR_32;
 
   let DecoderNamespace = "MipsFP64" in {
-    def NMADD_D64 : NMADDS_FT<"nmadd.d", FGR64Opnd, II_NMADD_D>,
+    def NMADD_D64 : NMADDS_FT<"nmadd.d", FGR64Opnd, II_NMADD_D, any_fadd>,
                     MADDS_FM<6, 1>, INSN_MIPS4_32R2_NOT_32R6_64R6, FGR_64;
-    def NMSUB_D64 : NMADDS_FT<"nmsub.d", FGR64Opnd, II_NMSUB_D>,
+    def NMSUB_D64 : NMADDS_FT<"nmsub.d", FGR64Opnd, II_NMSUB_D, any_fsub>,
                     MADDS_FM<7, 1>, INSN_MIPS4_32R2_NOT_32R6_64R6, FGR_64;
   }
 }
-let Predicates = NMADD_S.Predicates in
-def : Pat<(NMADDS_FT_PatFrag<any_fadd> FGR32Opnd:$fr, FGR32Opnd:$fs, FGR32Opnd:$ft),
-          (NMADD_S FGR32Opnd:$fr, FGR32Opnd:$fs, FGR32Opnd:$ft)>;
-let Predicates = NMSUB_S.Predicates in
-def : Pat<(NMADDS_FT_PatFrag<any_fsub> FGR32Opnd:$fr, FGR32Opnd:$fs, FGR32Opnd:$ft),
-          (NMSUB_S FGR32Opnd:$fr, FGR32Opnd:$fs, FGR32Opnd:$ft)>;
-let Predicates = NMADD_D32.Predicates in
-def : Pat<(NMADDS_FT_PatFrag<any_fadd> AFGR64Opnd:$fr, AFGR64Opnd:$fs, AFGR64Opnd:$ft),
-          (NMADD_D32 AFGR64Opnd:$fr, AFGR64Opnd:$fs, AFGR64Opnd:$ft)>;
-let Predicates = NMSUB_D32.Predicates in
-def : Pat<(NMADDS_FT_PatFrag<any_fsub> AFGR64Opnd:$fr, AFGR64Opnd:$fs, AFGR64Opnd:$ft),
-          (NMSUB_D32 AFGR64Opnd:$fr, AFGR64Opnd:$fs, AFGR64Opnd:$ft)>;
-let Predicates = NMADD_D64.Predicates in
-def : Pat<(NMADDS_FT_PatFrag<any_fadd> FGR64Opnd:$fr, FGR64Opnd:$fs, FGR64Opnd:$ft),
-          (NMADD_D64 FGR64Opnd:$fr, FGR64Opnd:$fs, FGR64Opnd:$ft)>;
-let Predicates = NMSUB_D64.Predicates in
-def : Pat<(NMADDS_FT_PatFrag<any_fsub> FGR64Opnd:$fr, FGR64Opnd:$fs, FGR64Opnd:$ft),
-          (NMSUB_D64 FGR64Opnd:$fr, FGR64Opnd:$fs, FGR64Opnd:$ft)>;
 //===----------------------------------------------------------------------===//
 // Floating Point Branch Codes
 //===----------------------------------------------------------------------===//
@@ -939,26 +882,23 @@ multiclass C_COND_ALIASES<string TypeStr, RegisterOperand RC> {
   def : MipsInstAlias<!strconcat("c.f.", TypeStr, " $fs, $ft"),
                       (!cast<Instruction>("C_F_"#NAME) FCC0,
                                                        RC:$fs, RC:$ft), 1>;
-  def : MipsInstAlias<!strconcat("c.eq.", TypeStr, " $fs, $ft"),
-                      (!cast<Instruction>("C_EQ_"#NAME) FCC0,
-                                                        RC:$fs, RC:$ft), 1>;
-  def : MipsInstAlias<!strconcat("c.olt.", TypeStr, " $fs, $ft"),
-                      (!cast<Instruction>("C_OLT_"#NAME) FCC0,
-                                                         RC:$fs, RC:$ft), 1>;
-  def : MipsInstAlias<!strconcat("c.ole.", TypeStr, " $fs, $ft"),
-                      (!cast<Instruction>("C_OLE_"#NAME) FCC0,
-                                                         RC:$fs, RC:$ft), 1>;
-}
-
-multiclass C_COND_NOTR5900_ALIASES<string TypeStr, RegisterOperand RC> {
   def : MipsInstAlias<!strconcat("c.un.", TypeStr, " $fs, $ft"),
                       (!cast<Instruction>("C_UN_"#NAME) FCC0,
+                                                        RC:$fs, RC:$ft), 1>;
+  def : MipsInstAlias<!strconcat("c.eq.", TypeStr, " $fs, $ft"),
+                      (!cast<Instruction>("C_EQ_"#NAME) FCC0,
                                                         RC:$fs, RC:$ft), 1>;
   def : MipsInstAlias<!strconcat("c.ueq.", TypeStr, " $fs, $ft"),
                       (!cast<Instruction>("C_UEQ_"#NAME) FCC0,
                                                          RC:$fs, RC:$ft), 1>;
+  def : MipsInstAlias<!strconcat("c.olt.", TypeStr, " $fs, $ft"),
+                      (!cast<Instruction>("C_OLT_"#NAME) FCC0,
+                                                         RC:$fs, RC:$ft), 1>;
   def : MipsInstAlias<!strconcat("c.ult.", TypeStr, " $fs, $ft"),
                       (!cast<Instruction>("C_ULT_"#NAME) FCC0,
+                                                         RC:$fs, RC:$ft), 1>;
+  def : MipsInstAlias<!strconcat("c.ole.", TypeStr, " $fs, $ft"),
+                      (!cast<Instruction>("C_OLE_"#NAME) FCC0,
                                                          RC:$fs, RC:$ft), 1>;
   def : MipsInstAlias<!strconcat("c.ule.", TypeStr, " $fs, $ft"),
                       (!cast<Instruction>("C_ULE_"#NAME) FCC0,
@@ -1001,15 +941,9 @@ multiclass BC1_ALIASES<Instruction BCTrue, string BCTrueString,
 let AdditionalPredicates = [NotInMicroMips] in {
   defm S   : C_COND_ALIASES<"s", FGR32Opnd>, HARDFLOAT,
              ISA_MIPS1_NOT_32R6_64R6;
-  defm S   : C_COND_NOTR5900_ALIASES<"s", FGR32Opnd>, HARDFLOAT,
-             ISA_MIPS1_NOT_32R6_64R6_R5900;
   defm D32 : C_COND_ALIASES<"d", AFGR64Opnd>, HARDFLOAT,
              ISA_MIPS1_NOT_32R6_64R6, FGR_32;
-  defm D32 : C_COND_NOTR5900_ALIASES<"d", AFGR64Opnd>, HARDFLOAT,
-             ISA_MIPS1_NOT_32R6_64R6, FGR_32;
   defm D64 : C_COND_ALIASES<"d", FGR64Opnd>, HARDFLOAT,
-             ISA_MIPS1_NOT_32R6_64R6, FGR_64;
-  defm D64 : C_COND_NOTR5900_ALIASES<"d", FGR64Opnd>, HARDFLOAT,
              ISA_MIPS1_NOT_32R6_64R6, FGR_64;
 
   defm : BC1_ALIASES<BC1T, "bc1t", BC1F, "bc1f">, ISA_MIPS1_NOT_32R6_64R6,
@@ -1025,10 +959,6 @@ def : MipsPat<(f32 fpimm0neg), (FNEG_S (MTC1 ZERO))>, ISA_MIPS1;
 
 def : MipsPat<(f32 (any_sint_to_fp GPR32Opnd:$src)),
               (PseudoCVT_S_W GPR32Opnd:$src)>;
-let Predicates = [IsR5900] in {
-  def : MipsPat<(MipsTruncIntFP FGR32Opnd:$src),
-                (CVT_W_S FGR32Opnd:$src)>, ISA_MIPS1;
-}
 def : MipsPat<(MipsTruncIntFP FGR32Opnd:$src),
               (TRUNC_W_S FGR32Opnd:$src)>, ISA_MIPS1;
 
@@ -1072,17 +1002,14 @@ let AdditionalPredicates = [NotInMicroMips] in {
 }
 
 // To generate NMADD and NMSUB instructions when fneg node is present
-class NMADD_NMSUB_PatFrag<SDPatternOperator OpNode>: PatFrag<(ops node:$fr, node:$fs, node:$ft),
-          (fneg (OpNode (any_fmul node:$fs, node:$ft), node:$fr)),
-          [{ return N->getFlags().hasNoNaNs(); }]>;
 multiclass NMADD_NMSUB<Instruction Nmadd, Instruction Nmsub, RegisterOperand RC> {
-  def : MipsPat<(NMADD_NMSUB_PatFrag<any_fadd> RC:$fr, RC:$fs, RC:$ft),
+  def : MipsPat<(fneg (any_fadd (any_fmul RC:$fs, RC:$ft), RC:$fr)),
                 (Nmadd RC:$fr, RC:$fs, RC:$ft)>;
-  def : MipsPat<(NMADD_NMSUB_PatFrag<any_fsub> RC:$fr, RC:$fs, RC:$ft),
+  def : MipsPat<(fneg (any_fsub (any_fmul RC:$fs, RC:$ft), RC:$fr)),
                 (Nmsub RC:$fr, RC:$fs, RC:$ft)>;
 }
 
-let AdditionalPredicates = [HasMadd4, NotInMicroMips] in {
+let AdditionalPredicates = [NoNaNsFPMath, HasMadd4, NotInMicroMips] in {
   defm : NMADD_NMSUB<NMADD_S, NMSUB_S, FGR32Opnd>,
          INSN_MIPS4_32R2_NOT_32R6_64R6;
   defm : NMADD_NMSUB<NMADD_D32, NMSUB_D32, AFGR64Opnd>,

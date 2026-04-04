@@ -161,7 +161,7 @@ auto BPOrderer<D>::computeOrder(
     sectionToIdx.try_emplace(isec, i);
 
   BPFunctionNode::UtilityNodeT maxUN = 0;
-  MapVector<unsigned, UtilityNodes> startupSectionIdxUNs;
+  DenseMap<unsigned, UtilityNodes> startupSectionIdxUNs;
   // Used to define the initial order for startup functions.
   DenseMap<unsigned, size_t> sectionIdxToTimestamp;
   std::unique_ptr<InstrProfReader> reader;
@@ -177,7 +177,7 @@ auto BPOrderer<D>::computeOrder(
     }
     auto &traces = reader->getTemporalProfTraces();
 
-    MapVector<unsigned, BPFunctionNode::UtilityNodeT> sectionIdxToFirstUN;
+    DenseMap<unsigned, BPFunctionNode::UtilityNodeT> sectionIdxToFirstUN;
     for (size_t traceIdx = 0; traceIdx < traces.size(); traceIdx++) {
       uint64_t currentSize = 0, cutoffSize = 1;
       size_t cutoffTimestamp = 1;

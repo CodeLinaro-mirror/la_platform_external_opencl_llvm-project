@@ -40,8 +40,7 @@ public:
 
   template <typename T> bool mapDecl(const T *D) {
     Location Loc(0, 0, "test.cpp");
-    serialize::Serializer S;
-    auto [Child, Parent] = S.emitInfo(D, getComment(D), Loc, Public);
+    auto [Child, Parent] = serialize::emitInfo(D, getComment(D), Loc, Public);
     if (Child)
       EmittedInfos.emplace_back(std::move(Child));
     if (Parent)
@@ -97,12 +96,12 @@ static void extractInfosFromCodeWithArgs(StringRef Code,
 CommentInfo MakeOneLineCommentInfo(const std::string &Text) {
   CommentInfo TopComment;
   TopComment.Kind = "FullComment";
-  TopComment.Children.emplace_back(allocatePtr<CommentInfo>());
+  TopComment.Children.emplace_back(std::make_unique<CommentInfo>());
 
   CommentInfo *Brief = TopComment.Children.back().get();
   Brief->Kind = "ParagraphComment";
 
-  Brief->Children.emplace_back(allocatePtr<CommentInfo>());
+  Brief->Children.emplace_back(std::make_unique<CommentInfo>());
   Brief->Children.back()->Kind = "TextComment";
   Brief->Children.back()->Name = "ParagraphComment";
   Brief->Children.back()->Text = Text;

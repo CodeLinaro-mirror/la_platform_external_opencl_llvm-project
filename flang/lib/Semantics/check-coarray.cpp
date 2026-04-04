@@ -9,7 +9,6 @@
 #include "check-coarray.h"
 #include "definable.h"
 #include "flang/Common/indirection.h"
-#include "flang/Evaluate/check-expression.h"
 #include "flang/Evaluate/expression.h"
 #include "flang/Parser/message.h"
 #include "flang/Parser/parse-tree.h"

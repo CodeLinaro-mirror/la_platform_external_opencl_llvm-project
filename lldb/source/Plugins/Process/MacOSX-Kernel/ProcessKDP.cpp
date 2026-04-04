@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include <memory>
+#include <mutex>
 
 #include "lldb/Core/Debugger.h"
 #include "lldb/Core/Module.h"
@@ -35,6 +36,8 @@
 #include "lldb/Utility/State.h"
 #include "lldb/Utility/StringExtractor.h"
 #include "lldb/Utility/UUID.h"
+
+#include "llvm/Support/Threading.h"
 
 #define USEC_PER_SEC 1000000
 
@@ -67,7 +70,7 @@ public:
 
   PluginProperties() : Properties() {
     m_collection_sp = std::make_shared<OptionValueProperties>(GetSettingName());
-    m_collection_sp->Initialize(g_processkdp_properties_def);
+    m_collection_sp->Initialize(g_processkdp_properties);
   }
 
   ~PluginProperties() override = default;
@@ -94,7 +97,6 @@ llvm::StringRef ProcessKDP::GetPluginDescriptionStatic() {
 }
 
 void ProcessKDP::Terminate() {
-  ProcessKDPLog::Terminate();
   PluginManager::UnregisterPlugin(ProcessKDP::CreateInstance);
 }
 
@@ -495,7 +497,7 @@ bool ProcessKDP::DoUpdateThreadList(ThreadList &old_thread_list,
                                     ThreadList &new_thread_list) {
   // locker will keep a mutex locked until it goes out of scope
   Log *log = GetLog(KDPLog::Thread);
-  LLDB_LOG_VERBOSE(log, "pid = {0}", GetID());
+  LLDB_LOGV(log, "pid = {0}", GetID());
 
   // Even though there is a CPU mask, it doesn't mean we can see each CPU
   // individually, there is really only one. Lets call this thread 1.
@@ -680,11 +682,15 @@ Status ProcessKDP::DoSignal(int signo) {
 }
 
 void ProcessKDP::Initialize() {
-  PluginManager::RegisterPlugin(GetPluginNameStatic(),
-                                GetPluginDescriptionStatic(), CreateInstance,
-                                DebuggerInitialize);
+  static llvm::once_flag g_once_flag;
 
-  ProcessKDPLog::Initialize();
+  llvm::call_once(g_once_flag, []() {
+    PluginManager::RegisterPlugin(GetPluginNameStatic(),
+                                  GetPluginDescriptionStatic(), CreateInstance,
+                                  DebuggerInitialize);
+
+    ProcessKDPLog::Initialize();
+  });
 }
 
 void ProcessKDP::DebuggerInitialize(lldb_private::Debugger &debugger) {

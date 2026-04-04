@@ -15,8 +15,6 @@
 #include "L0Plugin.h"
 #include "L0Program.h"
 
-#include "llvm/ADT/ScopeExit.h"
-
 namespace llvm::omp::target::plugin {
 
 bool KernelPropertiesTy::reuseGroupParams(const int32_t NumTeamsIn,
@@ -103,7 +101,7 @@ void L0KernelTy::decideKernelGroupArguments(L0DeviceTy &Device,
   bool MaxGroupSizeForced = false;
   bool MaxGroupCountForced = false;
   uint32_t MaxGroupSize = Device.getMaxGroupSize();
-  const auto &Option = Device.getPlugin().getOptions();
+  const auto &Option = LevelZeroPluginTy::getOptions();
   const auto OptSubscRate = Option.SubscriptionRate;
   auto &GroupCounts = KEnv.GroupCounts;
 
@@ -194,7 +192,7 @@ Error L0KernelTy::getGroupsShape(L0DeviceTy &Device, int32_t NumTeams,
 
   bool IsXeHPG = Device.isDeviceArch(DeviceArchTy::DeviceArch_XeHPG);
   KEnv.HalfNumThreads =
-      Device.getPlugin().getOptions().ZeDebugEnabled && IsXeHPG;
+      LevelZeroPluginTy::getOptions().ZeDebugEnabled && IsXeHPG;
   uint32_t KernelWidth = KernelPR.Width;
   uint32_t SIMDWidth = KernelPR.SIMDWidth;
   INFO(OMP_INFOTYPE_PLUGIN_KERNEL, DeviceId,
@@ -284,17 +282,9 @@ static Error launchKernelWithImmCmdList(L0DeviceTy &l0Device,
   }
   INFO(OMP_INFOTYPE_PLUGIN_KERNEL, DeviceId,
        "Kernel depends on %zu data copying events.\n", NumWaitEvents);
-  Error AllErrors = Error::success();
-
-  CALL_ZE_ACCUM_ERROR(AllErrors, zeCommandListAppendLaunchKernel, CmdList,
-                      zeKernel, &KEnv.GroupCounts, Event, NumWaitEvents,
-                      WaitEvents);
-  KEnv.Lock.unlock();
-  if (AllErrors) {
-    if (auto Err = l0Device.releaseEvent(Event))
-      AllErrors = joinErrors(std::move(AllErrors), std::move(Err));
-    return AllErrors;
-  }
+  CALL_ZE_RET_ERROR(zeCommandListAppendLaunchKernel, CmdList, zeKernel,
+                    &KEnv.GroupCounts, Event, NumWaitEvents, WaitEvents);
+  KEnv.KernelPR.Mtx.unlock();
   INFO(OMP_INFOTYPE_PLUGIN_KERNEL, DeviceId,
        "Submitted kernel " DPxMOD " to device %s\n", DPxPTR(zeKernel), IdStr);
 
@@ -302,12 +292,9 @@ static Error launchKernelWithImmCmdList(L0DeviceTy &l0Device,
     AsyncQueue->WaitEvents.push_back(Event);
     AsyncQueue->KernelEvent = Event;
   } else {
-    CALL_ZE_ACCUM_ERROR(AllErrors, zeEventHostSynchronize, Event,
-                        L0DefaultTimeout);
+    CALL_ZE_RET_ERROR(zeEventHostSynchronize, Event, L0DefaultTimeout);
     if (auto Err = l0Device.releaseEvent(Event))
-      AllErrors = joinErrors(std::move(AllErrors), std::move(Err));
-    if (AllErrors)
-      return AllErrors;
+      return Err;
   }
   INFO(OMP_INFOTYPE_PLUGIN_KERNEL, DeviceId,
        "Executed kernel entry " DPxMOD " on device %s\n", DPxPTR(zeKernel),
@@ -337,18 +324,14 @@ static Error launchKernelWithCmdQueue(L0DeviceTy &l0Device,
   ze_event_handle_t Event = nullptr;
   CALL_ZE_RET_ERROR(zeCommandListAppendLaunchKernel, CmdList, zeKernel,
                     &KEnv.GroupCounts, Event, 0, nullptr);
-  KEnv.Lock.unlock();
+  KEnv.KernelPR.Mtx.unlock();
   CALL_ZE_RET_ERROR(zeCommandListClose, CmdList);
-
-  // Ensure command list is reset even on errors after this point.
-  llvm::scope_exit ResetOnExit(
-      [&]() { CALL_ZE_SILENT(zeCommandListReset, CmdList); });
-
   CALL_ZE_RET_ERROR_MTX(zeCommandQueueExecuteCommandLists, l0Device.getMutex(),
                         CmdQueue, 1, &CmdList, nullptr);
   INFO(OMP_INFOTYPE_PLUGIN_KERNEL, DeviceId,
        "Submitted kernel " DPxMOD " to device %s\n", DPxPTR(zeKernel), IdStr);
   CALL_ZE_RET_ERROR(zeCommandQueueSynchronize, CmdQueue, L0DefaultTimeout);
+  CALL_ZE_RET_ERROR(zeCommandListReset, CmdList);
   if (Event) {
     if (auto Err = l0Device.releaseEvent(Event))
       return Err;
@@ -430,13 +413,9 @@ Error L0KernelTy::setIndirectFlags(L0DeviceTy &l0Device,
 
 Error L0KernelTy::launchImpl(GenericDeviceTy &GenericDevice,
                              uint32_t NumThreads[3], uint32_t NumBlocks[3],
-                             uint32_t DynBlockMemSize, KernelArgsTy &KernelArgs,
+                             KernelArgsTy &KernelArgs,
                              KernelLaunchParamsTy LaunchParams,
                              AsyncInfoWrapperTy &AsyncInfoWrapper) const {
-  if (DynBlockMemSize > 0)
-    return Plugin::error(ErrorCode::UNSUPPORTED,
-                         "dynamic shared memory is unsupported in L0 plugin");
-
   auto &l0Device = L0DeviceTy::makeL0Device(GenericDevice);
   __tgt_async_info *AsyncInfo = AsyncInfoWrapper;
 
@@ -448,7 +427,7 @@ Error L0KernelTy::launchImpl(GenericDeviceTy &GenericDevice,
 
   auto &Plugin = l0Device.getPlugin();
   auto *IdStr = l0Device.getZeIdCStr();
-  auto &Options = Plugin.getOptions();
+  auto &Options = LevelZeroPluginTy::getOptions();
   bool IsAsync = AsyncInfo && l0Device.asyncEnabled();
   if (IsAsync && !AsyncInfo->Queue) {
     AsyncInfo->Queue = reinterpret_cast<void *>(Plugin.getAsyncQueue());
@@ -462,7 +441,7 @@ Error L0KernelTy::launchImpl(GenericDeviceTy &GenericDevice,
   L0LaunchEnvTy KEnv(IsAsync, AsyncQueue, KernelPR);
 
   // Protect from kernel preparation to submission as kernels are shared.
-  KEnv.Lock.lock();
+  KernelPR.Mtx.lock();
 
   if (auto Err = setKernelGroups(l0Device, KEnv, NumThreads, NumBlocks))
     return Err;

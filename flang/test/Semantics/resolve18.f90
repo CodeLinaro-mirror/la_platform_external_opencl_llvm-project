@@ -348,8 +348,7 @@ subroutine s_21_23
   use m21
   use m23
   type(foo) x ! Intel and NAG error
-
-  ! According to F23 C7108, not ambiguous
+  !PORTABILITY: Reference to generic function 'foo' (resolving to specific 'f1') is ambiguous with a structure constructor of the same name [-Wambiguous-structure-constructor]
   print *, foo(1.) ! Intel error
   print *, foo(1.,2.,3.) ! Intel error
   call ext(foo) ! GNU and Intel error

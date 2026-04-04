@@ -676,14 +676,9 @@ struct IntRangeOptimizationsPass final
     RewritePatternSet patterns(ctx);
     populateIntRangeOptimizationsPatterns(patterns, solver);
 
-    // Disable folding to avoid potential control-flow folding that would break
-    // the solver state: this happens for example when a block argument is
-    // folded and other block arguments inherit from the address of the folded
-    // block argument. Further queries to the remaining block arguments would
-    // then return the solver state associated to the original block argument.
     if (failed(applyPatternsGreedily(
             op, std::move(patterns),
-            GreedyRewriteConfig().enableFolding(false).setListener(&listener))))
+            GreedyRewriteConfig().setListener(&listener))))
       signalPassFailure();
   }
 };

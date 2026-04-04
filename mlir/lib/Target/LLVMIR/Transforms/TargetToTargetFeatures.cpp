@@ -8,7 +8,6 @@
 
 #include "mlir/Target/LLVMIR/Transforms/Passes.h"
 #include "mlir/Target/LLVMIR/Transforms/TargetUtils.h"
-#include "llvm/ADT/SmallVectorExtras.h"
 
 #include "mlir/Dialect/DLTI/DLTI.h"
 #include "mlir/Dialect/LLVMIR/LLVMDialect.h"
@@ -59,13 +58,13 @@ struct TargetToTargetFeaturesPass
     const std::vector<llvm::SubtargetFeatureKV> enabledFeatures =
         subTargetInfo->getEnabledProcessorFeatures();
 
-    auto plussedFeatures = llvm::map_to_vector(
-        enabledFeatures, [](llvm::SubtargetFeatureKV feature) {
+    auto plussedFeatures = llvm::to_vector(
+        llvm::map_range(enabledFeatures, [](llvm::SubtargetFeatureKV feature) {
           return std::string("+") + feature.Key;
-        });
+        }));
 
-    auto plussedFeaturesRefs = llvm::map_to_vector(
-        plussedFeatures, [](auto &it) { return StringRef(it.c_str()); });
+    auto plussedFeaturesRefs = llvm::to_vector(llvm::map_range(
+        plussedFeatures, [](auto &it) { return StringRef(it.c_str()); }));
 
     auto fullTargetFeaturesAttr =
         LLVM::TargetFeaturesAttr::get(&getContext(), plussedFeaturesRefs);

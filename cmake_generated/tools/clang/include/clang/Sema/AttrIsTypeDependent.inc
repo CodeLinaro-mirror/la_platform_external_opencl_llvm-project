@@ -14,8 +14,5 @@ void checkAttrIsTypeDependent(Decl *D, const Attr *A) {
   case attr::Cleanup:
     ActOnCleanupAttr(D, A);
     break;
-  case attr::InitPriority:
-    ActOnInitPriorityAttr(D, A);
-    break;
   }
 }

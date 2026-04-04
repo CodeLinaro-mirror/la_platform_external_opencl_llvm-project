@@ -4,11 +4,9 @@
 subroutine do_imperfectly_nested_before
   integer i, j
 
-  !ERROR: This construct requires a perfect nest of depth 2, but the associated nest is a perfect nest of depth 1
-  !BECAUSE: COLLAPSE clause was specified with argument 2
+  !ERROR: The value of the parameter in the COLLAPSE or ORDERED clause must not be larger than the number of nested loops following the construct.
   !$omp do collapse(2)
   do i = 1, 10
-    !BECAUSE: This code prevents perfect nesting
     print *, i
     do j = 1, 10
       print *, i, j
@@ -21,14 +19,12 @@ end subroutine
 subroutine do_imperfectly_nested_behind
   integer i, j
 
-  !ERROR: This construct requires a perfect nest of depth 2, but the associated nest is a perfect nest of depth 1
-  !BECAUSE: COLLAPSE clause was specified with argument 2
+  !ERROR: Canonical loop nest must be perfectly nested.
   !$omp do collapse(2)
   do i = 1, 10
     do j = 1, 10
       print *, i, j
     end do
-    !BECAUSE: This code prevents perfect nesting
     print *, i
   end do
   !$omp end do

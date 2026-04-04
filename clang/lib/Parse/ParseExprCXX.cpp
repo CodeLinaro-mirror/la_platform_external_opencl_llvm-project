@@ -108,7 +108,7 @@ bool Parser::ParseOptionalCXXScopeSpecifier(
     CXXScopeSpec &SS, ParsedType ObjectType, bool ObjectHadErrors,
     bool EnteringContext, bool *MayBePseudoDestructor, bool IsTypename,
     const IdentifierInfo **LastII, bool OnlyNamespace, bool InUsingDeclaration,
-    bool Disambiguation, bool IsAddressOfOperand, bool IsInDeclarationContext) {
+    bool Disambiguation) {
   assert(getLangOpts().CPlusPlus &&
          "Call sites of this function should be guarded by checking for C++");
 
@@ -237,8 +237,7 @@ bool Parser::ParseOptionalCXXScopeSpecifier(
         // completion token follows the '::'.
         Actions.CodeCompletion().CodeCompleteQualifiedId(
             getCurScope(), SS, EnteringContext, InUsingDeclaration,
-            IsAddressOfOperand, IsInDeclarationContext, ObjectType.get(),
-            SavedType.get(SS.getBeginLoc()));
+            ObjectType.get(), SavedType.get(SS.getBeginLoc()));
         // Include code completion token into the range of the scope otherwise
         // when we try to annotate the scope tokens the dangling code completion
         // token will cause assertion in
@@ -1418,11 +1417,6 @@ ExprResult Parser::ParseLambdaExpressionAfterIntroducer(
       ConsumeToken();
     }
 
-    // We have called ActOnLambdaClosureQualifiers for parentheses-less cases
-    // above.
-    if (HasParentheses)
-      Actions.ActOnLambdaClosureQualifiers(Intro, MutableLoc);
-
     SourceLocation FunLocalRangeEnd = DeclEndLoc;
 
     // Parse trailing-return-type[opt].
@@ -1450,6 +1444,11 @@ ExprResult Parser::ParseLambdaExpressionAfterIntroducer(
                       /*DeclsInPrototype=*/{}, LParenLoc, FunLocalRangeEnd, D,
                       TrailingReturnType, TrailingReturnTypeLoc, &DS),
                   std::move(Attributes), DeclEndLoc);
+
+    // We have called ActOnLambdaClosureQualifiers for parentheses-less cases
+    // above.
+    if (HasParentheses)
+      Actions.ActOnLambdaClosureQualifiers(Intro, MutableLoc);
 
     if (HasParentheses && Tok.is(tok::kw_requires))
       ParseTrailingRequiresClause(D);

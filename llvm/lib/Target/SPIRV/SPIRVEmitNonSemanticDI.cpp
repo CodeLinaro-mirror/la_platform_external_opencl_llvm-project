@@ -5,7 +5,7 @@
 #include "SPIRVRegisterInfo.h"
 #include "SPIRVTargetMachine.h"
 #include "SPIRVUtils.h"
-#include "llvm/ADT/SetVector.h"
+#include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/CodeGen/GlobalISel/MachineIRBuilder.h"
@@ -94,8 +94,8 @@ bool SPIRVEmitNonSemanticDI::emitGlobalDI(MachineFunction &MF) {
   SmallVector<int64_t> LLVMSourceLanguages;
   int64_t DwarfVersion = 0;
   int64_t DebugInfoVersion = 0;
-  SetVector<DIBasicType *> BasicTypes;
-  SetVector<DIDerivedType *> PointerDerivedTypes;
+  SmallPtrSet<DIBasicType *, 12> BasicTypes;
+  SmallPtrSet<DIDerivedType *, 12> PointerDerivedTypes;
   // Searching through the Module metadata to find nescessary
   // information like DwarfVersion or SourceLanguage
   {
@@ -184,7 +184,7 @@ bool SPIRVEmitNonSemanticDI::emitGlobalDI(MachineFunction &MF) {
       return StrReg;
     };
 
-    const SPIRVTypeInst VoidTy =
+    const SPIRVType *VoidTy =
         GR->getOrCreateSPIRVType(Type::getVoidTy(*Context), MIRBuilder,
                                  SPIRV::AccessQualifier::ReadWrite, false);
 
@@ -209,7 +209,7 @@ bool SPIRVEmitNonSemanticDI::emitGlobalDI(MachineFunction &MF) {
           return InstReg;
         };
 
-    const SPIRVTypeInst I32Ty =
+    const SPIRVType *I32Ty =
         GR->getOrCreateSPIRVType(Type::getInt32Ty(*Context), MIRBuilder,
                                  SPIRV::AccessQualifier::ReadWrite, false);
 

@@ -709,21 +709,20 @@ ArrayRef<RegisteredOperationName> MLIRContext::getRegisteredOperations() {
 /// Return information for registered operations by dialect.
 ArrayRef<RegisteredOperationName>
 MLIRContext::getRegisteredOperationsByDialect(StringRef dialectName) {
-  auto *lowerBound =
-      llvm::lower_bound(impl->sortedRegisteredOperations, dialectName,
-                        [](const RegisteredOperationName &lhs, StringRef rhs) {
-                          return lhs.getDialect().getNamespace() < rhs;
-                        });
+  auto *lowerBound = llvm::lower_bound(
+      impl->sortedRegisteredOperations, dialectName, [](auto &lhs, auto &rhs) {
+        return lhs.getDialect().getNamespace().compare(rhs);
+      });
 
   if (lowerBound == impl->sortedRegisteredOperations.end() ||
       lowerBound->getDialect().getNamespace() != dialectName)
     return ArrayRef<RegisteredOperationName>();
 
-  auto *upperBound = std::upper_bound(
-      lowerBound, impl->sortedRegisteredOperations.end(), dialectName,
-      [](StringRef lhs, const RegisteredOperationName &rhs) {
-        return lhs < rhs.getDialect().getNamespace();
-      });
+  auto *upperBound =
+      std::upper_bound(lowerBound, impl->sortedRegisteredOperations.end(),
+                       dialectName, [](auto &lhs, auto &rhs) {
+                         return lhs.compare(rhs.getDialect().getNamespace());
+                       });
 
   size_t count = std::distance(lowerBound, upperBound);
   return ArrayRef(&*lowerBound, count);
@@ -999,8 +998,8 @@ void RegisteredOperationName::insert(
   ctxImpl.sortedRegisteredOperations.insert(
       llvm::upper_bound(ctxImpl.sortedRegisteredOperations, value,
                         [](auto &lhs, auto &rhs) {
-                          return lhs.getIdentifier().strref() <
-                                 rhs.getIdentifier().strref();
+                          return lhs.getIdentifier().compare(
+                              rhs.getIdentifier());
                         }),
       value);
 }

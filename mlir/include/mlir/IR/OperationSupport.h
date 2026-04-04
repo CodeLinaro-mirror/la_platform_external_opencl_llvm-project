@@ -570,7 +570,9 @@ public:
         return ConcreteOp::getInherentAttr(concreteOp->getContext(),
                                            concreteOp.getProperties(), name);
       }
-      return std::nullopt;
+      // If the op does not have support for properties, we dispatch back to the
+      // dictionnary of discardable attributes for now.
+      return cast<ConcreteOp>(op)->getDiscardableAttr(name);
     }
     void setInherentAttr(Operation *op, StringAttr name,
                          Attribute value) final {
@@ -579,8 +581,9 @@ public:
         return ConcreteOp::setInherentAttr(concreteOp.getProperties(), name,
                                            value);
       }
-      llvm_unreachable(
-          "Can't call setInherentAttr on operation with empty properties");
+      // If the op does not have support for properties, we dispatch back to the
+      // dictionnary of discardable attributes for now.
+      return cast<ConcreteOp>(op)->setDiscardableAttr(name, value);
     }
     void populateInherentAttrs(Operation *op, NamedAttrList &attrs) final {
       if constexpr (hasProperties) {
@@ -636,7 +639,7 @@ public:
         auto p = properties.as<Properties *>();
         return ConcreteOp::setPropertiesFromAttr(*p, attr, emitError);
       }
-      emitError() << "this operation has empty properties";
+      emitError() << "this operation does not support properties";
       return failure();
     }
     Attribute getPropertiesAsAttr(Operation *op) final {
@@ -648,9 +651,11 @@ public:
       return {};
     }
     bool compareProperties(OpaqueProperties lhs, OpaqueProperties rhs) final {
-      if constexpr (hasProperties)
+      if constexpr (hasProperties) {
         return *lhs.as<Properties *>() == *rhs.as<Properties *>();
-      return true;
+      } else {
+        return true;
+      }
     }
     void copyProperties(OpaqueProperties lhs, OpaqueProperties rhs) final {
       *lhs.as<Properties *>() = *rhs.as<Properties *>();
@@ -797,6 +802,8 @@ public:
   using size_type = size_t;
 
   NamedAttrList() : dictionarySorted({}, true) {}
+  LLVM_DEPRECATED("Use NamedAttrList() instead", "NamedAttrList()")
+  NamedAttrList(std::nullopt_t none) : NamedAttrList() {}
   NamedAttrList(ArrayRef<NamedAttribute> attributes);
   NamedAttrList(DictionaryAttr attributes);
   NamedAttrList(const_iterator inStart, const_iterator inEnd);
@@ -1169,6 +1176,8 @@ private:
 class OpPrintingFlags {
 public:
   OpPrintingFlags();
+  LLVM_DEPRECATED("Use OpPrintingFlags() instead", "OpPrintingFlags()")
+  OpPrintingFlags(std::nullopt_t) : OpPrintingFlags() {}
 
   /// Enables the elision of large elements attributes by printing a lexically
   /// valid but otherwise meaningless form instead of the element data. The
@@ -1322,11 +1331,7 @@ struct OperationEquivalence {
     // When provided, the properties attached to the operation are ignored.
     IgnoreProperties = 4,
 
-    // When provided, the commutativity of the operation is ignored, and
-    // operands are compared in an order-sensitive way.
-    IgnoreCommutativity = 8,
-
-    LLVM_MARK_AS_BITMASK_ENUM(/* LargestValue = */ IgnoreCommutativity)
+    LLVM_MARK_AS_BITMASK_ENUM(/* LargestValue = */ IgnoreProperties)
   };
 
   /// Compute a hash for the given operation.
@@ -1343,8 +1348,8 @@ struct OperationEquivalence {
   /// Helper that can be used with `computeHash` above to ignore operation
   /// operands/result mapping.
   static llvm::hash_code ignoreHashValue(Value) { return llvm::hash_code{}; }
-  /// Helper that can be used with `computeHash` to compute the hash value
-  /// of operands/results directly.
+  /// Helper that can be used with `computeHash` above to ignore operation
+  /// operands/result mapping.
   static llvm::hash_code directHashValue(Value v) { return hash_value(v); }
 
   /// Compare two operations (including their regions) and return if they are

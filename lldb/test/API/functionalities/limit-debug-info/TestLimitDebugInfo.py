@@ -10,8 +10,6 @@ from lldbsuite.test import lldbutil
 
 
 class LimitDebugInfoTestCase(TestBase):
-    SHARED_BUILD_TESTCASE = False
-
     def _check_type(self, target, name):
         exe = target.FindModule(lldb.SBFileSpec("a.out"))
         type_ = exe.FindFirstType(name)

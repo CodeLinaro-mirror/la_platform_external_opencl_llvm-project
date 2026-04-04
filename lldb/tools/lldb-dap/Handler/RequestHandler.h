@@ -11,7 +11,6 @@
 
 #include "DAP.h"
 #include "DAPError.h"
-#include "JSONUtils.h"
 #include "Protocol/ProtocolBase.h"
 #include "Protocol/ProtocolRequests.h"
 #include "Protocol/ProtocolTypes.h"
@@ -198,7 +197,8 @@ class DelayedResponseRequestHandler : public BaseRequestHandler {
     // The 'configurationDone' request is not sent until after 'initialized'
     // triggers the breakpoints being sent and 'configurationDone' is the last
     // message in the chain.
-    dap.SendJSON(CreateInitializedEventObject(dap.target));
+    protocol::Event initialized{"initialized"};
+    dap.Send(initialized);
   };
 
 protected:
@@ -656,15 +656,6 @@ public:
   }
   llvm::Expected<protocol::WriteMemoryResponseBody>
   Run(const protocol::WriteMemoryArguments &args) const override;
-};
-
-class UnknownRequestHandler final
-    : public RequestHandler<protocol::UnknownArguments,
-                            protocol::UnknownResponseBody> {
-public:
-  using RequestHandler::RequestHandler;
-  static llvm::StringLiteral GetCommand() { return "unknown"; }
-  llvm::Error Run(const protocol::UnknownArguments &args) const override;
 };
 
 } // namespace lldb_dap

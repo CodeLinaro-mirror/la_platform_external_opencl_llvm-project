@@ -1287,8 +1287,11 @@ EmbedResult Preprocessor::EvaluateHasEmbed(Token &Tok, IdentifierInfo *II) {
       this->GetIncludeFilenameSpelling(FilenameTok.getLocation(), Filename);
   // If GetIncludeFilenameSpelling set the start ptr to null, there was an
   // error.
+  const FileEntry *LookupFromFile =
+      this->getCurrentFileLexer() ? *this->getCurrentFileLexer()->getFileEntry()
+                                  : static_cast<FileEntry *>(nullptr);
   OptionalFileEntryRef MaybeFileEntry =
-      this->LookupEmbedFile(Filename, isAngled, false);
+      this->LookupEmbedFile(Filename, isAngled, false, LookupFromFile);
   if (Callbacks) {
     Callbacks->HasEmbed(LParenLoc, Filename, isAngled, MaybeFileEntry);
   }
@@ -1361,7 +1364,7 @@ static void EvaluateFeatureLikeBuiltinMacro(llvm::raw_svector_ostream& OS,
 
   Token ResultTok;
   bool SuppressDiagnostic = false;
-  while (Tok.isNoneOf(tok::eod, tok::eof)) {
+  while (true) {
     // Parse next token.
     if (ExpandArgs)
       PP.Lex(Tok);
@@ -1440,7 +1443,7 @@ already_lexed:
       PP.Diag(LParenLoc, diag::note_matching) << tok::l_paren;
       SuppressDiagnostic = true;
     }
-}
+  }
 }
 
 /// Helper function to return the IdentifierInfo structure of a Token

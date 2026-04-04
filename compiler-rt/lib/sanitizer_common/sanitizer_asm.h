@@ -61,8 +61,6 @@
 # define ASM_TAIL_CALL jg
 #elif defined(__riscv)
 # define ASM_TAIL_CALL tail
-#elif defined(__hexagon__)
-#  define ASM_TAIL_CALL jump
 #endif
 
 // Currently, almost all of the shared libraries rely on the value of

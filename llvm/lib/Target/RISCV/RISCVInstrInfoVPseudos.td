@@ -83,29 +83,24 @@ def riscv_read_vlenb : RVSDNode<"READ_VLENB",
 // Operand that is allowed to be a register other than X0, a 5 bit unsigned
 // immediate, or -1. -1 means VLMAX. This allows us to pick between VSETIVLI and
 // VSETVLI opcodes using the same pseudo instructions.
-// Operand should be named $vl for getNamedOperandIdx.
 def AVL : RegisterOperand<GPRNoX0> {
   let OperandNamespace = "RISCVOp";
   let OperandType = "OPERAND_AVL";
 }
 
-// Operand should be named $policy for getNamedOperandIdx.
 def vec_policy : RISCVOp {
   let OperandType = "OPERAND_VEC_POLICY";
 }
 
-// Operand should be named $sew for getNamedOperandIdx.
 def sew : RISCVOp {
   let OperandType = "OPERAND_SEW";
 }
 
 // SEW for mask only instructions like vmand and vmsbf. Should always be 0.
-// Operand should be named $sew for getNamedOperandIdx.
 def sew_mask : RISCVOp {
   let OperandType = "OPERAND_SEW_MASK";
 }
 
-// Operand should be named $rm for getNamedOperandIdx.
 def vec_rm : RISCVOp {
   let OperandType = "OPERAND_VEC_RM";
 }
@@ -569,10 +564,8 @@ class RISCVVPseudo<dag outs, dag ins, list<dag> pattern = [],
   Instruction BaseInstr = !cast<Instruction>(PseudoToVInst<NAME>.VInst);
   // SEW = 0 is used to denote that the Pseudo is not SEW specific (or unknown).
   bits<8> SEW = 0;
-  bits<1> IsAltFmt = !eq(AltFmtType.Value, IS_ALTFMT.Value);
+  bit IsAltFmt = !eq(AltFmtType.Value, IS_ALTFMT.Value);
   bit IncludeInInversePseudoTable = 1;
-
-  let UseNamedOperandTable = true;
 }
 
 // The actual table.
@@ -810,7 +803,7 @@ class VPseudoUSLoadNoMask<VReg RetClass,
                           int EEW,
                           DAGOperand sewop = sew> :
       RISCVVPseudo<(outs RetClass:$rd),
-                   (ins RetClass:$passthru, GPRMemZeroOffset:$rs1, AVL:$vl,
+                   (ins RetClass:$dest, GPRMemZeroOffset:$rs1, AVL:$vl,
                         sewop:$sew, vec_policy:$policy)>,
       RISCVVLE</*Masked*/0, /*Strided*/0, /*FF*/0, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -819,7 +812,7 @@ class VPseudoUSLoadNoMask<VReg RetClass,
   let HasVLOp = 1;
   let HasSEWOp = 1;
   let HasVecPolicyOp = 1;
-  let Constraints = "$rd = $passthru";
+  let Constraints = "$rd = $dest";
 }
 
 class VPseudoUSLoadMask<VReg RetClass,
@@ -842,8 +835,8 @@ class VPseudoUSLoadMask<VReg RetClass,
 
 class VPseudoUSLoadFFNoMask<VReg RetClass,
                             int EEW> :
-      RISCVVPseudo<(outs RetClass:$rd, GPR:$vl_out),
-                   (ins RetClass:$passthru, GPRMemZeroOffset:$rs1, AVL:$vl,
+      RISCVVPseudo<(outs RetClass:$rd, GPR:$vl),
+                   (ins RetClass:$dest, GPRMemZeroOffset:$rs1, AVL:$avl,
                         sew:$sew, vec_policy:$policy)>,
       RISCVVLE</*Masked*/0, /*Strided*/0, /*FF*/1, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -852,14 +845,14 @@ class VPseudoUSLoadFFNoMask<VReg RetClass,
   let HasVLOp = 1;
   let HasSEWOp = 1;
   let HasVecPolicyOp = 1;
-  let Constraints = "$rd = $passthru";
+  let Constraints = "$rd = $dest";
 }
 
 class VPseudoUSLoadFFMask<VReg RetClass,
                           int EEW> :
-      RISCVVPseudo<(outs GetVRegNoV0<RetClass>.R:$rd, GPR:$vl_out),
+      RISCVVPseudo<(outs GetVRegNoV0<RetClass>.R:$rd, GPR:$vl),
                    (ins GetVRegNoV0<RetClass>.R:$passthru,
-                        GPRMemZeroOffset:$rs1, VMV0:$vm, AVL:$vl, sew:$sew,
+                        GPRMemZeroOffset:$rs1, VMV0:$vm, AVL:$avl, sew:$sew,
                         vec_policy:$policy)>,
       RISCVVLE</*Masked*/1, /*Strided*/0, /*FF*/1, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -876,7 +869,7 @@ class VPseudoUSLoadFFMask<VReg RetClass,
 class VPseudoSLoadNoMask<VReg RetClass,
                          int EEW> :
       RISCVVPseudo<(outs RetClass:$rd),
-                   (ins RetClass:$passthru, GPRMemZeroOffset:$rs1, GPR:$rs2,
+                   (ins RetClass:$dest, GPRMemZeroOffset:$rs1, GPR:$rs2,
                         AVL:$vl, sew:$sew, vec_policy:$policy)>,
       RISCVVLE</*Masked*/0, /*Strided*/1, /*FF*/0, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -885,7 +878,7 @@ class VPseudoSLoadNoMask<VReg RetClass,
   let HasVLOp = 1;
   let HasSEWOp = 1;
   let HasVecPolicyOp = 1;
-  let Constraints = "$rd = $passthru";
+  let Constraints = "$rd = $dest";
 }
 
 class VPseudoSLoadMask<VReg RetClass,
@@ -914,7 +907,7 @@ class VPseudoILoadNoMask<VReg RetClass,
                          bit EarlyClobber,
                          bits<2> TargetConstraintType = 1> :
       RISCVVPseudo<(outs RetClass:$rd),
-                   (ins RetClass:$passthru, GPRMemZeroOffset:$rs1, IdxClass:$rs2,
+                   (ins RetClass:$dest, GPRMemZeroOffset:$rs1, IdxClass:$rs2,
                         AVL:$vl, sew:$sew, vec_policy:$policy)>,
       RISCVVLX</*Masked*/0, Ordered, !logtwo(EEW), VLMul, LMUL> {
   let mayLoad = 1;
@@ -923,7 +916,7 @@ class VPseudoILoadNoMask<VReg RetClass,
   let HasVLOp = 1;
   let HasSEWOp = 1;
   let HasVecPolicyOp = 1;
-  let Constraints = !if(!eq(EarlyClobber, 1), "@earlyclobber $rd, $rd = $passthru", "$rd = $passthru");
+  let Constraints = !if(!eq(EarlyClobber, 1), "@earlyclobber $rd, $rd = $dest", "$rd = $dest");
   let TargetOverlapConstraintType = TargetConstraintType;
 }
 
@@ -1494,7 +1487,7 @@ class VPseudoBinaryCarry<VReg RetClass,
       RISCVVPseudo<(outs RetClass:$rd),
                    !if(CarryIn,
                       (ins Op1Class:$rs2, Op2Class:$rs1,
-                           VMV0:$vm, AVL:$vl, sew:$sew),
+                           VMV0:$carry, AVL:$vl, sew:$sew),
                       (ins Op1Class:$rs2, Op2Class:$rs1,
                            AVL:$vl, sew:$sew))> {
   let mayLoad = 0;
@@ -1514,7 +1507,7 @@ class VPseudoTiedBinaryCarryIn<VReg RetClass,
                                bits<2> TargetConstraintType = 1> :
       RISCVVPseudo<(outs RetClass:$rd),
                    (ins RetClass:$passthru, Op1Class:$rs2, Op2Class:$rs1,
-                        VMV0:$vm, AVL:$vl, sew:$sew)> {
+                        VMV0:$carry, AVL:$vl, sew:$sew)> {
   let mayLoad = 0;
   let mayStore = 0;
   let hasSideEffects = 0;
@@ -1569,7 +1562,7 @@ class VPseudoUSSegLoadNoMask<VReg RetClass,
                              int EEW,
                              bits<4> NF> :
       RISCVVPseudo<(outs RetClass:$rd),
-                   (ins RetClass:$passthru, GPRMemZeroOffset:$rs1, AVL:$vl,
+                   (ins RetClass:$dest, GPRMemZeroOffset:$rs1, AVL:$vl,
                         sew:$sew, vec_policy:$policy)>,
       RISCVVLSEG<NF, /*Masked*/0, /*Strided*/0, /*FF*/0, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -1578,7 +1571,7 @@ class VPseudoUSSegLoadNoMask<VReg RetClass,
   let HasVLOp = 1;
   let HasSEWOp = 1;
   let HasVecPolicyOp = 1;
-  let Constraints = "$rd = $passthru";
+  let Constraints = "$rd = $dest";
 }
 
 class VPseudoUSSegLoadMask<VReg RetClass,
@@ -1603,8 +1596,8 @@ class VPseudoUSSegLoadMask<VReg RetClass,
 class VPseudoUSSegLoadFFNoMask<VReg RetClass,
                                int EEW,
                                bits<4> NF> :
-      RISCVVPseudo<(outs RetClass:$rd, GPR:$vl_out),
-                   (ins RetClass:$passthru, GPRMemZeroOffset:$rs1, AVL:$vl,
+      RISCVVPseudo<(outs RetClass:$rd, GPR:$vl),
+                   (ins RetClass:$dest, GPRMemZeroOffset:$rs1, AVL:$avl,
                         sew:$sew, vec_policy:$policy)>,
       RISCVVLSEG<NF, /*Masked*/0, /*Strided*/0, /*FF*/1, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -1613,15 +1606,15 @@ class VPseudoUSSegLoadFFNoMask<VReg RetClass,
   let HasVLOp = 1;
   let HasSEWOp = 1;
   let HasVecPolicyOp = 1;
-  let Constraints = "$rd = $passthru";
+  let Constraints = "$rd = $dest";
 }
 
 class VPseudoUSSegLoadFFMask<VReg RetClass,
                              int EEW,
                              bits<4> NF> :
-      RISCVVPseudo<(outs GetVRegNoV0<RetClass>.R:$rd, GPR:$vl_out),
+      RISCVVPseudo<(outs GetVRegNoV0<RetClass>.R:$rd, GPR:$vl),
                    (ins GetVRegNoV0<RetClass>.R:$passthru,
-                        GPRMemZeroOffset:$rs1, VMV0:$vm, AVL:$vl, sew:$sew,
+                        GPRMemZeroOffset:$rs1, VMV0:$vm, AVL:$avl, sew:$sew,
                         vec_policy:$policy)>,
       RISCVVLSEG<NF, /*Masked*/1, /*Strided*/0, /*FF*/1, !logtwo(EEW), VLMul> {
   let mayLoad = 1;
@@ -1845,7 +1838,7 @@ multiclass VPseudoFFLoad {
   }
 }
 
-multiclass VPseudoMaskLoad {
+multiclass VPseudoLoadMask {
   foreach mti = AllMasks in {
     defvar mx = mti.LMul.MX;
     defvar WriteVLDM_MX = !cast<SchedWrite>("WriteVLDM_" # mx);
@@ -1921,7 +1914,7 @@ multiclass VPseudoUSStore {
   }
 }
 
-multiclass VPseudoMaskStore {
+multiclass VPseudoStoreMask {
   foreach mti = AllMasks in {
     defvar mx = mti.LMul.MX;
     defvar WriteVSTM_MX = !cast<SchedWrite>("WriteVSTM_" # mx);
@@ -2824,19 +2817,14 @@ multiclass VPseudoVFRDIV_VF_RM {
   }
 }
 
-multiclass VPseudoVALU_VV<bit Commutable = 0> {
-  foreach m = MxList in {
-    defm "" : VPseudoBinaryV_VV<m, Commutable=Commutable>,
-              SchedBinary<"WriteVIALUV", "ReadVIALUV", "ReadVIALUV", m.MX,
-                          forcePassthruRead=true>;
-  }
-}
-
-multiclass VPseudoVALU_VV_VX<bit Commutable = 0> : VPseudoVALU_VV<Commutable> {
-  foreach m = MxList in {
+multiclass VPseudoVALU_VV_VX {
+ foreach m = MxList in {
+    defm "" : VPseudoBinaryV_VV<m>,
+            SchedBinary<"WriteVIALUV", "ReadVIALUV", "ReadVIALUV", m.MX,
+                        forcePassthruRead=true>;
     defm "" : VPseudoBinaryV_VX<m>,
-              SchedBinary<"WriteVIALUX", "ReadVIALUV", "ReadVIALUX", m.MX,
-                          forcePassthruRead=true>;
+            SchedBinary<"WriteVIALUX", "ReadVIALUV", "ReadVIALUX", m.MX,
+                        forcePassthruRead=true>;
   }
 }
 
@@ -4579,10 +4567,9 @@ multiclass VPatUnaryV_VF<string intrinsic, string instruction, string suffix,
 }
 
 multiclass VPatUnaryV_V<string intrinsic, string instruction,
-                        list<VTypeInfo> vtilist, bit isSEWAware = 0,
-                        list<Predicate> ExtraPreds = []> {
+                        list<VTypeInfo> vtilist, bit isSEWAware = 0> {
   foreach vti = vtilist in {
-    let Predicates = !listconcat(ExtraPreds, GetVTypePredicates<vti>.Predicates) in {
+    let Predicates = GetVTypePredicates<vti>.Predicates in {
       def : VPatUnaryNoMask<intrinsic, instruction, "V",
                             vti.Vector, vti.Vector, vti.Log2SEW,
                             vti.LMul, vti.RegClass, vti.RegClass, isSEWAware>;
@@ -4826,10 +4813,9 @@ multiclass VPatConversionRTZ<string intrinsic,
 }
 
 multiclass VPatBinaryV_VV<string intrinsic, string instruction,
-                          list<VTypeInfo> vtilist, bit isSEWAware = 0,
-                          list<Predicate> ExtraPreds = []> {
+                          list<VTypeInfo> vtilist, bit isSEWAware = 0> {
   foreach vti = vtilist in
-    let Predicates = !listconcat(ExtraPreds, GetVTypePredicates<vti>.Predicates) in
+    let Predicates = GetVTypePredicates<vti>.Predicates in
     defm : VPatBinary<intrinsic,
                       !if(isSEWAware,
                           instruction # "_VV_" # vti.LMul.MX # "_E" # vti.SEW,
@@ -4888,11 +4874,10 @@ multiclass VPatBinaryV_VV_INT_EEW<string intrinsic, string instruction,
 }
 
 multiclass VPatBinaryV_VX<string intrinsic, string instruction,
-                          list<VTypeInfo> vtilist, bit isSEWAware = 0,
-                          list<Predicate> ExtraPreds = []> {
+                          list<VTypeInfo> vtilist, bit isSEWAware = 0> {
   foreach vti = vtilist in {
     defvar kind = "V"#vti.ScalarSuffix;
-    let Predicates = !listconcat(ExtraPreds, GetVTypePredicates<vti>.Predicates) in
+    let Predicates = GetVTypePredicates<vti>.Predicates in
     defm : VPatBinary<intrinsic,
                       !if(isSEWAware,
                           instruction#"_"#kind#"_"#vti.LMul.MX#"_E"#vti.SEW,
@@ -4931,10 +4916,9 @@ multiclass VPatBinaryV_VX_INT<string intrinsic, string instruction,
 }
 
 multiclass VPatBinaryV_VI<string intrinsic, string instruction,
-                          list<VTypeInfo> vtilist, Operand imm_type,
-                          list<Predicate> ExtraPreds = []> {
+                          list<VTypeInfo> vtilist, Operand imm_type> {
   foreach vti = vtilist in
-    let Predicates = !listconcat(ExtraPreds, GetVTypePredicates<vti>.Predicates) in
+    let Predicates = GetVTypePredicates<vti>.Predicates in
     defm : VPatBinary<intrinsic, instruction # "_VI_" # vti.LMul.MX,
                       vti.Vector, vti.Vector, XLenVT, vti.Mask,
                       vti.Log2SEW, vti.RegClass,
@@ -4974,13 +4958,11 @@ multiclass VPatBinaryM_MM<string intrinsic, string instruction> {
 }
 
 multiclass VPatBinaryW_VV<string intrinsic, string instruction,
-                          list<VTypeInfoToWide> vtilist,
-                          list<Predicate> ExtraPreds = []> {
+                          list<VTypeInfoToWide> vtilist> {
   foreach VtiToWti = vtilist in {
     defvar Vti = VtiToWti.Vti;
     defvar Wti = VtiToWti.Wti;
-    let Predicates = !listconcat(ExtraPreds,
-                                 GetVTypePredicates<Vti>.Predicates,
+    let Predicates = !listconcat(GetVTypePredicates<Vti>.Predicates,
                                  GetVTypePredicates<Wti>.Predicates) in
     defm : VPatBinary<intrinsic, instruction # "_VV_" # Vti.LMul.MX,
                       Wti.Vector, Vti.Vector, Vti.Vector, Vti.Mask,
@@ -5360,11 +5342,10 @@ multiclass VPatBinaryM_VI<string intrinsic, string instruction,
 }
 
 multiclass VPatBinaryV_VV_VX_VI<string intrinsic, string instruction,
-                                list<VTypeInfo> vtilist, Operand ImmType = simm5,
-                                list<Predicate> ExtraPreds = []>
-    : VPatBinaryV_VV<intrinsic, instruction, vtilist, ExtraPreds=ExtraPreds>,
-      VPatBinaryV_VX<intrinsic, instruction, vtilist, ExtraPreds=ExtraPreds>,
-      VPatBinaryV_VI<intrinsic, instruction, vtilist, ImmType, ExtraPreds=ExtraPreds>;
+                                list<VTypeInfo> vtilist, Operand ImmType = simm5>
+    : VPatBinaryV_VV<intrinsic, instruction, vtilist>,
+      VPatBinaryV_VX<intrinsic, instruction, vtilist>,
+      VPatBinaryV_VI<intrinsic, instruction, vtilist, ImmType>;
 
 multiclass VPatBinaryV_VV_VX_VI_RM<string intrinsic, string instruction,
                                    list<VTypeInfo> vtilist, Operand ImmType>
@@ -5373,10 +5354,9 @@ multiclass VPatBinaryV_VV_VX_VI_RM<string intrinsic, string instruction,
       VPatBinaryV_VI_RM<intrinsic, instruction, vtilist, ImmType>;
 
 multiclass VPatBinaryV_VV_VX<string intrinsic, string instruction,
-                             list<VTypeInfo> vtilist, bit isSEWAware = 0,
-                             list<Predicate> ExtraPreds = []>
-    : VPatBinaryV_VV<intrinsic, instruction, vtilist, isSEWAware, ExtraPreds>,
-      VPatBinaryV_VX<intrinsic, instruction, vtilist, isSEWAware, ExtraPreds>;
+                             list<VTypeInfo> vtilist, bit isSEWAware = 0>
+    : VPatBinaryV_VV<intrinsic, instruction, vtilist, isSEWAware>,
+      VPatBinaryV_VX<intrinsic, instruction, vtilist, isSEWAware>;
 
 multiclass VPatBinaryV_VV_VX_RM<string intrinsic, string instruction,
                                 list<VTypeInfo> vtilist, bit isSEWAware = 0>
@@ -6086,8 +6066,8 @@ def PseudoVSETIVLI : Pseudo<(outs GPR:$rd), (ins uimm5:$rs1, VTypeIOp10:$vtypei)
 defm PseudoVL : VPseudoUSLoad;
 defm PseudoVS : VPseudoUSStore;
 
-defm PseudoVLM : VPseudoMaskLoad;
-defm PseudoVSM : VPseudoMaskStore;
+defm PseudoVLM : VPseudoLoadMask;
+defm PseudoVSM : VPseudoStoreMask;
 
 //===----------------------------------------------------------------------===//
 // 7.5 Vector Strided Instructions

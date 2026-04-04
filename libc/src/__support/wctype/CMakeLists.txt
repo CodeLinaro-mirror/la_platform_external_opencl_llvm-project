@@ -1,9 +1,7 @@
-add_object_library(
+add_header_library(
   wctype_classification_utils
   HDRS
     wctype_classification_utils.h
-  SRCS
-    wctype_classification_utils.cpp
   DEPENDS
     libc.hdr.types.wchar_t
     libc.hdr.stdint_proxy

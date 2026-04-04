@@ -43,7 +43,6 @@
 #include "llvm/Support/Error.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/JSON.h"
-#include "llvm/Support/ManagedStatic.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Path.h"
 #include "llvm/Support/Process.h"
@@ -72,46 +71,13 @@ using namespace object;
 
 #define DEBUG_TYPE "lto"
 
-Error LTO::setupOptimizationRemarks() {
-  // Setup the remark streamer according to the provided configuration.
-  auto DiagFileOrErr = lto::setupLLVMOptimizationRemarks(
-      RegularLTO.Ctx, Conf.RemarksFilename, Conf.RemarksPasses,
-      Conf.RemarksFormat, Conf.RemarksWithHotness,
-      Conf.RemarksHotnessThreshold);
-  if (!DiagFileOrErr)
-    return DiagFileOrErr.takeError();
-
-  DiagnosticOutputFile = std::move(*DiagFileOrErr);
-
-  // Create a dummy function to serve as a context for LTO-link remarks.
-  // This is required because OptimizationRemark requires a valid Function,
-  // and in ThinLTO we may not have any IR functions available during the
-  // thin link. Host it in a private module to avoid interfering with the LTO
-  // process.
-  if (!LinkerRemarkFunction) {
-    DummyModule = std::make_unique<Module>("remark_dummy", RegularLTO.Ctx);
-    LinkerRemarkFunction = Function::Create(
-        FunctionType::get(Type::getVoidTy(RegularLTO.Ctx), false),
-        GlobalValue::ExternalLinkage, "thinlto_remark_dummy",
-        DummyModule.get());
-  }
-
-  return Error::success();
-}
-
-void LTO::emitRemark(OptimizationRemark &Remark) {
-  const Function &F = Remark.getFunction();
-  OptimizationRemarkEmitter ORE(const_cast<Function *>(&F));
-  ORE.emit(Remark);
-}
-
 static cl::opt<bool>
     DumpThinCGSCCs("dump-thin-cg-sccs", cl::init(false), cl::Hidden,
                    cl::desc("Dump the SCCs in the ThinLTO index's callgraph"));
+
 namespace llvm {
 extern cl::opt<bool> CodeGenDataThinLTOTwoRounds;
 extern cl::opt<bool> ForceImportAll;
-extern cl::opt<bool> AlwaysRenamePromotedLocals;
 } // end namespace llvm
 
 namespace llvm {
@@ -427,9 +393,6 @@ static void thinLTOResolvePrevailingGUID(
     // FIXME: We may want to split the compile time and correctness
     // aspects into separate routines.
     if (isPrevailing(VI.getGUID(), S.get())) {
-      assert(!S->wasPromoted() &&
-             "promoted symbols used to be internal linkage and shouldn't have "
-             "a prevailing variant");
       if (GlobalValue::isLinkOnceLinkage(OriginalLinkage)) {
         S->setLinkage(GlobalValue::getWeakLinkage(
             GlobalValue::isLinkOnceODRLinkage(OriginalLinkage)));
@@ -452,11 +415,8 @@ static void thinLTOResolvePrevailingGUID(
     // When force-import-all is used, it indicates that object linking is not
     // supported by the target. In this case, we can't change the linkage as
     // well in case the global is converted to declaration.
-    // Also, if the symbol was promoted, it wouldn't have a prevailing variant,
-    // but also its linkage is set correctly (to External) already.
     else if (!isa<AliasSummary>(S.get()) &&
-             !GlobalInvolvedWithAlias.count(S.get()) && !ForceImportAll &&
-             !S->wasPromoted())
+             !GlobalInvolvedWithAlias.count(S.get()) && !ForceImportAll)
       S->setLinkage(GlobalValue::AvailableExternallyLinkage);
 
     // For ELF, set visibility to the computed visibility from summaries. We
@@ -511,8 +471,7 @@ void llvm::thinLTOResolvePrevailingInIndex(
 static void thinLTOInternalizeAndPromoteGUID(
     ValueInfo VI, function_ref<bool(StringRef, ValueInfo)> isExported,
     function_ref<bool(GlobalValue::GUID, const GlobalValueSummary *)>
-        isPrevailing,
-    DenseSet<StringRef> *ExternallyVisibleSymbolNamesPtr) {
+        isPrevailing) {
   // Before performing index-based internalization and promotion for this GUID,
   // the local flag should be consistent with the summary list linkage types.
   VI.verifyLocal();
@@ -521,24 +480,12 @@ static void thinLTOInternalizeAndPromoteGUID(
       VI.getSummaryList().size() == 1 &&
       !GlobalValue::isLocalLinkage(VI.getSummaryList().front()->linkage());
 
-  bool NameRecorded = false;
   for (auto &S : VI.getSummaryList()) {
     // First see if we need to promote an internal value because it is not
     // exported.
     if (isExported(S->modulePath(), VI)) {
-      if (GlobalValue::isLocalLinkage(S->linkage())) {
-        // Only the first local GlobalValue in a list of summaries does not
-        // need renaming. In rare cases if there exist more than one summaries
-        // in the list, the rest of them must have renaming (through promotion)
-        // to avoid conflict.
-        if (ExternallyVisibleSymbolNamesPtr && !NameRecorded) {
-          NameRecorded = true;
-          if (ExternallyVisibleSymbolNamesPtr->insert(VI.name()).second)
-            S->setNoRenameOnPromotion(true);
-        }
-
-        S->promote();
-      }
+      if (GlobalValue::isLocalLinkage(S->linkage()))
+        S->setLinkage(GlobalValue::ExternalLinkage);
       continue;
     }
 
@@ -608,14 +555,11 @@ void llvm::thinLTOInternalizeAndPromoteInIndex(
     ModuleSummaryIndex &Index,
     function_ref<bool(StringRef, ValueInfo)> isExported,
     function_ref<bool(GlobalValue::GUID, const GlobalValueSummary *)>
-        isPrevailing,
-    DenseSet<StringRef> *ExternallyVisibleSymbolNamesPtr) {
+        isPrevailing) {
   assert(!Index.withInternalizeAndPromote());
-
   for (auto &I : Index)
     thinLTOInternalizeAndPromoteGUID(Index.getValueInfo(I), isExported,
-                                     isPrevailing,
-                                     ExternallyVisibleSymbolNamesPtr);
+                                     isPrevailing);
   Index.setWithInternalizeAndPromote();
 }
 
@@ -698,12 +642,6 @@ LTO::LTO(Config Conf, ThinBackend Backend,
 
 // Requires a destructor for MapVector<BitcodeModule>.
 LTO::~LTO() = default;
-
-void LTO::cleanup() {
-  DummyModule.reset();
-  LinkerRemarkFunction = nullptr;
-  consumeError(finalizeOptimizationRemarks(std::move(DiagnosticOutputFile)));
-}
 
 // Add the symbols in the given module to the GlobalResolutions map, and resolve
 // their partitions.
@@ -1130,9 +1068,10 @@ Error LTO::linkRegularLTO(RegularLTOState::AddedModule Mod,
         if (DiagnosticOutputFile) {
           if (Error Err = F->materialize())
             return Err;
-          auto R = OptimizationRemark(DEBUG_TYPE, "deadfunction", F);
-          R << ore::NV("Function", F) << " not added to the combined module ";
-          emitRemark(R);
+          OptimizationRemarkEmitter ORE(F, nullptr);
+          ORE.emit(OptimizationRemark(DEBUG_TYPE, "deadfunction", F)
+                   << ore::NV("Function", F)
+                   << " not added to the combined module ");
         }
       }
       continue;
@@ -1290,7 +1229,7 @@ Error LTO::checkPartiallySplit() {
 Error LTO::run(AddStreamFn AddStream, FileCache Cache) {
   llvm::scope_exit CleanUp([this]() { cleanup(); });
 
-  if (Error EC = serializeInputsForDistribution())
+  if (Error EC = handleArchiveInputs())
     return EC;
 
   // Compute "dead" symbols, we don't want to import/export these!
@@ -1330,9 +1269,6 @@ Error LTO::run(AddStreamFn AddStream, FileCache Cache) {
     return StatsFileOrErr.takeError();
   std::unique_ptr<ToolOutputFile> StatsFile = std::move(StatsFileOrErr.get());
 
-  if (Error Err = setupOptimizationRemarks())
-    return Err;
-
   // TODO: Ideally this would be controlled automatically by detecting that we
   // are linking with an allocator that supports these interfaces, rather than
   // an internal option (which would still be needed for tests, however). For
@@ -1355,7 +1291,15 @@ Error LTO::run(AddStreamFn AddStream, FileCache Cache) {
 
 Error LTO::runRegularLTO(AddStreamFn AddStream) {
   llvm::TimeTraceScope timeScope("Run regular LTO");
+  LLVMContext &CombinedCtx = RegularLTO.CombinedModule->getContext();
+  // Setup optimization remarks.
+  auto DiagFileOrErr = lto::setupLLVMOptimizationRemarks(
+      CombinedCtx, Conf.RemarksFilename, Conf.RemarksPasses, Conf.RemarksFormat,
+      Conf.RemarksWithHotness, Conf.RemarksHotnessThreshold);
   LLVM_DEBUG(dbgs() << "Running regular LTO\n");
+  if (!DiagFileOrErr)
+    return DiagFileOrErr.takeError();
+  DiagnosticOutputFile = std::move(*DiagFileOrErr);
 
   // Finalize linking of regular LTO modules containing summaries now that
   // we have computed liveness information.
@@ -1427,7 +1371,7 @@ Error LTO::runRegularLTO(AddStreamFn AddStream) {
 
   if (Conf.PreOptModuleHook &&
       !Conf.PreOptModuleHook(0, *RegularLTO.CombinedModule))
-    return Error::success();
+    return finalizeOptimizationRemarks(std::move(DiagnosticOutputFile));
 
   if (!Conf.CodeGenOnly) {
     for (const auto &R : *GlobalResolutions) {
@@ -1466,7 +1410,7 @@ Error LTO::runRegularLTO(AddStreamFn AddStream) {
 
     if (Conf.PostInternalizeModuleHook &&
         !Conf.PostInternalizeModuleHook(0, *RegularLTO.CombinedModule))
-      return Error::success();
+      return finalizeOptimizationRemarks(std::move(DiagnosticOutputFile));
   }
 
   if (!RegularLTO.EmptyCombinedModule || Conf.AlwaysEmitRegularLTOObj) {
@@ -1476,7 +1420,7 @@ Error LTO::runRegularLTO(AddStreamFn AddStream) {
       return Err;
   }
 
-  return Error::success();
+  return finalizeOptimizationRemarks(std::move(DiagnosticOutputFile));
 }
 
 SmallVector<const char *> LTO::getRuntimeLibcallSymbols(const Triple &TT) {
@@ -2065,33 +2009,15 @@ Error LTO::runThinLTO(AddStreamFn AddStream, FileCache Cache,
   // no index entries in the typeIdMetadata map (e.g. if we are instead
   // performing IR-based WPD in hybrid regular/thin LTO mode).
   std::map<ValueInfo, std::vector<VTableSlotSummary>> LocalWPDTargetsMap;
-  DenseSet<StringRef> ExternallyVisibleSymbolNames;
-
-  // Used by the promotion-time renaming logic. When non-null, this set
-  // identifies symbols that should not be renamed during promotion.
-  // It is non-null only when whole-program visibility is enabled and
-  // renaming is not forced. Otherwise, the default renaming behavior applies.
-  DenseSet<StringRef> *ExternallyVisibleSymbolNamesPtr =
-      (WholeProgramVisibilityEnabledInLTO && !AlwaysRenamePromotedLocals)
-          ? &ExternallyVisibleSymbolNames
-          : nullptr;
   runWholeProgramDevirtOnIndex(ThinLTO.CombinedIndex, ExportedGUIDs,
-                               LocalWPDTargetsMap,
-                               ExternallyVisibleSymbolNamesPtr);
+                               LocalWPDTargetsMap);
 
   auto isPrevailing = [&](GlobalValue::GUID GUID, const GlobalValueSummary *S) {
     return ThinLTO.isPrevailingModuleForGUID(GUID, S->modulePath());
   };
   if (EnableMemProfContextDisambiguation) {
     MemProfContextDisambiguation ContextDisambiguation;
-    ContextDisambiguation.run(
-        ThinLTO.CombinedIndex, isPrevailing, RegularLTO.Ctx,
-        [&](StringRef PassName, StringRef RemarkName, const Twine &Msg) {
-          auto R = OptimizationRemark(PassName.data(), RemarkName,
-                                      LinkerRemarkFunction);
-          R << Msg.str();
-          emitRemark(R);
-        });
+    ContextDisambiguation.run(ThinLTO.CombinedIndex, isPrevailing);
   }
 
   // Figure out which symbols need to be internalized. This also needs to happen
@@ -2137,27 +2063,10 @@ Error LTO::runThinLTO(AddStreamFn AddStream, FileCache Cache,
   // Update local devirtualized targets that were exported by cross-module
   // importing or by other devirtualizations marked in the ExportedGUIDs set.
   updateIndexWPDForExports(ThinLTO.CombinedIndex, isExported,
-                           LocalWPDTargetsMap, ExternallyVisibleSymbolNamesPtr);
-
-  if (ExternallyVisibleSymbolNamesPtr) {
-    // Add to ExternallyVisibleSymbolNames the set of unique names used by all
-    // externally visible symbols in the index.
-    for (auto &I : ThinLTO.CombinedIndex) {
-      ValueInfo VI = ThinLTO.CombinedIndex.getValueInfo(I);
-      for (const auto &Summary : VI.getSummaryList()) {
-        const GlobalValueSummary *Base = Summary->getBaseObject();
-        if (GlobalValue::isLocalLinkage(Base->linkage()))
-          continue;
-
-        ExternallyVisibleSymbolNamesPtr->insert(VI.name());
-        break;
-      }
-    }
-  }
+                           LocalWPDTargetsMap);
 
   thinLTOInternalizeAndPromoteInIndex(ThinLTO.CombinedIndex, isExported,
-                                      isPrevailing,
-                                      ExternallyVisibleSymbolNamesPtr);
+                                      isPrevailing);
 
   auto recordNewLinkage = [&](StringRef ModuleIdentifier,
                               GlobalValue::GUID GUID,
@@ -2322,45 +2231,6 @@ std::vector<int> lto::generateModulesOrdering(ArrayRef<BitcodeModule *> R) {
 }
 
 namespace {
-// There can be many temporary files to remove. Performing deletion in
-// the background can save a few seconds on Windows hosts. Experimentation
-// showed that serial deletion is most efficient, hence a single thread.
-struct BackgroundDeletion : llvm::DefaultThreadPool {
-  BackgroundDeletion()
-      : llvm::DefaultThreadPool(llvm::heavyweight_hardware_concurrency(1)) {}
-
-  ~BackgroundDeletion() {
-    wait();
-    for (const std::string &Warning : Warnings)
-      errs() << "warning: could not remove the file " << Warning << "\n";
-  }
-
-  void remove(SmallVector<std::string> &&Files, const Config &Conf) {
-    async([this, Files = std::move(Files), TTE = Conf.TimeTraceEnabled,
-           TTG = Conf.TimeTraceGranularity] {
-      if (LLVM_ENABLE_THREADS && TTE)
-        timeTraceProfilerInitialize(TTG, "Remove DTLTO temporary files");
-      {
-        llvm::TimeTraceScope TimeScope("Remove DTLTO temporary files");
-        for (const auto &F : Files) {
-          std::error_code EC = sys::fs::remove(F, true);
-          if (EC &&
-              EC != std::make_error_code(std::errc::no_such_file_or_directory))
-            Warnings.emplace_back("'" + F + "': " + EC.message());
-        }
-      }
-      if (LLVM_ENABLE_THREADS && TTE)
-        timeTraceProfilerFinishThread();
-    });
-  }
-
-  SmallVector<std::string> Warnings;
-};
-
-// Use a ManagedStatic to allow the thread to run until llvm_shutdown() is
-// called for the current process.
-static llvm::ManagedStatic<BackgroundDeletion> BackgroundDeleter;
-
 /// This out-of-process backend does not perform code generation when invoked
 /// for each task. Instead, it generates the necessary information (e.g., the
 /// summary index shard, import list, etc.) to enable code generation to be
@@ -2439,7 +2309,7 @@ public:
     UID = itostr(sys::Process::getProcessId());
     Jobs.resize((size_t)ThinLTONumTasks);
     this->ThinLTOTaskOffset = ThinLTOTaskOffset;
-    this->Triple = std::move(Triple);
+    this->Triple = Triple;
     this->Conf.Dtlto = 1;
   }
 
@@ -2693,15 +2563,13 @@ public:
       return std::move(*Err);
 
     llvm::scope_exit CleanPerJobFiles([&] {
-      if (SaveTemps)
-        return;
-      SmallVector<std::string> Files;
-      for (auto &Job : Jobs) {
-        Files.push_back(std::string(Job.NativeObjectPath));
-        if (!ShouldEmitIndexFiles)
-          Files.push_back(std::string(Job.SummaryIndexPath));
-      }
-      BackgroundDeleter->remove(std::move(Files), Conf);
+      llvm::TimeTraceScope TimeScope("Remove DTLTO temporary files");
+      if (!SaveTemps)
+        for (auto &Job : Jobs) {
+          removeFile(Job.NativeObjectPath);
+          if (!ShouldEmitIndexFiles)
+            removeFile(Job.SummaryIndexPath);
+        }
     });
 
     const StringRef BCError = "DTLTO backend compilation: ";

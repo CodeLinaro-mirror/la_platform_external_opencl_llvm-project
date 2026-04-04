@@ -280,7 +280,6 @@ private:
 
   /// \defgroup MCObjects MC layer objects constructed by the streamer
   /// @{
-  MCTargetOptions MCOptions;
   std::unique_ptr<MCRegisterInfo> MRI;
   std::unique_ptr<MCAsmInfo> MAI;
   std::unique_ptr<MCObjectFileInfo> MOFI;

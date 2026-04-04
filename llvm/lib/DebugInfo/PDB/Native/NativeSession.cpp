@@ -410,16 +410,20 @@ uint64_t NativeSession::getVAFromSectOffset(uint32_t Section,
 bool NativeSession::moduleIndexForVA(uint64_t VA, uint16_t &ModuleIndex) const {
   ModuleIndex = 0;
   auto Iter = AddrToModuleIndex.find(VA);
-  if (Iter.valid() && !IMap::KeyTraits::startLess(VA, Iter.start())) {
-    ModuleIndex = Iter.value();
-    return true;
-  }
-  return false;
+  if (Iter == AddrToModuleIndex.end())
+    return false;
+  ModuleIndex = Iter.value();
+  return true;
 }
 
 bool NativeSession::moduleIndexForSectOffset(uint32_t Sect, uint32_t Offset,
                                              uint16_t &ModuleIndex) const {
-  return moduleIndexForVA(getVAFromSectOffset(Sect, Offset), ModuleIndex);
+  ModuleIndex = 0;
+  auto Iter = AddrToModuleIndex.find(getVAFromSectOffset(Sect, Offset));
+  if (Iter == AddrToModuleIndex.end())
+    return false;
+  ModuleIndex = Iter.value();
+  return true;
 }
 
 void NativeSession::parseSectionContribs() {

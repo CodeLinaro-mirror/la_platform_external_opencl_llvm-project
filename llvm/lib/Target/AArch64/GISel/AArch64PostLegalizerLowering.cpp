@@ -199,7 +199,7 @@ bool matchREV(MachineInstr &MI, MachineRegisterInfo &MRI,
       else if (LaneSize == 32U)
         Opcode = AArch64::G_REV32;
       else
-        Opcode = AArch64::G_BSWAP;
+        Opcode = AArch64::G_REV16;
 
       MatchInfo = ShuffleVectorPseudo(Opcode, Dst, {Src});
       return true;
@@ -407,23 +407,10 @@ bool matchEXT(MachineInstr &MI, MachineRegisterInfo &MRI,
 
 /// Replace a G_SHUFFLE_VECTOR instruction with a pseudo.
 /// \p Opc is the opcode to use. \p MI is the G_SHUFFLE_VECTOR.
-void applyShuffleVectorPseudo(MachineInstr &MI, MachineRegisterInfo &MRI,
+void applyShuffleVectorPseudo(MachineInstr &MI,
                               ShuffleVectorPseudo &MatchInfo) {
   MachineIRBuilder MIRBuilder(MI);
-  if (MatchInfo.Opc == TargetOpcode::G_BSWAP) {
-    assert(MatchInfo.SrcOps.size() == 1);
-    LLT DstTy = MRI.getType(MatchInfo.Dst);
-    assert(DstTy == LLT::fixed_vector(8, 8) ||
-           DstTy == LLT::fixed_vector(16, 8));
-    LLT BSTy = DstTy == LLT::fixed_vector(8, 8) ? LLT::fixed_vector(4, 16)
-                                                : LLT::fixed_vector(8, 16);
-    // FIXME: NVCAST
-    auto BS1 = MIRBuilder.buildInstr(TargetOpcode::G_BITCAST, {BSTy},
-                                     MatchInfo.SrcOps[0]);
-    auto BS2 = MIRBuilder.buildInstr(MatchInfo.Opc, {BSTy}, {BS1});
-    MIRBuilder.buildInstr(TargetOpcode::G_BITCAST, {MatchInfo.Dst}, {BS2});
-  } else
-    MIRBuilder.buildInstr(MatchInfo.Opc, {MatchInfo.Dst}, MatchInfo.SrcOps);
+  MIRBuilder.buildInstr(MatchInfo.Opc, {MatchInfo.Dst}, MatchInfo.SrcOps);
   MI.eraseFromParent();
 }
 
@@ -967,7 +954,7 @@ void applySwapICmpOperands(MachineInstr &MI, GISelChangeObserver &Observer) {
 
 /// \returns a function which builds a vector floating point compare instruction
 /// for a condition code \p CC.
-/// \param [in] NoNans - True if the instruction has nnan flag.
+/// \param [in] NoNans - True if the target has NoNansFPMath.
 std::function<Register(MachineIRBuilder &)>
 getVectorFCMP(AArch64CC::CondCode CC, Register LHS, Register RHS, bool NoNans,
               MachineRegisterInfo &MRI) {
@@ -1029,6 +1016,7 @@ bool matchLowerVectorFCMP(MachineInstr &MI, MachineRegisterInfo &MRI,
 void applyLowerVectorFCMP(MachineInstr &MI, MachineRegisterInfo &MRI,
                           MachineIRBuilder &MIB) {
   assert(MI.getOpcode() == TargetOpcode::G_FCMP);
+  const auto &ST = MI.getMF()->getSubtarget<AArch64Subtarget>();
 
   const auto &CmpMI = cast<GFCmp>(MI);
 
@@ -1057,8 +1045,8 @@ void applyLowerVectorFCMP(MachineInstr &MI, MachineRegisterInfo &MRI,
   // Instead of having an apply function, just build here to simplify things.
   MIB.setInstrAndDebugLoc(MI);
 
-  // TODO: Also consider GISelValueTracking result if eligible.
-  const bool NoNans = MI.getFlag(MachineInstr::FmNoNans);
+  const bool NoNans =
+      ST.getTargetLowering()->getTargetMachine().Options.NoNaNsFPMath;
 
   auto Cmp = getVectorFCMP(CC, LHS, RHS, NoNans, MRI);
   Register CmpRes;

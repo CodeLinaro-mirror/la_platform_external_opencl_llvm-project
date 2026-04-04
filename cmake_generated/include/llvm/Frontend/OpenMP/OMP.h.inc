@@ -91,7 +91,6 @@ enum class Directive {
   OMPD_end_workdistribute,
   OMPD_end_workshare,
   OMPD_error,
-  OMPD_flatten,
   OMPD_flush,
   OMPD_for,
   OMPD_for_simd,
@@ -127,7 +126,6 @@ enum class Directive {
   OMPD_sections,
   OMPD_simd,
   OMPD_single,
-  OMPD_split,
   OMPD_stripe,
   OMPD_target,
   OMPD_target_data,
@@ -181,7 +179,7 @@ enum class Directive {
   Last_ = OMPD_teams_loop,
 };
 
-static constexpr std::size_t Directive_enumSize = 125;
+static constexpr std::size_t Directive_enumSize = 123;
 
 constexpr auto OMPD_allocate = Directive::OMPD_allocate;
 constexpr auto OMPD_allocators = Directive::OMPD_allocators;
@@ -221,7 +219,6 @@ constexpr auto OMPD_end_single = Directive::OMPD_end_single;
 constexpr auto OMPD_end_workdistribute = Directive::OMPD_end_workdistribute;
 constexpr auto OMPD_end_workshare = Directive::OMPD_end_workshare;
 constexpr auto OMPD_error = Directive::OMPD_error;
-constexpr auto OMPD_flatten = Directive::OMPD_flatten;
 constexpr auto OMPD_flush = Directive::OMPD_flush;
 constexpr auto OMPD_for = Directive::OMPD_for;
 constexpr auto OMPD_for_simd = Directive::OMPD_for_simd;
@@ -257,7 +254,6 @@ constexpr auto OMPD_section = Directive::OMPD_section;
 constexpr auto OMPD_sections = Directive::OMPD_sections;
 constexpr auto OMPD_simd = Directive::OMPD_simd;
 constexpr auto OMPD_single = Directive::OMPD_single;
-constexpr auto OMPD_split = Directive::OMPD_split;
 constexpr auto OMPD_stripe = Directive::OMPD_stripe;
 constexpr auto OMPD_target = Directive::OMPD_target;
 constexpr auto OMPD_target_data = Directive::OMPD_target_data;
@@ -339,7 +335,6 @@ enum class Clause {
   OMPC_defaultmap,
   OMPC_depend,
   OMPC_depobj,
-  OMPC_depth,
   OMPC_destroy,
   OMPC_detach,
   OMPC_device,
@@ -451,7 +446,7 @@ enum class Clause {
   Last_ = OMPC_write,
 };
 
-static constexpr std::size_t Clause_enumSize = 137;
+static constexpr std::size_t Clause_enumSize = 136;
 
 constexpr auto OMPC_absent = Clause::OMPC_absent;
 constexpr auto OMPC_acq_rel = Clause::OMPC_acq_rel;
@@ -481,7 +476,6 @@ constexpr auto OMPC_default = Clause::OMPC_default;
 constexpr auto OMPC_defaultmap = Clause::OMPC_defaultmap;
 constexpr auto OMPC_depend = Clause::OMPC_depend;
 constexpr auto OMPC_depobj = Clause::OMPC_depobj;
-constexpr auto OMPC_depth = Clause::OMPC_depth;
 constexpr auto OMPC_destroy = Clause::OMPC_destroy;
 constexpr auto OMPC_detach = Clause::OMPC_detach;
 constexpr auto OMPC_device = Clause::OMPC_device;

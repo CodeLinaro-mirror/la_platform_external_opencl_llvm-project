@@ -144,13 +144,6 @@ public:
   }
   InFlightDiagnostic emitError() const { return ::emitError(fileLoc); }
 
-  /// Emit a warning using the given arguments.
-  template <typename... Args>
-  InFlightDiagnostic emitWarning(Args &&...args) const {
-    return ::emitWarning(fileLoc).append(std::forward<Args>(args)...);
-  }
-  InFlightDiagnostic emitWarning() const { return ::emitWarning(fileLoc); }
-
   /// Parse a single byte from the stream.
   template <typename T>
   LogicalResult parseByte(T &value) {
@@ -1043,10 +1036,6 @@ public:
     return reader.emitError(msg);
   }
 
-  InFlightDiagnostic emitWarning(const Twine &msg) const override {
-    return reader.emitWarning(msg);
-  }
-
   FailureOr<const DialectVersion *>
   getDialectVersion(StringRef dialectName) const override {
     // First check if the dialect is available in the map.
@@ -1503,7 +1492,6 @@ LogicalResult AttrTypeReader::parseCustomEntry(Entry<T> &entry,
     // Try parsing with callbacks first if available.
     for (const auto &callback :
          parserConfig.getBytecodeReaderConfig().getTypeCallbacks()) {
-      size_t savedWorklistSize = deferredWorklist.size();
       if (failed(
               callback->read(dialectReader, entry.dialect->name, entry.entry)))
         return failure();
@@ -1511,17 +1499,14 @@ LogicalResult AttrTypeReader::parseCustomEntry(Entry<T> &entry,
       if (!!entry.entry)
         return success();
 
-      // The callback fell through without consuming the encoding. Reset the
-      // reader and restore the deferred worklist: any entries added during the
-      // callback's partial read are stale and must not persist.
-      deferredWorklist.resize(savedWorklistSize);
+      // Reset the reader if we failed to parse, so we can fall through the
+      // other parsing functions.
       reader = EncodingReader(entry.data, reader.getLoc());
     }
   } else {
     // Try parsing with callbacks first if available.
     for (const auto &callback :
          parserConfig.getBytecodeReaderConfig().getAttributeCallbacks()) {
-      size_t savedWorklistSize = deferredWorklist.size();
       if (failed(
               callback->read(dialectReader, entry.dialect->name, entry.entry)))
         return failure();
@@ -1529,10 +1514,8 @@ LogicalResult AttrTypeReader::parseCustomEntry(Entry<T> &entry,
       if (!!entry.entry)
         return success();
 
-      // The callback fell through without consuming the encoding. Reset the
-      // reader and restore the deferred worklist: any entries added during the
-      // callback's partial read are stale and must not persist.
-      deferredWorklist.resize(savedWorklistSize);
+      // Reset the reader if we failed to parse, so we can fall through the
+      // other parsing functions.
       reader = EncodingReader(entry.data, reader.getLoc());
     }
   }

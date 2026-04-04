@@ -247,22 +247,19 @@ template <typename T> class JSONTransportTest : public PipePairTest {
 protected:
   SubsystemRAII<FileSystem> subsystems;
 
-  MainLoop loop;
   test_protocol::MessageHandler message_handler;
   std::unique_ptr<T> transport;
+  MainLoop loop;
 
   void SetUp() override {
     PipePairTest::SetUp();
     transport = std::make_unique<T>(
-        loop,
-        std::make_shared<NativeFile>(input.ReleaseReadFileDescriptor(),
+        std::make_shared<NativeFile>(input.GetReadFileDescriptor(),
                                      File::eOpenOptionReadOnly,
-                                     NativeFile::Owned),
-        std::make_shared<NativeFile>(output.ReleaseWriteFileDescriptor(),
+                                     NativeFile::Unowned),
+        std::make_shared<NativeFile>(output.GetWriteFileDescriptor(),
                                      File::eOpenOptionWriteOnly,
-                                     NativeFile::Owned));
-    EXPECT_THAT_ERROR(transport->RegisterMessageHandler(message_handler),
-                      Succeeded());
+                                     NativeFile::Unowned));
   }
 
   /// Run the transport MainLoop and return any messages received.
@@ -275,13 +272,17 @@ protected:
         loop.RequestTermination();
       });
     }
-    bool registered_timeout = loop.AddCallback(
+    bool addition_succeeded = loop.AddCallback(
         [](MainLoopBase &loop) {
           loop.RequestTermination();
           FAIL() << "timeout";
         },
         timeout);
-    EXPECT_TRUE(registered_timeout);
+    EXPECT_TRUE(addition_succeeded);
+    auto handle = transport->RegisterMessageHandler(loop, message_handler);
+    if (!handle)
+      return handle.takeError();
+
     return loop.Run().takeError();
   }
 
@@ -359,13 +360,14 @@ protected:
   MainLoop loop;
 
   void SetUp() override {
-    std::tie(to_remote, from_remote) =
-        test_protocol::Transport::createPair(loop);
+    std::tie(to_remote, from_remote) = test_protocol::Transport::createPair();
     binder = std::make_unique<test_protocol::Binder>(*to_remote);
 
-    EXPECT_THAT_ERROR(to_remote->RegisterMessageHandler(remote), Succeeded());
-    EXPECT_THAT_ERROR(from_remote->RegisterMessageHandler(*binder),
-                      Succeeded());
+    auto binder_handle = to_remote->RegisterMessageHandler(loop, remote);
+    EXPECT_THAT_EXPECTED(binder_handle, Succeeded());
+
+    auto remote_handle = from_remote->RegisterMessageHandler(loop, *binder);
+    EXPECT_THAT_EXPECTED(remote_handle, Succeeded());
   }
 
   void Run() {
@@ -500,8 +502,8 @@ TEST_F(HTTPDelimitedJSONTransportTest, ReaderWithUnhandledData) {
 
 TEST_F(HTTPDelimitedJSONTransportTest, InvalidTransport) {
   transport =
-      std::make_unique<TestHTTPDelimitedJSONTransport>(loop, nullptr, nullptr);
-  ASSERT_THAT_ERROR(transport->RegisterMessageHandler(message_handler),
+      std::make_unique<TestHTTPDelimitedJSONTransport>(nullptr, nullptr);
+  ASSERT_THAT_ERROR(Run(/*close_input=*/false),
                     FailedWithMessage("IO object is not valid."));
 }
 
@@ -622,8 +624,8 @@ TEST_F(JSONRPCTransportTest, Write) {
 }
 
 TEST_F(JSONRPCTransportTest, InvalidTransport) {
-  transport = std::make_unique<TestJSONRPCTransport>(loop, nullptr, nullptr);
-  ASSERT_THAT_ERROR(transport->RegisterMessageHandler(message_handler),
+  transport = std::make_unique<TestJSONRPCTransport>(nullptr, nullptr);
+  ASSERT_THAT_ERROR(Run(/*close_input=*/false),
                     FailedWithMessage("IO object is not valid."));
 }
 

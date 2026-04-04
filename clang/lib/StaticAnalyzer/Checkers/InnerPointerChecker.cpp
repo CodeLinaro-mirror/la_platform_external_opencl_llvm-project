@@ -76,6 +76,8 @@ public:
                                      BugReporterContext &BRC,
                                      PathSensitiveBugReport &BR) override;
 
+    // FIXME: Scan the map once in the visitor's constructor and do a direct
+    // lookup by region.
     bool isSymbolTracked(ProgramStateRef State, SymbolRef Sym) {
       RawPtrMapTy Map = State->get<RawPtrMap>();
       for (const auto &Entry : Map) {

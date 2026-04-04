@@ -50,10 +50,10 @@ public:
             [this](auto concreteType) { addConcrete(concreteType); })
         .Case<ArrayType, ImageType, MatrixType, RuntimeArrayType, VectorType>(
             [this](auto concreteType) { add(concreteType.getElementType()); })
-        .Case([this](SampledImageType concreteType) {
+        .Case<SampledImageType>([this](SampledImageType concreteType) {
           add(concreteType.getImageType());
         })
-        .Case([this](StructType concreteType) {
+        .Case<StructType>([this](StructType concreteType) {
           for (Type elementType : concreteType.getElementTypes())
             add(elementType);
         })
@@ -97,13 +97,13 @@ public:
         .Case<CooperativeMatrixType, ImageType, MatrixType, PointerType,
               RuntimeArrayType, ScalarType, TensorArmType, VectorType>(
             [this](auto concreteType) { addConcrete(concreteType); })
-        .Case([this](ArrayType concreteType) {
+        .Case<ArrayType>([this](ArrayType concreteType) {
           add(concreteType.getElementType());
         })
-        .Case([this](SampledImageType concreteType) {
+        .Case<SampledImageType>([this](SampledImageType concreteType) {
           add(concreteType.getImageType());
         })
-        .Case([this](StructType concreteType) {
+        .Case<StructType>([this](StructType concreteType) {
           for (Type elementType : concreteType.getElementTypes())
             add(elementType);
         })
@@ -195,8 +195,9 @@ Type CompositeType::getElementType(unsigned index) const {
   return TypeSwitch<Type, Type>(*this)
       .Case<ArrayType, CooperativeMatrixType, RuntimeArrayType, VectorType,
             TensorArmType>([](auto type) { return type.getElementType(); })
-      .Case([](MatrixType type) { return type.getColumnType(); })
-      .Case([index](StructType type) { return type.getElementType(index); })
+      .Case<MatrixType>([](MatrixType type) { return type.getColumnType(); })
+      .Case<StructType>(
+          [index](StructType type) { return type.getElementType(index); })
       .DefaultUnreachable("Invalid composite type");
 }
 
@@ -204,7 +205,7 @@ unsigned CompositeType::getNumElements() const {
   return TypeSwitch<SPIRVType, unsigned>(*this)
       .Case<ArrayType, StructType, TensorArmType, VectorType>(
           [](auto type) { return type.getNumElements(); })
-      .Case([](MatrixType type) { return type.getNumColumns(); })
+      .Case<MatrixType>([](MatrixType type) { return type.getNumColumns(); })
       .DefaultUnreachable("Invalid type for number of elements query");
 }
 
@@ -551,11 +552,6 @@ void TypeExtensionVisitor::addConcrete(ScalarType type) {
     extensions.push_back(ext);
   }
 
-  if (isa<Float8E4M3FNType, Float8E5M2Type>(type)) {
-    static constexpr auto ext = Extension::SPV_EXT_float8;
-    extensions.push_back(ext);
-  }
-
   // 8- or 16-bit integer/floating-point numbers will require extra extensions
   // to appear in interface storage classes. See SPV_KHR_16bit_storage and
   // SPV_KHR_8bit_storage for more details.
@@ -653,15 +649,6 @@ void TypeCapabilityVisitor::addConcrete(ScalarType type) {
   } else {
     assert(isa<FloatType>(type));
     switch (bitwidth) {
-    case 8: {
-      if (isa<Float8E4M3FNType, Float8E5M2Type>(type)) {
-        static constexpr auto cap = Capability::Float8EXT;
-        capabilities.push_back(cap);
-      } else {
-        llvm_unreachable("invalid 8-bit float type to getCapabilities");
-      }
-      break;
-    }
     case 16: {
       if (isa<BFloat16Type>(type)) {
         static constexpr auto cap = Capability::BFloat16TypeKHR;
@@ -717,7 +704,7 @@ void SPIRVType::getCapabilities(
 
 std::optional<int64_t> SPIRVType::getSizeInBytes() {
   return TypeSwitch<SPIRVType, std::optional<int64_t>>(*this)
-      .Case([](ScalarType type) -> std::optional<int64_t> {
+      .Case<ScalarType>([](ScalarType type) -> std::optional<int64_t> {
         // According to the SPIR-V spec:
         // "There is no physical size or bit pattern defined for values with
         // boolean type. If they are stored (in conjunction with OpVariable),
@@ -730,7 +717,7 @@ std::optional<int64_t> SPIRVType::getSizeInBytes() {
           return std::nullopt;
         return bitWidth / 8;
       })
-      .Case([](ArrayType type) -> std::optional<int64_t> {
+      .Case<ArrayType>([](ArrayType type) -> std::optional<int64_t> {
         // Since array type may have an explicit stride declaration (in bytes),
         // we also include it in the calculation.
         auto elementType = cast<SPIRVType>(type.getElementType());
@@ -1162,30 +1149,25 @@ llvm::hash_code spirv::hash_value(
 //===----------------------------------------------------------------------===//
 
 struct spirv::detail::MatrixTypeStorage : public TypeStorage {
-  // Use a 64-bit integer as a column count internally to better support a
-  // `ShapedType` interface. See comment in `CooperativeMatrixType` for more
-  // context.
-  using KeyTy = std::tuple<Type, int64_t>;
+  MatrixTypeStorage(Type columnType, uint32_t columnCount)
+      : columnType(columnType), columnCount(columnCount) {}
 
-  MatrixTypeStorage(const KeyTy &key)
-      : columnType(std::get<0>(key)),
-        shape({cast<VectorType>(std::get<0>(key)).getShape()[0],
-               std::get<1>(key)}) {}
+  using KeyTy = std::tuple<Type, uint32_t>;
 
   static MatrixTypeStorage *construct(TypeStorageAllocator &allocator,
                                       const KeyTy &key) {
 
     // Initialize the memory using placement new.
-    return new (allocator.allocate<MatrixTypeStorage>()) MatrixTypeStorage(key);
+    return new (allocator.allocate<MatrixTypeStorage>())
+        MatrixTypeStorage(std::get<0>(key), std::get<1>(key));
   }
 
   bool operator==(const KeyTy &key) const {
-    return key == KeyTy(columnType, shape[1]);
+    return key == KeyTy(columnType, columnCount);
   }
 
   Type columnType;
-  // [#rows, #columns]
-  std::array<int64_t, 2> shape;
+  const uint32_t columnCount;
 };
 
 MatrixType MatrixType::get(Type columnType, uint32_t columnCount) {
@@ -1233,23 +1215,15 @@ Type MatrixType::getElementType() const {
   return cast<VectorType>(getImpl()->columnType).getElementType();
 }
 
-unsigned MatrixType::getNumColumns() const {
-  assert(getImpl()->shape[1] >= 0); // Also includes ShapedType::kDynamic.
-  assert(getImpl()->shape[1] <= std::numeric_limits<unsigned>::max());
-  return static_cast<uint32_t>(getImpl()->shape[1]);
-}
+unsigned MatrixType::getNumColumns() const { return getImpl()->columnCount; }
 
 unsigned MatrixType::getNumRows() const {
-  assert(getImpl()->shape[0] >= 0); // Also includes ShapedType::kDynamic.
-  assert(getImpl()->shape[0] <= std::numeric_limits<unsigned>::max());
-  return static_cast<uint32_t>(getImpl()->shape[0]);
+  return cast<VectorType>(getImpl()->columnType).getShape()[0];
 }
 
 unsigned MatrixType::getNumElements() const {
-  return getNumColumns() * getNumRows();
+  return (getImpl()->columnCount) * getNumRows();
 }
-
-ArrayRef<int64_t> MatrixType::getShape() const { return getImpl()->shape; }
 
 void TypeCapabilityVisitor::addConcrete(MatrixType type) {
   add(type.getColumnType());

@@ -150,23 +150,14 @@ struct CUDAKernelTy : public GenericKernelTy {
     // The maximum number of threads cannot exceed the maximum of the kernel.
     MaxNumThreads = std::min(MaxNumThreads, (uint32_t)MaxThreads);
 
-    int SharedMemSize;
-    Res = cuFuncGetAttribute(&SharedMemSize,
-                             CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, Func);
-    if (auto Err = Plugin::check(Res, "Error in cuFuncGetAttribute: %s"))
-      return Err;
-
-    // Set the static block memory size required by the kernel.
-    StaticBlockMemSize = SharedMemSize;
-
     // Retrieve the size of the arguments.
     return initArgsSize();
   }
 
   /// Launch the CUDA kernel function.
   Error launchImpl(GenericDeviceTy &GenericDevice, uint32_t NumThreads[3],
-                   uint32_t NumBlocks[3], uint32_t DynBlockMemSize,
-                   KernelArgsTy &KernelArgs, KernelLaunchParamsTy LaunchParams,
+                   uint32_t NumBlocks[3], KernelArgsTy &KernelArgs,
+                   KernelLaunchParamsTy LaunchParams,
                    AsyncInfoWrapperTy &AsyncInfoWrapper) const override;
 
   /// Return maximum block size for maximum occupancy
@@ -206,7 +197,7 @@ private:
   CUfunction Func;
   /// The maximum amount of dynamic shared memory per thread group. By default,
   /// this is set to 48 KB.
-  mutable uint32_t MaxDynBlockMemSize = 49152;
+  mutable uint32_t MaxDynCGroupMemLimit = 49152;
 
   /// The size of the kernel arguments.
   size_t ArgsSize;
@@ -1128,7 +1119,7 @@ struct CUDADeviceTy : public GenericDeviceTy {
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Concurrent Copy and Execution", bool(TmpInt));
+      Info.add("Concurrent Copy and Execution", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, TmpInt);
     if (Res == CUDA_SUCCESS)
@@ -1194,15 +1185,15 @@ struct CUDADeviceTy : public GenericDeviceTy {
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_KERNEL_EXEC_TIMEOUT, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Execution Timeout", bool(TmpInt));
+      Info.add("Execution Timeout", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_INTEGRATED, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Integrated Device", bool(TmpInt));
+      Info.add("Integrated Device", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Can Map Host Memory", bool(TmpInt));
+      Info.add("Can Map Host Memory", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, TmpInt);
     if (Res == CUDA_SUCCESS) {
@@ -1219,11 +1210,11 @@ struct CUDADeviceTy : public GenericDeviceTy {
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Concurrent Kernels", bool(TmpInt));
+      Info.add("Concurrent Kernels", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_ECC_ENABLED, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("ECC Enabled", bool(TmpInt));
+      Info.add("ECC Enabled", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE, TmpInt);
     if (Res == CUDA_SUCCESS)
@@ -1249,29 +1240,29 @@ struct CUDADeviceTy : public GenericDeviceTy {
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Unified Addressing", bool(TmpInt));
+      Info.add("Unified Addressing", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_MANAGED_MEMORY, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Managed Memory", bool(TmpInt));
+      Info.add("Managed Memory", (bool)TmpInt);
 
     Res =
         getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Concurrent Managed Memory", bool(TmpInt));
+      Info.add("Concurrent Managed Memory", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_COMPUTE_PREEMPTION_SUPPORTED,
                            TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Preemption Supported", bool(TmpInt));
+      Info.add("Preemption Supported", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_COOPERATIVE_LAUNCH, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Cooperative Launch", bool(TmpInt));
+      Info.add("Cooperative Launch", (bool)TmpInt);
 
     Res = getDeviceAttrRaw(CU_DEVICE_ATTRIBUTE_MULTI_GPU_BOARD, TmpInt);
     if (Res == CUDA_SUCCESS)
-      Info.add("Multi-Device Boars", bool(TmpInt));
+      Info.add("Multi-Device Boars", (bool)TmpInt);
 
     Info.add("Compute Capabilities", ComputeCapability.str());
 
@@ -1420,7 +1411,7 @@ private:
     KernelArgsTy KernelArgs = {};
     uint32_t NumBlocksAndThreads[3] = {1u, 1u, 1u};
     if (auto Err = CUDAKernel.launchImpl(
-            *this, NumBlocksAndThreads, NumBlocksAndThreads, 0, KernelArgs,
+            *this, NumBlocksAndThreads, NumBlocksAndThreads, KernelArgs,
             KernelLaunchParamsTy{}, AsyncInfoWrapper))
       return Err;
 
@@ -1464,7 +1455,6 @@ private:
 
 Error CUDAKernelTy::launchImpl(GenericDeviceTy &GenericDevice,
                                uint32_t NumThreads[3], uint32_t NumBlocks[3],
-                               uint32_t DynBlockMemSize,
                                KernelArgsTy &KernelArgs,
                                KernelLaunchParamsTy LaunchParams,
                                AsyncInfoWrapperTy &AsyncInfoWrapper) const {
@@ -1480,6 +1470,9 @@ Error CUDAKernelTy::launchImpl(GenericDeviceTy &GenericDevice,
   if (auto Err = CUDADevice.getStream(AsyncInfoWrapper, Stream))
     return Err;
 
+  uint32_t MaxDynCGroupMem =
+      std::max(KernelArgs.DynCGroupMem, GenericDevice.getDynamicMemorySize());
+
   size_t ConfigArgsSize = ArgsSize;
   void *Config[] = {CU_LAUNCH_PARAM_BUFFER_POINTER, LaunchParams.Data,
                     CU_LAUNCH_PARAM_BUFFER_SIZE,
@@ -1492,19 +1485,19 @@ Error CUDAKernelTy::launchImpl(GenericDeviceTy &GenericDevice,
     GenericDevice.Plugin.getRPCServer().Thread->notify();
 
   // In case we require more memory than the current limit.
-  if (DynBlockMemSize >= MaxDynBlockMemSize) {
+  if (MaxDynCGroupMem >= MaxDynCGroupMemLimit) {
     CUresult AttrResult = cuFuncSetAttribute(
-        Func, CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, DynBlockMemSize);
+        Func, CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, MaxDynCGroupMem);
     if (auto Err = Plugin::check(
             AttrResult,
             "error in cuFuncSetAttribute while setting the memory limits: %s"))
       return Err;
-    MaxDynBlockMemSize = DynBlockMemSize;
+    MaxDynCGroupMemLimit = MaxDynCGroupMem;
   }
 
   CUresult Res = cuLaunchKernel(Func, NumBlocks[0], NumBlocks[1], NumBlocks[2],
                                 NumThreads[0], NumThreads[1], NumThreads[2],
-                                DynBlockMemSize, Stream, nullptr, Config);
+                                MaxDynCGroupMem, Stream, nullptr, Config);
 
   // Register a callback to indicate when the kernel is complete.
   if (GenericDevice.getRPCServer())

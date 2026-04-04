@@ -624,7 +624,7 @@ void BlockGenerator::generateConditionalExecution(
   DomTreeUpdater DTU(GenDT, DomTreeUpdater::UpdateStrategy::Eager);
   SplitBlockAndInsertIfThen(Cond, Builder.GetInsertPoint(), false, nullptr,
                             &DTU, GenLI);
-  CondBrInst *Branch = cast<CondBrInst>(HeadBlock->getTerminator());
+  BranchInst *Branch = cast<BranchInst>(HeadBlock->getTerminator());
   BasicBlock *ThenBlock = Branch->getSuccessor(0);
   BasicBlock *TailBlock = Branch->getSuccessor(1);
 
@@ -778,12 +778,12 @@ void BlockGenerator::generateScalarStores(
 
           Val = getNewValue(Stmt, Val, BBMap, LTS, L);
           assert((!isa<Instruction>(Val) ||
-                  GenDT->dominates(cast<Instruction>(Val)->getParent(),
-                                   Builder.GetInsertBlock())) &&
+                  DT.dominates(cast<Instruction>(Val)->getParent(),
+                               Builder.GetInsertBlock())) &&
                  "Domination violation");
           assert((!isa<Instruction>(Address) ||
-                  GenDT->dominates(cast<Instruction>(Address)->getParent(),
-                                   Builder.GetInsertBlock())) &&
+                  DT.dominates(cast<Instruction>(Address)->getParent(),
+                               Builder.GetInsertBlock())) &&
                  "Domination violation");
 
           Builder.CreateStore(Val, Address);
@@ -1319,12 +1319,12 @@ void RegionGenerator::generateScalarStores(
           Value *Address = getImplicitAddress(*MA, getLoopForStmt(Stmt), LTS,
                                               BBMap, NewAccesses);
           assert((!isa<Instruction>(NewVal) ||
-                  GenDT->dominates(cast<Instruction>(NewVal)->getParent(),
-                                   Builder.GetInsertBlock())) &&
+                  DT.dominates(cast<Instruction>(NewVal)->getParent(),
+                               Builder.GetInsertBlock())) &&
                  "Domination violation");
           assert((!isa<Instruction>(Address) ||
-                  GenDT->dominates(cast<Instruction>(Address)->getParent(),
-                                   Builder.GetInsertBlock())) &&
+                  DT.dominates(cast<Instruction>(Address)->getParent(),
+                               Builder.GetInsertBlock())) &&
                  "Domination violation");
           Builder.CreateStore(NewVal, Address);
         });

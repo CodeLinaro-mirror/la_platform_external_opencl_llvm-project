@@ -1950,12 +1950,8 @@ static Value *simplifyAndOrWithICmpEq(unsigned Opcode, Value *Op0, Value *Op1,
          "Must be and/or");
   CmpPredicate Pred;
   Value *A, *B;
-  if (Op0->getType()->isIntOrIntVectorTy(1) &&
-      match(Op0, m_NUWTrunc(m_Value(A)))) {
-    B = ConstantInt::getNullValue(A->getType());
-    Pred = ICmpInst::ICMP_NE;
-  } else if (!match(Op0, m_ICmp(Pred, m_Value(A), m_Value(B))) ||
-             !ICmpInst::isEquality(Pred))
+  if (!match(Op0, m_ICmp(Pred, m_Value(A), m_Value(B))) ||
+      !ICmpInst::isEquality(Pred))
     return nullptr;
 
   auto Simplify = [&](Value *Res) -> Value * {
@@ -2970,66 +2966,10 @@ static Value *simplifyICmpOfBools(CmpPredicate Pred, Value *LHS, Value *RHS,
   return nullptr;
 }
 
-/// Check if RHS is zero or can be transformed to an equivalent zero comparison.
-/// E.g., icmp sgt X, -1 --> icmp sge X, 0
-static bool matchEquivZeroRHS(CmpPredicate &Pred, const Value *RHS) {
-  // icmp [pred] X, 0 --> as-is
-  if (match(RHS, m_Zero()))
-    return true;
-
-  // Handle comparisons with -1 (all ones)
-  if (match(RHS, m_AllOnes())) {
-    switch (Pred) {
-    case ICmpInst::ICMP_SGT:
-      // icmp sgt X, -1 --> icmp sge X, 0
-      Pred = ICmpInst::ICMP_SGE;
-      return true;
-    case ICmpInst::ICMP_SLE:
-      // icmp sle X, -1 --> icmp slt X, 0
-      Pred = ICmpInst::ICMP_SLT;
-      return true;
-    // Note: unsigned comparisons with -1 (UINT_MAX) are not handled here:
-    // - icmp ugt X, -1 is always false (nothing > UINT_MAX)
-    // - icmp ule X, -1 is always true (everything <= UINT_MAX)
-    default:
-      return false;
-    }
-  }
-
-  // Handle comparisons with 1
-  if (match(RHS, m_One())) {
-    switch (Pred) {
-    case ICmpInst::ICMP_SGE:
-      // icmp sge X, 1 --> icmp sgt X, 0
-      Pred = ICmpInst::ICMP_SGT;
-      return true;
-    case ICmpInst::ICMP_UGE:
-      // icmp uge X, 1 --> icmp ugt X, 0
-      Pred = ICmpInst::ICMP_UGT;
-      return true;
-    case ICmpInst::ICMP_SLT:
-      // icmp slt X, 1 --> icmp sle X, 0
-      Pred = ICmpInst::ICMP_SLE;
-      return true;
-    case ICmpInst::ICMP_ULT:
-      // icmp ult X, 1 --> icmp ule X, 0
-      Pred = ICmpInst::ICMP_ULE;
-      return true;
-    default:
-      return false;
-    }
-  }
-
-  return false;
-}
-
 /// Try hard to fold icmp with zero RHS because this is a common case.
-/// Note that, this function also handles the equivalent zero RHS, e.g.,
-/// icmp sgt X, -1 --> icmp sge X, 0
 static Value *simplifyICmpWithZero(CmpPredicate Pred, Value *LHS, Value *RHS,
                                    const SimplifyQuery &Q) {
-  // Check if RHS is zero or can be transformed to an equivalent zero comparison
-  if (!matchEquivZeroRHS(Pred, RHS))
+  if (!match(RHS, m_Zero()))
     return nullptr;
 
   Type *ITy = getCompareTy(LHS); // The return type.
@@ -4298,14 +4238,16 @@ static Value *simplifyFCmpInst(CmpPredicate Pred, Value *LHS, Value *RHS,
         break;
       }
     }
-    // Check FCmp of [min/maxnum or min/maximumnum with const] with other const.
+    // Check comparison of [minnum/maxnum with constant] with other constant.
     const APFloat *C2;
-    bool IsMax = match(LHS, m_FMaxNum_or_FMaximumNum(m_Value(), m_APFloat(C2)));
-    bool IsMin = match(LHS, m_FMinNum_or_FMinimumNum(m_Value(), m_APFloat(C2)));
-    if ((IsMax && *C2 > *C) || (IsMin && *C2 < *C)) {
-      // The ordered relationship and min/maxnum or min/maximumnum guarantee
-      // that we do not have NaN constants, so ordered/unordered preds are
-      // handled the same.
+    if ((match(LHS, m_Intrinsic<Intrinsic::minnum>(m_Value(), m_APFloat(C2))) &&
+         *C2 < *C) ||
+        (match(LHS, m_Intrinsic<Intrinsic::maxnum>(m_Value(), m_APFloat(C2))) &&
+         *C2 > *C)) {
+      bool IsMaxNum =
+          cast<IntrinsicInst>(LHS)->getIntrinsicID() == Intrinsic::maxnum;
+      // The ordered relationship and minnum/maxnum guarantee that we do not
+      // have NaN constants, so ordered/unordered preds are handled the same.
       switch (Pred) {
       case FCmpInst::FCMP_OEQ:
       case FCmpInst::FCMP_UEQ:
@@ -4325,7 +4267,7 @@ static Value *simplifyFCmpInst(CmpPredicate Pred, Value *LHS, Value *RHS,
         // minnum(X, LesserC)  >  C --> false
         // maxnum(X, GreaterC) >= C --> true
         // maxnum(X, GreaterC) >  C --> true
-        return ConstantInt::get(RetTy, IsMax);
+        return ConstantInt::get(RetTy, IsMaxNum);
       case FCmpInst::FCMP_OLE:
       case FCmpInst::FCMP_ULE:
       case FCmpInst::FCMP_OLT:
@@ -4334,7 +4276,7 @@ static Value *simplifyFCmpInst(CmpPredicate Pred, Value *LHS, Value *RHS,
         // minnum(X, LesserC)  <  C --> true
         // maxnum(X, GreaterC) <= C --> false
         // maxnum(X, GreaterC) <  C --> false
-        return ConstantInt::get(RetTy, !IsMax);
+        return ConstantInt::get(RetTy, !IsMaxNum);
       default:
         // TRUE/FALSE/ORD/UNO should be handled before this.
         llvm_unreachable("Unexpected fcmp predicate");
@@ -6530,7 +6472,7 @@ static Value *simplifyUnaryIntrinsic(Function *F, Value *Op0,
     // round (ceil x) -> ceil x
     auto *II = dyn_cast<IntrinsicInst>(Op0);
     if ((II && removesFPFraction(II->getIntrinsicID())) ||
-        match(Op0, m_IToFP(m_Value())))
+        match(Op0, m_SIToFP(m_Value())) || match(Op0, m_UIToFP(m_Value())))
       return Op0;
   }
 
@@ -6618,8 +6560,6 @@ static Value *simplifyUnaryIntrinsic(Function *F, Value *Op0,
     if (isSplatValue(Op0))
       return Op0;
     break;
-  case Intrinsic::structured_gep:
-    return cast<StructuredGEPInst>(Call)->getPointerOperand();
   default:
     break;
   }
@@ -6728,7 +6668,8 @@ static MinMaxOptResult OptimizeConstMinMax(const Constant *RHSConst,
   assert(OutNewConstVal != nullptr);
 
   bool PropagateNaN = IID == Intrinsic::minimum || IID == Intrinsic::maximum;
-  bool PropagateSNaN = IID == Intrinsic::minnum || IID == Intrinsic::maxnum;
+  bool ReturnsOtherForAllNaNs =
+      IID == Intrinsic::minimumnum || IID == Intrinsic::maximumnum;
   bool IsMin = IID == Intrinsic::minimum || IID == Intrinsic::minnum ||
                IID == Intrinsic::minimumnum;
 
@@ -6745,29 +6686,27 @@ static MinMaxOptResult OptimizeConstMinMax(const Constant *RHSConst,
 
   // minnum(x, qnan) -> x
   // maxnum(x, qnan) -> x
-  // minnum(x, snan) -> qnan
-  // maxnum(x, snan) -> qnan
   // minimum(X, nan) -> qnan
   // maximum(X, nan) -> qnan
   // minimumnum(X, nan) -> x
   // maximumnum(X, nan) -> x
   if (CAPF.isNaN()) {
-    if (PropagateNaN || (PropagateSNaN && CAPF.isSignaling())) {
+    if (PropagateNaN) {
       *OutNewConstVal = ConstantFP::get(CFP->getType(), CAPF.makeQuiet());
       return MinMaxOptResult::UseNewConstVal;
+    } else if (ReturnsOtherForAllNaNs || !CAPF.isSignaling()) {
+      return MinMaxOptResult::UseOtherVal;
     }
-    return MinMaxOptResult::UseOtherVal;
+    return MinMaxOptResult::CannotOptimize;
   }
 
   if (CAPF.isInfinity() || (Call && Call->hasNoInfs() && CAPF.isLargest())) {
-    // minnum(X, -inf) -> -inf (ignoring sNaN -> qNaN propagation)
-    // maxnum(X, +inf) -> +inf (ignoring sNaN -> qNaN propagation)
     // minimum(X, -inf) -> -inf if nnan
     // maximum(X, +inf) -> +inf if nnan
     // minimumnum(X, -inf) -> -inf
     // maximumnum(X, +inf) -> +inf
     if (CAPF.isNegative() == IsMin &&
-        (!PropagateNaN || (Call && Call->hasNoNaNs()))) {
+        (ReturnsOtherForAllNaNs || (Call && Call->hasNoNaNs()))) {
       *OutNewConstVal = const_cast<Constant *>(RHSConst);
       return MinMaxOptResult::UseNewConstVal;
     }
@@ -7112,12 +7051,10 @@ Value *llvm::simplifyBinaryIntrinsic(Intrinsic::ID IID, Type *ReturnType,
   case Intrinsic::minimum:
   case Intrinsic::maximumnum:
   case Intrinsic::minimumnum: {
-    // In several cases here, we deviate from exact IEEE 754 semantics
-    // to enable optimizations (as allowed by the LLVM IR spec).
-    //
-    // For instance, we may return one of the arguments unmodified instead of
-    // inserting an llvm.canonicalize to transform input sNaNs into qNaNs,
-    // or may assume all NaN inputs are qNaNs.
+    // In some cases here, we deviate from exact IEEE-754 semantics to enable
+    // optimizations (as allowed by the LLVM IR spec) by returning one of the
+    // arguments unmodified instead of inserting an llvm.canonicalize to
+    // transform input sNaNs into qNaNs,
 
     // If the arguments are the same, this is a no-op (ignoring NaN quieting)
     if (Op0 == Op1)

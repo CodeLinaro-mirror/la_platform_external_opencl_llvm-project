@@ -1,6 +1,6 @@
 include "../../../../include/lldb/Core/PropertiesBase.td"
 
-let Definition = "processgdbremote", Path = "plugin.process.gdb-remote" in {
+let Definition = "processgdbremote" in {
   def PacketTimeout: Property<"packet-timeout", "UInt64">,
     Global,
 #ifdef LLDB_SANITIZED

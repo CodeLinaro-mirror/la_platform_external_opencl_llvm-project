@@ -598,7 +598,7 @@ std::optional<uint64_t> ARMMCInstrAnalysis::evaluateMemoryOperandAddress(
     break;
   }
 
-  // Evaluate the address depending on the addressing mode
+  // Eveluate the address depending on the addressing mode
   unsigned AddrMode = (TSFlags & ARMII::AddrModeMask);
   switch (AddrMode) {
   default:

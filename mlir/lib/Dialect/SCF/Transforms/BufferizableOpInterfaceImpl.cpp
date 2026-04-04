@@ -19,7 +19,6 @@
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/Operation.h"
 #include "mlir/IR/PatternMatch.h"
-#include "llvm/ADT/SmallVectorExtras.h"
 
 using namespace mlir;
 using namespace mlir::bufferization;
@@ -993,14 +992,14 @@ struct WhileOpInterface
     }
 
     // The result types of a WhileOp are the same as the "after" bbArg types.
-    SmallVector<Type> argsTypesAfter = llvm::map_to_vector(
-        whileOp.getAfterArguments(), [&](BlockArgument bbArg) {
+    SmallVector<Type> argsTypesAfter = llvm::to_vector(
+        llvm::map_range(whileOp.getAfterArguments(), [&](BlockArgument bbArg) {
           if (!isa<TensorType>(bbArg.getType()))
             return bbArg.getType();
           // TODO: error handling
           return llvm::cast<Type>(
               *bufferization::getBufferType(bbArg, options, state));
-        });
+        }));
 
     // Construct a new scf.while op with memref instead of tensor values.
     ValueRange argsRangeBefore(castedInitArgs);

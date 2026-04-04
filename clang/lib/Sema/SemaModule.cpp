@@ -386,9 +386,9 @@ Sema::ActOnModuleDecl(SourceLocation StartLoc, SourceLocation ModuleLoc,
       Diag(Path[0].getLoc(), diag::err_module_redefinition) << ModuleName;
       if (M->DefinitionLoc.isValid())
         Diag(M->DefinitionLoc, diag::note_prev_module_definition);
-      else if (const ModuleFileName *FileName = M->getASTFileName())
+      else if (OptionalFileEntryRef FE = M->getASTFile())
         Diag(M->DefinitionLoc, diag::note_prev_module_definition_from_ast_file)
-            << *FileName;
+            << FE->getName();
       Mod = M;
       break;
     }
@@ -464,6 +464,9 @@ Sema::ActOnModuleDecl(SourceLocation StartLoc, SourceLocation ModuleLoc,
   ImportState = ModuleImportState::ImportAllowed;
 
   getASTContext().setCurrentNamedModule(Mod);
+
+  if (auto *Listener = getASTMutationListener())
+    Listener->EnteringModulePurview();
 
   // We already potentially made an implicit import (in the case of a module
   // implementation unit importing its interface).  Make this module visible
@@ -939,18 +942,6 @@ static bool checkExportedDecl(Sema &S, Decl *D, SourceLocation BlockStart) {
       S.Diag(D->getBeginLoc(), diag::err_hlsl_export_not_on_function);
       D->setInvalidDecl();
       return false;
-    }
-
-    if (isa<FunctionDecl>(D)) {
-      FunctionDecl *FD = cast<FunctionDecl>(D);
-      for (const ParmVarDecl *PVD : FD->parameters()) {
-        if (PVD->hasAttr<HLSLGroupSharedAddressSpaceAttr>()) {
-          S.Diag(D->getBeginLoc(), diag::err_hlsl_attr_incompatible)
-              << "'export'" << "'groupshared' parameter";
-          D->setInvalidDecl();
-          return false;
-        }
-      }
     }
   }
 

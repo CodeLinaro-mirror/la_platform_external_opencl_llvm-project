@@ -77,7 +77,6 @@ LLVM_ABI extern cl::opt<float> OpcWeight;
 LLVM_ABI extern cl::opt<float> TypeWeight;
 LLVM_ABI extern cl::opt<float> ArgWeight;
 LLVM_ABI extern cl::opt<IR2VecKind> IR2VecEmbeddingKind;
-LLVM_ABI extern cl::opt<std::string> VocabFile;
 
 /// Embedding is a datatype that wraps std::vector<double>. It provides
 /// additional functionality for arithmetic and comparison operations.
@@ -139,11 +138,6 @@ public:
   /// within the specified tolerance.
   LLVM_ABI bool approximatelyEquals(const Embedding &RHS,
                                     double Tolerance = 1e-4) const;
-
-  /// Returns true if all elements of the embedding are zero.
-  bool isZero() const {
-    return llvm::all_of(Data, [](double D) { return D == 0.0; });
-  }
 
   LLVM_ABI void print(raw_ostream &OS) const;
 };
@@ -292,7 +286,6 @@ public:
     VectorTy,
     TokenTy,
     IntegerTy,
-    ByteTy,
     FunctionTy,
     PointerTy,
     StructTy,
@@ -466,9 +459,9 @@ private:
 
   /// String mappings for CanonicalTypeID values
   static constexpr StringLiteral CanonicalTypeNames[] = {
-      "FloatTy",  "VoidTy",    "LabelTy",  "MetadataTy", "VectorTy",
-      "TokenTy",  "IntegerTy", "ByteTy",   "FunctionTy", "PointerTy",
-      "StructTy", "ArrayTy",   "UnknownTy"};
+      "FloatTy",   "VoidTy",   "LabelTy",   "MetadataTy",
+      "VectorTy",  "TokenTy",  "IntegerTy", "FunctionTy",
+      "PointerTy", "StructTy", "ArrayTy",   "UnknownTy"};
   static_assert(std::size(CanonicalTypeNames) ==
                     static_cast<unsigned>(CanonicalTypeID::MaxCanonicalType),
                 "CanonicalTypeNames array size must match MaxCanonicalType");
@@ -496,7 +489,6 @@ private:
       CanonicalTypeID::VectorTy,   // X86_AMXTyID
       CanonicalTypeID::TokenTy,    // TokenTyID
       CanonicalTypeID::IntegerTy,  // IntegerTyID
-      CanonicalTypeID::ByteTy,     // ByteTyID
       CanonicalTypeID::FunctionTy, // FunctionTyID
       CanonicalTypeID::PointerTy,  // PointerTyID
       CanonicalTypeID::StructTy,   // StructTyID

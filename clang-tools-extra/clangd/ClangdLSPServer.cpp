@@ -1833,7 +1833,7 @@ void ClangdLSPServer::onDiagnosticsReady(PathRef File, llvm::StringRef Version,
   // Cache DiagRefMap
   {
     std::lock_guard<std::mutex> Lock(DiagRefMutex);
-    DiagRefMap[File] = std::move(LocalDiagMap);
+    DiagRefMap[File] = LocalDiagMap;
   }
 
   // Send a notification to the LSP client.

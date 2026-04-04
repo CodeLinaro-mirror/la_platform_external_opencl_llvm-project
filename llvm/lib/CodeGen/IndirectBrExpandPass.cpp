@@ -241,7 +241,7 @@ bool runImpl(Function &F, const TargetLowering *TLI, DomTreeUpdater *DTU) {
       Updates.reserve(IndirectBrs.size() + 2 * IndirectBrSuccs.size());
     for (auto *IBr : IndirectBrs) {
       SwitchPN->addIncoming(GetSwitchValue(IBr), IBr->getParent());
-      UncondBrInst::Create(SwitchBB, IBr->getIterator());
+      BranchInst::Create(SwitchBB, IBr->getIterator());
       if (DTU) {
         Updates.push_back({DominatorTree::Insert, IBr->getParent(), SwitchBB});
         for (BasicBlock *SuccBB : IBr->successors())

@@ -17,7 +17,9 @@ namespace LIBC_NAMESPACE_DECL {
 
 namespace math {
 
-LIBC_INLINE constexpr long llogbf(float x) { return fputil::intlogb<long>(x); }
+LIBC_INLINE static constexpr long llogbf(float x) {
+  return fputil::intlogb<long>(x);
+}
 
 } // namespace math
 

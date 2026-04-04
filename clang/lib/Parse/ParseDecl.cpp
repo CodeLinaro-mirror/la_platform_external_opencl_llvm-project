@@ -4493,26 +4493,6 @@ void Parser::ParseDeclarationSpecifiers(
       isInvalid = DS.SetTypeQual(DeclSpec::TQ_restrict, Loc, PrevSpec, DiagID,
                                  getLangOpts());
       break;
-    case tok::kw___ob_wrap:
-      if (!getLangOpts().OverflowBehaviorTypes) {
-        Diag(Loc, diag::warn_overflow_behavior_keyword_disabled)
-            << tok::getKeywordSpelling(Tok.getKind());
-        break;
-      }
-      isInvalid = DS.SetOverflowBehavior(
-          OverflowBehaviorType::OverflowBehaviorKind::Wrap, Loc, PrevSpec,
-          DiagID);
-      break;
-    case tok::kw___ob_trap:
-      if (!getLangOpts().OverflowBehaviorTypes) {
-        Diag(Loc, diag::warn_overflow_behavior_keyword_disabled)
-            << tok::getKeywordSpelling(Tok.getKind());
-        break;
-      }
-      isInvalid = DS.SetOverflowBehavior(
-          OverflowBehaviorType::OverflowBehaviorKind::Trap, Loc, PrevSpec,
-          DiagID);
-      break;
 
     // C++ typename-specifier:
     case tok::kw_typename:
@@ -4552,10 +4532,6 @@ void Parser::ParseDeclarationSpecifiers(
 
     case tok::annot_pragma_ms_pointers_to_members:
       HandlePragmaMSPointersToMembers();
-      continue;
-
-    case tok::annot_pragma_export:
-      HandlePragmaExport();
       continue;
 
 #define TRANSFORM_TYPE_TRAIT_DEF(_, Trait) case tok::kw___##Trait:
@@ -5077,7 +5053,7 @@ void Parser::ParseEnumSpecifier(SourceLocation StartLoc, DeclSpec &DS,
       }
     }
 
-    SS = std::move(Spec);
+    SS = Spec;
   }
 
   // Must have either 'enum name' or 'enum {...}' or (rarely) 'enum : T { ... }'.
@@ -5663,8 +5639,6 @@ bool Parser::isTypeSpecifierQualifier() {
   case tok::kw_const:
   case tok::kw_volatile:
   case tok::kw_restrict:
-  case tok::kw___ob_wrap:
-  case tok::kw___ob_trap:
   case tok::kw__Sat:
 
     // Debugger support.
@@ -5878,8 +5852,6 @@ bool Parser::isDeclarationSpecifier(
   case tok::kw_const:
   case tok::kw_volatile:
   case tok::kw_restrict:
-  case tok::kw___ob_wrap:
-  case tok::kw___ob_trap:
   case tok::kw__Sat:
 
     // function-specifier
@@ -6193,26 +6165,6 @@ void Parser::ParseTypeQualifierListOpt(
       isInvalid = DS.SetTypeQual(DeclSpec::TQ_restrict, Loc, PrevSpec, DiagID,
                                  getLangOpts());
       break;
-    case tok::kw___ob_wrap:
-      if (!getLangOpts().OverflowBehaviorTypes) {
-        Diag(Loc, diag::warn_overflow_behavior_keyword_disabled)
-            << tok::getKeywordSpelling(Tok.getKind());
-        break;
-      }
-      isInvalid = DS.SetOverflowBehavior(
-          OverflowBehaviorType::OverflowBehaviorKind::Wrap, Loc, PrevSpec,
-          DiagID);
-      break;
-    case tok::kw___ob_trap:
-      if (!getLangOpts().OverflowBehaviorTypes) {
-        Diag(Loc, diag::warn_overflow_behavior_keyword_disabled)
-            << tok::getKeywordSpelling(Tok.getKind());
-        break;
-      }
-      isInvalid = DS.SetOverflowBehavior(
-          OverflowBehaviorType::OverflowBehaviorKind::Trap, Loc, PrevSpec,
-          DiagID);
-      break;
     case tok::kw__Atomic:
       if (!AtomicOrPtrauthAllowed)
         goto DoneWithTypeQuals;
@@ -6415,9 +6367,7 @@ void Parser::ParseDeclaratorInternal(Declarator &D,
                                        /*IsTypename=*/false, /*LastII=*/nullptr,
                                        /*OnlyNamespace=*/false,
                                        /*InUsingDeclaration=*/false,
-                                       /*Disambiguation=*/EnteringContext,
-                                       /*IsAddressOfOperand=*/false,
-                                       /*IsInDeclarationContext=*/true) ||
+                                       /*Disambiguation=*/EnteringContext) ||
 
         SS.isEmpty() || SS.isInvalid() || !EnteringContext ||
         Tok.is(tok::star)) {
@@ -6458,7 +6408,7 @@ void Parser::ParseDeclaratorInternal(Declarator &D,
     if (SS.isNotEmpty()) {
       // The scope spec really belongs to the direct-declarator.
       if (D.mayHaveIdentifier())
-        D.getCXXScopeSpec() = std::move(SS);
+        D.getCXXScopeSpec() = SS;
       else
         AnnotateScopeToken(SS, true);
 
@@ -6513,8 +6463,7 @@ void Parser::ParseDeclaratorInternal(Declarator &D,
       D.AddTypeInfo(DeclaratorChunk::getPointer(
                         DS.getTypeQualifiers(), Loc, DS.getConstSpecLoc(),
                         DS.getVolatileSpecLoc(), DS.getRestrictSpecLoc(),
-                        DS.getAtomicSpecLoc(), DS.getUnalignedSpecLoc(),
-                        DS.getOverflowBehaviorLoc(), DS.isWrapSpecified()),
+                        DS.getAtomicSpecLoc(), DS.getUnalignedSpecLoc()),
                     std::move(DS.getAttributes()), SourceLocation());
     else
       // Remember that we parsed a Block type, and remember the type-quals.

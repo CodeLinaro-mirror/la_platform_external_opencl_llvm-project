@@ -2968,7 +2968,6 @@ llvm::Constant *MicrosoftCXXABI::EmitMemberPointer(const APValue &MP,
     // the class in which it was declared, and convert from there if necessary.
     // For indirect field decls, get the outermost anonymous field and use the
     // parent class.
-    Ctx.recordMemberDataPointerEvaluation(MPD);
     CharUnits FieldOffset = Ctx.toCharUnitsFromBits(Ctx.getFieldOffset(MPD));
     const FieldDecl *FD = dyn_cast<FieldDecl>(MPD);
     if (!FD)
@@ -4107,7 +4106,7 @@ void MicrosoftCXXABI::emitCXXStructor(GlobalDecl GD) {
     return;
 
   if (GD.getDtorType() == Dtor_VectorDeleting &&
-      !CGM.classNeedsVectorDestructor(dtor->getParent())) {
+      !getContext().classNeedsVectorDeletingDestructor(dtor->getParent())) {
     // Create GlobalDecl object with the correct type for the scalar
     // deleting destructor.
     GlobalDecl ScalarDtorGD(dtor, Dtor_Deleting);

@@ -25,7 +25,7 @@ class RegionsFromMetadata final : public FunctionPass {
   RegionPassManager RPM;
 
 public:
-  RegionsFromMetadata(StringRef Pipeline, StringRef AuxArg);
+  RegionsFromMetadata(StringRef Pipeline);
   bool runOnFunction(Function &F, const Analyses &A) final;
   void printPipeline(raw_ostream &OS) const final {
     OS << getName() << "\n";

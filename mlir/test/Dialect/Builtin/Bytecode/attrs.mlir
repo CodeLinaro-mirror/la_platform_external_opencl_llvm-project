@@ -25,14 +25,14 @@ module @TestDenseArray attributes {
 } {}
 
 //===----------------------------------------------------------------------===//
-// DenseTypedElementsAttr
+// DenseIntOfFPElementsAttr
 //===----------------------------------------------------------------------===//
 
-// CHECK-LABEL: @TestDenseTypedElements
+// CHECK-LABEL: @TestDenseIntOrFPElements
 // CHECK: bytecode.test1 = dense<true> : tensor<256xi1>
 // CHECK: bytecode.test2 = dense<[10, 32, -1]> : tensor<3xi8>
 // CHECK: bytecode.test3 = dense<[1.{{.*}}e+01, 3.2{{.*}}e+01, 1.809{{.*}}e+03]> : tensor<3xf64>
-module @TestDenseTypedElements attributes {
+module @TestDenseIntOrFPElements attributes {
   bytecode.test1 = dense<true> : tensor<256xi1>,
   bytecode.test2 = dense<[10, 32, 255]> : tensor<3xi8>,
   bytecode.test3 = dense<[10.0, 32.0, 1809.0]> : tensor<3xf64>

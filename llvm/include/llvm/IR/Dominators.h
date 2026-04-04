@@ -111,7 +111,12 @@ public:
     return Start;
   }
 
-  const BasicBlock *getEnd() const { return End; }
+  const BasicBlock *getEnd() const {
+    return End;
+  }
+
+  /// Check if this is the only edge between Start and End.
+  LLVM_ABI bool isSingleEdge() const;
 };
 
 template <> struct DenseMapInfo<BasicBlockEdge> {

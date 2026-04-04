@@ -24,7 +24,6 @@ add_extra_unittest(ClangTidyTests
   DeclRefExprUtilsTest.cpp
   IncludeCleanerTest.cpp
   IncludeInserterTest.cpp
-  LexerUtilsTest.cpp
   GlobListTest.cpp
   GoogleModuleTest.cpp
   LLVMModuleTest.cpp

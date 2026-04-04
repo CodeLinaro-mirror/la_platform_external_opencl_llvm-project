@@ -93,8 +93,7 @@ struct RISCVOutgoingValueHandler : public CallLowering::OutgoingValueHandler {
   }
 
   void assignValueToReg(Register ValVReg, Register PhysReg,
-                        const CCValAssign &VA,
-                        ISD::ArgFlagsTy Flags = {}) override {
+                        const CCValAssign &VA) override {
     Register ExtReg = extendRegister(ValVReg, VA);
     MIRBuilder.buildCopy(PhysReg, ExtReg);
     MIB.addUse(PhysReg, RegState::Implicit);
@@ -115,7 +114,7 @@ struct RISCVOutgoingValueHandler : public CallLowering::OutgoingValueHandler {
       };
 
       if (Thunk) {
-        *Thunk = std::move(assignFunc);
+        *Thunk = assignFunc;
         return 1;
       }
 
@@ -156,7 +155,7 @@ struct RISCVOutgoingValueHandler : public CallLowering::OutgoingValueHandler {
     };
 
     if (Thunk) {
-      *Thunk = std::move(assignFunc);
+      *Thunk = assignFunc;
       return 2;
     }
 
@@ -232,8 +231,7 @@ struct RISCVIncomingValueHandler : public CallLowering::IncomingValueHandler {
   }
 
   void assignValueToReg(Register ValVReg, Register PhysReg,
-                        const CCValAssign &VA,
-                        ISD::ArgFlagsTy Flags = {}) override {
+                        const CCValAssign &VA) override {
     markPhysRegUsed(PhysReg);
     IncomingValueHandler::assignValueToReg(ValVReg, PhysReg, VA);
   }

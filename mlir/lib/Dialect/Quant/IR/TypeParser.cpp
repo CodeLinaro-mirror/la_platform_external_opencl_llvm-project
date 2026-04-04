@@ -10,17 +10,15 @@
 #include "mlir/Dialect/Quant/IR/QuantTypes.h"
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/DialectImplementation.h"
-#include "mlir/IR/QuantStorageTypeInterface.h"
 #include "mlir/IR/Types.h"
 #include "llvm/ADT/APFloat.h"
-#include "llvm/ADT/SmallVectorExtras.h"
 
 using namespace mlir;
 using namespace quant;
 
-static Type parseStorageType(DialectAsmParser &parser, bool &isSigned) {
+static IntegerType parseStorageType(DialectAsmParser &parser, bool &isSigned) {
   auto typeLoc = parser.getCurrentLocation();
-  Type type;
+  IntegerType type;
 
   // Parse storage type (alpha_ident, integer_literal).
   StringRef identifier;
@@ -29,30 +27,20 @@ static Type parseStorageType(DialectAsmParser &parser, bool &isSigned) {
   if (result.has_value()) {
     if (!succeeded(*result))
       return nullptr;
-
-    if (auto quantStorageTypeInterface =
-            llvm::dyn_cast<QuantStorageTypeInterface>(type)) {
-      // Returns true if the type defaults to signed (e.g., si8, i8 or float
-      // types), false if it defaults to unsigned.
-      isSigned = quantStorageTypeInterface.shouldDefaultToSigned();
-      storageTypeWidth = quantStorageTypeInterface.getStorageWidth();
-    } else {
-      parser.emitError(typeLoc, "illegal storage type prefix");
-      return nullptr;
-    }
+    isSigned = !type.isUnsigned();
+    storageTypeWidth = type.getWidth();
   } else if (succeeded(parser.parseKeyword(&identifier))) {
-    // Otherwise, this must be an unsigned integer (`u` integer-literal)
-    if (identifier.consume_front("u")) {
-      if (identifier.getAsInteger(10, storageTypeWidth)) {
-        parser.emitError(typeLoc, "expected storage type width");
-        return nullptr;
-      }
-      isSigned = false;
-      type = parser.getBuilder().getIntegerType(storageTypeWidth);
-    } else {
+    // Otherwise, this must be an unsigned integer (`u` integer-literal).
+    if (!identifier.consume_front("u")) {
       parser.emitError(typeLoc, "illegal storage type prefix");
       return nullptr;
     }
+    if (identifier.getAsInteger(10, storageTypeWidth)) {
+      parser.emitError(typeLoc, "expected storage type width");
+      return nullptr;
+    }
+    isSigned = false;
+    type = parser.getBuilder().getIntegerType(storageTypeWidth);
   } else {
     return nullptr;
   }
@@ -67,18 +55,17 @@ static Type parseStorageType(DialectAsmParser &parser, bool &isSigned) {
   return type;
 }
 
-static ParseResult parseStorageRange(DialectAsmParser &parser, Type storageType,
-                                     bool isSigned, int64_t &storageTypeMin,
+static ParseResult parseStorageRange(DialectAsmParser &parser,
+                                     IntegerType storageType, bool isSigned,
+                                     int64_t &storageTypeMin,
                                      int64_t &storageTypeMax) {
-  auto quantStorageTypeInterface =
-      llvm::dyn_cast<QuantStorageTypeInterface>(storageType);
-
-  int64_t defaultMin = quantStorageTypeInterface.getDefaultMinimum(isSigned);
-  int64_t defaultMax = quantStorageTypeInterface.getDefaultMaximum(isSigned);
-
+  int64_t defaultIntegerMin = QuantizedType::getDefaultMinimumForInteger(
+      isSigned, storageType.getWidth());
+  int64_t defaultIntegerMax = QuantizedType::getDefaultMaximumForInteger(
+      isSigned, storageType.getWidth());
   if (failed(parser.parseOptionalLess())) {
-    storageTypeMin = defaultMin;
-    storageTypeMax = defaultMax;
+    storageTypeMin = defaultIntegerMin;
+    storageTypeMax = defaultIntegerMax;
     return success();
   }
 
@@ -88,11 +75,11 @@ static ParseResult parseStorageRange(DialectAsmParser &parser, Type storageType,
       parser.getCurrentLocation(&maxLoc) ||
       parser.parseInteger(storageTypeMax) || parser.parseGreater())
     return failure();
-  if (storageTypeMin < defaultMin) {
+  if (storageTypeMin < defaultIntegerMin) {
     return parser.emitError(minLoc, "illegal storage type minimum: ")
            << storageTypeMin;
   }
-  if (storageTypeMax > defaultMax) {
+  if (storageTypeMax > defaultIntegerMax) {
     return parser.emitError(maxLoc, "illegal storage type maximum: ")
            << storageTypeMax;
   }
@@ -126,7 +113,7 @@ static FloatType parseExpressedTypeAndRange(DialectAsmParser &parser,
 ///   storage-type ::= (`i` | `u`) integer-literal
 ///   expressed-type-spec ::= `:` `f` integer-literal
 static Type parseAnyType(DialectAsmParser &parser) {
-  Type storageType;
+  IntegerType storageType;
   FloatType expressedType;
   unsigned typeFlags = 0;
   int64_t storageTypeMin;
@@ -335,7 +322,7 @@ parseQuantParamListUntilRBrace(DialectAsmParser &parser, Type expressedType,
 ///     scale-zero-tensor (`,` scale-zero-tensor)*
 ///   `}`
 static Type parseUniformType(DialectAsmParser &parser) {
-  Type storageType;
+  IntegerType storageType;
   FloatType expressedType;
   unsigned typeFlags = 0;
   int64_t storageTypeMin;
@@ -426,17 +413,17 @@ static Type parseUniformType(DialectAsmParser &parser) {
   }
   if (isSubChannel) {
     SmallVector<APFloat> apFloatScales =
-        llvm::map_to_vector(scales, [&](double scale) -> APFloat {
+        llvm::to_vector(llvm::map_range(scales, [&](double scale) -> APFloat {
           APFloat apFloatScale(scale);
           bool unused;
           apFloatScale.convert(expressedType.getFloatSemantics(),
                                APFloat::rmNearestTiesToEven, &unused);
           return apFloatScale;
-        });
-    SmallVector<APInt> apIntZeroPoints =
-        llvm::map_to_vector(zeroPoints, [&](int64_t zeroPoint) -> APInt {
+        }));
+    SmallVector<APInt> apIntZeroPoints = llvm::to_vector(
+        llvm::map_range(zeroPoints, [&](int64_t zeroPoint) -> APInt {
           return APInt(storageType.getIntOrFloatBitWidth(), zeroPoint);
-        });
+        }));
     auto scalesRef = mlir::DenseElementsAttr::get(
         RankedTensorType::get(dims, expressedType), apFloatScales);
     auto zeroPointsRef = mlir::DenseElementsAttr::get(
@@ -500,10 +487,13 @@ Type QuantDialect::parseType(DialectAsmParser &parser) const {
 
 static void printStorageType(QuantizedType type, DialectAsmPrinter &out) {
   // storage type
-  auto quantStorageTypeInterface =
-      llvm::dyn_cast<QuantStorageTypeInterface>(type.getStorageType());
-
-  out << quantStorageTypeInterface.getStorageTypeName(type.isSigned());
+  unsigned storageWidth = type.getStorageTypeIntegralWidth();
+  bool isSigned = type.isSigned();
+  if (isSigned) {
+    out << "i" << storageWidth;
+  } else {
+    out << "u" << storageWidth;
+  }
 
   // storageTypeMin and storageTypeMax if not default.
   if (type.hasStorageTypeBounds()) {

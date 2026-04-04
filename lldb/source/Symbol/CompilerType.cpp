@@ -20,7 +20,6 @@
 #include "lldb/Utility/Scalar.h"
 #include "lldb/Utility/Stream.h"
 #include "lldb/Utility/StreamString.h"
-#include "lldb/lldb-enumerations.h"
 
 #include <iterator>
 #include <mutex>
@@ -177,13 +176,6 @@ bool CompilerType::IsMemberFunctionPointerType() const {
   return false;
 }
 
-bool CompilerType::IsMemberDataPointerType() const {
-  if (IsValid())
-    if (auto type_system_sp = GetTypeSystem())
-      return type_system_sp->IsMemberDataPointerType(m_type);
-  return false;
-}
-
 bool CompilerType::IsBlockPointerType(
     CompilerType *function_pointer_type_ptr) const {
   if (IsValid())
@@ -248,21 +240,13 @@ bool CompilerType::ShouldTreatScalarValueAsAddress() const {
   return false;
 }
 
-bool CompilerType::IsComplexType() const {
-  return GetTypeClass() & eTypeClassComplexFloat ||
-         GetTypeClass() & eTypeClassComplexInteger;
-}
-
-bool CompilerType::IsFloatingPointType() const {
-  if (IsValid())
+bool CompilerType::IsFloatingPointType(bool &is_complex) const {
+  if (IsValid()) {
     if (auto type_system_sp = GetTypeSystem())
-      return type_system_sp->IsFloatingPointType(m_type);
-
+      return type_system_sp->IsFloatingPointType(m_type, is_complex);
+  }
+  is_complex = false;
   return false;
-}
-
-bool CompilerType::IsRealFloatingPointType() const {
-  return IsFloatingPointType() && !IsComplexType() && !IsVectorType();
 }
 
 bool CompilerType::IsDefined() const {
@@ -318,13 +302,6 @@ bool CompilerType::IsVoidType() const {
   return false;
 }
 
-bool CompilerType::HasPointerAuthQualifier() const {
-  if (IsValid())
-    if (auto type_system_sp = GetTypeSystem())
-      return type_system_sp->HasPointerAuthQualifier(m_type);
-  return false;
-}
-
 bool CompilerType::IsPointerToScalarType() const {
   if (!IsValid())
     return false;
@@ -349,6 +326,11 @@ bool CompilerType::IsBeingDefined() const {
 bool CompilerType::IsInteger() const {
   bool is_signed = false; // May be reset by the call below.
   return IsIntegerType(is_signed);
+}
+
+bool CompilerType::IsFloat() const {
+  bool is_complex = false;
+  return IsFloatingPointType(is_complex);
 }
 
 bool CompilerType::IsEnumerationType() const {

@@ -26,10 +26,8 @@ static void convTypes(bool &hasAnnotation, TypeRange types,
                       SmallVectorImpl<Type> &convTypes,
                       SmallVectorImpl<Type> *extraTypes, bool directOut) {
   for (auto type : types) {
-    // All "dense" data passes through unmodified. Note: getSparseTensorEncoding
-    // also returns non-null for StorageSpecifierType (which is not a
-    // RankedTensorType), so we must check isa<RankedTensorType> as well.
-    if (!getSparseTensorEncoding(type) || !isa<RankedTensorType>(type)) {
+    // All "dense" data passes through unmodified.
+    if (!getSparseTensorEncoding(type)) {
       convTypes.push_back(type);
       continue;
     }
@@ -64,10 +62,8 @@ static void convVals(OpBuilder &builder, Location loc, TypeRange types,
                      bool directOut) {
   unsigned idx = 0;
   for (auto type : types) {
-    // All "dense" data passes through unmodified. Note: getSparseTensorEncoding
-    // also returns non-null for StorageSpecifierType (which is not a
-    // RankedTensorType), so we must check isa<RankedTensorType> as well.
-    if (!getSparseTensorEncoding(type) || !isa<RankedTensorType>(type)) {
+    // All "dense" data passes through unmodified.
+    if (!getSparseTensorEncoding(type)) {
       toVals.push_back(fromVals[idx++]);
       continue;
     }

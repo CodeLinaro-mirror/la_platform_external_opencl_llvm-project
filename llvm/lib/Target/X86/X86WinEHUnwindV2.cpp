@@ -64,31 +64,29 @@ struct FrameInfo {
   SmallVector<EpilogInfo> EpilogInfos;
 };
 
-class X86WinEHUnwindV2Legacy : public MachineFunctionPass {
+class X86WinEHUnwindV2 : public MachineFunctionPass {
 public:
   static char ID;
 
-  X86WinEHUnwindV2Legacy() : MachineFunctionPass(ID) {
-    initializeX86WinEHUnwindV2LegacyPass(*PassRegistry::getPassRegistry());
+  X86WinEHUnwindV2() : MachineFunctionPass(ID) {
+    initializeX86WinEHUnwindV2Pass(*PassRegistry::getPassRegistry());
   }
 
   StringRef getPassName() const override { return "WinEH Unwind V2"; }
 
   bool runOnMachineFunction(MachineFunction &MF) override;
+
+private:
+  /// Rejects the current function due to an internal error within LLVM.
+  static std::nullopt_t rejectCurrentFunctionInternalError(
+      const MachineFunction &MF, WinX64EHUnwindV2Mode Mode, StringRef Reason);
+
+  // Continues running the analysis on the given function or funclet.
+  static std::optional<FrameInfo>
+  runAnalysisOnFuncOrFunclet(MachineFunction &MF,
+                             MachineFunction::iterator &Iter,
+                             WinX64EHUnwindV2Mode Mode);
 };
-
-/// Rejects the current function due to an internal error within LLVM.
-std::nullopt_t rejectCurrentFunctionInternalError(const MachineFunction &MF,
-                                                  WinX64EHUnwindV2Mode Mode,
-                                                  StringRef Reason) {
-  if (Mode == WinX64EHUnwindV2Mode::Required)
-    reportFatalInternalError("Windows x64 Unwind v2 is required, but LLVM has "
-                             "generated incompatible code in function '" +
-                             MF.getName() + "': " + Reason);
-
-  FailsUnwindV2Criteria++;
-  return std::nullopt;
-}
 
 enum class FunctionState {
   InProlog,
@@ -99,14 +97,14 @@ enum class FunctionState {
 
 } // end anonymous namespace
 
-char X86WinEHUnwindV2Legacy::ID = 0;
+char X86WinEHUnwindV2::ID = 0;
 
-INITIALIZE_PASS(X86WinEHUnwindV2Legacy, "x86-wineh-unwindv2",
+INITIALIZE_PASS(X86WinEHUnwindV2, "x86-wineh-unwindv2",
                 "Analyze and emit instructions for Win64 Unwind v2", false,
                 false)
 
-FunctionPass *llvm::createX86WinEHUnwindV2LegacyPass() {
-  return new X86WinEHUnwindV2Legacy();
+FunctionPass *llvm::createX86WinEHUnwindV2Pass() {
+  return new X86WinEHUnwindV2();
 }
 
 DebugLoc findDebugLoc(const MachineBasicBlock &MBB) {
@@ -117,10 +115,10 @@ DebugLoc findDebugLoc(const MachineBasicBlock &MBB) {
   return DebugLoc::getUnknown();
 }
 
-// Continues running the analysis on the given function or funclet.
 std::optional<FrameInfo>
-runAnalysisOnFuncOrFunclet(MachineFunction &MF, MachineFunction::iterator &Iter,
-                           WinX64EHUnwindV2Mode Mode) {
+X86WinEHUnwindV2::runAnalysisOnFuncOrFunclet(MachineFunction &MF,
+                                             MachineFunction::iterator &Iter,
+                                             WinX64EHUnwindV2Mode Mode) {
   const TargetFrameLowering &TFL = *MF.getSubtarget().getFrameLowering();
 
   // Current state of processing the function. We'll assume that all functions
@@ -372,7 +370,7 @@ runAnalysisOnFuncOrFunclet(MachineFunction &MF, MachineFunction::iterator &Iter,
                    EpilogInfos};
 }
 
-bool runX86WinEHUnwindV2(MachineFunction &MF) {
+bool X86WinEHUnwindV2::runOnMachineFunction(MachineFunction &MF) {
   WinX64EHUnwindV2Mode Mode =
       ForceMode.getNumOccurrences()
           ? static_cast<WinX64EHUnwindV2Mode>(ForceMode.getValue())
@@ -435,15 +433,13 @@ bool runX86WinEHUnwindV2(MachineFunction &MF) {
   return true;
 }
 
-PreservedAnalyses
-X86WinEHUnwindV2Pass::run(MachineFunction &MF,
-                          MachineFunctionAnalysisManager &MFAM) {
-  const bool Modified = runX86WinEHUnwindV2(MF);
-  return Modified ? getMachineFunctionPassPreservedAnalyses()
-                        .preserveSet<CFGAnalyses>()
-                  : PreservedAnalyses::all();
-}
+std::nullopt_t X86WinEHUnwindV2::rejectCurrentFunctionInternalError(
+    const MachineFunction &MF, WinX64EHUnwindV2Mode Mode, StringRef Reason) {
+  if (Mode == WinX64EHUnwindV2Mode::Required)
+    reportFatalInternalError("Windows x64 Unwind v2 is required, but LLVM has "
+                             "generated incompatible code in function '" +
+                             MF.getName() + "': " + Reason);
 
-bool X86WinEHUnwindV2Legacy::runOnMachineFunction(MachineFunction &MF) {
-  return runX86WinEHUnwindV2(MF);
+  FailsUnwindV2Criteria++;
+  return std::nullopt;
 }

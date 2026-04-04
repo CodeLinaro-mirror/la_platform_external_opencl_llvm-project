@@ -200,17 +200,9 @@ lldb_private::UUID DynamicLoaderFreeBSDKernel::CheckForKernelImageAtAddress(
   if (header.e_type != llvm::ELF::ET_EXEC)
     return UUID();
 
-  llvm::Expected<ModuleSP> memory_module_sp_or_err =
+  ModuleSP memory_module_sp =
       process->ReadModuleFromMemory(FileSpec("temp_freebsd_kernel"), addr);
-  if (auto err = memory_module_sp_or_err.takeError()) {
-    LLDB_LOG_ERROR(log, std::move(err),
-                   "DynamicLoaderFreeBSDKernel::CheckForKernelImageAtAddress: "
-                   "Failed to read module in memory -- {0}");
-    *read_error = true;
-    return UUID();
-  }
 
-  ModuleSP memory_module_sp = *memory_module_sp_or_err;
   if (!memory_module_sp.get()) {
     *read_error = true;
     return UUID();
@@ -299,15 +291,8 @@ bool DynamicLoaderFreeBSDKernel::KModImageInfo::ReadMemoryModule(
     }
   }
 
-  llvm::Expected<ModuleSP> memory_module_sp_or_err =
+  memory_module_sp =
       process->ReadModuleFromMemory(file_spec, m_load_address, size_to_read);
-  if (auto err = memory_module_sp_or_err.takeError()) {
-    LLDB_LOG_ERROR(log, std::move(err),
-                   "KextImageInfo::ReadMemoryModule: Failed to read module "
-                   "from memory -- {0}");
-    return false;
-  }
-  memory_module_sp = *memory_module_sp_or_err;
 
   if (!memory_module_sp)
     return false;

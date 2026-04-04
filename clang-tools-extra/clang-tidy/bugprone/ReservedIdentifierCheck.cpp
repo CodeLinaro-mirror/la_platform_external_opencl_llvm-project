@@ -37,9 +37,9 @@ static int getMessageSelectIndex(StringRef Tag) {
   return 0;
 }
 
-SmallVector<llvm::Regex>
+llvm::SmallVector<llvm::Regex>
 ReservedIdentifierCheck::parseAllowedIdentifiers() const {
-  SmallVector<llvm::Regex> AllowedIdentifiers;
+  llvm::SmallVector<llvm::Regex> AllowedIdentifiers;
   AllowedIdentifiers.reserve(AllowedIdentifiersRaw.size());
 
   for (const auto &Identifier : AllowedIdentifiersRaw) {

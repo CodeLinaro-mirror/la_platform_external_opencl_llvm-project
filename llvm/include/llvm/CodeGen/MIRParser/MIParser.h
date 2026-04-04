@@ -20,7 +20,6 @@
 #include "llvm/IR/TrackingMDRef.h"
 #include "llvm/Support/Allocator.h"
 #include "llvm/Support/SMLoc.h"
-#include "llvm/Support/UniqueBBID.h"
 #include <map>
 #include <utility>
 
@@ -239,8 +238,6 @@ bool parseVirtualRegisterReference(PerFunctionMIParsingState &PFS,
 bool parseStackObjectReference(PerFunctionMIParsingState &PFS, int &FI,
                                StringRef Src, SMDiagnostic &Error);
 
-bool parsePrefetchTarget(PerFunctionMIParsingState &PFS, CallsiteID &Target,
-                         StringRef Src, SMDiagnostic &Error);
 bool parseMDNode(PerFunctionMIParsingState &PFS, MDNode *&Node, StringRef Src,
                  SMDiagnostic &Error);
 

@@ -125,7 +125,7 @@ inline bool operator==(const ImportKey<T> &lhs, const ImportKey<T> &rhs) {
          lhs.importName == rhs.importName && lhs.type == rhs.type;
 }
 
-} // namespace lld::wasm
+} // namespace wasm::lld
 
 // `ImportKey<T>` can be used as a key in a `DenseMap` if `T` can be used as a
 // key in a `DenseMap`.
@@ -324,7 +324,8 @@ public:
 
 class ElemSection : public SyntheticSection {
 public:
-  ElemSection() : SyntheticSection(llvm::wasm::WASM_SEC_ELEM) {}
+  ElemSection()
+      : SyntheticSection(llvm::wasm::WASM_SEC_ELEM) {}
   bool isNeeded() const override { return indirectFunctions.size() > 0; };
   void writeBody() override;
   void addEntry(FunctionSymbol *sym);

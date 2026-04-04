@@ -316,7 +316,7 @@ static BasicBlock *getCommonExitBlock(const SetVector<BasicBlock *> &Blocks) {
 
 CodeExtractorAnalysisCache::CodeExtractorAnalysisCache(Function &F) {
   for (BasicBlock &BB : F) {
-    for (Instruction &II : BB)
+    for (Instruction &II : BB.instructionsWithoutDebug())
       if (auto *AI = dyn_cast<AllocaInst>(&II))
         Allocas.push_back(AI);
 
@@ -325,7 +325,7 @@ CodeExtractorAnalysisCache::CodeExtractorAnalysisCache(Function &F) {
 }
 
 void CodeExtractorAnalysisCache::findSideEffectInfoForBlock(BasicBlock &BB) {
-  for (Instruction &II : BB) {
+  for (Instruction &II : BB.instructionsWithoutDebug()) {
     unsigned Opcode = II.getOpcode();
     Value *MemAddr = nullptr;
     switch (Opcode) {
@@ -352,7 +352,7 @@ void CodeExtractorAnalysisCache::findSideEffectInfoForBlock(BasicBlock &BB) {
     default: {
       IntrinsicInst *IntrInst = dyn_cast<IntrinsicInst>(&II);
       if (IntrInst) {
-        if (IntrInst->isLifetimeStartOrEnd() || isa<PseudoProbeInst>(IntrInst))
+        if (IntrInst->isLifetimeStartOrEnd())
           break;
         SideEffectingBlocks.insert(&BB);
         return;
@@ -791,7 +791,7 @@ void CodeExtractor::severSplitPHINodesOfExits() {
         for (BasicBlock *PredBB : Preds)
           if (Blocks.count(PredBB))
             PredBB->getTerminator()->replaceUsesOfWith(ExitBB, NewBB);
-        UncondBrInst::Create(ExitBB, NewBB);
+        BranchInst::Create(ExitBB, NewBB);
         Blocks.insert(NewBB);
       }
 
@@ -938,7 +938,6 @@ Function *CodeExtractor::constructFunctionDeclaration(
       case Attribute::AlwaysInline:
       case Attribute::Cold:
       case Attribute::DisableSanitizerInstrumentation:
-      case Attribute::Flatten:
       case Attribute::FnRetThunkExtern:
       case Attribute::Hot:
       case Attribute::HybridPatchable:
@@ -950,7 +949,6 @@ Function *CodeExtractor::constructFunctionDeclaration(
       case Attribute::NoFree:
       case Attribute::NoImplicitFloat:
       case Attribute::NoInline:
-      case Attribute::NoOutline:
       case Attribute::NonLazyBind:
       case Attribute::NoRedZone:
       case Attribute::NoUnwind:
@@ -984,7 +982,6 @@ Function *CodeExtractor::constructFunctionDeclaration(
       case Attribute::MustProgress:
       case Attribute::NoProfile:
       case Attribute::SkipProfile:
-      case Attribute::DenormalFPEnv:
         break;
       // These attributes cannot be applied to functions.
       case Attribute::Alignment:
@@ -1743,7 +1740,7 @@ void CodeExtractor::emitFunctionBody(
   }
 
   // Connect newFunction entry block to new header.
-  UncondBrInst *BranchI = UncondBrInst::Create(header, newFuncRoot);
+  BranchInst *BranchI = BranchInst::Create(header, newFuncRoot);
   applyFirstDebugLoc(oldFunction, Blocks.getArrayRef(), BranchI);
 
   // Store the arguments right after the definition of output value.
@@ -1983,15 +1980,15 @@ CallInst *CodeExtractor::emitReplacerCall(
   case 1:
     // Only a single destination, change the switch into an unconditional
     // branch.
-    UncondBrInst::Create(TheSwitch->getSuccessor(1), TheSwitch->getIterator());
+    BranchInst::Create(TheSwitch->getSuccessor(1), TheSwitch->getIterator());
     TheSwitch->eraseFromParent();
     break;
   case 2:
     // Only two destinations, convert to a condition branch.
     // Remark: This also swaps the target branches:
     // 0 -> false -> getSuccessor(2); 1 -> true -> getSuccessor(1)
-    CondBrInst::Create(call, TheSwitch->getSuccessor(1),
-                       TheSwitch->getSuccessor(2), TheSwitch->getIterator());
+    BranchInst::Create(TheSwitch->getSuccessor(1), TheSwitch->getSuccessor(2),
+                       call, TheSwitch->getIterator());
     TheSwitch->eraseFromParent();
     break;
   default:

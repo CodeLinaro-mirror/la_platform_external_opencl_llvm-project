@@ -250,9 +250,6 @@ def AddDebugInfo : Pass<"add-debug-info", "mlir::ModuleOp"> {
     Option<"isOptimized", "is-optimized",
            "bool", /*default=*/"false",
            "is optimized.">,
-    Option<"debugInfoForProfiling", "debug-info-for-profiling", "bool",
-           /*default=*/"false",
-            "Emit extra debug info to make sample profile more accurate">,
     Option<"inputFilename", "file-name",
            "std::string",
            /*default=*/"std::string{}",
@@ -263,10 +260,7 @@ def AddDebugInfo : Pass<"add-debug-info", "mlir::ModuleOp"> {
            "dwarf version">,
     Option<"splitDwarfFile", "split-dwarf-file",
            "std::string", /*default=*/"std::string{}",
-           "Name of the split dwarf file">,
-    Option<"dwarfDebugFlags", "dwarf-debug-flags",
-           "std::string", /*default=*/"std::string{}",
-           "Command-line flags to append to DWARF producer">
+           "Name of the split dwarf file">
 
   ];
 }
@@ -405,10 +399,10 @@ def VScaleAttr : Pass<"vscale-attr", "mlir::func::FuncOp"> {
      Set an attribute for the vscale range on functions, to allow scalable
      vector operations to be used on processors with variable vector length.
   }];
-  let options = [Option<"vscaleMin", "vscale-min", "unsigned", /*default=*/"1",
-                        "vector scale minimum value. Defaults to \"1\"">,
-                 Option<"vscaleMax", "vscale-max", "unsigned", /*default=*/"0",
-                        "vector scale maximum value. Defaults to \"0\"">,
+  let options = [
+    Option<"vscaleRange", "vscale-range",
+           "std::pair<unsigned, unsigned>", /*default=*/"std::pair<unsigned, unsigned>{}",
+           "vector scale range">,
   ];
 }
 
@@ -432,8 +426,7 @@ def FunctionAttr : Pass<"function-attr", "mlir::func::FuncOp"> {
             clEnumValN(mlir::LLVM::framePointerKind::FramePointerKind::None, "None", ""),
             clEnumValN(mlir::LLVM::framePointerKind::FramePointerKind::NonLeaf, "NonLeaf", ""),
             clEnumValN(mlir::LLVM::framePointerKind::FramePointerKind::All, "All", ""),
-            clEnumValN(mlir::LLVM::framePointerKind::FramePointerKind::Reserved, "Reserved", ""),
-            clEnumValN(mlir::LLVM::framePointerKind::FramePointerKind::NonLeafNoReserve, "NonLeafNoReserve", "")
+            clEnumValN(mlir::LLVM::framePointerKind::FramePointerKind::Reserved, "Reserved", "")
           )}]>,
        Option<"instrumentFunctionEntry", "instrument-function-entry",
               "std::string", /*default=*/"",
@@ -444,9 +437,9 @@ def FunctionAttr : Pass<"function-attr", "mlir::func::FuncOp"> {
               "Sets the name of the profiling function called during function "
               "exit">,
        Option<"noInfsFPMath", "no-infs-fp-math", "bool", /*default=*/"false",
-              "Set the ninf flag on instructions in the module.">,
+              "Set the no-infs-fp-math attribute on functions in the module.">,
        Option<"noNaNsFPMath", "no-nans-fp-math", "bool", /*default=*/"false",
-              "Set the nnan flag on instructions in the module.">,
+              "Set the no-nans-fp-math attribute on functions in the module.">,
        Option<"approxFuncFPMath", "approx-func-fp-math", "bool",
               /*default=*/"false",
               "Set the afn flag on instructions in the module.">,

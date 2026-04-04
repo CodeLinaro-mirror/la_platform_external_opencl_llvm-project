@@ -20,7 +20,7 @@
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/TextDiagnosticPrinter.h"
-#include "clang/UnifiedSymbolResolution/USRGeneration.h"
+#include "clang/Index/USRGeneration.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/Option/ArgList.h"
 #include "llvm/Support/ErrorHandling.h"
@@ -384,40 +384,22 @@ void CrossTranslationUnitContext::emitCrossTUDiagnostics(const IndexError &IE) {
   case index_error_code::missing_index_file:
     Context.getDiagnostics().Report(diag::err_ctu_error_opening)
         << IE.getFileName();
-    return;
+    break;
   case index_error_code::invalid_index_format:
     Context.getDiagnostics().Report(diag::err_extdefmap_parsing)
         << IE.getFileName() << IE.getLineNum();
-    return;
+    break;
   case index_error_code::multiple_definitions:
     Context.getDiagnostics().Report(diag::err_multiple_def_index)
         << IE.getLineNum();
-    return;
+    break;
   case index_error_code::triple_mismatch:
     Context.getDiagnostics().Report(diag::warn_ctu_incompat_triple)
         << IE.getFileName() << IE.getTripleToName() << IE.getTripleFromName();
-    return;
-  case index_error_code::success:
-    llvm_unreachable("There should not be a success error. This case should "
-                     "have been handled by the caller.");
-    return;
-  case index_error_code::unspecified:
-  case index_error_code::missing_definition:
-  case index_error_code::failed_import:
-  case index_error_code::failed_to_get_external_ast:
-  case index_error_code::failed_to_generate_usr:
-  case index_error_code::lang_mismatch:
-  case index_error_code::lang_dialect_mismatch:
-  case index_error_code::load_threshold_reached:
-  case index_error_code::invocation_list_ambiguous:
-  case index_error_code::invocation_list_file_not_found:
-  case index_error_code::invocation_list_empty:
-  case index_error_code::invocation_list_wrong_format:
-  case index_error_code::invocation_list_lookup_unsuccessful:
-    // FIXME: Silently dropping these errors
-    return;
+    break;
+  default:
+    break;
   }
-  llvm_unreachable("Unrecognized index_error_code.");
 }
 
 CrossTranslationUnitContext::ASTUnitStorage::ASTUnitStorage(

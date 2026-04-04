@@ -9,7 +9,6 @@
 
 #ifdef GET_TARGET_LIBRARY_INFO_ENUM
 #undef GET_TARGET_LIBRARY_INFO_ENUM
-
 enum LibFunc : unsigned {
   NotLibFunc = 0,
   LibFunc_msvc_new_int,
@@ -546,12 +545,10 @@ enum LibFunc : unsigned {
   End_LibFunc = NumLibFuncs,
   Begin_LibFunc = LibFunc_msvc_new_int,
 };
-
-#endif // GET_TARGET_LIBRARY_INFO_ENUM
+#endif
 
 #ifdef GET_TARGET_LIBRARY_INFO_STRING_TABLE
 #undef GET_TARGET_LIBRARY_INFO_STRING_TABLE
-
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
@@ -2163,21 +2160,17 @@ const uint8_t TargetLibraryInfoImpl::StandardNamesSizeTable[531] = {
   6,
   5,
 };
-
-#endif // GET_TARGET_LIBRARY_INFO_STRING_TABLE
+#endif
 
 #ifdef GET_TARGET_LIBRARY_INFO_IMPL_DECL
 #undef GET_TARGET_LIBRARY_INFO_IMPL_DECL
-
 LLVM_ABI static const llvm::StringTable StandardNamesStrTable;
 LLVM_ABI static const llvm::StringTable::Offset StandardNamesOffsets[531];
 LLVM_ABI static const uint8_t StandardNamesSizeTable[531];
-
-#endif // GET_TARGET_LIBRARY_INFO_IMPL_DECL
+#endif
 
 #ifdef GET_TARGET_LIBRARY_INFO_SIGNATURE_TABLE
 #undef GET_TARGET_LIBRARY_INFO_SIGNATURE_TABLE
-
 enum FuncArgTypeID : char {
   NoFuncArgType = 0,
   Void,
@@ -2823,6 +2816,5 @@ static const uint16_t SignatureOffset[] = {
   311, // wcslen
   342, // write
 };
-
-#endif // GET_TARGET_LIBRARY_INFO_SIGNATURE_TABLE
+#endif
 

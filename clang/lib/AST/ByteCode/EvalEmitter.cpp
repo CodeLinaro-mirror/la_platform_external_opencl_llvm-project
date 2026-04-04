@@ -11,7 +11,6 @@
 #include "IntegralAP.h"
 #include "Interp.h"
 #include "clang/AST/DeclCXX.h"
-#include "llvm/ADT/ScopeExit.h"
 
 using namespace clang;
 using namespace clang::interp;
@@ -38,7 +37,7 @@ EvaluationResult EvalEmitter::interpretExpr(const Expr *E,
                                             bool DestroyToplevelScope) {
   S.setEvalLocation(E->getExprLoc());
   this->ConvertResultToRValue = ConvertResultToRValue && !isa<ConstantExpr>(E);
-  this->CheckFullyInitialized = isa<ConstantExpr>(E) && !E->isGLValue();
+  this->CheckFullyInitialized = isa<ConstantExpr>(E);
   EvalResult.setSource(E);
 
   if (!this->visitExpr(E, DestroyToplevelScope)) {
@@ -107,7 +106,7 @@ EvalEmitter::LabelTy EvalEmitter::getLabel() { return NextLabel++; }
 Scope::Local EvalEmitter::createLocal(Descriptor *D) {
   // Allocate memory for a local.
   auto Memory = std::make_unique<char[]>(sizeof(Block) + D->getAllocSize());
-  auto *B = new (Memory.get()) Block(Ctx.getEvalID(), D, /*IsStatic=*/false);
+  auto *B = new (Memory.get()) Block(Ctx.getEvalID(), D, /*isStatic=*/false);
   B->invokeCtor();
 
   // Initialize local variable inline descriptor.
@@ -126,29 +125,25 @@ Scope::Local EvalEmitter::createLocal(Descriptor *D) {
   return {Off, D};
 }
 
-bool EvalEmitter::jumpTrue(const LabelTy &Label, SourceInfo SI) {
+bool EvalEmitter::jumpTrue(const LabelTy &Label) {
   if (isActive()) {
-    CurrentSource = SI;
     if (S.Stk.pop<bool>())
       ActiveLabel = Label;
   }
   return true;
 }
 
-bool EvalEmitter::jumpFalse(const LabelTy &Label, SourceInfo SI) {
+bool EvalEmitter::jumpFalse(const LabelTy &Label) {
   if (isActive()) {
-    CurrentSource = SI;
     if (!S.Stk.pop<bool>())
       ActiveLabel = Label;
   }
   return true;
 }
 
-bool EvalEmitter::jump(const LabelTy &Label, SourceInfo SI) {
-  if (isActive()) {
-    CurrentSource = SI;
+bool EvalEmitter::jump(const LabelTy &Label) {
+  if (isActive())
     CurrentLabel = ActiveLabel = Label;
-  }
   return true;
 }
 
@@ -162,10 +157,6 @@ bool EvalEmitter::fallthrough(const LabelTy &Label) {
 bool EvalEmitter::speculate(const CallExpr *E, const LabelTy &EndLabel) {
   if (!isActive())
     return true;
-
-  PushIgnoreDiags(S, OpPC);
-  auto _ = llvm::scope_exit([&]() { PopIgnoreDiags(S, OpPC); });
-
   size_t StackSizeBefore = S.Stk.size();
   const Expr *Arg = E->getArg(0);
   if (!this->visit(Arg)) {
@@ -202,6 +193,12 @@ template <> bool EvalEmitter::emitRet<PT_Ptr>(SourceInfo Info) {
     return true;
 
   const Pointer &Ptr = S.Stk.pop<Pointer>();
+
+  if (Ptr.isFunctionPointer()) {
+    EvalResult.takeValue(Ptr.toAPValue(Ctx.getASTContext()));
+    return true;
+  }
+
   // If we're returning a raw pointer, call our callback.
   if (this->PtrCB)
     return (*this->PtrCB)(Ptr);
@@ -210,12 +207,6 @@ template <> bool EvalEmitter::emitRet<PT_Ptr>(SourceInfo Info) {
     return false;
   if (CheckFullyInitialized && !EvalResult.checkFullyInitialized(S, Ptr))
     return false;
-
-  // Function pointers are always returned as lvalues.
-  if (Ptr.isFunctionPointer()) {
-    EvalResult.takeValue(Ptr.toAPValue(Ctx.getASTContext()));
-    return true;
-  }
 
   // Implicitly convert lvalue to rvalue, if requested.
   if (ConvertResultToRValue) {
@@ -302,7 +293,7 @@ bool EvalEmitter::emitGetLocal(uint32_t I, SourceInfo Info) {
   if (!CheckLocalLoad(S, OpPC, B))
     return false;
 
-  S.Stk.push<T>(B->deref<T>());
+  S.Stk.push<T>(*reinterpret_cast<T *>(B->data()));
   return true;
 }
 
@@ -314,7 +305,7 @@ bool EvalEmitter::emitSetLocal(uint32_t I, SourceInfo Info) {
   using T = typename PrimConv<OpType>::T;
 
   Block *B = getLocal(I);
-  B->deref<T>() = S.Stk.pop<T>();
+  *reinterpret_cast<T *>(B->data()) = S.Stk.pop<T>();
   auto &Desc = B->getBlockDesc<InlineDescriptor>();
   Desc.IsInitialized = true;
 

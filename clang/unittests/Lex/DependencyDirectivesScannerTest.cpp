@@ -7,7 +7,6 @@
 //===----------------------------------------------------------------------===//
 
 #include "clang/Lex/DependencyDirectivesScanner.h"
-#include "clang/Basic/TokenKinds.h"
 #include "llvm/ADT/SmallString.h"
 #include "gtest/gtest.h"
 
@@ -640,7 +639,7 @@ TEST(MinimizeSourceToDependencyDirectivesTest, AtImport) {
   ASSERT_FALSE(minimizeSourceToDependencyDirectives(" @ import  A;\n", Out));
   EXPECT_STREQ("@import A;\n", Out.data());
 
-  ASSERT_FALSE(minimizeSourceToDependencyDirectives("@import A;\n", Out));
+  ASSERT_FALSE(minimizeSourceToDependencyDirectives("@import A\n;", Out));
   EXPECT_STREQ("@import A;\n", Out.data());
 
   ASSERT_FALSE(minimizeSourceToDependencyDirectives("@import A.B;\n", Out));
@@ -1000,22 +999,6 @@ int z = 128'78;
 )";
   ASSERT_FALSE(minimizeSourceToDependencyDirectives(Source, Out));
   EXPECT_STREQ("#include <test.h>\n", Out.data());
-}
-
-TEST(MinimizeSourceToDependencyDirectivesTest, CharacterLiteralInPreprocessor) {
-  SmallVector<char, 128> Out;
-  SmallVector<dependency_directives_scan::Token, 8> Tokens;
-  SmallVector<Directive, 4> Directives;
-
-  StringRef Source = R"(
-    #if 1'2 == 12
-    #endif
-    )";
-  ASSERT_FALSE(
-      minimizeSourceToDependencyDirectives(Source, Out, Tokens, Directives));
-  ASSERT_GE(Tokens.size(), 4u);
-  EXPECT_EQ(Tokens[2].Kind, tok::numeric_constant);
-  EXPECT_EQ(Tokens[3].Kind, tok::equalequal);
 }
 
 TEST(MinimizeSourceToDependencyDirectivesTest, PragmaOnce) {

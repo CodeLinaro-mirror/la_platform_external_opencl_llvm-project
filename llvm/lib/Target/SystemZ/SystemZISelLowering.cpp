@@ -123,7 +123,6 @@ SystemZTargetLowering::SystemZTargetLowering(const TargetMachine &TM,
       addRegisterClass(MVT::v8i16, &SystemZ::VR128BitRegClass);
       addRegisterClass(MVT::v4i32, &SystemZ::VR128BitRegClass);
       addRegisterClass(MVT::v2i64, &SystemZ::VR128BitRegClass);
-      addRegisterClass(MVT::v8f16, &SystemZ::VR128BitRegClass);
       addRegisterClass(MVT::v4f32, &SystemZ::VR128BitRegClass);
       addRegisterClass(MVT::v2f64, &SystemZ::VR128BitRegClass);
     }
@@ -561,7 +560,7 @@ SystemZTargetLowering::SystemZTargetLowering(const TargetMachine &TM,
     setOperationAction(ISD::FP_ROUND, MVT::f16, LibCall);
     setOperationAction(ISD::STRICT_FP_ROUND, MVT::f16, LibCall);
     setOperationAction(ISD::BITCAST, MVT::i16, Custom);
-
+    setOperationAction(ISD::IS_FPCLASS, MVT::f16, Custom);
     for (auto Op : {ISD::FNEG, ISD::FABS, ISD::FCOPYSIGN})
       setOperationAction(Op, MVT::f16, Legal);
   }
@@ -621,16 +620,13 @@ SystemZTargetLowering::SystemZTargetLowering(const TargetMachine &TM,
   // Handle floating-point vector types.
   if (Subtarget.hasVector()) {
     // Scalar-to-vector conversion is just a subreg.
-    setOperationAction(ISD::SCALAR_TO_VECTOR, MVT::v8f16, Legal);
     setOperationAction(ISD::SCALAR_TO_VECTOR, MVT::v4f32, Legal);
     setOperationAction(ISD::SCALAR_TO_VECTOR, MVT::v2f64, Legal);
 
     // Some insertions and extractions can be done directly but others
     // need to go via integers.
-    setOperationAction(ISD::INSERT_VECTOR_ELT, MVT::v8f16, Custom);
     setOperationAction(ISD::INSERT_VECTOR_ELT, MVT::v4f32, Custom);
     setOperationAction(ISD::INSERT_VECTOR_ELT, MVT::v2f64, Custom);
-    setOperationAction(ISD::EXTRACT_VECTOR_ELT, MVT::v8f16, Custom);
     setOperationAction(ISD::EXTRACT_VECTOR_ELT, MVT::v4f32, Custom);
     setOperationAction(ISD::EXTRACT_VECTOR_ELT, MVT::v2f64, Custom);
 
@@ -694,14 +690,30 @@ SystemZTargetLowering::SystemZTargetLowering(const TargetMachine &TM,
     setOperationAction(ISD::FROUND, MVT::v4f32, Legal);
     setOperationAction(ISD::FROUNDEVEN, MVT::v4f32, Legal);
 
-    for (MVT Type : {MVT::f64, MVT::v2f64, MVT::f32, MVT::v4f32, MVT::f128}) {
-      setOperationAction(ISD::FMAXNUM, Type, Legal);
-      setOperationAction(ISD::FMAXIMUM, Type, Legal);
-      setOperationAction(ISD::FMAXIMUMNUM, Type, Legal);
-      setOperationAction(ISD::FMINNUM, Type, Legal);
-      setOperationAction(ISD::FMINIMUM, Type, Legal);
-      setOperationAction(ISD::FMINIMUMNUM, Type, Legal);
-    }
+    setOperationAction(ISD::FMAXNUM, MVT::f64, Legal);
+    setOperationAction(ISD::FMAXIMUM, MVT::f64, Legal);
+    setOperationAction(ISD::FMINNUM, MVT::f64, Legal);
+    setOperationAction(ISD::FMINIMUM, MVT::f64, Legal);
+
+    setOperationAction(ISD::FMAXNUM, MVT::v2f64, Legal);
+    setOperationAction(ISD::FMAXIMUM, MVT::v2f64, Legal);
+    setOperationAction(ISD::FMINNUM, MVT::v2f64, Legal);
+    setOperationAction(ISD::FMINIMUM, MVT::v2f64, Legal);
+
+    setOperationAction(ISD::FMAXNUM, MVT::f32, Legal);
+    setOperationAction(ISD::FMAXIMUM, MVT::f32, Legal);
+    setOperationAction(ISD::FMINNUM, MVT::f32, Legal);
+    setOperationAction(ISD::FMINIMUM, MVT::f32, Legal);
+
+    setOperationAction(ISD::FMAXNUM, MVT::v4f32, Legal);
+    setOperationAction(ISD::FMAXIMUM, MVT::v4f32, Legal);
+    setOperationAction(ISD::FMINNUM, MVT::v4f32, Legal);
+    setOperationAction(ISD::FMINIMUM, MVT::v4f32, Legal);
+
+    setOperationAction(ISD::FMAXNUM, MVT::f128, Legal);
+    setOperationAction(ISD::FMAXIMUM, MVT::f128, Legal);
+    setOperationAction(ISD::FMINNUM, MVT::f128, Legal);
+    setOperationAction(ISD::FMINIMUM, MVT::f128, Legal);
 
     // Handle constrained floating-point operations.
     setOperationAction(ISD::STRICT_FADD, MVT::v4f32, Legal);
@@ -830,19 +842,6 @@ bool SystemZTargetLowering::useSoftFloat() const {
   return Subtarget.hasSoftFloat();
 }
 
-unsigned SystemZTargetLowering::getVectorTypeBreakdownForCallingConv(
-    LLVMContext &Context, CallingConv::ID CC, EVT VT, EVT &IntermediateVT,
-    unsigned &NumIntermediates, MVT &RegisterVT) const {
-  // Pass fp16 vectors in VR(s).
-  if (Subtarget.hasVector() && VT.isVector() && VT.getScalarType() == MVT::f16) {
-    IntermediateVT = RegisterVT = MVT::v8f16;
-    return NumIntermediates =
-               divideCeil(VT.getVectorNumElements(), SystemZ::VectorBytes / 2);
-  }
-  return TargetLowering::getVectorTypeBreakdownForCallingConv(
-      Context, CC, VT, IntermediateVT, NumIntermediates, RegisterVT);
-}
-
 MVT SystemZTargetLowering::getRegisterTypeForCallingConv(LLVMContext &Context,
                                                          CallingConv::ID CC,
                                                          EVT VT) const {
@@ -851,18 +850,7 @@ MVT SystemZTargetLowering::getRegisterTypeForCallingConv(LLVMContext &Context,
   if (VT.isVector() && VT.getSizeInBits() == 128 &&
       VT.getVectorNumElements() == 1)
     return MVT::v16i8;
-  // Pass fp16 vectors in VR(s).
-  if (Subtarget.hasVector() && VT.isVector() && VT.getScalarType() == MVT::f16)
-    return MVT::v8f16;
   return TargetLowering::getRegisterTypeForCallingConv(Context, CC, VT);
-}
-
-unsigned SystemZTargetLowering::getNumRegistersForCallingConv(
-    LLVMContext &Context, CallingConv::ID CC, EVT VT) const {
-  // Pass fp16 vectors in VR(s).
-  if (Subtarget.hasVector() && VT.isVector() && VT.getScalarType() == MVT::f16)
-    return divideCeil(VT.getVectorNumElements(), SystemZ::VectorBytes / 2);
-  return TargetLowering::getNumRegistersForCallingConv(Context, CC, VT);
 }
 
 EVT SystemZTargetLowering::getSetCCResultType(const DataLayout &DL,
@@ -1457,7 +1445,7 @@ bool SystemZTargetLowering::isLegalAddressingMode(const DataLayout &DL,
 bool SystemZTargetLowering::findOptimalMemOpLowering(
     LLVMContext &Context, std::vector<EVT> &MemOps, unsigned Limit,
     const MemOp &Op, unsigned DstAS, unsigned SrcAS,
-    const AttributeList &FuncAttributes, EVT *LargestVT) const {
+    const AttributeList &FuncAttributes) const {
   const int MVCFastLen = 16;
 
   if (Limit != ~unsigned(0)) {
@@ -1470,8 +1458,8 @@ bool SystemZTargetLowering::findOptimalMemOpLowering(
       return false; // Memset zero: Use XC
   }
 
-  return TargetLowering::findOptimalMemOpLowering(
-      Context, MemOps, Limit, Op, DstAS, SrcAS, FuncAttributes, LargestVT);
+  return TargetLowering::findOptimalMemOpLowering(Context, MemOps, Limit, Op,
+                                                  DstAS, SrcAS, FuncAttributes);
 }
 
 EVT SystemZTargetLowering::getOptimalMemOpType(
@@ -2075,7 +2063,6 @@ SDValue SystemZTargetLowering::LowerFormalArguments(
       case MVT::v8i16:
       case MVT::v4i32:
       case MVT::v2i64:
-      case MVT::v8f16:
       case MVT::v4f32:
       case MVT::v2f64:
         RC = &SystemZ::VR128BitRegClass;
@@ -6371,38 +6358,6 @@ bool SystemZTargetLowering::isVectorElementLoad(SDValue Op) const {
   return false;
 }
 
-static SDValue mergeHighParts(SelectionDAG &DAG, const SDLoc &DL,
-                              unsigned MergedBits, EVT VT, SDValue Op0,
-                              SDValue Op1) {
-  MVT IntVecVT = MVT::getVectorVT(MVT::getIntegerVT(MergedBits),
-                                  SystemZ::VectorBits / MergedBits);
-  assert(VT.getSizeInBits() == 128 && IntVecVT.getSizeInBits() == 128 &&
-         "Handling full vectors only.");
-  Op0 = DAG.getNode(ISD::BITCAST, DL, IntVecVT, Op0);
-  Op1 = DAG.getNode(ISD::BITCAST, DL, IntVecVT, Op1);
-  SDValue Op = DAG.getNode(SystemZISD::MERGE_HIGH, DL, IntVecVT, Op0, Op1);
-  return DAG.getNode(ISD::BITCAST, DL, VT, Op);
-}
-
-static SDValue buildFPVecFromScalars4(SelectionDAG &DAG, const SDLoc &DL,
-                                      EVT VT, SmallVectorImpl<SDValue> &Elems,
-                                      unsigned Pos) {
-  SDValue Op01 = buildMergeScalars(DAG, DL, VT, Elems[Pos + 0], Elems[Pos + 1]);
-  SDValue Op23 = buildMergeScalars(DAG, DL, VT, Elems[Pos + 2], Elems[Pos + 3]);
-  // Avoid unnecessary undefs by reusing the other operand.
-  if (Op01.isUndef()) {
-    if (Op23.isUndef())
-      return Op01;
-    Op01 = Op23;
-  } else if (Op23.isUndef())
-    Op23 = Op01;
-  // Merging identical replications is a no-op.
-  if (Op01.getOpcode() == SystemZISD::REPLICATE && Op01 == Op23)
-    return Op01;
-  unsigned MergedBits = VT.getSimpleVT().getScalarSizeInBits() * 2;
-  return mergeHighParts(DAG, DL, MergedBits, VT, Op01, Op23);
-}
-
 // Combine GPR scalar values Elems into a vector of type VT.
 SDValue
 SystemZTargetLowering::buildVector(SelectionDAG &DAG, const SDLoc &DL, EVT VT,
@@ -6461,22 +6416,22 @@ SystemZTargetLowering::buildVector(SelectionDAG &DAG, const SDLoc &DL, EVT VT,
   //      <ABxx>         <CDxx>
   //                V                 VMRHG
   //              <ABCD>
-  if (VT == MVT::v4f32 && !AllLoads)
-    return buildFPVecFromScalars4(DAG, DL, VT, Elems, 0);
-
-  // Same for v8f16.
-  if (VT == MVT::v8f16 && !AllLoads) {
-    SDValue Op0123 = buildFPVecFromScalars4(DAG, DL, VT, Elems, 0);
-    SDValue Op4567 = buildFPVecFromScalars4(DAG, DL, VT, Elems, 4);
+  if (VT == MVT::v4f32 && !AllLoads) {
+    SDValue Op01 = buildMergeScalars(DAG, DL, VT, Elems[0], Elems[1]);
+    SDValue Op23 = buildMergeScalars(DAG, DL, VT, Elems[2], Elems[3]);
     // Avoid unnecessary undefs by reusing the other operand.
-    if (Op0123.isUndef())
-      Op0123 = Op4567;
-    else if (Op4567.isUndef())
-      Op4567 = Op0123;
+    if (Op01.isUndef())
+      Op01 = Op23;
+    else if (Op23.isUndef())
+      Op23 = Op01;
     // Merging identical replications is a no-op.
-    if (Op0123.getOpcode() == SystemZISD::REPLICATE && Op0123 == Op4567)
-      return Op0123;
-    return mergeHighParts(DAG, DL, 64, VT, Op0123, Op4567);
+    if (Op01.getOpcode() == SystemZISD::REPLICATE && Op01 == Op23)
+      return Op01;
+    Op01 = DAG.getNode(ISD::BITCAST, DL, MVT::v2i64, Op01);
+    Op23 = DAG.getNode(ISD::BITCAST, DL, MVT::v2i64, Op23);
+    SDValue Op = DAG.getNode(SystemZISD::MERGE_HIGH,
+                             DL, MVT::v2i64, Op01, Op23);
+    return DAG.getNode(ISD::BITCAST, DL, VT, Op);
   }
 
   // Collect the constant terms.
@@ -6672,13 +6627,9 @@ SDValue SystemZTargetLowering::lowerINSERT_VECTOR_ELT(SDValue Op,
   // Otherwise bitcast to the equivalent integer form and insert via a GPR.
   MVT IntVT = MVT::getIntegerVT(VT.getScalarSizeInBits());
   MVT IntVecVT = MVT::getVectorVT(IntVT, VT.getVectorNumElements());
-  SDValue IntOp1 =
-      VT == MVT::v8f16
-          ? DAG.getZExtOrTrunc(convertFromF16(Op1, DL, DAG), DL, MVT::i32)
-          : DAG.getNode(ISD::BITCAST, DL, IntVT, Op1);
-  SDValue Res =
-      DAG.getNode(ISD::INSERT_VECTOR_ELT, DL, IntVecVT,
-                  DAG.getNode(ISD::BITCAST, DL, IntVecVT, Op0), IntOp1, Op2);
+  SDValue Res = DAG.getNode(ISD::INSERT_VECTOR_ELT, DL, IntVecVT,
+                            DAG.getNode(ISD::BITCAST, DL, IntVecVT, Op0),
+                            DAG.getNode(ISD::BITCAST, DL, IntVT, Op1), Op2);
   return DAG.getNode(ISD::BITCAST, DL, VT, Res);
 }
 
@@ -6703,12 +6654,9 @@ SystemZTargetLowering::lowerEXTRACT_VECTOR_ELT(SDValue Op,
   // Otherwise bitcast to the equivalent integer form and extract via a GPR.
   MVT IntVT = MVT::getIntegerVT(VT.getSizeInBits());
   MVT IntVecVT = MVT::getVectorVT(IntVT, VecVT.getVectorNumElements());
-  MVT ExtrVT = IntVT == MVT::i16 ? MVT::i32 : IntVT;
-  SDValue Extr = DAG.getNode(ISD::EXTRACT_VECTOR_ELT, DL, ExtrVT,
-                             DAG.getNode(ISD::BITCAST, DL, IntVecVT, Op0), Op1);
-  if (VT == MVT::f16)
-    return convertToF16(DAG.getNode(ISD::ANY_EXTEND, DL, MVT::i64, Extr), DAG);
-  return DAG.getNode(ISD::BITCAST, DL, VT, Extr);
+  SDValue Res = DAG.getNode(ISD::EXTRACT_VECTOR_ELT, DL, IntVT,
+                            DAG.getNode(ISD::BITCAST, DL, IntVecVT, Op0), Op1);
+  return DAG.getNode(ISD::BITCAST, DL, VT, Res);
 }
 
 SDValue SystemZTargetLowering::
@@ -7116,6 +7064,8 @@ SDValue SystemZTargetLowering::lowerIS_FPCLASS(SDValue Op,
     TDCMask |= SystemZ::TDCMASK_ZERO_MINUS;
   SDValue TDCMaskV = DAG.getConstant(TDCMask, DL, MVT::i64);
 
+  if (Arg.getSimpleValueType() == MVT::f16)
+    Arg = DAG.getFPExtendOrRound(Arg, SDLoc(Arg), MVT::f32);
   SDValue Intr = DAG.getNode(SystemZISD::TDC, DL, ResultVT, Arg, TDCMaskV);
   return getCCResult(DAG, Intr);
 }
@@ -8690,12 +8640,7 @@ SDValue SystemZTargetLowering::combineSETCC(
   return SDValue();
 }
 
-static std::pair<SDValue, int> findCCUse(const SDValue &Val,
-                                         unsigned Depth = 0) {
-  // Limit depth of potentially exponential walk.
-  if (Depth > 5)
-    return std::make_pair(SDValue(), SystemZ::CCMASK_NONE);
-
+static std::pair<SDValue, int> findCCUse(const SDValue &Val) {
   switch (Val.getOpcode()) {
   default:
     return std::make_pair(SDValue(), SystemZ::CCMASK_NONE);
@@ -8708,7 +8653,7 @@ static std::pair<SDValue, int> findCCUse(const SDValue &Val,
     SDValue Op4CCReg = Val.getOperand(4);
     if (Op4CCReg.getOpcode() == SystemZISD::ICMP ||
         Op4CCReg.getOpcode() == SystemZISD::TM) {
-      auto [OpCC, OpCCValid] = findCCUse(Op4CCReg.getOperand(0), Depth + 1);
+      auto [OpCC, OpCCValid] = findCCUse(Op4CCReg.getOperand(0));
       if (OpCC != SDValue())
         return std::make_pair(OpCC, OpCCValid);
     }
@@ -8725,10 +8670,10 @@ static std::pair<SDValue, int> findCCUse(const SDValue &Val,
   case ISD::SHL:
   case ISD::SRA:
   case ISD::SRL:
-    auto [Op0CC, Op0CCValid] = findCCUse(Val.getOperand(0), Depth + 1);
+    auto [Op0CC, Op0CCValid] = findCCUse(Val.getOperand(0));
     if (Op0CC != SDValue())
       return std::make_pair(Op0CC, Op0CCValid);
-    return findCCUse(Val.getOperand(1), Depth + 1);
+    return findCCUse(Val.getOperand(1));
   }
 }
 

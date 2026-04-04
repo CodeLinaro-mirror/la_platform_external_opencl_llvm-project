@@ -329,8 +329,7 @@ ClangModulesDeclVendorImpl::AddModule(const SourceModule &module,
         return llvm::createStringError("couldn't find modulemap file in %s",
                                        module.search_path.GetCString());
 
-      if (HS.parseAndLoadModuleMapFile(*file, is_system,
-                                       /*ImplicitlyDiscovered=*/false))
+      if (HS.parseAndLoadModuleMapFile(*file, is_system))
         return llvm::createStringError(
             "failed to parse and load modulemap file in %s",
             module.search_path.GetCString());

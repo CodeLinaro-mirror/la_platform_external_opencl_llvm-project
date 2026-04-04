@@ -88,8 +88,8 @@ createIdentityMDPredicate(const Function &F, CloneFunctionChangeType Changes) {
   };
 
   return [=](const Metadata *MD) {
-    // Avoid cloning compile units.
-    if (isa<DICompileUnit>(MD))
+    // Avoid cloning types, compile units, and (other) subprograms.
+    if (isa<DICompileUnit>(MD) || isa<DIType>(MD))
       return true;
 
     if (auto *SP = dyn_cast<DISubprogram>(MD))
@@ -103,29 +103,6 @@ createIdentityMDPredicate(const Function &F, CloneFunctionChangeType Changes) {
     if (auto *DV = dyn_cast<DILocalVariable>(MD))
       if (auto *S = dyn_cast_or_null<DILocalScope>(DV->getScope()))
         return ShouldKeep(S->getSubprogram());
-
-    // Clone types that are local to subprograms being cloned.
-    // Avoid cloning other types.
-    auto *Type = dyn_cast<DIType>(MD);
-    if (!Type)
-      return false;
-
-    // No need to clone types if subprograms are not cloned.
-    if (SPClonedWithinModule == nullptr)
-      return true;
-
-    // Scopeless types may be derived from local types (e.g. pointers to local
-    // types). They may need cloning.
-    if (const DIDerivedType *DTy = dyn_cast_or_null<DIDerivedType>(Type);
-        DTy && !DTy->getScope())
-      return false;
-
-    auto *LScope = dyn_cast_or_null<DILocalScope>(Type->getScope());
-    if (!LScope)
-      return true;
-
-    if (ShouldKeep(LScope->getSubprogram()))
-      return true;
 
     return false;
   };
@@ -644,23 +621,25 @@ void PruningFunctionCloner::CloneBlock(
   // Finally, clone over the terminator.
   const Instruction *OldTI = BB->getTerminator();
   bool TerminatorDone = false;
-  if (const CondBrInst *BI = dyn_cast<CondBrInst>(OldTI)) {
-    // If the condition was a known constant in the callee...
-    ConstantInt *Cond = dyn_cast<ConstantInt>(BI->getCondition());
-    // Or is a known constant in the caller...
-    if (!Cond) {
-      Value *V = VMap.lookup(BI->getCondition());
-      Cond = dyn_cast_or_null<ConstantInt>(V);
-    }
+  if (const BranchInst *BI = dyn_cast<BranchInst>(OldTI)) {
+    if (BI->isConditional()) {
+      // If the condition was a known constant in the callee...
+      ConstantInt *Cond = dyn_cast<ConstantInt>(BI->getCondition());
+      // Or is a known constant in the caller...
+      if (!Cond) {
+        Value *V = VMap.lookup(BI->getCondition());
+        Cond = dyn_cast_or_null<ConstantInt>(V);
+      }
 
-    // Constant fold to uncond branch!
-    if (Cond) {
-      BasicBlock *Dest = BI->getSuccessor(!Cond->getZExtValue());
-      auto *NewBI = UncondBrInst::Create(Dest, NewBB);
-      NewBI->setDebugLoc(BI->getDebugLoc());
-      VMap[OldTI] = NewBI;
-      ToClone.push_back(Dest);
-      TerminatorDone = true;
+      // Constant fold to uncond branch!
+      if (Cond) {
+        BasicBlock *Dest = BI->getSuccessor(!Cond->getZExtValue());
+        auto *NewBI = BranchInst::Create(Dest, NewBB);
+        NewBI->setDebugLoc(BI->getDebugLoc());
+        VMap[OldTI] = NewBI;
+        ToClone.push_back(Dest);
+        TerminatorDone = true;
+      }
     }
   } else if (const SwitchInst *SI = dyn_cast<SwitchInst>(OldTI)) {
     // If switching on a value known constant in the caller.
@@ -672,7 +651,7 @@ void PruningFunctionCloner::CloneBlock(
     if (Cond) { // Constant fold to uncond branch!
       SwitchInst::ConstCaseHandle Case = *SI->findCaseValue(Cond);
       BasicBlock *Dest = const_cast<BasicBlock *>(Case.getCaseSuccessor());
-      auto *NewBI = UncondBrInst::Create(Dest, NewBB);
+      auto *NewBI = BranchInst::Create(Dest, NewBB);
       NewBI->setDebugLoc(SI->getDebugLoc());
       VMap[OldTI] = NewBI;
       ToClone.push_back(Dest);
@@ -957,13 +936,13 @@ void llvm::CloneAndPruneIntoFromInst(Function *NewFunc, const Function *OldFunc,
   // uncond branches, and this code folds them.
   Function::iterator I = Begin;
   while (I != NewFunc->end()) {
-    UncondBrInst *BI = dyn_cast<UncondBrInst>(I->getTerminator());
-    if (!BI) {
+    BranchInst *BI = dyn_cast<BranchInst>(I->getTerminator());
+    if (!BI || BI->isConditional()) {
       ++I;
       continue;
     }
 
-    BasicBlock *Dest = BI->getSuccessor();
+    BasicBlock *Dest = BI->getSuccessor(0);
     if (!Dest->getSinglePredecessor() || Dest->hasAddressTaken()) {
       ++I;
       continue;

@@ -46,25 +46,14 @@ constexpr bool test() {
       assert(std::ranges::equal(v, std::array{1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}));
     }
 
-    { // Ensure no reallocation happens, and that we don't invalidate iterators-
+    { // Ensure no reallocation happens.
       int in[]           = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10};
       std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8};
       v.reserve(v.size() + std::ranges::size(in));
-
-      auto ptr     = v.data();
-      auto old_cap = v.capacity();
+      assert(v.capacity() >= v.size() + std::ranges::size(in));
 
       v.append_range(in);
-      assert(v.capacity() == old_cap);
       assert(std::ranges::equal(v, std::array{1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}));
-
-      // vector is allowed to overallocate. Make sure it doesn't reallocate until the new capacity is reached.
-      while (v.size() < old_cap) {
-        int in2[] = {0};
-        v.append_range(in2);
-        assert(v.capacity() == old_cap);
-      }
-      assert(v.data() == ptr);
     }
   }
 

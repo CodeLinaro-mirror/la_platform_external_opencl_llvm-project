@@ -1,5 +1,4 @@
 add_mlir_dialect_library(MLIROpenMPTransforms
-  MarkDeclareTarget.cpp
   OpenMPOffloadPrivatizationPrepare.cpp
 
   DEPENDS

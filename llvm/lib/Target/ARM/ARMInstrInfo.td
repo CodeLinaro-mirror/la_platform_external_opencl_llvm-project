@@ -1797,7 +1797,6 @@ multiclass AsI1_rbin_irs<bits<4> opcod, string opc,
     let Inst{3-0} = Rm;
     let Inst{15-12} = Rd;
     let Inst{19-16} = Rn;
-    let hasSideEffects = 0;
   }
 
   def rsi : AsI1<opcod, (outs GPR:$Rd),
@@ -2736,7 +2735,6 @@ let isBranch = 1, isTerminator = 1 in {
     bits<24> target;
     let Inst{23-0} = target;
     let DecoderMethod = "DecodeBranchImmInstruction";
-    let hasSideEffects = 0;
   }
 
   let isBarrier = 1 in {
@@ -3966,7 +3964,6 @@ def SBFX  : I<(outs GPRnopc:$Rd),
   let Inst{15-12} = Rd;
   let Inst{11-7}  = lsb;
   let Inst{3-0}   = Rn;
-  let hasSideEffects = 0;
 }
 
 def UBFX  : I<(outs GPRnopc:$Rd),
@@ -3984,7 +3981,6 @@ def UBFX  : I<(outs GPRnopc:$Rd),
   let Inst{15-12} = Rd;
   let Inst{11-7}  = lsb;
   let Inst{3-0}   = Rn;
-  let hasSideEffects = 0;
 }
 
 //===----------------------------------------------------------------------===//

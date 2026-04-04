@@ -46,7 +46,6 @@ class MCDisassembler;
 class MCInstPrinter;
 class MCInstrAnalysis;
 class MCInstrInfo;
-class MCLFIRewriter;
 class MCObjectWriter;
 class MCRegisterInfo;
 class MCRelocationInfo;
@@ -238,11 +237,6 @@ public:
       mca::InstrumentManager *(*)(const MCSubtargetInfo &STI,
                                   const MCInstrInfo &MCII);
 
-  using MCLFIRewriterCtorTy =
-      MCLFIRewriter *(*)(MCStreamer & S,
-                         std::unique_ptr<MCRegisterInfo> &&RegInfo,
-                         std::unique_ptr<MCInstrInfo> &&InstInfo);
-
 private:
   /// Next - The next registered target in the linked list, maintained by the
   /// TargetRegistry.
@@ -357,10 +351,6 @@ private:
   /// InstrumentManager, if registered (default = nullptr).
   InstrumentManagerCtorTy InstrumentManagerCtorFn = nullptr;
 
-  // MCLFIRewriterCtorFn - Construction function for this target's
-  // MCLFIRewriter, if registered (default = nullptr).
-  MCLFIRewriterCtorTy MCLFIRewriterCtorFn = nullptr;
-
 public:
   Target() = default;
 
@@ -398,6 +388,15 @@ public:
   /// @}
   /// @name Feature Constructors
   /// @{
+
+  // TODO(boomanaiden154): Remove this function after LLVM 22 branches.
+  [[deprecated("Use overload accepting Triple instead")]]
+  MCAsmInfo *createMCAsmInfo(const MCRegisterInfo &MRI, StringRef TheTriple,
+                             const MCTargetOptions &Options) const {
+    if (!MCAsmInfoCtorFn)
+      return nullptr;
+    return MCAsmInfoCtorFn(MRI, Triple(TheTriple), Options);
+  }
 
   /// Create a MCAsmInfo implementation for the specified
   /// target triple.
@@ -442,11 +441,28 @@ public:
     return MCInstrAnalysisCtorFn(Info);
   }
 
+  // TODO(boomanaiden154): Remove this function after LLVM 22 branches.
+  [[deprecated("Use overload accepting Triple instead")]]
+  MCRegisterInfo *createMCRegInfo(StringRef TT) const {
+    if (!MCRegInfoCtorFn)
+      return nullptr;
+    return MCRegInfoCtorFn(Triple(TT));
+  }
+
   /// Create a MCRegisterInfo implementation.
   MCRegisterInfo *createMCRegInfo(const Triple &TT) const {
     if (!MCRegInfoCtorFn)
       return nullptr;
     return MCRegInfoCtorFn(TT);
+  }
+
+  // TODO(boomanaiden154): Remove this function after LLVM 22 branches.
+  [[deprecated("Use overload accepting Triple instead")]]
+  MCSubtargetInfo *createMCSubtargetInfo(StringRef TheTriple, StringRef CPU,
+                                         StringRef Features) const {
+    if (!MCSubtargetInfoCtorFn)
+      return nullptr;
+    return MCSubtargetInfoCtorFn(Triple(TheTriple), CPU, Features);
   }
 
   /// createMCSubtargetInfo - Create a MCSubtargetInfo implementation.
@@ -576,11 +592,10 @@ public:
     return nullptr;
   }
 
-  void createMCLFIRewriter(MCStreamer &S,
-                           std::unique_ptr<MCRegisterInfo> &&RegInfo,
-                           std::unique_ptr<MCInstrInfo> &&InstInfo) const {
-    if (MCLFIRewriterCtorFn)
-      MCLFIRewriterCtorFn(S, std::move(RegInfo), std::move(InstInfo));
+  // TODO(boomanaiden154): Remove this function after LLVM 22 branches.
+  [[deprecated("Use overload accepting Triple instead")]]
+  MCRelocationInfo *createMCRelocationInfo(StringRef TT, MCContext &Ctx) const {
+    return createMCRelocationInfo(Triple(TT), Ctx);
   }
 
   /// createMCRelocationInfo - Create a target specific MCRelocationInfo.
@@ -593,6 +608,17 @@ public:
                                     ? MCRelocationInfoCtorFn
                                     : llvm::createMCRelocationInfo;
     return Fn(TT, Ctx);
+  }
+
+  // TODO(boomanaiden154): Remove this function after LLVM 22 branches.
+  [[deprecated("Use overload accepting Triple instead")]]
+  MCSymbolizer *
+  createMCSymbolizer(StringRef TT, LLVMOpInfoCallback GetOpInfo,
+                     LLVMSymbolLookupCallback SymbolLookUp, void *DisInfo,
+                     MCContext *Ctx,
+                     std::unique_ptr<MCRelocationInfo> &&RelInfo) const {
+    return createMCSymbolizer(Triple(TT), GetOpInfo, SymbolLookUp, DisInfo, Ctx,
+                              std::move(RelInfo));
   }
 
   /// createMCSymbolizer - Create a target specific MCSymbolizer.
@@ -1036,10 +1062,6 @@ struct TargetRegistry {
   static void RegisterInstrumentManager(Target &T,
                                         Target::InstrumentManagerCtorTy Fn) {
     T.InstrumentManagerCtorFn = Fn;
-  }
-
-  static void RegisterMCLFIRewriter(Target &T, Target::MCLFIRewriterCtorTy Fn) {
-    T.MCLFIRewriterCtorFn = Fn;
   }
 
   /// @}

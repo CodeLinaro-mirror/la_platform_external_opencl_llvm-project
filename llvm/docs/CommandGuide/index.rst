@@ -17,7 +17,6 @@ Basic Commands
    dsymutil
    llc
    lli
-   llubi
    llvm-as
    llvm-cgdata
    llvm-config
@@ -69,9 +68,9 @@ Debugging Tools
 .. toctree::
    :maxdepth: 1
 
+   bugpoint
    llvm-extract
    llvm-bcanalyzer
-   llvm-reduce
 
 Developer Tools
 ~~~~~~~~~~~~~~~

@@ -8,7 +8,6 @@
 
 #include "DebugTranslation.h"
 #include "mlir/Dialect/LLVMIR/LLVMDialect.h"
-#include "llvm/ADT/SmallVectorExtras.h"
 #include "llvm/ADT/TypeSwitch.h"
 #include "llvm/IR/Metadata.h"
 #include "llvm/IR/Module.h"
@@ -99,8 +98,8 @@ llvm::MDTuple *
 DebugTranslation::getMDTupleOrNull(ArrayRef<DINodeAttr> elements) {
   if (elements.empty())
     return nullptr;
-  SmallVector<llvm::Metadata *> llvmElements =
-      llvm::map_to_vector(elements, [&](DINodeAttr attr) -> llvm::Metadata * {
+  SmallVector<llvm::Metadata *> llvmElements = llvm::to_vector(
+      llvm::map_range(elements, [&](DINodeAttr attr) -> llvm::Metadata * {
         if (DIAnnotationAttr annAttr = dyn_cast<DIAnnotationAttr>(attr)) {
           llvm::Metadata *ops[2] = {
               llvm::MDString::get(llvmCtx, annAttr.getName()),
@@ -108,7 +107,7 @@ DebugTranslation::getMDTupleOrNull(ArrayRef<DINodeAttr> elements) {
           return llvm::MDNode::get(llvmCtx, ops);
         }
         return translate(attr);
-      });
+      }));
   return llvm::MDNode::get(llvmCtx, llvmElements);
 }
 
@@ -130,7 +129,7 @@ llvm::DICompileUnit *DebugTranslation::translateImpl(DICompileUnitAttr attr) {
                                    : "",
       static_cast<llvm::DICompileUnit::DebugEmissionKind>(
           attr.getEmissionKind()),
-      0, true, attr.getIsDebugInfoForProfiling(),
+      0, true, false,
       static_cast<llvm::DICompileUnit::DebugNameTableKind>(
           attr.getNameTableKind()));
 }
@@ -200,12 +199,11 @@ DebugTranslation::translateImpl(DICompositeTypeAttr attr) {
 llvm::DIDerivedType *DebugTranslation::translateImpl(DIDerivedTypeAttr attr) {
   return llvm::DIDerivedType::get(
       llvmCtx, attr.getTag(), getMDStringOrNull(attr.getName()),
-      translate(attr.getFile()), attr.getLine(), translate(attr.getScope()),
-      translate(attr.getBaseType()), attr.getSizeInBits(),
+      /*File=*/nullptr, /*Line=*/0,
+      /*Scope=*/nullptr, translate(attr.getBaseType()), attr.getSizeInBits(),
       attr.getAlignInBits(), attr.getOffsetInBits(),
       attr.getDwarfAddressSpace(), /*PtrAuthData=*/std::nullopt,
-      /*Flags=*/static_cast<llvm::DINode::DIFlags>(attr.getFlags()),
-      translate(attr.getExtraData()));
+      /*Flags=*/llvm::DINode::FlagZero, translate(attr.getExtraData()));
 }
 
 llvm::DIStringType *DebugTranslation::translateImpl(DIStringTypeAttr attr) {
@@ -285,7 +283,7 @@ DebugTranslation::translateRecursive(DIRecursiveTypeAttrInterface attr) {
 
   llvm::DINode *result =
       TypeSwitch<DIRecursiveTypeAttrInterface, llvm::DINode *>(attr)
-          .Case([&](DICompositeTypeAttr attr) {
+          .Case<DICompositeTypeAttr>([&](auto attr) {
             auto temporary = translateTemporaryImpl(attr);
             setRecursivePlaceholder(temporary.get());
             // Must call `translateImpl` directly instead of `translate` to
@@ -294,7 +292,7 @@ DebugTranslation::translateRecursive(DIRecursiveTypeAttrInterface attr) {
             temporary->replaceAllUsesWith(concrete);
             return concrete;
           })
-          .Case([&](DISubprogramAttr attr) {
+          .Case<DISubprogramAttr>([&](auto attr) {
             auto temporary = translateTemporaryImpl(attr);
             setRecursivePlaceholder(temporary.get());
             // Must call `translateImpl` directly instead of `translate` to

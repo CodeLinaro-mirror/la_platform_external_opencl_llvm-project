@@ -16,7 +16,11 @@ namespace llvm {
 class TargetMachine;
 
 class ExpandMemCmpPass : public PassInfoMixin<ExpandMemCmpPass> {
+  const TargetMachine *TM;
+
 public:
+  explicit ExpandMemCmpPass(const TargetMachine &TM_) : TM(&TM_) {}
+
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM);
 };
 

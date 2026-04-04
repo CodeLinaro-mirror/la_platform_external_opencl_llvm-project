@@ -42,7 +42,7 @@ struct PrebuiltModuleDep {
 
   explicit PrebuiltModuleDep(const Module *M)
       : ModuleName(M->getTopLevelModuleName()),
-        PCMFile(M->getASTFileName()->str()),
+        PCMFile(M->getASTFile()->getName()),
         ModuleMapFile(M->PresumedModuleMapFile) {}
 };
 
@@ -163,9 +163,6 @@ struct ModuleDeps {
   /// for computing this value.
   bool IsInStableDirectories;
 
-  /// Whether current working directory is ignored.
-  bool IgnoreCWD;
-
   /// The path to the modulemap file which defines this module.
   ///
   /// This can be used to explicitly build this module. This file will
@@ -203,8 +200,7 @@ private:
   friend class ModuleDepCollector;
   friend class ModuleDepCollectorPP;
 
-  /// The absolute directory path that is the base for relative paths
-  /// in \c FileDeps.
+  /// The base directory for relative paths in \c FileDeps.
   std::string FileDepsBaseDir;
 
   /// A collection of paths to files that this module directly depends on, not
@@ -385,7 +381,7 @@ private:
 
   /// Compute the context hash for \p Deps, and create the mapping
   /// \c ModuleDepsByID[Deps.ID] = &Deps.
-  void associateWithContextHash(const CowCompilerInvocation &CI,
+  void associateWithContextHash(const CowCompilerInvocation &CI, bool IgnoreCWD,
                                 ModuleDeps &Deps);
 };
 

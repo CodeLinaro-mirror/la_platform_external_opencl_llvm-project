@@ -53,11 +53,12 @@ static void test_interface(bool end_with_send) {
     port.recv([&](LIBC_NAMESPACE::rpc::Buffer *buffer, uint32_t) {
       cnt = buffer->data[0];
     });
+  port.close();
 
   ASSERT_TRUE(cnt == 9 && "Invalid number of increments");
 }
 
-TEST_MAIN(int, char **, char **) {
+TEST_MAIN(int argc, char **argv, char **envp) {
   test_interface(true);
   test_interface(false);
 

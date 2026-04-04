@@ -32,7 +32,6 @@ add_entrypoint_object(
   HDRS
     ../chown.h
   DEPENDS
-    libc.hdr.fcntl_macros
     libc.hdr.types.uid_t
     libc.hdr.types.gid_t
     libc.include.sys_syscall
@@ -48,7 +47,8 @@ add_entrypoint_object(
     ../close.h
   DEPENDS
     libc.include.unistd
-    libc.src.__support.OSUtil.linux.syscall_wrappers.close
+    libc.include.sys_syscall
+    libc.src.__support.OSUtil.osutil
     libc.src.errno.errno
 )
 
@@ -502,7 +502,8 @@ add_entrypoint_object(
     libc.hdr.types.ssize_t
     libc.hdr.fcntl_macros
     libc.include.unistd
-    libc.src.__support.OSUtil.linux.syscall_wrappers.read
+    libc.include.sys_syscall
+    libc.src.__support.OSUtil.osutil
     libc.src.__support.macros.sanitizer
     libc.src.errno.errno
 )
@@ -673,7 +674,8 @@ add_entrypoint_object(
     libc.hdr.types.ssize_t
     libc.hdr.fcntl_macros
     libc.include.unistd
-    libc.src.__support.OSUtil.linux.syscall_wrappers.write
+    libc.include.sys_syscall
+    libc.src.__support.OSUtil.osutil
     libc.src.errno.errno
 )
 

@@ -782,11 +782,7 @@ void ShrinkWrapImpl::updateSaveRestorePoints(MachineBasicBlock &MBB,
       if (MLI->getLoopDepth(Save) > MLI->getLoopDepth(Restore)) {
         // Push Save outside of this loop if immediate dominator is different
         // from save block. If immediate dominator is not different, bail out.
-        SmallVector<MachineBasicBlock *> Preds;
-        for (auto *PBB : Save->predecessors())
-          if (MDT->isReachableFromEntry(PBB))
-            Preds.push_back(PBB);
-        Save = FindIDom<>(*Save, Preds, *MDT);
+        Save = FindIDom<>(*Save, Save->predecessors(), *MDT);
         if (!Save)
           break;
       } else {

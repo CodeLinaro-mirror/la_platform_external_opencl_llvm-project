@@ -18,7 +18,6 @@
 #define LLVM_ADT_STLFORWARDCOMPAT_H
 
 #include "llvm/Support/Compiler.h"
-#include <functional>
 #include <optional>
 #include <tuple>
 #include <type_traits>
@@ -159,23 +158,6 @@ invoke(FnT &&Fn, ArgsT &&...Args) { // NOLINT(readability-identifier-naming)
                     std::forward_as_tuple(std::forward<ArgsT>(Args)...));
 }
 
-/// Check if elements in range \p First to \p Last are sorted with respect to a
-/// comparator \p C. constexpr allows use in static_assert
-/// TODO: Use std::is_sorted once upgraded to C++20 since that becomes constexpr
-template <typename ForwardIterator, typename Cmp = std::less<>>
-constexpr bool is_sorted_constexpr(ForwardIterator First, ForwardIterator Last,
-                                   Cmp C = Cmp{}) {
-  if (First == Last)
-    return true;
-  ForwardIterator Prev = First;
-  for (ForwardIterator I = std::next(First); I != Last; ++I) {
-    if (C(*I, *Prev))
-      return false;
-    Prev = I;
-  }
-  return true;
-}
-
 //===----------------------------------------------------------------------===//
 //     Features from C++23
 //===----------------------------------------------------------------------===//
@@ -184,10 +166,10 @@ constexpr bool is_sorted_constexpr(ForwardIterator First, ForwardIterator Last,
 // C++23.
 template <typename Optional, typename Function,
           typename Value = typename llvm::remove_cvref_t<Optional>::value_type>
-constexpr std::optional<remove_cvref_t<std::invoke_result_t<Function, Value>>>
+std::optional<std::invoke_result_t<Function, Value>>
 transformOptional(Optional &&O, Function &&F) {
   if (O) {
-    return llvm::invoke(std::forward<Function>(F), *std::forward<Optional>(O));
+    return F(*std::forward<Optional>(O));
   }
   return std::nullopt;
 }

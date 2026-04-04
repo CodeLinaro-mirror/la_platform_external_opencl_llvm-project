@@ -16,6 +16,7 @@
 #include "FixedPoint.h"
 #include "Floating.h"
 #include "Function.h"
+#include "FunctionPointer.h"
 #include "Integral.h"
 #include "IntegralAP.h"
 #include "InterpFrame.h"

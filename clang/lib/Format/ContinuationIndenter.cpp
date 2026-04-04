@@ -144,48 +144,14 @@ static bool startsNextOperand(const FormatToken &Current) {
   return isAlignableBinaryOperator(Previous) && !Current.isTrailingComment();
 }
 
-// Returns the number of operands in the chain containing \c Op.
-// For example, `a && b && c` has 3 operands (and 2 operators).
-static unsigned getChainLength(const FormatToken &Op) {
-  const FormatToken *Last = &Op;
-  while (Last->NextOperator)
-    Last = Last->NextOperator;
-  return Last->OperatorIndex + 2;
-}
-
 // Returns \c true if \c Current is a binary operation that must break.
 static bool mustBreakBinaryOperation(const FormatToken &Current,
                                      const FormatStyle &Style) {
-  if (!Current.CanBreakBefore)
-    return false;
-
-  // Determine the operator token: when breaking after the operator,
-  // it is Current.Previous; when breaking before, it is Current itself.
-  bool BreakBefore = Style.BreakBeforeBinaryOperators != FormatStyle::BOS_None;
-  const FormatToken *OpToken = BreakBefore ? &Current : Current.Previous;
-
-  if (!OpToken)
-    return false;
-
-  // Check that this is an alignable binary operator.
-  if (BreakBefore) {
-    if (!isAlignableBinaryOperator(Current))
-      return false;
-  } else if (!startsNextOperand(Current)) {
-    return false;
-  }
-
-  // Look up per-operator rule or fall back to Default.
-  const auto OperatorBreakStyle =
-      Style.BreakBinaryOperations.getStyleForOperator(OpToken->Tok.getKind());
-  if (OperatorBreakStyle == FormatStyle::BBO_Never)
-    return false;
-
-  // Check MinChainLength: if the chain is too short, don't force a break.
-  const unsigned MinChain =
-      Style.BreakBinaryOperations.getMinChainLengthForOperator(
-          OpToken->Tok.getKind());
-  return MinChain == 0 || getChainLength(*OpToken) >= MinChain;
+  return Style.BreakBinaryOperations != FormatStyle::BBO_Never &&
+         Current.CanBreakBefore &&
+         (Style.BreakBeforeBinaryOperators == FormatStyle::BOS_None
+              ? startsNextOperand
+              : isAlignableBinaryOperator)(Current);
 }
 
 static bool opensProtoMessageField(const FormatToken &LessTok,
@@ -544,8 +510,7 @@ bool ContinuationIndenter::mustBreak(const LineState &State) {
       Style.BreakConstructorInitializers == FormatStyle::BCIS_AfterColon
           ? Previous
           : Current;
-  if (Style.BreakConstructorInitializers != FormatStyle::BCIS_AfterComma &&
-      BreakConstructorInitializersToken.is(TT_CtorInitializerColon) &&
+  if (BreakConstructorInitializersToken.is(TT_CtorInitializerColon) &&
       (State.Column + State.Line->Last->TotalLength - Previous.TotalLength >
            getColumnLimit(State) ||
        CurrentState.BreakBeforeParameter) &&
@@ -710,8 +675,7 @@ bool ContinuationIndenter::mustBreak(const LineState &State) {
         return false;
       if (Tok->is(TT_TemplateCloser)) {
         Tok = Tok->MatchingParen;
-        if (!Tok)
-          return false;
+        assert(Tok);
       }
       if (Tok->FirstAfterPPLine)
         return false;
@@ -2501,7 +2465,7 @@ unsigned ContinuationIndenter::handleEndOfLine(const FormatToken &Current,
       Strict = StrictPenalty <= Penalty;
       if (Strict) {
         Penalty = StrictPenalty;
-        State = std::move(StrictState);
+        State = StrictState;
       }
     }
     if (!DryRun) {

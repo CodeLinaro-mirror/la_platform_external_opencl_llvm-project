@@ -28,11 +28,11 @@ struct GPUToNVVMPipelineOptions
       llvm::cl::init("nvptx64-nvidia-cuda")};
   PassOptions::Option<std::string> cubinChip{
       *this, "cubin-chip", llvm::cl::desc("Chip to use to serialize to cubin."),
-      llvm::cl::init("sm_75")};
+      llvm::cl::init("sm_50")};
   PassOptions::Option<std::string> cubinFeatures{
       *this, "cubin-features",
       llvm::cl::desc("Features to use to serialize to cubin."),
-      llvm::cl::init("")};
+      llvm::cl::init("+ptx60")};
   PassOptions::Option<std::string> cubinFormat{
       *this, "cubin-format",
       llvm::cl::desc("Compilation format to use to serialize to cubin."),

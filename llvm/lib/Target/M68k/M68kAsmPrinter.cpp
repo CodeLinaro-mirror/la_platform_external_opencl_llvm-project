@@ -55,7 +55,7 @@ void M68kAsmPrinter::printOperand(const MachineInstr *MI, int OpNum,
     break;
   case MachineOperand::MO_ConstantPoolIndex: {
     const DataLayout &DL = getDataLayout();
-    OS << DL.getInternalSymbolPrefix() << "CPI" << getFunctionNumber() << '_'
+    OS << DL.getPrivateGlobalPrefix() << "CPI" << getFunctionNumber() << '_'
        << MO.getIndex();
     break;
   }

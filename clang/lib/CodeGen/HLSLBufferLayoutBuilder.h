@@ -25,10 +25,6 @@ class HLSLBufferLayoutBuilder {
 private:
   CodeGenModule &CGM;
 
-  /// Pads an array of elements to 16-byte cbuffer row boundaries.
-  /// This implements the common pattern of padding all-but-the-last element.
-  llvm::Type *padArrayElements(llvm::Type *EltTy, uint64_t Count);
-
 public:
   HLSLBufferLayoutBuilder(CodeGenModule &CGM) : CGM(CGM) {}
 
@@ -48,9 +44,6 @@ public:
 
   /// Lays out an array type following HLSL buffer rules.
   llvm::Type *layOutArray(const ConstantArrayType *AT);
-
-  /// Lays out a matrix type following HLSL buffer rules.
-  llvm::Type *layOutMatrix(const ConstantMatrixType *MT);
 
   /// Lays out a type following HLSL buffer rules. Arrays and structures will be
   /// padded appropriately and nested objects will be converted as appropriate.

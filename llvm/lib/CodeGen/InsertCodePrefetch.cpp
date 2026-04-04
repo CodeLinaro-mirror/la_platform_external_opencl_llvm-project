@@ -17,7 +17,6 @@
 /// prefetch instruction from any module.
 //===----------------------------------------------------------------------===//
 
-#include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/ADT/StringRef.h"
@@ -37,7 +36,9 @@ class InsertCodePrefetch : public MachineFunctionPass {
 public:
   static char ID;
 
-  InsertCodePrefetch() : MachineFunctionPass(ID) {}
+  InsertCodePrefetch() : MachineFunctionPass(ID) {
+    initializeInsertCodePrefetchPass(*PassRegistry::getPassRegistry());
+  }
 
   StringRef getPassName() const override {
     return "Code Prefetch Inserter Pass";
@@ -80,7 +81,12 @@ bool InsertCodePrefetch::runOnMachineFunction(MachineFunction &MF) {
     llvm::sort(V);
     V.erase(llvm::unique(V), V.end());
   }
-  MF.setPrefetchTargets(PrefetchTargetsByBBID);
+  for (auto &MBB : MF) {
+    auto R = PrefetchTargetsByBBID.find(*MBB.getBBID());
+    if (R == PrefetchTargetsByBBID.end())
+      continue;
+    MBB.setPrefetchTargetCallsiteIndexes(R->second);
+  }
   return false;
 }
 

@@ -20,7 +20,6 @@ static_library("llvm") {
     "PreferRegisterOverUnsignedCheck.cpp",
     "PreferStaticOverAnonymousNamespaceCheck.cpp",
     "TwineLocalCheck.cpp",
-    "TypeSwitchCaseTypesCheck.cpp",
     "UseNewMLIROpBuilderCheck.cpp",
     "UseRangesCheck.cpp",
     "UseVectorUtilsCheck.cpp",

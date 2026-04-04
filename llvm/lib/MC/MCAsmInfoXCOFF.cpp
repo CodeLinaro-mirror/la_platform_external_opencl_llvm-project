@@ -24,7 +24,7 @@ MCAsmInfoXCOFF::MCAsmInfoXCOFF() {
   IsAIX = true;
   IsLittleEndian = false;
 
-  InternalSymbolPrefix = "L..";
+  PrivateGlobalPrefix = "L..";
   PrivateLabelPrefix = "L..";
   SupportsQuotedNames = false;
   if (UseLEB128Directives == cl::BOU_UNSET)

@@ -159,7 +159,7 @@ else()
 endif()
 
 
-if ("AMDGPU" IN_LIST LLVM_TARGETS_TO_BUILD)
+if (MLIR_ENABLE_ROCM_CONVERSIONS)
   set(AMDGPU_LIBS
     AMDGPUAsmParser
     AMDGPUCodeGen
@@ -188,7 +188,7 @@ add_mlir_dialect_library(MLIRROCDLTarget
   MLIRROCDLToLLVMIRTranslation
   )
 
-if("AMDGPU" IN_LIST LLVM_TARGETS_TO_BUILD)
+if(MLIR_ENABLE_ROCM_CONVERSIONS)
   if (DEFINED ROCM_PATH)
     set(DEFAULT_ROCM_PATH "${ROCM_PATH}" CACHE PATH "Fallback path to search for ROCm installs")
   elseif(DEFINED ENV{ROCM_PATH})

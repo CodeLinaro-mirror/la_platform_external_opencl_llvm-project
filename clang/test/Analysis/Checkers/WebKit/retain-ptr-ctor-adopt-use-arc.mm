@@ -69,9 +69,6 @@ void basic_correct_arc() {
   return copy;
 }
 
-- (void)copy:(id)sender {
-}
-
 - (void)doWork {
   _number = [[NSNumber alloc] initWithInt:5];
 }
@@ -101,17 +98,6 @@ void basic_correct_arc() {
 }
 
 @end;
-
-@interface SubObj : SomeObj
-@end
-
-@implementation SubObj
-
-- (void)copy:(id)sender {
-  [super copy:sender]; // no-warning: a void copy does not actually copy anything
-}
-
-@end
 
 RetainPtr<CVPixelBufferRef> cf_out_argument() {
   auto surface = adoptCF(IOSurfaceCreate(nullptr));

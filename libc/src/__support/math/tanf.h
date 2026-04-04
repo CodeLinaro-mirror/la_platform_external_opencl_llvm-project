@@ -6,8 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_LIBC_SRC___SUPPORT_MATH_TANF_H
-#define LLVM_LIBC_SRC___SUPPORT_MATH_TANF_H
+#ifndef LIBC_SRC___SUPPORT_MATH_TANF_H
+#define LIBC_SRC___SUPPORT_MATH_TANF_H
 
 #include "sincosf_utils.h"
 #include "src/__support/FPUtil/FEnvImpl.h"
@@ -49,8 +49,7 @@ LIBC_INLINE_VAR constexpr fputil::ExceptValues<float, N_EXCEPTS> TANF_EXCEPTS{{
 
 } // namespace tanf_internal
 
-LIBC_INLINE float tanf(float x) {
-  using namespace sincosf_utils_internal;
+LIBC_INLINE static float tanf(float x) {
   using namespace tanf_internal;
   using FPBits = typename fputil::FPBits<float>;
   FPBits xbits(x);
@@ -162,4 +161,4 @@ LIBC_INLINE float tanf(float x) {
 
 } // namespace LIBC_NAMESPACE_DECL
 
-#endif // LLVM_LIBC_SRC___SUPPORT_MATH_TANF_H
+#endif // LIBC_SRC___SUPPORT_MATH_TANF_H

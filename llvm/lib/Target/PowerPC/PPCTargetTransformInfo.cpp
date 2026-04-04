@@ -386,9 +386,10 @@ bool PPCTTIImpl::isHardwareLoopProfitable(Loop *L, ScalarEvolution &SE,
     Instruction *TI = BB->getTerminator();
     if (!TI) continue;
 
-    if (CondBrInst *BI = dyn_cast<CondBrInst>(TI)) {
+    if (BranchInst *BI = dyn_cast<BranchInst>(TI)) {
       uint64_t TrueWeight = 0, FalseWeight = 0;
-      if (!extractBranchWeights(*BI, TrueWeight, FalseWeight))
+      if (!BI->isConditional() ||
+          !extractBranchWeights(*BI, TrueWeight, FalseWeight))
         continue;
 
       // If the exit path is more frequent than the loop path,
@@ -684,9 +685,10 @@ InstructionCost PPCTTIImpl::getCmpSelInstrCost(
   return Cost * CostFactor;
 }
 
-InstructionCost PPCTTIImpl::getVectorInstrCost(
-    unsigned Opcode, Type *Val, TTI::TargetCostKind CostKind, unsigned Index,
-    const Value *Op0, const Value *Op1, TTI::VectorInstrContext VIC) const {
+InstructionCost PPCTTIImpl::getVectorInstrCost(unsigned Opcode, Type *Val,
+                                               TTI::TargetCostKind CostKind,
+                                               unsigned Index, const Value *Op0,
+                                               const Value *Op1) const {
   assert(Val->isVectorTy() && "This must be a vector type");
 
   int ISD = TLI->InstructionOpcodeToISD(Opcode);
@@ -697,7 +699,7 @@ InstructionCost PPCTTIImpl::getVectorInstrCost(
     return InstructionCost::getMax();
 
   InstructionCost Cost =
-      BaseT::getVectorInstrCost(Opcode, Val, CostKind, Index, Op0, Op1, VIC);
+      BaseT::getVectorInstrCost(Opcode, Val, CostKind, Index, Op0, Op1);
   Cost *= CostFactor;
 
   if (ST->hasVSX() && Val->getScalarType()->isDoubleTy()) {
@@ -860,9 +862,8 @@ InstructionCost PPCTTIImpl::getMemoryOpCost(unsigned Opcode, Type *Src,
   if (Src->isVectorTy() && Opcode == Instruction::Store)
     for (int I = 0, E = cast<FixedVectorType>(Src)->getNumElements(); I < E;
          ++I)
-      Cost +=
-          getVectorInstrCost(Instruction::ExtractElement, Src, CostKind, I,
-                             nullptr, nullptr, TTI::VectorInstrContext::None);
+      Cost += getVectorInstrCost(Instruction::ExtractElement, Src, CostKind, I,
+                                 nullptr, nullptr);
 
   return Cost;
 }
@@ -956,7 +957,7 @@ bool PPCTTIImpl::areTypesABICompatible(const Function *Caller,
   });
 }
 
-bool PPCTTIImpl::canSaveCmp(Loop *L, CondBrInst **BI, ScalarEvolution *SE,
+bool PPCTTIImpl::canSaveCmp(Loop *L, BranchInst **BI, ScalarEvolution *SE,
                             LoopInfo *LI, DominatorTree *DT,
                             AssumptionCache *AC,
                             TargetLibraryInfo *LibInfo) const {

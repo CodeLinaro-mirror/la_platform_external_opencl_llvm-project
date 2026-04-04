@@ -1,7 +1,9 @@
 message(STATUS "Building offloading runtime library libomptarget.")
 
-if(NOT TARGET "omp")
-  message(FATAL_ERROR "Error: omp target dependency of libomptarget not found. Please ensure 'openmp' is on LLVM_ENABLE_RUNTIMES list.")
+if(LIBOMP_STANDALONE)
+  set(LIBOMP ${LIBOMP_STANDALONE})
+else()
+  set(LIBOMP omp)
 endif()
 
 add_llvm_library(omptarget
@@ -33,7 +35,7 @@ add_llvm_library(omptarget
 
   LINK_LIBS
   PUBLIC
-  omp
+  ${LIBOMP}
 
   NO_INSTALL_RPATH
   BUILDTREE_ONLY

@@ -58,8 +58,9 @@ static cl::opt<unsigned> CallWithManyArgumentsThreshold(
 namespace {
 int64_t getNumBlocksFromCond(const BasicBlock &BB) {
   int64_t Ret = 0;
-  if (const auto *BI = dyn_cast<CondBrInst>(BB.getTerminator())) {
-    Ret += BI->getNumSuccessors();
+  if (const auto *BI = dyn_cast<BranchInst>(BB.getTerminator())) {
+    if (BI->isConditional())
+      Ret += BI->getNumSuccessors();
   } else if (const auto *SI = dyn_cast<SwitchInst>(BB.getTerminator())) {
     Ret += (SI->getNumCases() + (nullptr != SI->getDefaultDest()));
   }
@@ -93,7 +94,7 @@ void FunctionPropertiesInfo::updateForBB(const BasicBlock &BB,
       StoreInstCount += Direction;
     }
   }
-  TotalInstructionCount += Direction * BB.size();
+  TotalInstructionCount += Direction * BB.sizeWithoutDebug();
 
   if (EnableDetailedFunctionProperties) {
     unsigned SuccessorCount = succ_size(&BB);
@@ -132,20 +133,21 @@ void FunctionPropertiesInfo::updateForBB(const BasicBlock &BB,
     ControlFlowEdgeCount += Direction * SuccessorCount;
 
     const Instruction *TI = BB.getTerminator();
-    if (isa<UncondBrInst>(TI)) {
+    const int64_t InstructionSuccessorCount = TI->getNumSuccessors();
+    if (isa<BranchInst>(TI)) {
       BranchInstructionCount += Direction;
-      BranchSuccessorCount += Direction;
-      UnconditionalBranchCount += Direction;
-    } else if (isa<CondBrInst>(TI)) {
-      BranchInstructionCount += Direction;
-      BranchSuccessorCount += Direction * 2;
-      ConditionalBranchCount += Direction;
-    } else if (const auto *SI = dyn_cast<SwitchInst>(TI)) {
+      BranchSuccessorCount += Direction * InstructionSuccessorCount;
+      const auto *BI = dyn_cast<BranchInst>(TI);
+      if (BI->isConditional())
+        ConditionalBranchCount += Direction;
+      else
+        UnconditionalBranchCount += Direction;
+    } else if (isa<SwitchInst>(TI)) {
       SwitchInstructionCount += Direction;
-      SwitchSuccessorCount += Direction * SI->getNumSuccessors();
+      SwitchSuccessorCount += Direction * InstructionSuccessorCount;
     }
 
-    for (const Instruction &I : BB) {
+    for (const Instruction &I : BB.instructionsWithoutDebug()) {
       if (I.isCast())
         CastInstructionCount += Direction;
 

@@ -177,6 +177,18 @@ LogicalResult
 applyPatternsGreedily(Region &region, const FrozenRewritePatternSet &patterns,
                       GreedyRewriteConfig config = GreedyRewriteConfig(),
                       bool *changed = nullptr);
+/// Same as `applyPatternsAndGreedily` above with folding.
+/// FIXME: Remove this once transition to above is completed.
+LLVM_DEPRECATED("Use applyPatternsGreedily() instead", "applyPatternsGreedily")
+inline LogicalResult
+applyPatternsAndFoldGreedily(Region &region,
+                             const FrozenRewritePatternSet &patterns,
+                             GreedyRewriteConfig config = GreedyRewriteConfig(),
+                             bool *changed = nullptr) {
+  config.enableFolding();
+  return applyPatternsGreedily(region, patterns, config, changed);
+}
+
 /// Rewrite ops nested under the given operation, which must be isolated from
 /// above, by repeatedly applying the highest benefit patterns in a greedy
 /// worklist driven manner until a fixpoint is reached.
@@ -217,6 +229,18 @@ applyPatternsGreedily(Operation *op, const FrozenRewritePatternSet &patterns,
     *changed = anyRegionChanged;
   return failure(failed);
 }
+/// Same as `applyPatternsGreedily` above with folding.
+/// FIXME: Remove this once transition to above is complieted.
+LLVM_DEPRECATED("Use applyPatternsGreedily() instead", "applyPatternsGreedily")
+inline LogicalResult
+applyPatternsAndFoldGreedily(Operation *op,
+                             const FrozenRewritePatternSet &patterns,
+                             GreedyRewriteConfig config = GreedyRewriteConfig(),
+                             bool *changed = nullptr) {
+  config.enableFolding();
+  return applyPatternsGreedily(op, patterns, config, changed);
+}
+
 /// Rewrite the specified ops by repeatedly applying the highest benefit
 /// patterns in a greedy worklist driven manner until a fixpoint is reached.
 ///
@@ -250,6 +274,19 @@ applyOpPatternsGreedily(ArrayRef<Operation *> ops,
                         const FrozenRewritePatternSet &patterns,
                         GreedyRewriteConfig config = GreedyRewriteConfig(),
                         bool *changed = nullptr, bool *allErased = nullptr);
+/// Same as `applyOpPatternsGreedily` with folding.
+/// FIXME: Remove this once transition to above is complieted.
+LLVM_DEPRECATED("Use applyOpPatternsGreedily() instead",
+                "applyOpPatternsGreedily")
+inline LogicalResult
+applyOpPatternsAndFold(ArrayRef<Operation *> ops,
+                       const FrozenRewritePatternSet &patterns,
+                       GreedyRewriteConfig config = GreedyRewriteConfig(),
+                       bool *changed = nullptr, bool *allErased = nullptr) {
+  config.enableFolding();
+  return applyOpPatternsGreedily(ops, patterns, config, changed, allErased);
+}
+
 } // namespace mlir
 
 #endif // MLIR_TRANSFORMS_GREEDYPATTERNREWRITEDRIVER_H_

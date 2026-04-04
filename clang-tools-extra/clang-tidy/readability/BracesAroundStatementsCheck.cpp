@@ -147,7 +147,7 @@ BracesAroundStatementsCheck::findRParenLoc(const IfOrWhileStmt *S,
 bool BracesAroundStatementsCheck::checkStmt(
     const MatchFinder::MatchResult &Result, const Stmt *S,
     SourceLocation StartLoc, SourceLocation EndLocHint) {
-  if (const auto *AS = dyn_cast<AttributedStmt>(S))
+  while (const auto *AS = dyn_cast<AttributedStmt>(S))
     S = AS->getSubStmt();
 
   const auto BraceInsertionHints = utils::getBraceInsertionsHints(

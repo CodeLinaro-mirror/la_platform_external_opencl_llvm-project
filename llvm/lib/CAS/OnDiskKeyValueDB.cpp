@@ -20,7 +20,6 @@
 #include "llvm/CAS/OnDiskKeyValueDB.h"
 #include "OnDiskCommon.h"
 #include "llvm/ADT/StringExtras.h"
-#include "llvm/CAS/OnDiskTrieRawHashMap.h"
 #include "llvm/CAS/UnifiedOnDiskCache.h"
 #include "llvm/Support/Alignment.h"
 #include "llvm/Support/Compiler.h"
@@ -100,8 +99,11 @@ OnDiskKeyValueDB::open(StringRef Path, StringRef HashName, unsigned KeySize,
       new OnDiskKeyValueDB(ValueSize, std::move(*ActionCache), Cache));
 }
 
-static Error validateOnDiskKeyValueDB(const OnDiskTrieRawHashMap &Cache,
-                                      size_t ValueSize, OnDiskGraphDB *CAS) {
+Error OnDiskKeyValueDB::validate(CheckValueT CheckValue) const {
+  if (UnifiedCache && UnifiedCache->UpstreamKVDB) {
+    if (auto E = UnifiedCache->UpstreamKVDB->validate(CheckValue))
+      return E;
+  }
   return Cache.validate(
       [&](FileOffset Offset,
           OnDiskTrieRawHashMap::ConstValueProxy Record) -> Error {
@@ -117,26 +119,8 @@ static Error validateOnDiskKeyValueDB(const OnDiskTrieRawHashMap &Cache,
           return formatError("wrong cache value size");
         if (!isAddrAligned(Align(8), Record.Data.data()))
           return formatError("wrong cache value alignment");
-        if (CAS) {
-          auto ID =
-              ondisk::UnifiedOnDiskCache::getObjectIDFromValue(Record.Data);
-          if (Error E = CAS->validateObjectID(ID))
-            return formatError(llvm::toString(std::move(E)));
-        }
+        if (CheckValue)
+          return CheckValue(Offset, Record.Data);
         return Error::success();
       });
-}
-
-Error OnDiskKeyValueDB::validate() const {
-  if (UnifiedCache && UnifiedCache->UpstreamKVDB) {
-    assert(UnifiedCache->UpstreamGraphDB &&
-           "upstream cache and cas must be paired");
-    if (auto E = validateOnDiskKeyValueDB(UnifiedCache->UpstreamKVDB->Cache,
-                                          UnifiedCache->UpstreamKVDB->ValueSize,
-                                          UnifiedCache->UpstreamGraphDB.get()))
-      return E;
-  }
-  return validateOnDiskKeyValueDB(
-      Cache, ValueSize,
-      UnifiedCache ? UnifiedCache->PrimaryGraphDB.get() : nullptr);
 }

@@ -836,7 +836,7 @@ public:
   void visitSelectInst(SelectInst &I);
   void visitMemSetInst(MemSetInst &I);
   void visitMemTransferInst(MemTransferInst &I);
-  void visitCondBrInst(CondBrInst &BR);
+  void visitBranchInst(BranchInst &BR);
   void visitSwitchInst(SwitchInst &SW);
 
 private:
@@ -1790,7 +1790,7 @@ bool DataFlowSanitizer::runImpl(
         Value *PrimitiveShadow = DFSF.collapseToPrimitiveShadow(V, Pos);
         Value *Ne =
             IRB.CreateICmpNE(PrimitiveShadow, DFSF.DFS.ZeroPrimitiveShadow);
-        UncondBrInst *BI = cast<UncondBrInst>(SplitBlockAndInsertIfThen(
+        BranchInst *BI = cast<BranchInst>(SplitBlockAndInsertIfThen(
             Ne, Pos, /*Unreachable=*/false, ColdCallWeights));
         IRBuilder<> ThenIRB(BI);
         ThenIRB.CreateCall(DFSF.DFS.DFSanNonzeroLabelFn, {});
@@ -2363,7 +2363,7 @@ DFSanFunction::loadShadowOrigin(Value *Addr, uint64_t Size, Align InstAlignment,
     if (ClTrackOrigins == 2) {
       IRBuilder<> IRB(Pos->getParent(), Pos);
       auto *ConstantShadow = dyn_cast<Constant>(PrimitiveShadow);
-      if (!ConstantShadow || !ConstantShadow->isNullValue())
+      if (!ConstantShadow || !ConstantShadow->isZeroValue())
         Origin = updateOriginIfTainted(PrimitiveShadow, Origin, IRB);
     }
   }
@@ -2552,7 +2552,7 @@ void DFSanFunction::storeOrigin(BasicBlock::iterator Pos, Value *Addr,
   Value *CollapsedShadow = collapseToPrimitiveShadow(Shadow, Pos);
   IRBuilder<> IRB(Pos->getParent(), Pos);
   if (auto *ConstantShadow = dyn_cast<Constant>(CollapsedShadow)) {
-    if (!ConstantShadow->isNullValue())
+    if (!ConstantShadow->isZeroValue())
       paintOrigin(IRB, updateOrigin(Origin, IRB), StoreOriginAddr, Size,
                   OriginAlignment);
     return;
@@ -2976,7 +2976,10 @@ void DFSanVisitor::visitMemTransferInst(MemTransferInst &I) {
   }
 }
 
-void DFSanVisitor::visitCondBrInst(CondBrInst &BR) {
+void DFSanVisitor::visitBranchInst(BranchInst &BR) {
+  if (!BR.isConditional())
+    return;
+
   DFSF.addConditionalCallbacksIfEnabled(BR, BR.getCondition());
 }
 

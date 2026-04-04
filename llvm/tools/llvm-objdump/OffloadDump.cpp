@@ -36,8 +36,6 @@ static StringRef getImageName(const OffloadBinary &OB) {
     return "fatbinary";
   case IMG_PTX:
     return "ptx";
-  case IMG_SPIRV:
-    return "spir-v";
   default:
     return "<none>";
   }

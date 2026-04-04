@@ -51,9 +51,6 @@
 ; CHECK-NEXT:      Complex Deinterleaving Pass
 ; CHECK-NEXT:      Interleaved Access Pass
 ; CHECK-NEXT:      Type Promotion
-; CHECK-NEXT:      Post-Dominator Tree Construction
-; CHECK-NEXT:      Branch Probability Analysis
-; CHECK-NEXT:      Block Frequency Analysis
 ; CHECK-NEXT:      CodeGen Prepare
 ; CHECK-NEXT:      Dominator Tree Construction
 ; CHECK-NEXT:      Exception handling preparation
@@ -72,7 +69,7 @@
 ; CHECK-NEXT:      Basic Alias Analysis (stateless AA impl)
 ; CHECK-NEXT:      Function Alias Analysis Results
 ; CHECK-NEXT:      ObjC ARC contraction
-; CHECK-NEXT:      Prepare inline asm insts
+; CHECK-NEXT:      Prepare callbr
 ; CHECK-NEXT:      Safe Stack instrumentation pass
 ; CHECK-NEXT:      Insert stack protectors
 ; CHECK-NEXT:      Module Verifier

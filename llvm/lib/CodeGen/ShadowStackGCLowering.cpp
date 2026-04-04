@@ -187,9 +187,14 @@ Constant *ShadowStackGCLoweringImpl::GetFrameMap(Function &F) {
   //        to be a ModulePass (which means it cannot be in the 'llc' pipeline
   //        (which uses a FunctionPassManager (which segfaults (not asserts) if
   //        provided a ModulePass))).
-  return new GlobalVariable(*F.getParent(), FrameMap->getType(), true,
+  Constant *GV = new GlobalVariable(*F.getParent(), FrameMap->getType(), true,
                                     GlobalVariable::InternalLinkage, FrameMap,
                                     "__gc_" + F.getName());
+
+  Constant *GEPIndices[2] = {
+      ConstantInt::get(Type::getInt32Ty(F.getContext()), 0),
+      ConstantInt::get(Type::getInt32Ty(F.getContext()), 0)};
+  return ConstantExpr::getGetElementPtr(FrameMap->getType(), GV, GEPIndices);
 }
 
 Type *ShadowStackGCLoweringImpl::GetConcreteStackEntryType(Function &F) {

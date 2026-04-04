@@ -26,7 +26,6 @@ struct Context {
   static constexpr char TripleName[] = "systemz-unknown";
   Triple TT;
   std::unique_ptr<MCRegisterInfo> MRI;
-  MCTargetOptions MCOptions;
   std::unique_ptr<MCAsmInfo> MAI;
   std::unique_ptr<MCContext> Ctx;
   std::unique_ptr<MCSubtargetInfo> STI;
@@ -44,7 +43,7 @@ struct Context {
       return;
 
     MRI.reset(TheTarget->createMCRegInfo(TT));
-    MAI.reset(TheTarget->createMCAsmInfo(*MRI, TT, MCOptions));
+    MAI.reset(TheTarget->createMCAsmInfo(*MRI, TT, MCTargetOptions()));
     STI.reset(TheTarget->createMCSubtargetInfo(TT, "", ""));
     Ctx = std::make_unique<MCContext>(TT, MAI.get(), MRI.get(), STI.get());
 

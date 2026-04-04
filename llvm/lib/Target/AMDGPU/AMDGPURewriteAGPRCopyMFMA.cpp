@@ -595,7 +595,10 @@ public:
   static char ID;
   RegisterClassInfo RegClassInfo;
 
-  AMDGPURewriteAGPRCopyMFMALegacy() : MachineFunctionPass(ID) {}
+  AMDGPURewriteAGPRCopyMFMALegacy() : MachineFunctionPass(ID) {
+    initializeAMDGPURewriteAGPRCopyMFMALegacyPass(
+        *PassRegistry::getPassRegistry());
+  }
 
   bool runOnMachineFunction(MachineFunction &MF) override;
 

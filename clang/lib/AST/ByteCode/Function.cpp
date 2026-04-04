@@ -16,13 +16,15 @@ using namespace clang;
 using namespace clang::interp;
 
 Function::Function(Program &P, FunctionDeclTy Source, unsigned ArgSize,
-                   llvm::SmallVectorImpl<ParamDescriptor> &&ParamDescriptors,
+                   llvm::SmallVectorImpl<PrimType> &&ParamTypes,
+                   llvm::DenseMap<unsigned, ParamDescriptor> &&Params,
+                   llvm::SmallVectorImpl<unsigned> &&ParamOffsets,
                    bool HasThisPointer, bool HasRVO, bool IsLambdaStaticInvoker)
     : P(P), Kind(FunctionKind::Normal), Source(Source), ArgSize(ArgSize),
-      ParamDescriptors(std::move(ParamDescriptors)), IsValid(false),
+      ParamTypes(std::move(ParamTypes)), Params(std::move(Params)),
+      ParamOffsets(std::move(ParamOffsets)), IsValid(false),
       IsFullyCompiled(false), HasThisPointer(HasThisPointer), HasRVO(HasRVO),
       HasBody(false), Defined(false) {
-
   if (const auto *F = dyn_cast<const FunctionDecl *>(Source)) {
     Variadic = F->isVariadic();
     Immediate = F->isImmediateFunction();
@@ -50,6 +52,12 @@ Function::Function(Program &P, FunctionDeclTy Source, unsigned ArgSize,
     Immediate = false;
     Constexpr = false;
   }
+}
+
+Function::ParamDescriptor Function::getParamDescriptor(unsigned Offset) const {
+  auto It = Params.find(Offset);
+  assert(It != Params.end() && "Invalid parameter offset");
+  return It->second;
 }
 
 SourceInfo Function::getSource(CodePtr PC) const {

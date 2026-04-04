@@ -81,7 +81,7 @@ namespace math {
 // and relative errors bounded by:
 //   |(atan(u) - P(u)) / P(u)| < 2^-114.
 
-LIBC_INLINE constexpr float128 atan2f128(float128 y, float128 x) {
+LIBC_INLINE static constexpr float128 atan2f128(float128 y, float128 x) {
   using Float128 = fputil::DyadicFloat<128>;
 
   constexpr Float128 ZERO = {Sign::POS, 0, 0_u128};
@@ -161,11 +161,9 @@ LIBC_INLINE constexpr float128 atan2f128(float128 y, float128 x) {
   // We have the following bound for normalized n and d:
   //   2^(-exp_diff - 1) < n/d < 2^(-exp_diff + 1).
   if (LIBC_UNLIKELY(exp_diff > FPBits::FRACTION_LEN + 2)) {
-    Float128 quotient = rounded_div(num, den);
-    Float128 result = quick_add(const_term, quotient);
     if (final_sign)
-      result.sign = result.sign.negate();
-    return static_cast<float128>(result);
+      const_term.sign = const_term.sign.negate();
+    return static_cast<float128>(const_term);
   }
 
   // Take 24 leading bits of num and den to convert to float for fast division.

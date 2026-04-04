@@ -12,14 +12,19 @@
 #include <optional>
 #include <regex>
 #include <string>
-#include <string_view>
-#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 #include "mlir-c/IR.h"
 #include "mlir-c/Support.h"
 #include "mlir/Bindings/Python/NanobindUtils.h"
+#include "mlir/CAPI/Support.h"
+
+#include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/StringExtras.h"
+#include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/StringSet.h"
+#include "llvm/Support/Regex.h"
 
 namespace mlir {
 namespace python {
@@ -55,17 +60,14 @@ public:
   /// Note that this returns void because it is expected that the module
   /// contains calls to decorators and helpers that register the salient
   /// entities. Returns true if dialect is successfully loaded.
-  bool loadDialectModule(std::string_view dialectNamespace);
+  bool loadDialectModule(llvm::StringRef dialectNamespace);
 
   /// Adds a user-friendly Attribute builder.
-  /// Raises an exception if the mapping already exists and replace == false
-  /// and allow_existing == false.
-  /// Silently skips registration if allow_existing == true and the mapping
-  /// already exists (first registration wins).
+  /// Raises an exception if the mapping already exists and replace == false.
   /// This is intended to be called by implementation code.
   void registerAttributeBuilder(const std::string &attributeKind,
-                                nanobind::callable pyFunc, bool replace = false,
-                                bool allow_existing = false);
+                                nanobind::callable pyFunc,
+                                bool replace = false);
 
   /// Adds a user-friendly type caster. Raises an exception if the mapping
   /// already exists and replace == false. This is intended to be called by
@@ -81,21 +83,15 @@ public:
                            bool replace = false);
 
   /// Adds a concrete implementation dialect class.
-  /// Raises an exception if the mapping already exists and replace == false.
+  /// Raises an exception if the mapping already exists.
   /// This is intended to be called by implementation code.
   void registerDialectImpl(const std::string &dialectNamespace,
-                           nanobind::object pyClass, bool replace = false);
+                           nanobind::object pyClass);
 
   /// Adds a concrete implementation operation class.
   /// Raises an exception if the mapping already exists and replace == false.
   /// This is intended to be called by implementation code.
   void registerOperationImpl(const std::string &operationName,
-                             nanobind::object pyClass, bool replace = false);
-
-  /// Adds an operation adaptor class.
-  /// Raises an exception if the mapping already exists and replace == false.
-  /// This is intended to be called by implementation code.
-  void registerOpAdaptorImpl(const std::string &operationName,
                              nanobind::object pyClass, bool replace = false);
 
   /// Returns the custom Attribute builder for Attribute kind.
@@ -119,13 +115,7 @@ public:
   /// name. Note that this may trigger a load of the dialect, which can
   /// arbitrarily re-enter.
   std::optional<nanobind::object>
-  lookupOperationClass(std::string_view operationName);
-
-  /// Looks up a registered operation adaptor class by operation
-  /// name. Note that this may trigger a load of the dialect, which can
-  /// arbitrarily re-enter.
-  std::optional<nanobind::object>
-  lookupOpAdaptorClass(std::string_view operationName);
+  lookupOperationClass(llvm::StringRef operationName);
 
   class MLIR_PYTHON_API_EXPORTED TracebackLoc {
   public:
@@ -141,7 +131,7 @@ public:
 
     void registerTracebackFileExclusion(const std::string &file);
 
-    bool isUserTracebackFilename(std::string_view file);
+    bool isUserTracebackFilename(llvm::StringRef file);
 
     static constexpr size_t kMaxFrames = 512;
 
@@ -155,7 +145,7 @@ public:
     bool rebuildUserTracebackIncludeRegex = false;
     std::regex userTracebackExcludeRegex;
     bool rebuildUserTracebackExcludeRegex = false;
-    std::unordered_map<std::string, bool> isUserTracebackFilenameCache;
+    llvm::StringMap<bool> isUserTracebackFilenameCache;
   };
 
   TracebackLoc &getTracebackLoc() { return tracebackLoc; }
@@ -191,24 +181,18 @@ private:
   /// Module name prefixes to search under for dialect implementation modules.
   std::vector<std::string> dialectSearchPrefixes;
   /// Map of dialect namespace to external dialect class object.
-  std::unordered_map<std::string, nanobind::object> dialectClassMap;
+  llvm::StringMap<nanobind::object> dialectClassMap;
   /// Map of full operation name to external operation class object.
-  std::unordered_map<std::string, nanobind::object> operationClassMap;
-  /// Map of full operation name to external operation adaptor class object.
-  std::unordered_map<std::string, nanobind::object> opAdaptorClassMap;
+  llvm::StringMap<nanobind::object> operationClassMap;
   /// Map of attribute ODS name to custom builder.
-  std::unordered_map<std::string, nanobind::callable> attributeBuilderMap;
+  llvm::StringMap<nanobind::callable> attributeBuilderMap;
   /// Map of MlirTypeID to custom type caster.
-  std::unordered_map<MlirTypeID, nanobind::callable, MlirTypeIDHash,
-                     MlirTypeIDEqual>
-      typeCasterMap;
+  llvm::DenseMap<MlirTypeID, nanobind::callable> typeCasterMap;
   /// Map of MlirTypeID to custom value caster.
-  std::unordered_map<MlirTypeID, nanobind::callable, MlirTypeIDHash,
-                     MlirTypeIDEqual>
-      valueCasterMap;
+  llvm::DenseMap<MlirTypeID, nanobind::callable> valueCasterMap;
   /// Set of dialect namespaces that we have attempted to import implementation
   /// modules for.
-  std::unordered_set<std::string> loadedDialectModules;
+  llvm::StringSet<> loadedDialectModules;
 
   TracebackLoc tracebackLoc;
   TypeIDAllocator typeIDAllocator;

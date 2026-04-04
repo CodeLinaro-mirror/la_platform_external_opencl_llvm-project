@@ -9,12 +9,7 @@ function(llvm_ExternalProject_BuildCmd out_var target bin_dir stamp_dir)
   endif()
   if (CMAKE_GENERATOR MATCHES "Make")
     # Use special command for Makefiles to support parallelism.
-    # Handle empty target (full build, no target argument).
-    if(target)
-      string(JOIN "@" make_cmd "$(MAKE)" "-C" "${bin_dir}" "${target}")
-    else()
-      string(JOIN "@" make_cmd "$(MAKE)" "-C" "${bin_dir}")
-    endif()
+    string(JOIN "@" make_cmd "$(MAKE)" "-C" "${bin_dir}" "${target}")
     set(file_lock_script "${LLVM_CMAKE_DIR}/FileLock.cmake")
     set(${out_var} ${CMAKE_COMMAND} "-DLOCK_FILE_PATH=${stamp_dir}/cmake.lock"
                                     "-DCOMMAND=${make_cmd}"
@@ -383,14 +378,6 @@ function(llvm_ExternalProject_Add name source_dir)
     set(verbose -DCMAKE_VERBOSE_MAKEFILE=ON)
   endif()
 
-  if(CMAKE_GENERATOR MATCHES "Make")
-    # Use the same FileLock for Unix Makefiles to serialize the main build with
-    # EXTRA_TARGETS. This prevents concurrent make invocations from corrupting
-    # shared artifacts in BINARY_DIR.
-    llvm_ExternalProject_BuildCmd(build_cmd "" ${BINARY_DIR} ${STAMP_DIR})
-    set(build_command_arg BUILD_COMMAND ${build_cmd})
-  endif()
-
   ExternalProject_Add(${name}
     DEPENDS ${ARG_DEPENDS} llvm-config
     ${name}-clobber
@@ -421,7 +408,6 @@ function(llvm_ExternalProject_Add name source_dir)
                ${cmake_args}
                ${PASSTHROUGH_VARIABLES}
     CMAKE_CACHE_DEFAULT_ARGS ${CMAKE_CACHE_DEFAULT_ARGS}
-    ${build_command_arg}
     INSTALL_COMMAND ""
     STEP_TARGETS configure build
     BUILD_ALWAYS 1

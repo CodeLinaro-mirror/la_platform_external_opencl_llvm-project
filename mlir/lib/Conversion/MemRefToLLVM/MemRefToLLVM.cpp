@@ -1255,11 +1255,9 @@ struct MemorySpaceCastOpLowering
 
     Type resultType = op.getDest().getType();
     if (auto resultTypeR = dyn_cast<MemRefType>(resultType)) {
-      auto convertedType =
-          typeConverter->convertType<LLVM::LLVMStructType>(resultTypeR);
-      if (!convertedType)
-        return rewriter.notifyMatchFailure(op, "memref type conversion failed");
-      Type newPtrType = convertedType.getBody()[0];
+      auto resultDescType =
+          cast<LLVM::LLVMStructType>(typeConverter->convertType(resultTypeR));
+      Type newPtrType = resultDescType.getBody()[0];
 
       SmallVector<Value> descVals;
       MemRefDescriptor::unpack(rewriter, loc, adaptor.getSource(), resultTypeR,
@@ -1418,8 +1416,8 @@ private:
       memref::ReinterpretCastOp::Adaptor adaptor, Value *descriptor) const {
     MemRefType targetMemRefType =
         cast<MemRefType>(castOp.getResult().getType());
-    auto llvmTargetDescriptorTy =
-        typeConverter->convertType<LLVM::LLVMStructType>(targetMemRefType);
+    auto llvmTargetDescriptorTy = dyn_cast_or_null<LLVM::LLVMStructType>(
+        typeConverter->convertType(targetMemRefType));
     if (!llvmTargetDescriptorTy)
       return failure();
 
@@ -1487,8 +1485,8 @@ private:
     if (shapeMemRefType.hasStaticShape()) {
       MemRefType targetMemRefType =
           cast<MemRefType>(reshapeOp.getResult().getType());
-      auto llvmTargetDescriptorTy =
-          typeConverter->convertType<LLVM::LLVMStructType>(targetMemRefType);
+      auto llvmTargetDescriptorTy = dyn_cast_or_null<LLVM::LLVMStructType>(
+          typeConverter->convertType(targetMemRefType));
       if (!llvmTargetDescriptorTy)
         return failure();
 
@@ -2117,9 +2115,7 @@ struct FinalizeMemRefToLLVMConversionPass
 
 /// Implement the interface to convert MemRef to LLVM.
 struct MemRefToLLVMDialectInterface : public ConvertToLLVMPatternInterface {
-  MemRefToLLVMDialectInterface(Dialect *dialect)
-      : ConvertToLLVMPatternInterface(dialect) {}
-
+  using ConvertToLLVMPatternInterface::ConvertToLLVMPatternInterface;
   void loadDependentDialects(MLIRContext *context) const final {
     context->loadDialect<LLVM::LLVMDialect>();
   }

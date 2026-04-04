@@ -79,7 +79,6 @@ public:
   bool isIntegratedAssemblerRequired() const override { return true; }
 
   void emitFrames();
-  void generateCompactUnwindEncodings();
   MCSymbol *emitCFILabel() override;
   void emitCFISections(bool EH, bool Debug, bool SFrame) override;
 

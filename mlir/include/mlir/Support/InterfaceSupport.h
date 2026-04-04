@@ -192,13 +192,12 @@ public:
   template <typename... Types>
   static InterfaceMap get() {
     constexpr size_t numInterfaces = num_interface_types_t<Types...>::value;
-    if constexpr (numInterfaces == 0) {
+    if constexpr (numInterfaces == 0)
       return InterfaceMap();
-    } else {
-      InterfaceMap map;
-      map.insertPotentialInterfaces<Types...>();
-      return map;
-    }
+
+    InterfaceMap map;
+    (map.insertPotentialInterface<Types>(), ...);
+    return map;
   }
 
   /// Returns an instance of the concept object for the given interface if it
@@ -218,18 +217,6 @@ public:
   }
 
 private:
-  /// Insert the given interface types into the map (recursive expansion to
-  /// guarantee sequential, left-to-right evaluation across all compilers).
-  template <typename T>
-  void insertPotentialInterfaces() {
-    insertPotentialInterface<T>();
-  }
-  template <typename T, typename T2, typename... Rest>
-  void insertPotentialInterfaces() {
-    insertPotentialInterface<T>();
-    insertPotentialInterfaces<T2, Rest...>();
-  }
-
   /// Insert the given interface type into the map, ignoring it if it doesn't
   /// actually represent an interface.
   template <typename T>

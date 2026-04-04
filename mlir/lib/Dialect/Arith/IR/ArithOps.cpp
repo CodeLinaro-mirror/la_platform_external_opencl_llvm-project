@@ -13,7 +13,7 @@
 
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/CommonFolders.h"
-#include "mlir/Dialect/UB/IR/UBMatchers.h"
+#include "mlir/Dialect/UB/IR/UBOps.h"
 #include "mlir/IR/Builders.h"
 #include "mlir/IR/BuiltinAttributeInterfaces.h"
 #include "mlir/IR/BuiltinAttributes.h"
@@ -42,8 +42,8 @@ static IntegerAttr
 applyToIntegerAttrs(PatternRewriter &builder, Value res, Attribute lhs,
                     Attribute rhs,
                     function_ref<APInt(const APInt &, const APInt &)> binFn) {
-  const APInt &lhsVal = llvm::cast<IntegerAttr>(lhs).getValue();
-  const APInt &rhsVal = llvm::cast<IntegerAttr>(rhs).getValue();
+  APInt lhsVal = llvm::cast<IntegerAttr>(lhs).getValue();
+  APInt rhsVal = llvm::cast<IntegerAttr>(rhs).getValue();
   APInt value = binFn(lhsVal, rhsVal);
   return IntegerAttr::get(res.getType(), value);
 }
@@ -151,9 +151,6 @@ static Attribute getBoolAttribute(Type type, bool value) {
   ShapedType shapedType = dyn_cast_or_null<ShapedType>(type);
   if (!shapedType)
     return boolAttr;
-  // DenseElementsAttr requires a static shape.
-  if (!shapedType.hasStaticShape())
-    return {};
   return DenseElementsAttr::get(shapedType, boolAttr);
 }
 
@@ -235,10 +232,9 @@ bool arith::ConstantOp::isBuildableWith(Attribute value, Type type) {
   if (!typedAttr || typedAttr.getType() != type)
     return false;
   // Integer values must be signless.
-  if (auto intType = dyn_cast<IntegerType>(getElementTypeOrSelf(type))) {
-    if (!intType.isSignless())
-      return false;
-  }
+  if (llvm::isa<IntegerType>(type) &&
+      !llvm::cast<IntegerType>(type).isSignless())
+    return false;
   // Integer, float, and element attributes are buildable.
   return llvm::isa<IntegerAttr, FloatAttr, ElementsAttr>(value);
 }
@@ -459,12 +455,6 @@ arith::AddUIExtendedOp::fold(FoldAdaptor adaptor,
   if (Attribute sumAttr = constFoldBinaryOp<IntegerAttr>(
           adaptor.getOperands(),
           [](APInt a, const APInt &b) { return std::move(a) + b; })) {
-    // If any operand is poison, propagate poison to both results.
-    if (matchPattern(sumAttr, ub::m_Poison())) {
-      results.push_back(sumAttr);
-      results.push_back(sumAttr);
-      return success();
-    }
     Attribute overflowAttr = constFoldBinaryOp<IntegerAttr>(
         ArrayRef({sumAttr, adaptor.getLhs()}),
         getI1SameShape(llvm::cast<TypedAttr>(sumAttr).getType()),
@@ -931,10 +921,6 @@ OpFoldResult arith::RemUIOp::fold(FoldAdaptor adaptor) {
   return div0 ? Attribute() : result;
 }
 
-Speculation::Speculatability arith::RemUIOp::getSpeculatability() {
-  return getDivUISpeculatability(getRhs());
-}
-
 //===----------------------------------------------------------------------===//
 // RemSIOp
 //===----------------------------------------------------------------------===//
@@ -956,15 +942,6 @@ OpFoldResult arith::RemSIOp::fold(FoldAdaptor adaptor) {
                                                });
 
   return div0 ? Attribute() : result;
-}
-
-Speculation::Speculatability arith::RemSIOp::getSpeculatability() {
-  // X % 0 => UB
-  // X % -1 is well-defined (always 0), unlike X / -1 which can overflow.
-  if (matchPattern(getRhs(), m_IntRangeWithoutZeroS()))
-    return Speculation::Speculatable;
-
-  return Speculation::NotSpeculatable;
 }
 
 //===----------------------------------------------------------------------===//
@@ -1464,17 +1441,6 @@ static bool checkWidthChangeCast(TypeRange inputs, TypeRange outputs) {
 static FailureOr<APFloat> convertFloatValue(
     APFloat sourceValue, const llvm::fltSemantics &targetSemantics,
     llvm::RoundingMode roundingMode = llvm::RoundingMode::NearestTiesToEven) {
-  // Reject special values that are not representable in the target type before
-  // calling APFloat::convert, which would llvm_unreachable on them.
-  using fltNonfiniteBehavior = llvm::fltNonfiniteBehavior;
-  if (sourceValue.isInfinity() &&
-      (targetSemantics.nonFiniteBehavior == fltNonfiniteBehavior::NanOnly ||
-       targetSemantics.nonFiniteBehavior == fltNonfiniteBehavior::FiniteOnly))
-    return failure();
-  if (sourceValue.isNaN() &&
-      targetSemantics.nonFiniteBehavior == fltNonfiniteBehavior::FiniteOnly)
-    return failure();
-
   bool losesInfo = false;
   auto status = sourceValue.convert(targetSemantics, roundingMode, &losesInfo);
   if (losesInfo || status != APFloat::opOK)
@@ -1713,55 +1679,6 @@ LogicalResult arith::TruncFOp::verify() {
 }
 
 //===----------------------------------------------------------------------===//
-// ConvertFOp
-//===----------------------------------------------------------------------===//
-
-OpFoldResult arith::ConvertFOp::fold(FoldAdaptor adaptor) {
-  auto resElemType = cast<FloatType>(getElementTypeOrSelf(getType()));
-  const llvm::fltSemantics &targetSemantics = resElemType.getFloatSemantics();
-  return constFoldCastOp<FloatAttr, FloatAttr>(
-      adaptor.getOperands(), getType(),
-      [this, &targetSemantics](const APFloat &a, bool &castStatus) {
-        RoundingMode roundingMode =
-            getRoundingmode().value_or(RoundingMode::to_nearest_even);
-        llvm::RoundingMode llvmRoundingMode =
-            convertArithRoundingModeToLLVMIR(roundingMode);
-        FailureOr<APFloat> result =
-            convertFloatValue(a, targetSemantics, llvmRoundingMode);
-        if (failed(result)) {
-          castStatus = false;
-          return a;
-        }
-        return *result;
-      });
-}
-
-bool arith::ConvertFOp::areCastCompatible(TypeRange inputs, TypeRange outputs) {
-  if (!areValidCastInputsAndOutputs(inputs, outputs))
-    return false;
-  auto srcType = getTypeIfLike<FloatType>(inputs.front());
-  auto dstType = getTypeIfLike<FloatType>(outputs.front());
-  if (!srcType || !dstType)
-    return false;
-  return srcType != dstType &&
-         srcType.getIntOrFloatBitWidth() == dstType.getIntOrFloatBitWidth();
-}
-
-LogicalResult arith::ConvertFOp::verify() {
-  auto srcType = cast<FloatType>(getElementTypeOrSelf(getIn().getType()));
-  auto dstType = cast<FloatType>(getElementTypeOrSelf(getType()));
-  if (srcType == dstType)
-    return emitError("result element type ")
-           << dstType << " must be different from operand element type "
-           << srcType;
-  if (srcType.getWidth() != dstType.getWidth())
-    return emitError("result element type ")
-           << dstType << " must have the same bitwidth as operand element type "
-           << srcType;
-  return success();
-}
-
-//===----------------------------------------------------------------------===//
 // ScalingTruncFOp
 //===----------------------------------------------------------------------===//
 
@@ -1829,11 +1746,6 @@ OpFoldResult arith::UIToFPOp::fold(FoldAdaptor adaptor) {
       });
 }
 
-void arith::UIToFPOp::getCanonicalizationPatterns(RewritePatternSet &patterns,
-                                                  MLIRContext *context) {
-  patterns.add<UIToFPOfExtUI>(context);
-}
-
 //===----------------------------------------------------------------------===//
 // SIToFPOp
 //===----------------------------------------------------------------------===//
@@ -1854,11 +1766,6 @@ OpFoldResult arith::SIToFPOp::fold(FoldAdaptor adaptor) {
                              APFloat::rmNearestTiesToEven);
         return apf;
       });
-}
-
-void arith::SIToFPOp::getCanonicalizationPatterns(RewritePatternSet &patterns,
-                                                  MLIRContext *context) {
-  patterns.add<SIToFPOfExtSI, SIToFPOfExtUI>(context);
 }
 
 //===----------------------------------------------------------------------===//
@@ -2002,7 +1909,7 @@ OpFoldResult arith::BitcastOp::fold(FoldAdaptor adaptor) {
     return {};
 
   /// Bitcast poison.
-  if (matchPattern(operand, ub::m_Poison()))
+  if (llvm::isa<ub::PoisonAttr>(operand))
     return ub::PoisonAttr::get(getContext());
 
   /// Bitcast integer or float to integer or float.
@@ -2586,10 +2493,10 @@ OpFoldResult arith::SelectOp::fold(FoldAdaptor adaptor) {
     return falseVal;
 
   // If either operand is fully poisoned, return the other.
-  if (matchPattern(adaptor.getTrueValue(), ub::m_Poison()))
+  if (isa_and_nonnull<ub::PoisonAttr>(adaptor.getTrueValue()))
     return falseVal;
 
-  if (matchPattern(adaptor.getFalseValue(), ub::m_Poison()))
+  if (isa_and_nonnull<ub::PoisonAttr>(adaptor.getFalseValue()))
     return trueVal;
 
   // select %x, true, false => %x
@@ -2620,9 +2527,6 @@ OpFoldResult arith::SelectOp::fold(FoldAdaptor adaptor) {
   // select %cst_vec, %cst0, %cst1 => %cst2
   if (auto cond =
           dyn_cast_if_present<DenseElementsAttr>(adaptor.getCondition())) {
-    // DenseElementsAttr by construction always has a static shape.
-    assert(cond.getType().hasStaticShape() &&
-           "DenseElementsAttr must have static shape");
     if (auto lhs =
             dyn_cast_if_present<DenseElementsAttr>(adaptor.getTrueValue())) {
       if (auto rhs =
@@ -2872,10 +2776,9 @@ std::optional<TypedAttr> mlir::arith::getNeutralElement(Operation *op) {
 Value mlir::arith::getIdentityValue(AtomicRMWKind op, Type resultType,
                                     OpBuilder &builder, Location loc,
                                     bool useOnlyFiniteValue) {
-  if (auto attr =
-getIdentityValueAttr(op, resultType, builder, loc, useOnlyFiniteValue))
-    return arith::ConstantOp::create(builder, loc, attr);
-  return {};
+  auto attr =
+      getIdentityValueAttr(op, resultType, builder, loc, useOnlyFiniteValue);
+  return arith::ConstantOp::create(builder, loc, attr);
 }
 
 /// Return the value obtained by applying the reduction operation kind

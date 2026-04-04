@@ -66,7 +66,8 @@ subroutine s4
   !ERROR: 'fun' is PRIVATE in 'm4'
   use m4, only: foo, fun
   type(foo) x ! ok
-  print *, foo() ! According to F23 C7108, not ambiguous
+  !PORTABILITY: Reference to generic function 'foo' (resolving to specific 'fun') is ambiguous with a structure constructor of the same name [-Wambiguous-structure-constructor]
+  print *, foo()
 end
 
 module m5

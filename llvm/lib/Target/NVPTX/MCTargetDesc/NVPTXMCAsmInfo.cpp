@@ -47,10 +47,10 @@ NVPTXMCAsmInfo::NVPTXMCAsmInfo(const Triple &TheTriple,
   SupportsExtendedDwarfLocDirective = false;
   SupportsSignedData = false;
 
-  InternalSymbolPrefix = "$L__";
-  PrivateLabelPrefix = InternalSymbolPrefix;
+  PrivateGlobalPrefix = "$L__";
+  PrivateLabelPrefix = PrivateGlobalPrefix;
 
-  // TODO: Can we just disable this?
+  // @TODO: Can we just disable this?
   WeakDirective = "\t// .weak\t";
   GlobalDirective = "\t// .globl\t";
 

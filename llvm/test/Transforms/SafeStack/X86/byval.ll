@@ -55,7 +55,8 @@ define i32 @ByValUnsafeAligned(ptr byval(%struct.S) nocapture readonly align 64 
 entry:
   ; CHECK-LABEL: @ByValUnsafeAligned
   ; CHECK: %[[A:.*]] = load {{.*}} @__safestack_unsafe_stack_ptr
-  ; CHECK: call ptr @llvm.ptrmask.p0.i64(ptr %[[A]], i64 -64)
+  ; CHECK: %[[B:.*]] = ptrtoint ptr %[[A]] to i64
+  ; CHECK: and i64 %[[B]], -64
   ; CHECK: ret i32
   %0 = load i32, ptr %zzz, align 64
   %arrayidx2 = getelementptr inbounds %struct.S, ptr %zzz, i64 0, i32 0, i64 %idx

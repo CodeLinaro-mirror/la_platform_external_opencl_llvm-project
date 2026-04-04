@@ -682,16 +682,19 @@ void llvm::deleteDeadLoop(Loop *L, DominatorTree *DT, ScalarEvolution *SE,
     MSSA->verifyMemorySSA();
 
   if (LI) {
-    SmallPtrSet<BasicBlock *, 8> Blocks(llvm::from_range, L->blocks());
-
     // Erase the instructions and the blocks without having to worry
     // about ordering because we already dropped the references.
-    // Remove blocks from loopinfo before erasing them, otherwise the loopinfo
-    // cannot find the loop using block numbers.
-    for (BasicBlock *BB : Blocks) {
-      LI->removeBlock(BB);
+    // NOTE: This iteration is safe because erasing the block does not remove
+    // its entry from the loop's block list.  We do that in the next section.
+    for (BasicBlock *BB : L->blocks())
       BB->eraseFromParent();
-    }
+
+    // Finally, the blocks from loopinfo.  This has to happen late because
+    // otherwise our loop iterators won't work.
+
+    SmallPtrSet<BasicBlock *, 8> blocks(llvm::from_range, L->blocks());
+    for (BasicBlock *BB : blocks)
+      LI->removeBlock(BB);
 
     // The last step is to update LoopInfo now that we've eliminated this loop.
     // Note: LoopInfo::erase remove the given loop and relink its subloops with
@@ -727,12 +730,14 @@ void llvm::breakLoopBackedge(Loop *L, DominatorTree &DT, ScalarEvolution &SE,
   // Update the CFG and domtree.  We chose to special case a couple of
   // of common cases for code quality and test readability reasons.
   [&]() -> void {
-    if (auto *BI = dyn_cast<UncondBrInst>(Latch->getTerminator())) {
-      DomTreeUpdater DTU(&DT, DomTreeUpdater::UpdateStrategy::Eager);
-      (void)changeToUnreachable(BI, /*PreserveLCSSA*/ true, &DTU, MSSAU.get());
-      return;
-    }
-    if (auto *BI = dyn_cast<CondBrInst>(Latch->getTerminator())) {
+    if (auto *BI = dyn_cast<BranchInst>(Latch->getTerminator())) {
+      if (!BI->isConditional()) {
+        DomTreeUpdater DTU(&DT, DomTreeUpdater::UpdateStrategy::Eager);
+        (void)changeToUnreachable(BI, /*PreserveLCSSA*/ true, &DTU,
+                                  MSSAU.get());
+        return;
+      }
+
       // Conditional latch/exit - note that latch can be shared by inner
       // and outer loop so the other target doesn't need to an exit
       if (L->isLoopExiting(Latch)) {
@@ -788,13 +793,13 @@ void llvm::breakLoopBackedge(Loop *L, DominatorTree &DT, ScalarEvolution &SE,
 /// Checks if \p L has an exiting latch branch.  There may also be other
 /// exiting blocks.  Returns branch instruction terminating the loop
 /// latch if above check is successful, nullptr otherwise.
-static CondBrInst *getExpectedExitLoopLatchBranch(Loop *L) {
+static BranchInst *getExpectedExitLoopLatchBranch(Loop *L) {
   BasicBlock *Latch = L->getLoopLatch();
   if (!Latch)
     return nullptr;
 
-  CondBrInst *LatchBR = dyn_cast<CondBrInst>(Latch->getTerminator());
-  if (!LatchBR || !L->isLoopExiting(Latch))
+  BranchInst *LatchBR = dyn_cast<BranchInst>(Latch->getTerminator());
+  if (!LatchBR || LatchBR->getNumSuccessors() != 2 || !L->isLoopExiting(Latch))
     return nullptr;
 
   assert((LatchBR->getSuccessor(0) == L->getHeader() ||
@@ -822,7 +827,7 @@ static std::optional<unsigned> estimateLoopTripCount(Loop *L) {
   // ignoring other exiting blocks.  This can overestimate the trip count
   // if we exit through another exit, but can never underestimate it.
   // TODO: incorporate information from other exits
-  CondBrInst *ExitingBranch = getExpectedExitLoopLatchBranch(L);
+  BranchInst *ExitingBranch = getExpectedExitLoopLatchBranch(L);
   if (!ExitingBranch) {
     LLVM_DEBUG(dbgs() << "estimateLoopTripCount: Failed to find exiting "
                       << "latch branch of required form in " << DbgLoop(L)
@@ -890,7 +895,7 @@ llvm::getLoopEstimatedTripCount(Loop *L,
   // - To satsify the condition for the outer loop, the latch must have a third
   //   successor that is an exit for the outer loop.  But that violates the
   //   condition for both loops.
-  CondBrInst *ExitingBranch = getExpectedExitLoopLatchBranch(L);
+  BranchInst *ExitingBranch = getExpectedExitLoopLatchBranch(L);
   if (!ExitingBranch)
     return std::nullopt;
 
@@ -947,7 +952,7 @@ bool llvm::setLoopEstimatedTripCount(
   //
   // FIXME: See comments in getLoopEstimatedTripCount for why this is required
   // here regardless of EstimatedLoopInvocationWeight.
-  CondBrInst *LatchBranch = getExpectedExitLoopLatchBranch(L);
+  BranchInst *LatchBranch = getExpectedExitLoopLatchBranch(L);
   if (!LatchBranch)
     return false;
 
@@ -985,7 +990,7 @@ bool llvm::setLoopEstimatedTripCount(
 }
 
 BranchProbability llvm::getLoopProbability(Loop *L) {
-  CondBrInst *LatchBranch = getExpectedExitLoopLatchBranch(L);
+  BranchInst *LatchBranch = getExpectedExitLoopLatchBranch(L);
   if (!LatchBranch)
     return BranchProbability::getUnknown();
   bool FirstTargetIsLoop = LatchBranch->getSuccessor(0) == L->getHeader();
@@ -993,16 +998,17 @@ BranchProbability llvm::getLoopProbability(Loop *L) {
 }
 
 bool llvm::setLoopProbability(Loop *L, BranchProbability P) {
-  CondBrInst *LatchBranch = getExpectedExitLoopLatchBranch(L);
+  BranchInst *LatchBranch = getExpectedExitLoopLatchBranch(L);
   if (!LatchBranch)
     return false;
   bool FirstTargetIsLoop = LatchBranch->getSuccessor(0) == L->getHeader();
-  setBranchProbability(LatchBranch, P, FirstTargetIsLoop);
-  return true;
+  return setBranchProbability(LatchBranch, P, FirstTargetIsLoop);
 }
 
-BranchProbability llvm::getBranchProbability(CondBrInst *B,
+BranchProbability llvm::getBranchProbability(BranchInst *B,
                                              bool ForFirstTarget) {
+  if (B->getNumSuccessors() != 2)
+    return BranchProbability::getUnknown();
   uint64_t Weight0, Weight1;
   if (!extractBranchWeights(*B, Weight0, Weight1))
     return BranchProbability::getUnknown();
@@ -1014,48 +1020,17 @@ BranchProbability llvm::getBranchProbability(CondBrInst *B,
   return BranchProbability::getBranchProbability(Weight0, Denominator);
 }
 
-BranchProbability llvm::getBranchProbability(BasicBlock *Src, BasicBlock *Dst) {
-  assert(Src != Dst && "Passed in same source as destination");
-
-  Instruction *TI = Src->getTerminator();
-  if (!TI || TI->getNumSuccessors() == 0)
-    return BranchProbability::getZero();
-
-  SmallVector<uint32_t, 4> Weights;
-
-  if (!extractBranchWeights(*TI, Weights)) {
-    // No metadata
-    return BranchProbability::getUnknown();
-  }
-  assert(TI->getNumSuccessors() == Weights.size() &&
-         "Missing weights in branch_weights");
-
-  uint64_t Total = 0;
-  uint32_t Numerator = 0;
-  for (auto [i, Weight] : llvm::enumerate(Weights)) {
-    if (TI->getSuccessor(i) == Dst)
-      Numerator += Weight;
-    Total += Weight;
-  }
-
-  // Total of edges might be 0 if the metadata is incorrect/set by hand
-  // or missing. In such case return here to avoid division by 0 later on.
-  // There might also be a case where the value of Total cannot fit into
-  // uint32_t, in such case, just bail out.
-  if (Total == 0 || Total > std::numeric_limits<uint32_t>::max())
-    return BranchProbability::getUnknown();
-
-  return BranchProbability(Numerator, Total);
-}
-
-void llvm::setBranchProbability(CondBrInst *B, BranchProbability P,
+bool llvm::setBranchProbability(BranchInst *B, BranchProbability P,
                                 bool ForFirstTarget) {
+  if (B->getNumSuccessors() != 2)
+    return false;
   BranchProbability Prob0 = P;
   BranchProbability Prob1 = P.getCompl();
   if (!ForFirstTarget)
     std::swap(Prob0, Prob1);
   setBranchWeights(*B, {Prob0.getNumerator(), Prob1.getNumerator()},
                    /*IsExpected=*/false);
+  return true;
 }
 
 bool llvm::hasIterationCountInvariantInParent(Loop *InnerLoop,
@@ -2164,24 +2139,6 @@ Value *llvm::addRuntimeChecks(
   return MemoryRuntimeCheck;
 }
 
-namespace {
-/// Rewriter to replace SCEVPtrToIntExpr with SCEVPtrToAddrExpr when the result
-/// type matches the pointer address type. This allows expressions mixing
-/// ptrtoint and ptrtoaddr to simplify properly.
-struct SCEVPtrToAddrRewriter : SCEVRewriteVisitor<SCEVPtrToAddrRewriter> {
-  const DataLayout &DL;
-  SCEVPtrToAddrRewriter(ScalarEvolution &SE, const DataLayout &DL)
-      : SCEVRewriteVisitor(SE), DL(DL) {}
-
-  const SCEV *visitPtrToIntExpr(const SCEVPtrToIntExpr *E) {
-    const SCEV *Op = visit(E->getOperand());
-    if (E->getType() == DL.getAddressType(E->getOperand()->getType()))
-      return SE.getPtrToAddrExpr(Op);
-    return Op == E->getOperand() ? E : SE.getPtrToIntExpr(Op, E->getType());
-  }
-};
-} // namespace
-
 Value *llvm::addDiffRuntimeChecks(
     Instruction *Loc, ArrayRef<PointerDiffInfo> Checks, SCEVExpander &Expander,
     function_ref<Value *(IRBuilderBase &, unsigned)> GetVF, unsigned IC) {
@@ -2193,8 +2150,6 @@ Value *llvm::addDiffRuntimeChecks(
   Value *MemoryRuntimeCheck = nullptr;
 
   auto &SE = *Expander.getSE();
-  const DataLayout &DL = Loc->getDataLayout();
-  SCEVPtrToAddrRewriter Rewriter(SE, DL);
   // Map to keep track of created compares, The key is the pair of operands for
   // the compare, to allow detecting and re-using redundant compares.
   DenseMap<std::pair<Value *, Value *>, Value *> SeenCompares;
@@ -2204,10 +2159,8 @@ Value *llvm::addDiffRuntimeChecks(
     auto *VFTimesICTimesSize =
         ChkBuilder.CreateMul(GetVF(ChkBuilder, Ty->getScalarSizeInBits()),
                              ConstantInt::get(Ty, IC * AccessSize));
-    const SCEV *SinkStartRewritten = Rewriter.visit(SinkStart);
-    const SCEV *SrcStartRewritten = Rewriter.visit(SrcStart);
-    Value *Diff = Expander.expandCodeFor(
-        SE.getMinusSCEV(SinkStartRewritten, SrcStartRewritten), Ty, Loc);
+    Value *Diff =
+        Expander.expandCodeFor(SE.getMinusSCEV(SinkStart, SrcStart), Ty, Loc);
 
     // Check if the same compare has already been created earlier. In that case,
     // there is no need to check it again.
@@ -2235,8 +2188,8 @@ Value *llvm::addDiffRuntimeChecks(
 std::optional<IVConditionInfo>
 llvm::hasPartialIVCondition(const Loop &L, unsigned MSSAThreshold,
                             const MemorySSA &MSSA, AAResults &AA) {
-  auto *TI = dyn_cast<CondBrInst>(L.getHeader()->getTerminator());
-  if (!TI)
+  auto *TI = dyn_cast<BranchInst>(L.getHeader()->getTerminator());
+  if (!TI || !TI->isConditional())
     return {};
 
   auto *CondI = dyn_cast<Instruction>(TI->getCondition());
@@ -2384,7 +2337,7 @@ llvm::hasPartialIVCondition(const Loop &L, unsigned MSSAThreshold,
     if (!Info.ExitForPath)
       Info.PathIsNoop = false;
 
-    Info.InstToDuplicate = std::move(InstToDuplicate);
+    Info.InstToDuplicate = InstToDuplicate;
     return Info;
   };
 

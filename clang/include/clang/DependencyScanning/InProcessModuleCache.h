@@ -13,18 +13,14 @@
 #include "llvm/ADT/StringMap.h"
 
 #include <atomic>
-#include <condition_variable>
 #include <mutex>
+#include <shared_mutex>
 
 namespace clang {
 namespace dependencies {
 
 struct ModuleCacheEntry {
-  std::mutex Mutex;
-  std::condition_variable CondVar;
-  bool Locked = false;
-  unsigned Generation = 0;
-
+  std::shared_mutex CompilationMutex;
   std::atomic<std::time_t> Timestamp = 0;
 };
 

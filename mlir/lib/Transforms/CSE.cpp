@@ -25,7 +25,7 @@
 #include <deque>
 
 namespace mlir {
-#define GEN_PASS_DEF_CSEPASS
+#define GEN_PASS_DEF_CSE
 #include "mlir/Transforms/Passes.h.inc"
 } // namespace mlir
 
@@ -181,18 +181,6 @@ bool CSEDriver::hasOtherSideEffectingOpInBetween(Operation *fromOp,
          "expected read effect on fromOp");
   assert(hasEffect<MemoryEffects::Read>(toOp) &&
          "expected read effect on toOp");
-
-  // Collect the resources of fromOp's read effects. A write can only block
-  // CSE if its resource is not disjoint from one of these.
-  SmallPtrSet<SideEffects::Resource *, 1> readResources;
-  if (auto memOp = dyn_cast<MemoryEffectOpInterface>(fromOp)) {
-    SmallVector<MemoryEffects::EffectInstance> fromEffects;
-    memOp.getEffects(fromEffects);
-    for (const auto &e : fromEffects)
-      if (isa<MemoryEffects::Read>(e.getEffect()))
-        readResources.insert(e.getResource());
-  }
-
   Operation *nextOp = fromOp->getNextNode();
   auto result =
       memEffectsCache.try_emplace(fromOp, std::make_pair(fromOp, nullptr));
@@ -222,16 +210,8 @@ bool CSEDriver::hasOtherSideEffectingOpInBetween(Operation *fromOp,
 
     for (const MemoryEffects::EffectInstance &effect : *effects) {
       if (isa<MemoryEffects::Write>(effect.getEffect())) {
-        // A write on a resource disjoint from all read resources cannot
-        // conflict with the reads being CSE'd.
-        auto *writeResource = effect.getResource();
-        bool canConflict = llvm::any_of(readResources, [&](auto *readResource) {
-          return !writeResource->isDisjointFrom(readResource);
-        });
-        if (canConflict) {
-          result.first->second = {nextOp, MemoryEffects::Write::get()};
-          return true;
-        }
+        result.first->second = {nextOp, MemoryEffects::Write::get()};
+        return true;
       }
     }
     nextOp = nextOp->getNextNode();
@@ -404,7 +384,7 @@ void mlir::eliminateCommonSubExpressions(RewriterBase &rewriter,
 
 namespace {
 /// CSE pass.
-struct CSE : public impl::CSEPassBase<CSE> {
+struct CSE : public impl::CSEBase<CSE> {
   void runOnOperation() override;
 };
 } // namespace
@@ -428,3 +408,5 @@ void CSE::runOnOperation() {
   // preserved.
   markAnalysesPreserved<DominanceInfo, PostDominanceInfo>();
 }
+
+std::unique_ptr<Pass> mlir::createCSEPass() { return std::make_unique<CSE>(); }

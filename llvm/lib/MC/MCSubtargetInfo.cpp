@@ -259,24 +259,24 @@ MCSubtargetInfo::MCSubtargetInfo(
   InitMCProcessorInfo(CPU, TuneCPU, FS);
 }
 
-const FeatureBitset &MCSubtargetInfo::ToggleFeature(uint64_t FB) {
+FeatureBitset MCSubtargetInfo::ToggleFeature(uint64_t FB) {
   FeatureBits.flip(FB);
   return FeatureBits;
 }
 
-const FeatureBitset &MCSubtargetInfo::ToggleFeature(const FeatureBitset &FB) {
+FeatureBitset MCSubtargetInfo::ToggleFeature(const FeatureBitset &FB) {
   FeatureBits ^= FB;
   return FeatureBits;
 }
 
-const FeatureBitset &
-MCSubtargetInfo::SetFeatureBitsTransitively(const FeatureBitset &FB) {
+FeatureBitset MCSubtargetInfo::SetFeatureBitsTransitively(
+  const FeatureBitset &FB) {
   SetImpliedBits(FeatureBits, FB, ProcFeatures);
   return FeatureBits;
 }
 
-const FeatureBitset &
-MCSubtargetInfo::ClearFeatureBitsTransitively(const FeatureBitset &FB) {
+FeatureBitset MCSubtargetInfo::ClearFeatureBitsTransitively(
+  const FeatureBitset &FB) {
   for (unsigned I = 0, E = FB.size(); I < E; I++) {
     if (FB[I]) {
       FeatureBits.reset(I);
@@ -286,7 +286,7 @@ MCSubtargetInfo::ClearFeatureBitsTransitively(const FeatureBitset &FB) {
   return FeatureBits;
 }
 
-const FeatureBitset &MCSubtargetInfo::ToggleFeature(StringRef Feature) {
+FeatureBitset MCSubtargetInfo::ToggleFeature(StringRef Feature) {
   // Find feature in table.
   const SubtargetFeatureKV *FeatureEntry =
       Find(SubtargetFeatures::StripFlag(Feature), ProcFeatures);
@@ -311,7 +311,7 @@ const FeatureBitset &MCSubtargetInfo::ToggleFeature(StringRef Feature) {
   return FeatureBits;
 }
 
-const FeatureBitset &MCSubtargetInfo::ApplyFeatureFlag(StringRef FS) {
+FeatureBitset MCSubtargetInfo::ApplyFeatureFlag(StringRef FS) {
   ::ApplyFeatureFlag(FeatureBits, FS, ProcFeatures);
   return FeatureBits;
 }

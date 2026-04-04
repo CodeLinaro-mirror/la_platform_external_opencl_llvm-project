@@ -143,6 +143,7 @@ llvm::Expected<std::string> lldb_private::GetLocalhostIP() {
     return "127.0.0.1";
   if (HostSupportsIPv6())
     return "[::1]";
-  return llvm::createStringError(
-      "Neither IPv4 nor IPv6 appear to be supported");
+  return llvm::make_error<llvm::StringError>(
+      "Neither IPv4 nor IPv6 appear to be supported",
+      llvm::inconvertibleErrorCode());
 }

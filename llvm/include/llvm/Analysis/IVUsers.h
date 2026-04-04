@@ -150,8 +150,6 @@ public:
     return Processed.count(Inst);
   }
 
-  bool isEphemeral(const Value *V) const { return EphValues.count(V); }
-
   void releaseMemory();
 
   void print(raw_ostream &OS, const Module * = nullptr) const;

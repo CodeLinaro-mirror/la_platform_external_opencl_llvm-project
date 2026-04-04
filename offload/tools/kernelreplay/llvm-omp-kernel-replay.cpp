@@ -15,7 +15,6 @@
 
 #include "llvm/Frontend/Offloading/Utility.h"
 #include "llvm/Support/CommandLine.h"
-#include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/JSON.h"
 #include "llvm/Support/MemoryBuffer.h"
 
@@ -61,11 +60,11 @@ int main(int argc, char **argv) {
       MemoryBuffer::getFile(InputFilename, /*isText=*/true,
                             /*RequiresNullTerminator=*/true);
   if (!KernelInfoMB)
-    reportFatalUsageError("Error reading the kernel info json file");
+    report_fatal_error("Error reading the kernel info json file");
   Expected<json::Value> JsonKernelInfo =
       json::parse(KernelInfoMB.get()->getBuffer());
   if (auto Err = JsonKernelInfo.takeError())
-    reportFatalUsageError("Cannot parse the kernel info json file");
+    report_fatal_error("Cannot parse the kernel info json file");
 
   auto NumTeamsJson =
       JsonKernelInfo->getAsObject()->getInteger("NumTeamsClause");
@@ -105,7 +104,7 @@ int main(int argc, char **argv) {
       MemoryBuffer::getFile(KernelEntryName + ".image", /*isText=*/false,
                             /*RequiresNullTerminator=*/false);
   if (!ImageMB)
-    reportFatalUsageError("Error reading the kernel image.");
+    report_fatal_error("Error reading the kernel image.");
 
   __tgt_device_image DeviceImage;
   DeviceImage.ImageStart = const_cast<char *>(ImageMB.get()->getBufferStart());
@@ -146,7 +145,7 @@ int main(int argc, char **argv) {
                             /*RequiresNullTerminator=*/false);
 
   if (!DeviceMemoryMB)
-    reportFatalUsageError("Error reading the kernel input device memory.");
+    report_fatal_error("Error reading the kernel input device memory.");
 
   // On AMD for currently unknown reasons we cannot copy memory mapped data to
   // device. This is a work-around.
@@ -179,15 +178,14 @@ int main(int argc, char **argv) {
                               /*isText=*/false,
                               /*RequiresNullTerminator=*/false);
     if (!OriginalOutputMB)
-      reportFatalUsageError(
-          "Error reading the kernel original output file, make sure "
-          "LIBOMPTARGET_SAVE_OUTPUT is set when recording");
+      report_fatal_error("Error reading the kernel original output file, make "
+                         "sure LIBOMPTARGET_SAVE_OUTPUT is set when recording");
     ErrorOr<std::unique_ptr<MemoryBuffer>> ReplayOutputMB =
         MemoryBuffer::getFile(KernelEntryName + ".replay.output",
                               /*isText=*/false,
                               /*RequiresNullTerminator=*/false);
     if (!ReplayOutputMB)
-      reportFatalUsageError("Error reading the kernel replay output file");
+      report_fatal_error("Error reading the kernel replay output file");
 
     StringRef OriginalOutput = OriginalOutputMB.get()->getBuffer();
     StringRef ReplayOutput = ReplayOutputMB.get()->getBuffer();

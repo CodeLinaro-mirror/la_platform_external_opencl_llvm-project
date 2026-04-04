@@ -54,12 +54,6 @@ class AddDebugInfoPass : public fir::impl::AddDebugInfoBase<AddDebugInfoPass> {
                        mlir::LLVM::DIScopeAttr scopeAttr,
                        fir::DebugTypeGenerator &typeGen,
                        mlir::SymbolTable *symbolTable, mlir::Value dummyScope);
-  void handleDeclareValueOp(fir::DeclareValueOp declOp,
-                            mlir::LLVM::DIFileAttr fileAttr,
-                            mlir::LLVM::DIScopeAttr scopeAttr,
-                            fir::DebugTypeGenerator &typeGen,
-                            mlir::SymbolTable *symbolTable,
-                            mlir::Value dummyScope);
 
 public:
   AddDebugInfoPass(fir::AddDebugInfoOptions options) : Base(options) {}
@@ -118,14 +112,6 @@ private:
   getModuleAttrFromGlobalOp(fir::GlobalOp globalOp,
                             mlir::LLVM::DIFileAttr fileAttr,
                             mlir::LLVM::DIScopeAttr scope);
-
-  template <typename Op>
-  void handleLocalVariable(Op declOp, llvm::StringRef name,
-                           mlir::LLVM::DIFileAttr fileAttr,
-                           mlir::LLVM::DIScopeAttr scopeAttr,
-                           fir::DebugTypeGenerator &typeGen,
-                           mlir::Value dummyScope, mlir::Type typeToConvert,
-                           fir::cg::XDeclareOp typeGenDeclOp);
 };
 
 bool debugInfoIsAlreadySet(mlir::Location loc) {
@@ -280,40 +266,14 @@ bool AddDebugInfoPass::createCommonBlockGlobal(
   return true;
 }
 
-template <typename Op>
-void AddDebugInfoPass::handleLocalVariable(Op declOp, llvm::StringRef name,
-                                           mlir::LLVM::DIFileAttr fileAttr,
-                                           mlir::LLVM::DIScopeAttr scopeAttr,
-                                           fir::DebugTypeGenerator &typeGen,
-                                           mlir::Value dummyScope,
-                                           mlir::Type typeToConvert,
-                                           fir::cg::XDeclareOp typeGenDeclOp) {
-  mlir::MLIRContext *context = &getContext();
-  mlir::OpBuilder builder(context);
-
-  // Get the dummy argument position from the explicit attribute.
-  unsigned argNo = 0;
-  if (dummyScope && declOp.getDummyScope() == dummyScope) {
-    if (auto argNoOpt = declOp.getDummyArgNo())
-      argNo = *argNoOpt;
-  }
-
-  auto tyAttr =
-      typeGen.convertType(typeToConvert, fileAttr, scopeAttr, typeGenDeclOp);
-
-  auto localVarAttr = mlir::LLVM::DILocalVariableAttr::get(
-      context, scopeAttr, mlir::StringAttr::get(context, name), fileAttr,
-      getLineFromLoc(declOp.getLoc()), argNo, /* alignInBits*/ 0, tyAttr,
-      mlir::LLVM::DIFlags::Zero);
-  declOp->setLoc(builder.getFusedLoc({declOp->getLoc()}, localVarAttr));
-}
-
 void AddDebugInfoPass::handleDeclareOp(fir::cg::XDeclareOp declOp,
                                        mlir::LLVM::DIFileAttr fileAttr,
                                        mlir::LLVM::DIScopeAttr scopeAttr,
                                        fir::DebugTypeGenerator &typeGen,
                                        mlir::SymbolTable *symbolTable,
                                        mlir::Value dummyScope) {
+  mlir::MLIRContext *context = &getContext();
+  mlir::OpBuilder builder(context);
   auto result = fir::NameUniquer::deconstruct(declOp.getUniqName());
 
   if (result.first != fir::NameUniquer::NameKind::VARIABLE)
@@ -333,23 +293,21 @@ void AddDebugInfoPass::handleDeclareOp(fir::cg::XDeclareOp declOp,
     }
   }
 
-  handleLocalVariable(declOp, result.second.name, fileAttr, scopeAttr, typeGen,
-                      dummyScope, fir::unwrapRefType(declOp.getType()), declOp);
-}
+  // Get the dummy argument position from the explicit attribute.
+  unsigned argNo = 0;
+  if (dummyScope && declOp.getDummyScope() == dummyScope) {
+    if (auto argNoOpt = declOp.getDummyArgNo())
+      argNo = *argNoOpt;
+  }
 
-void AddDebugInfoPass::handleDeclareValueOp(fir::DeclareValueOp declOp,
-                                            mlir::LLVM::DIFileAttr fileAttr,
-                                            mlir::LLVM::DIScopeAttr scopeAttr,
-                                            fir::DebugTypeGenerator &typeGen,
-                                            mlir::SymbolTable *symbolTable,
-                                            mlir::Value dummyScope) {
-  auto result = fir::NameUniquer::deconstruct(declOp.getUniqName());
+  auto tyAttr = typeGen.convertType(fir::unwrapRefType(declOp.getType()),
+                                    fileAttr, scopeAttr, declOp);
 
-  if (result.first != fir::NameUniquer::NameKind::VARIABLE)
-    return;
-
-  handleLocalVariable(declOp, result.second.name, fileAttr, scopeAttr, typeGen,
-                      dummyScope, declOp.getValue().getType(), nullptr);
+  auto localVarAttr = mlir::LLVM::DILocalVariableAttr::get(
+      context, scopeAttr, mlir::StringAttr::get(context, result.second.name),
+      fileAttr, getLineFromLoc(declOp.getLoc()), argNo, /* alignInBits*/ 0,
+      tyAttr, mlir::LLVM::DIFlags::Zero);
+  declOp->setLoc(builder.getFusedLoc({declOp->getLoc()}, localVarAttr));
 }
 
 mlir::LLVM::DICommonBlockAttr AddDebugInfoPass::getOrCreateCommonBlockAttr(
@@ -470,18 +428,6 @@ void AddDebugInfoPass::handleGlobalOp(fir::GlobalOp globalOp,
   globalOp->setLoc(builder.getFusedLoc({globalOp.getLoc()}, arrayAttr));
 }
 
-static mlir::LLVM::DISubprogramAttr
-getScope(mlir::Operation *op, mlir::LLVM::DISubprogramAttr defaultScope) {
-  if (auto tOp = op->getParentOfType<mlir::omp::TargetOp>()) {
-    if (auto fusedLoc = llvm::dyn_cast<mlir::FusedLoc>(tOp.getLoc())) {
-      if (auto sp = llvm::dyn_cast<mlir::LLVM::DISubprogramAttr>(
-              fusedLoc.getMetadata()))
-        return sp;
-    }
-  }
-  return defaultScope;
-}
-
 void AddDebugInfoPass::handleFuncOp(mlir::func::FuncOp funcOp,
                                     mlir::LLVM::DIFileAttr fileAttr,
                                     mlir::LLVM::DICompileUnitAttr cuAttr,
@@ -565,20 +511,6 @@ void AddDebugInfoPass::handleFuncOp(mlir::func::FuncOp funcOp,
     subprogramFlags =
         subprogramFlags | mlir::LLVM::DISubprogramFlags::Definition;
   }
-
-  // Check if the function has the pure, elemental, or recursive procedure
-  // attribute
-  if (fir::hasProcedureAttr<fir::FortranProcedureFlagsEnum::pure>(funcOp))
-    subprogramFlags = subprogramFlags | mlir::LLVM::DISubprogramFlags::Pure;
-
-  if (fir::hasProcedureAttr<fir::FortranProcedureFlagsEnum::elemental>(funcOp))
-    subprogramFlags =
-        subprogramFlags | mlir::LLVM::DISubprogramFlags::Elemental;
-
-  if (fir::hasProcedureAttr<fir::FortranProcedureFlagsEnum::recursive>(funcOp))
-    subprogramFlags =
-        subprogramFlags | mlir::LLVM::DISubprogramFlags::Recursive;
-
   unsigned line = getLineFromLoc(l);
   if (fir::isInternalProcedure(funcOp)) {
     // For contained functions, the scope is the parent subroutine.
@@ -755,13 +687,15 @@ void AddDebugInfoPass::handleFuncOp(mlir::func::FuncOp funcOp,
   });
 
   funcOp.walk([&](fir::cg::XDeclareOp declOp) {
-    mlir::LLVM::DISubprogramAttr spTy = getScope(declOp, spAttr);
+    mlir::LLVM::DISubprogramAttr spTy = spAttr;
+    if (auto tOp = declOp->getParentOfType<mlir::omp::TargetOp>()) {
+      if (auto fusedLoc = llvm::dyn_cast<mlir::FusedLoc>(tOp.getLoc())) {
+        if (auto sp = llvm::dyn_cast<mlir::LLVM::DISubprogramAttr>(
+                fusedLoc.getMetadata()))
+          spTy = sp;
+      }
+    }
     handleDeclareOp(declOp, fileAttr, spTy, typeGen, symbolTable, dummyScope);
-  });
-  funcOp.walk([&](fir::DeclareValueOp declOp) {
-    mlir::LLVM::DISubprogramAttr spTy = getScope(declOp, spAttr);
-    handleDeclareValueOp(declOp, fileAttr, spTy, typeGen, symbolTable,
-                         dummyScope);
   });
   // commonBlockMap ensures that we don't create multiple DICommonBlockAttr of
   // the same name in one function. But it is ok (rather required) to create
@@ -927,16 +861,12 @@ void AddDebugInfoPass::runOnOperation() {
 
   mlir::LLVM::DIFileAttr fileAttr =
       mlir::LLVM::DIFileAttr::get(context, fileName, filePath);
-  // Match Clang style by starting with the full compiler version and
-  // appending -dwarf-debug-flags content when provided.
-  std::string producerString = Fortran::common::getFlangFullVersion();
-  if (!dwarfDebugFlags.empty())
-    producerString += " " + dwarfDebugFlags;
-  mlir::StringAttr producer = mlir::StringAttr::get(context, producerString);
+  mlir::StringAttr producer =
+      mlir::StringAttr::get(context, Fortran::common::getFlangFullVersion());
   mlir::LLVM::DICompileUnitAttr cuAttr = mlir::LLVM::DICompileUnitAttr::get(
       mlir::DistinctAttr::create(mlir::UnitAttr::get(context)),
       llvm::dwarf::getLanguage("DW_LANG_Fortran95"), fileAttr, producer,
-      isOptimized, debugLevel, debugInfoForProfiling,
+      isOptimized, debugLevel,
       /*nameTableKind=*/mlir::LLVM::DINameTableKind::Default,
       splitDwarfFile.empty() ? mlir::StringAttr()
                              : mlir::StringAttr::get(context, splitDwarfFile));

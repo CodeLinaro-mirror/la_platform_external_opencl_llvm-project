@@ -224,7 +224,6 @@ public:
           WRITE_ARG_VAL_SIMPLEST(section.conv_val_raw, ptrdiff_t, conv_index);
           break;
 
-#ifndef LIBC_COPT_PRINTF_DISABLE_BITINT
         case (LengthModifier::w):
         case (LengthModifier::wf):
           if (bw == 0) {
@@ -239,7 +238,6 @@ public:
             WRITE_ARG_VAL_SIMPLEST(section.conv_val_raw, intmax_t, conv_index);
           }
           break;
-#endif // LIBC_COPT_PRINTF_DISABLE_BITINT
         }
         break;
 #ifndef LIBC_COPT_PRINTF_DISABLE_FLOAT
@@ -292,7 +290,7 @@ public:
         WRITE_ARG_VAL_SIMPLEST(section.conv_val_ptr, void *, conv_index);
         break;
       case ('s'):
-        WRITE_ARG_VAL_SIMPLEST(section.conv_val_ptr, void *, conv_index);
+        WRITE_ARG_VAL_SIMPLEST(section.conv_val_ptr, char *, conv_index);
         break;
       default:
         // if the conversion is undefined, change this to a raw section.
@@ -362,7 +360,6 @@ private:
         ++*local_pos;
         return {LengthModifier::l, 0};
       }
-#ifndef LIBC_COPT_PRINTF_DISABLE_BITINT
     case ('w'): {
       LengthModifier lm;
       if (str[*local_pos + 1] == 'f') {
@@ -379,7 +376,6 @@ private:
       }
       return {lm, 0};
     }
-#endif // LIBC_COPT_PRINTF_DISABLE_BITINT
     case ('h'):
       if (str[*local_pos + 1] == 'h') {
         *local_pos += 2;
@@ -633,7 +629,6 @@ private:
           case (LengthModifier::t):
             conv_size = type_desc_from_type<ptrdiff_t>();
             break;
-#ifndef LIBC_COPT_PRINTF_DISABLE_BITINT
           case (LengthModifier::w):
           case (LengthModifier::wf):
             if (bw <= cpp::numeric_limits<unsigned int>::digits) {
@@ -646,7 +641,6 @@ private:
               conv_size = type_desc_from_type<intmax_t>();
             }
             break;
-#endif // LIBC_COPT_PRINTF_DISABLE_BITINT
           }
           break;
 #ifndef LIBC_COPT_PRINTF_DISABLE_FLOAT

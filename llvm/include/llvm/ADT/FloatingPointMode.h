@@ -75,16 +75,16 @@ struct DenormalMode {
     Invalid = -1,
 
     /// IEEE-754 denormal numbers preserved.
-    IEEE = 0,
+    IEEE,
 
     /// The sign of a flushed-to-zero number is preserved in the sign of 0
-    PreserveSign = 1,
+    PreserveSign,
 
     /// Denormals are flushed to positive zero.
-    PositiveZero = 2,
+    PositiveZero,
 
     /// Denormals have unknown treatment.
-    Dynamic = 3
+    Dynamic
   };
 
   /// Denormal flushing mode for floating point instruction results in the
@@ -130,30 +130,19 @@ struct DenormalMode {
     return DenormalMode(DenormalModeKind::Dynamic, DenormalModeKind::Dynamic);
   }
 
-  constexpr uint32_t toIntValue() const {
-    assert(Input != Invalid && Output != Invalid);
-    return (static_cast<uint32_t>(Input) << 2) | static_cast<uint32_t>(Output);
-  }
-
-  static constexpr DenormalMode createFromIntValue(uint32_t Data) {
-    uint32_t OutputMode = Data & 0x3;
-    uint32_t InputMode = (Data >> 2) & 0x3;
-
-    return {static_cast<DenormalModeKind>(OutputMode),
-            static_cast<DenormalModeKind>(InputMode)};
-  }
-
-  constexpr bool operator==(DenormalMode Other) const {
+  bool operator==(DenormalMode Other) const {
     return Output == Other.Output && Input == Other.Input;
   }
 
-  constexpr bool operator!=(DenormalMode Other) const {
+  bool operator!=(DenormalMode Other) const {
     return !(*this == Other);
   }
 
-  constexpr bool isSimple() const { return Input == Output; }
+  bool isSimple() const {
+    return Input == Output;
+  }
 
-  constexpr bool isValid() const {
+  bool isValid() const {
     return Output != DenormalModeKind::Invalid &&
            Input != DenormalModeKind::Invalid;
   }
@@ -195,7 +184,7 @@ struct DenormalMode {
   /// Get the effective denormal mode if the mode if this caller calls into a
   /// function with \p Callee. This promotes dynamic modes to the mode of the
   /// caller.
-  constexpr DenormalMode mergeCalleeMode(DenormalMode Callee) const {
+  DenormalMode mergeCalleeMode(DenormalMode Callee) const {
     DenormalMode MergedMode = Callee;
     if (Callee.Input == DenormalMode::Dynamic)
       MergedMode.Input = Input;
@@ -204,8 +193,7 @@ struct DenormalMode {
     return MergedMode;
   }
 
-  inline void print(raw_ostream &OS, bool Legacy = true,
-                    bool OmitIfSame = false) const;
+  inline void print(raw_ostream &OS) const;
 
   inline std::string str() const {
     std::string storage;
@@ -226,23 +214,22 @@ parseDenormalFPAttributeComponent(StringRef Str) {
   // Assume ieee on unspecified attribute.
   return StringSwitch<DenormalMode::DenormalModeKind>(Str)
       .Cases({"", "ieee"}, DenormalMode::IEEE)
-      .Cases({"preservesign", "preserve-sign"}, DenormalMode::PreserveSign)
-      .Cases({"positivezero", "positive-zero"}, DenormalMode::PositiveZero)
+      .Case("preserve-sign", DenormalMode::PreserveSign)
+      .Case("positive-zero", DenormalMode::PositiveZero)
       .Case("dynamic", DenormalMode::Dynamic)
       .Default(DenormalMode::Invalid);
 }
 
 /// Return the name used for the denormal handling mode used by the
 /// expected names from the denormal-fp-math attribute.
-constexpr StringRef denormalModeKindName(DenormalMode::DenormalModeKind Mode,
-                                         bool LegacyName = true) {
+inline StringRef denormalModeKindName(DenormalMode::DenormalModeKind Mode) {
   switch (Mode) {
   case DenormalMode::IEEE:
     return "ieee";
   case DenormalMode::PreserveSign:
-    return LegacyName ? "preserve-sign" : "preservesign";
+    return "preserve-sign";
   case DenormalMode::PositiveZero:
-    return LegacyName ? "positive-zero" : "positivezero";
+    return "positive-zero";
   case DenormalMode::Dynamic:
     return "dynamic";
   default:
@@ -266,71 +253,8 @@ inline DenormalMode parseDenormalFPAttribute(StringRef Str) {
   return Mode;
 }
 
-void DenormalMode::print(raw_ostream &OS, bool Legacy, bool OmitIfSame) const {
-  OS << denormalModeKindName(Output, Legacy);
-  if (!OmitIfSame || Input != Output) {
-    OS << (Legacy ? ',' : '|');
-    OS << denormalModeKindName(Input, Legacy);
-  }
-}
-
-/// Represents the full denormal controls for a function, including the default
-/// mode and the f32 specific override.
-struct DenormalFPEnv {
-private:
-  static constexpr unsigned BitsPerEntry = 2;
-  static constexpr unsigned BitsPerMode = 4;
-  static constexpr unsigned ModeMask = (1 << BitsPerMode) - 1;
-
-public:
-  DenormalMode DefaultMode;
-  DenormalMode F32Mode;
-
-  constexpr DenormalFPEnv(DenormalMode BaseMode,
-                          DenormalMode FloatMode = DenormalMode::getInvalid())
-      : DefaultMode(BaseMode),
-        F32Mode(FloatMode.Output == DenormalMode::Invalid ? BaseMode.Output
-                                                          : FloatMode.Output,
-                FloatMode.Input == DenormalMode::Invalid ? BaseMode.Input
-                                                         : FloatMode.Input) {}
-
-  static constexpr DenormalFPEnv getDefault() {
-    return DenormalFPEnv(DenormalMode::getIEEE(), DenormalMode::getIEEE());
-  }
-
-  constexpr uint32_t toIntValue() const {
-    assert(DefaultMode.isValid() && F32Mode.isValid());
-    uint32_t Data =
-        DefaultMode.toIntValue() | (F32Mode.toIntValue() << BitsPerMode);
-
-    assert(isUInt<8>(Data));
-    return Data;
-  }
-
-  static constexpr DenormalFPEnv createFromIntValue(uint32_t Data) {
-    return {DenormalMode::createFromIntValue(Data),
-            DenormalMode::createFromIntValue(Data >> BitsPerMode)};
-  }
-
-  constexpr bool operator==(DenormalFPEnv Other) const {
-    return DefaultMode == Other.DefaultMode && F32Mode == Other.F32Mode;
-  }
-
-  constexpr bool operator!=(DenormalFPEnv Other) const {
-    return !(*this == Other);
-  }
-
-  LLVM_ABI void print(raw_ostream &OS, bool OmitIfSame = true) const;
-
-  DenormalFPEnv mergeCalleeMode(DenormalFPEnv Callee) const {
-    return DenormalFPEnv{DefaultMode.mergeCalleeMode(Callee.DefaultMode),
-                         F32Mode.mergeCalleeMode(Callee.F32Mode)};
-  }
-};
-
-inline raw_ostream &operator<<(raw_ostream &OS, DenormalFPEnv FPEnv) {
-  FPEnv.print(OS);
-  return OS;
+void DenormalMode::print(raw_ostream &OS) const {
+  OS << denormalModeKindName(Output) << ',' << denormalModeKindName(Input);
 }
 
 /// Floating-point class tests, supported by 'is_fpclass' intrinsic. Actual

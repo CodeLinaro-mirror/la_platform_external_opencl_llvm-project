@@ -294,25 +294,6 @@ InstructionCost WebAssemblyTTIImpl::getMemoryOpCost(
   return BaseT::getMemoryOpCost(Opcode, Ty, Alignment, AddressSpace, CostKind);
 }
 
-InstructionCost WebAssemblyTTIImpl::getShuffleCost(
-    TTI::ShuffleKind Kind, VectorType *DstTy, VectorType *SrcTy,
-    ArrayRef<int> Mask, TTI::TargetCostKind CostKind, int Index,
-    VectorType *SubTp, ArrayRef<const Value *> Args,
-    const Instruction *CxtI) const {
-  // Canonicalize the ShuffleKind in case optimizations didn't.
-  //  Otherwise, we might end up with the wrong ShuffleKind to match against.
-
-  Kind = improveShuffleKindFromMask(Kind, Mask, SrcTy, Index, SubTp);
-
-  // Wasm SIMD128 has native splat instructions for all lane types.
-  if (ST->hasSIMD128() && Kind == TTI::SK_Broadcast &&
-      isa<FixedVectorType>(SrcTy))
-    return 1;
-
-  return BaseT::getShuffleCost(Kind, DstTy, SrcTy, Mask, CostKind, Index, SubTp,
-                               Args, CxtI);
-}
-
 InstructionCost WebAssemblyTTIImpl::getInterleavedMemoryOpCost(
     unsigned Opcode, Type *Ty, unsigned Factor, ArrayRef<unsigned> Indices,
     Align Alignment, unsigned AddressSpace, TTI::TargetCostKind CostKind,
@@ -402,9 +383,9 @@ InstructionCost WebAssemblyTTIImpl::getInterleavedMemoryOpCost(
 
 InstructionCost WebAssemblyTTIImpl::getVectorInstrCost(
     unsigned Opcode, Type *Val, TTI::TargetCostKind CostKind, unsigned Index,
-    const Value *Op0, const Value *Op1, TTI::VectorInstrContext VIC) const {
+    const Value *Op0, const Value *Op1) const {
   InstructionCost Cost = BasicTTIImplBase::getVectorInstrCost(
-      Opcode, Val, CostKind, Index, Op0, Op1, VIC);
+      Opcode, Val, CostKind, Index, Op0, Op1);
 
   // SIMD128's insert/extract currently only take constant indices.
   if (Index == -1u)
@@ -417,7 +398,7 @@ InstructionCost WebAssemblyTTIImpl::getPartialReductionCost(
     unsigned Opcode, Type *InputTypeA, Type *InputTypeB, Type *AccumType,
     ElementCount VF, TTI::PartialReductionExtendKind OpAExtend,
     TTI::PartialReductionExtendKind OpBExtend, std::optional<unsigned> BinOp,
-    TTI::TargetCostKind CostKind, std::optional<FastMathFlags> FMF) const {
+    TTI::TargetCostKind CostKind) const {
   InstructionCost Invalid = InstructionCost::getInvalid();
   if (!VF.isFixed() || !ST->hasSIMD128())
     return Invalid;
@@ -470,6 +451,19 @@ InstructionCost WebAssemblyTTIImpl::getPartialReductionCost(
     return OpAExtend == TTI::PR_SignExtend ? Cost * 2 : Cost * 4;
 
   return Invalid;
+}
+
+InstructionCost
+WebAssemblyTTIImpl::getIntrinsicInstrCost(const IntrinsicCostAttributes &ICA,
+                                          TTI::TargetCostKind CostKind) const {
+  switch (ICA.getID()) {
+  case Intrinsic::experimental_vector_extract_last_active:
+    // TODO: Remove once the intrinsic can be lowered without crashes.
+    return InstructionCost::getInvalid();
+  default:
+    break;
+  }
+  return BaseT::getIntrinsicInstrCost(ICA, CostKind);
 }
 
 TTI::ReductionShuffle WebAssemblyTTIImpl::getPreferredExpandedReductionShuffle(

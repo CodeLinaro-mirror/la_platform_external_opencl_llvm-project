@@ -22,7 +22,7 @@ MCAsmInfoWasm::MCAsmInfoWasm() {
   HasIdentDirective = true;
   HasNoDeadStrip = true;
   WeakRefDirective = "\t.weak\t";
-  InternalSymbolPrefix = ".L";
+  PrivateGlobalPrefix = ".L";
   PrivateLabelPrefix = ".L";
 }
 

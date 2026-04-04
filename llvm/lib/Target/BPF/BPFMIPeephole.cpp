@@ -227,8 +227,7 @@ bool BPFMIPeephole::eliminateZExtSeq() {
         }
 
         BuildMI(MBB, MI, MI.getDebugLoc(), TII->get(BPF::SUBREG_TO_REG), DstReg)
-            .addReg(SubReg)
-            .addImm(BPF::sub_32);
+          .addImm(0).addReg(SubReg).addImm(BPF::sub_32);
 
         SllMI->eraseFromParent();
         MovMI->eraseFromParent();
@@ -279,8 +278,7 @@ bool BPFMIPeephole::eliminateZExt() {
 
       // Build a SUBREG_TO_REG instruction.
       BuildMI(MBB, MI, MI.getDebugLoc(), TII->get(BPF::SUBREG_TO_REG), dst)
-          .addReg(src)
-          .addImm(BPF::sub_32);
+        .addImm(0).addReg(src).addImm(BPF::sub_32);
 
       ToErase = &MI;
       Eliminated = true;

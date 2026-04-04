@@ -13,7 +13,7 @@
 
 namespace llvm::sandboxir {
 
-RegionsFromBBs::RegionsFromBBs(StringRef Pipeline, StringRef AuxArg)
+RegionsFromBBs::RegionsFromBBs(StringRef Pipeline)
     : FunctionPass("regions-from-bbs"),
       RPM("rpm", Pipeline, SandboxVectorizerPassBuilder::createRegionPass) {}
 

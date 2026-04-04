@@ -381,16 +381,14 @@ SemanticsContext::SemanticsContext(
     const common::IntrinsicTypeDefaultKinds &defaultKinds,
     const common::LanguageFeatureControl &languageFeatures,
     const common::LangOptions &langOpts,
-    parser::AllCookedSources &allCookedSources,
-    common::FPMaxminBehavior fpMaxminBehavior)
+    parser::AllCookedSources &allCookedSources)
     : defaultKinds_{defaultKinds}, languageFeatures_{languageFeatures},
       langOpts_{langOpts}, allCookedSources_{allCookedSources},
       intrinsics_{evaluate::IntrinsicProcTable::Configure(defaultKinds_)},
       globalScope_{*this}, intrinsicModulesScope_{globalScope_.MakeScope(
                                Scope::Kind::IntrinsicModules, nullptr)},
       foldingContext_{parser::ContextualMessages{&messages_}, defaultKinds_,
-          intrinsics_, targetCharacteristics_, languageFeatures_, tempNames_,
-          fpMaxminBehavior} {}
+          intrinsics_, targetCharacteristics_, languageFeatures_, tempNames_} {}
 
 SemanticsContext::~SemanticsContext() {}
 
@@ -820,11 +818,6 @@ bool SemanticsContext::IsSymbolDefined(const Symbol &symbol) const {
 
 void SemanticsContext::NoteUsedSymbol(const Symbol &symbol) {
   isUsed_.insert(symbol);
-}
-void SemanticsContext::NoteUsedSymbols(const UnorderedSymbolSet &set) {
-  for (const Symbol &symbol : set) {
-    NoteUsedSymbol(symbol);
-  }
 }
 
 bool SemanticsContext::IsSymbolUsed(const Symbol &symbol) const {

@@ -65,7 +65,6 @@
 #include "llvm/Analysis/ProfileSummaryInfo.h"
 #include "llvm/CGData/CodeGenDataReader.h"
 #include "llvm/CodeGen/LivePhysRegs.h"
-#include "llvm/CodeGen/MachineInstrBundle.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
 #include "llvm/CodeGen/MachineOptimizationRemarkEmitter.h"
 #include "llvm/CodeGen/Passes.h"
@@ -972,12 +971,6 @@ MachineFunction *MachineOutliner::createOutlinedFunction(
       MachineInstr &NewMI = TII.duplicate(MBB, MBB.end(), MI);
       NewMI.dropMemRefs(MF);
       NewMI.setDebugLoc(DL);
-      // Also clear debug locations on any bundled instructions.
-      if (NewMI.isBundledWithSucc()) {
-        auto BundleEnd = getBundleEnd(NewMI.getIterator());
-        for (auto I = std::next(NewMI.getIterator()); I != BundleEnd; ++I)
-          I->setDebugLoc(DL);
-      }
     }
   }
 
@@ -1262,7 +1255,7 @@ void MachineOutliner::populateMapper(InstructionMapper &Mapper, Module &M) {
   for (Function &F : M) {
     LLVM_DEBUG(dbgs() << "MAPPING FUNCTION: " << F.getName() << "\n");
 
-    if (F.hasFnAttribute(Attribute::NoOutline)) {
+    if (F.hasFnAttribute("nooutline")) {
       LLVM_DEBUG(dbgs() << "SKIP: Function has nooutline attribute\n");
       continue;
     }

@@ -149,22 +149,9 @@ void CIRGenerator::HandleTagDeclDefinition(TagDecl *d) {
   // inline initializers as definitions.
   if (astContext->getTargetInfo().getCXXABI().isMicrosoft())
     cgm->errorNYI(d->getSourceRange(), "HandleTagDeclDefinition: MSABI");
-
-  // For OpenMP emit declare reduction functions or declare mapper, if
-  // required.
-  if (astContext->getLangOpts().OpenMP) {
-    for (Decl *member : d->decls()) {
-      if (auto *drd = dyn_cast<OMPDeclareReductionDecl>(member)) {
-        if (astContext->DeclMustBeEmitted(drd))
-          cgm->errorNYI(d->getSourceRange(),
-                        "HandleTagDeclDefinition: OMPDeclareReductionDecl");
-      } else if (auto *dmd = dyn_cast<OMPDeclareMapperDecl>(member)) {
-        if (astContext->DeclMustBeEmitted(dmd))
-          cgm->errorNYI(d->getSourceRange(),
-                        "HandleTagDeclDefinition: OMPDeclareMapperDecl");
-      }
-    }
-  }
+  // For OpenMP emit declare reduction functions, if required.
+  if (astContext->getLangOpts().OpenMP)
+    cgm->errorNYI(d->getSourceRange(), "HandleTagDeclDefinition: OpenMP");
 }
 
 void CIRGenerator::HandleTagDeclRequiredDefinition(const TagDecl *D) {

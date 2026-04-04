@@ -60,14 +60,6 @@ static bool isNonTLSGlobalVar(const Decl *D) {
   return false;
 }
 
-static bool isExternalGlobalVar(const Decl *D) {
-  if (const auto *S = dyn_cast<VarDecl>(D))
-    return S->hasGlobalStorage() &&
-                               S->getStorageClass()!=StorageClass::SC_Static &&
-                               !S->isLocalExternDecl();
-  return false;
-}
-
 static bool isHLSLEntry(const Decl *D) {
   if (const auto *S = dyn_cast<FunctionDecl>(D))
     return S->isExternallyVisible() && !isa<CXXMethodDecl>(S);
@@ -80,19 +72,19 @@ static bool isHLSLBufferObj(const Decl *D) {
   return false;
 }
 
+static bool isExternalGlobalVar(const Decl *D) {
+  if (const auto *S = dyn_cast<VarDecl>(D))
+    return S->hasGlobalStorage() &&
+                               S->getStorageClass()!=StorageClass::SC_Static &&
+                               !S->isLocalExternDecl();
+  return false;
+}
+
 static bool isHLSLInputBuiltin(const Decl *D) {
   if (const auto *S = dyn_cast<VarDecl>(D))
     return S->hasGlobalStorage() &&
                            S->getStorageClass() == StorageClass::SC_Static &&
                            S->getType().isConstQualified();
-  return false;
-}
-
-static bool isHLSLOutputBuiltin(const Decl *D) {
-  if (const auto *S = dyn_cast<VarDecl>(D))
-    return S->hasGlobalStorage() &&
-                           S->getStorageClass() == StorageClass::SC_Static &&
-                           !S->getType().isConstQualified();
   return false;
 }
 
@@ -488,7 +480,7 @@ struct ParsedAttrInfoInterrupt final : public ParsedAttrInfo {
     /*ArgNames=*/InterruptArgNames) {}
 bool existsInTarget(const TargetInfo &Target) const override {
   const llvm::Triple &T = Target.getTriple(); (void)T;
-  return true && (T.getArch() == llvm::Triple::arm || T.getArch() == llvm::Triple::thumb || T.getArch() == llvm::Triple::armeb || T.getArch() == llvm::Triple::thumbeb || T.getArch() == llvm::Triple::avr || T.getArch() == llvm::Triple::x86 || T.getArch() == llvm::Triple::x86_64 || T.getArch() == llvm::Triple::m68k || T.getArch() == llvm::Triple::msp430 || T.getArch() == llvm::Triple::mips || T.getArch() == llvm::Triple::mipsel || T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64 || T.getArch() == llvm::Triple::riscv32be || T.getArch() == llvm::Triple::riscv64be);
+  return true && (T.getArch() == llvm::Triple::arm || T.getArch() == llvm::Triple::thumb || T.getArch() == llvm::Triple::armeb || T.getArch() == llvm::Triple::thumbeb || T.getArch() == llvm::Triple::avr || T.getArch() == llvm::Triple::x86 || T.getArch() == llvm::Triple::x86_64 || T.getArch() == llvm::Triple::m68k || T.getArch() == llvm::Triple::msp430 || T.getArch() == llvm::Triple::mips || T.getArch() == llvm::Triple::mipsel || T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64);
 }
 
 bool isParamExpr(size_t N) const override {
@@ -7371,12 +7363,12 @@ static constexpr ParsedAttrInfo::Spelling GuardedBySpellings[] = {
   {AttributeCommonInfo::AS_GNU, "guarded_by"},
 };
 static constexpr const char *GuardedByArgNames[] = {
-"Args...",};
+"Arg",};
 struct ParsedAttrInfoGuardedBy final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoGuardedBy() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_GuardedBy,
-    /*NumArgs=*/0,
-    /*OptArgs=*/15,
+    /*NumArgs=*/1,
+    /*OptArgs=*/0,
     /*NumArgMembers=*/1,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
@@ -7563,49 +7555,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLAppliedSemantic Instance;
 };
 const ParsedAttrInfoHLSLAppliedSemantic ParsedAttrInfoHLSLAppliedSemantic::Instance;
-static constexpr const char *HLSLAssociatedResourceDeclArgNames[] = {
-"ResDecl",};
-struct ParsedAttrInfoHLSLAssociatedResourceDecl final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoHLSLAssociatedResourceDecl() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_HLSLAssociatedResourceDecl,
-    /*NumArgs=*/1,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/1,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/0,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/0,
-    /*Spellings=*/{},
-    /*ArgNames=*/HLSLAssociatedResourceDeclArgNames) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isExternalGlobalVar(D)) {
-    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "external global variables";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-bool acceptsLangOpts(const LangOptions &LangOpts) const override {
-  return LangOpts.HLSL;
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoHLSLAssociatedResourceDecl Instance;
-};
-const ParsedAttrInfoHLSLAssociatedResourceDecl ParsedAttrInfoHLSLAssociatedResourceDecl::Instance;
 static constexpr ParsedAttrInfo::Spelling HLSLContainedTypeSpellings[] = {
   {AttributeCommonInfo::AS_CXX11, "hlsl::contained_type"},
 };
@@ -8145,37 +8094,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLResourceClass Instance;
 };
 const ParsedAttrInfoHLSLResourceClass ParsedAttrInfoHLSLResourceClass::Instance;
-static constexpr ParsedAttrInfo::Spelling HLSLResourceDimensionSpellings[] = {
-  {AttributeCommonInfo::AS_CXX11, "hlsl::dimension"},
-};
-static constexpr const char *HLSLResourceDimensionArgNames[] = {
-"Dimension",};
-struct ParsedAttrInfoHLSLResourceDimension final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoHLSLResourceDimension() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_HLSLResourceDimension,
-    /*NumArgs=*/1,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/1,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/1,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/0,
-    /*Spellings=*/HLSLResourceDimensionSpellings,
-    /*ArgNames=*/HLSLResourceDimensionArgNames) {}
-bool acceptsLangOpts(const LangOptions &LangOpts) const override {
-  return LangOpts.HLSL;
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoHLSLResourceDimension Instance;
-};
-const ParsedAttrInfoHLSLResourceDimension ParsedAttrInfoHLSLResourceDimension::Instance;
 static constexpr ParsedAttrInfo::Spelling HLSLShaderSpellings[] = {
   {AttributeCommonInfo::AS_Microsoft, "shader"},
 };
@@ -8403,52 +8321,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoHLSLVkExtBuiltinInput Instance;
 };
 const ParsedAttrInfoHLSLVkExtBuiltinInput ParsedAttrInfoHLSLVkExtBuiltinInput::Instance;
-static constexpr ParsedAttrInfo::Spelling HLSLVkExtBuiltinOutputSpellings[] = {
-  {AttributeCommonInfo::AS_CXX11, "vk::ext_builtin_output"},
-};
-static constexpr const char *HLSLVkExtBuiltinOutputArgNames[] = {
-"BuiltIn",};
-struct ParsedAttrInfoHLSLVkExtBuiltinOutput final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoHLSLVkExtBuiltinOutput() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_HLSLVkExtBuiltinOutput,
-    /*NumArgs=*/1,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/1,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/0,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/0,
-    /*Spellings=*/HLSLVkExtBuiltinOutputSpellings,
-    /*ArgNames=*/HLSLVkExtBuiltinOutputArgNames) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isHLSLOutputBuiltin(D)) {
-    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "non-const static globals";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-bool acceptsLangOpts(const LangOptions &LangOpts) const override {
-  return LangOpts.HLSL;
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoHLSLVkExtBuiltinOutput Instance;
-};
-const ParsedAttrInfoHLSLVkExtBuiltinOutput ParsedAttrInfoHLSLVkExtBuiltinOutput::Instance;
 static constexpr ParsedAttrInfo::Spelling HLSLVkLocationSpellings[] = {
   {AttributeCommonInfo::AS_CXX11, "vk::location"},
 };
@@ -11362,52 +11234,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoNoEscape Instance;
 };
 const ParsedAttrInfoNoEscape ParsedAttrInfoNoEscape::Instance;
-static constexpr ParsedAttrInfo::Spelling NoFieldProtectionSpellings[] = {
-  {AttributeCommonInfo::AS_GNU, "no_field_protection"},
-  {AttributeCommonInfo::AS_CXX11, "clang::no_field_protection"},
-  {AttributeCommonInfo::AS_C23, "clang::no_field_protection"},
-};
-struct ParsedAttrInfoNoFieldProtection final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoNoFieldProtection() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_NoFieldProtection,
-    /*NumArgs=*/0,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/1,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/1,
-    /*Spellings=*/NoFieldProtectionSpellings,
-    /*ArgNames=*/{}) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isa<FieldDecl>(D)) {
-    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "non-static data members";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_field, /*IsSupported=*/true));
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoNoFieldProtection Instance;
-};
-const ParsedAttrInfoNoFieldProtection ParsedAttrInfoNoFieldProtection::Instance;
 static constexpr ParsedAttrInfo::Spelling NoInlineSpellings[] = {
   {AttributeCommonInfo::AS_Keyword, "__noinline__"},
   {AttributeCommonInfo::AS_GNU, "noinline"},
@@ -11682,59 +11508,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoNoMips16 Instance;
 };
 const ParsedAttrInfoNoMips16 ParsedAttrInfoNoMips16::Instance;
-static constexpr ParsedAttrInfo::Spelling NoOutlineSpellings[] = {
-  {AttributeCommonInfo::AS_GNU, "no_outline"},
-  {AttributeCommonInfo::AS_CXX11, "clang::no_outline"},
-  {AttributeCommonInfo::AS_C23, "clang::no_outline"},
-};
-struct ParsedAttrInfoNoOutline final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoNoOutline() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_NoOutline,
-    /*NumArgs=*/0,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/0,
-    /*IsStmt=*/1,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/1,
-    /*Spellings=*/NoOutlineSpellings,
-    /*ArgNames=*/{}) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isa<FunctionDecl>(D) && !isa<ObjCMethodDecl>(D) && !isa<BlockDecl>(D)) {
-    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "functions, Objective-C methods, and blocks";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_objc_method, /*IsSupported=*/LangOpts.ObjC));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_block, /*IsSupported=*/LangOpts.Blocks));
-}
-
-AttrHandling handleDeclAttribute(Sema &S, Decl *D,const ParsedAttr &Attr) const override {
-  D->addAttr(::new (S.Context) NoOutlineAttr(S.Context, Attr));
-  return AttributeApplied;
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoNoOutline Instance;
-};
-const ParsedAttrInfoNoOutline ParsedAttrInfoNoOutline::Instance;
 static constexpr ParsedAttrInfo::Spelling NoProfileFunctionSpellings[] = {
   {AttributeCommonInfo::AS_GNU, "no_profile_instrument_function"},
   {AttributeCommonInfo::AS_CXX11, "gnu::no_profile_instrument_function"},
@@ -14933,56 +14706,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoOptimizeNone Instance;
 };
 const ParsedAttrInfoOptimizeNone ParsedAttrInfoOptimizeNone::Instance;
-static constexpr ParsedAttrInfo::Spelling OverflowBehaviorSpellings[] = {
-  {AttributeCommonInfo::AS_GNU, "overflow_behavior"},
-  {AttributeCommonInfo::AS_CXX11, "clang::overflow_behavior"},
-  {AttributeCommonInfo::AS_C23, "clang::overflow_behavior"},
-};
-static constexpr const char *OverflowBehaviorArgNames[] = {
-"BehaviorKind",};
-struct ParsedAttrInfoOverflowBehavior final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoOverflowBehavior() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_OverflowBehavior,
-    /*NumArgs=*/1,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/1,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/1,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/1,
-    /*Spellings=*/OverflowBehaviorSpellings,
-    /*ArgNames=*/OverflowBehaviorArgNames) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isa<VarDecl>(D) && !isa<TypedefNameDecl>(D) && !isa<FieldDecl>(D)) {
-    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "variables, typedefs, and data members";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_type_alias, /*IsSupported=*/true));
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_field, /*IsSupported=*/true));
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoOverflowBehavior Instance;
-};
-const ParsedAttrInfoOverflowBehavior ParsedAttrInfoOverflowBehavior::Instance;
 static constexpr ParsedAttrInfo::Spelling OverloadableSpellings[] = {
   {AttributeCommonInfo::AS_GNU, "overloadable"},
   {AttributeCommonInfo::AS_CXX11, "clang::overloadable"},
@@ -15388,7 +15111,7 @@ bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const o
 
 bool existsInTarget(const TargetInfo &Target) const override {
   const llvm::Triple &T = Target.getTriple(); (void)T;
-  return true && (T.getArch() == llvm::Triple::aarch64 || T.getArch() == llvm::Triple::aarch64_be || T.getArch() == llvm::Triple::loongarch32 || T.getArch() == llvm::Triple::loongarch64 || T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64 || T.getArch() == llvm::Triple::x86 || T.getArch() == llvm::Triple::x86_64 || T.getArch() == llvm::Triple::ppc || T.getArch() == llvm::Triple::ppc64 || T.getArch() == llvm::Triple::ppc64le || T.getArch() == llvm::Triple::systemz);
+  return true && (T.getArch() == llvm::Triple::aarch64 || T.getArch() == llvm::Triple::aarch64_be || T.getArch() == llvm::Triple::loongarch32 || T.getArch() == llvm::Triple::loongarch64 || T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64 || T.getArch() == llvm::Triple::x86 || T.getArch() == llvm::Triple::x86_64 || T.getArch() == llvm::Triple::ppc || T.getArch() == llvm::Triple::ppc64 || T.getArch() == llvm::Triple::ppc64le);
 }
 
 void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
@@ -15432,54 +15155,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoPcs Instance;
 };
 const ParsedAttrInfoPcs ParsedAttrInfoPcs::Instance;
-static constexpr ParsedAttrInfo::Spelling PersonalitySpellings[] = {
-  {AttributeCommonInfo::AS_GNU, "personality"},
-  {AttributeCommonInfo::AS_CXX11, "clang::personality"},
-  {AttributeCommonInfo::AS_C23, "clang::personality"},
-};
-static constexpr const char *PersonalityArgNames[] = {
-"Routine",};
-struct ParsedAttrInfoPersonality final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoPersonality() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_Personality,
-    /*NumArgs=*/1,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/1,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/0,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/1,
-    /*Spellings=*/PersonalitySpellings,
-    /*ArgNames=*/PersonalityArgNames) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isa<FunctionDecl>(D)) {
-    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "functions";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_function, /*IsSupported=*/true));
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoPersonality Instance;
-};
-const ParsedAttrInfoPersonality ParsedAttrInfoPersonality::Instance;
 static constexpr ParsedAttrInfo::Spelling PointerSpellings[] = {
   {AttributeCommonInfo::AS_CXX11, "gsl::Pointer"},
 };
@@ -15564,57 +15239,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoPointerAuth Instance;
 };
 const ParsedAttrInfoPointerAuth ParsedAttrInfoPointerAuth::Instance;
-static constexpr ParsedAttrInfo::Spelling PointerFieldProtectionSpellings[] = {
-  {AttributeCommonInfo::AS_GNU, "pointer_field_protection"},
-  {AttributeCommonInfo::AS_CXX11, "clang::pointer_field_protection"},
-  {AttributeCommonInfo::AS_C23, "clang::pointer_field_protection"},
-};
-struct ParsedAttrInfoPointerFieldProtection final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoPointerFieldProtection() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_PointerFieldProtection,
-    /*NumArgs=*/0,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/1,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/1,
-    /*Spellings=*/PointerFieldProtectionSpellings,
-    /*ArgNames=*/{}) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isa<CXXRecordDecl>(D)) {
-    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "classes";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_record, /*IsSupported=*/true));
-}
-
-AttrHandling handleDeclAttribute(Sema &S, Decl *D,const ParsedAttr &Attr) const override {
-  D->addAttr(::new (S.Context) PointerFieldProtectionAttr(S.Context, Attr));
-  return AttributeApplied;
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoPointerFieldProtection Instance;
-};
-const ParsedAttrInfoPointerFieldProtection ParsedAttrInfoPointerFieldProtection::Instance;
 static constexpr const char *PragmaClangBSSSectionArgNames[] = {
 "Name",};
 struct ParsedAttrInfoPragmaClangBSSSection final : public ParsedAttrInfo {
@@ -16006,12 +15630,12 @@ static constexpr ParsedAttrInfo::Spelling PtGuardedBySpellings[] = {
   {AttributeCommonInfo::AS_GNU, "pt_guarded_by"},
 };
 static constexpr const char *PtGuardedByArgNames[] = {
-"Args...",};
+"Arg",};
 struct ParsedAttrInfoPtGuardedBy final : public ParsedAttrInfo {
   constexpr ParsedAttrInfoPtGuardedBy() : ParsedAttrInfo(
     /*AttrKind=*/ParsedAttr::AT_PtGuardedBy,
-    /*NumArgs=*/0,
-    /*OptArgs=*/15,
+    /*NumArgs=*/1,
+    /*OptArgs=*/0,
     /*NumArgMembers=*/1,
     /*HasCustomParsing=*/0,
     /*AcceptsExprPack=*/0,
@@ -16235,7 +15859,7 @@ struct ParsedAttrInfoRISCVVLSCC final : public ParsedAttrInfo {
     /*ArgNames=*/RISCVVLSCCArgNames) {}
 bool existsInTarget(const TargetInfo &Target) const override {
   const llvm::Triple &T = Target.getTriple(); (void)T;
-  return true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64 || T.getArch() == llvm::Triple::riscv32be || T.getArch() == llvm::Triple::riscv64be);
+  return true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64);
 }
 
 unsigned spellingIndexToSemanticSpelling(const ParsedAttr &Attr) const override {
@@ -16291,7 +15915,7 @@ struct ParsedAttrInfoRISCVVectorCC final : public ParsedAttrInfo {
     /*ArgNames=*/{}) {}
 bool existsInTarget(const TargetInfo &Target) const override {
   const llvm::Triple &T = Target.getTriple(); (void)T;
-  return true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64 || T.getArch() == llvm::Triple::riscv32be || T.getArch() == llvm::Triple::riscv64be);
+  return true && (T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64);
 }
 
 unsigned spellingIndexToSemanticSpelling(const ParsedAttr &Attr) const override {
@@ -17750,57 +17374,6 @@ bool isParamExpr(size_t N) const override {
 static const ParsedAttrInfoSpeculativeLoadHardening Instance;
 };
 const ParsedAttrInfoSpeculativeLoadHardening ParsedAttrInfoSpeculativeLoadHardening::Instance;
-static constexpr ParsedAttrInfo::Spelling StackProtectorIgnoreSpellings[] = {
-  {AttributeCommonInfo::AS_GNU, "stack_protector_ignore"},
-  {AttributeCommonInfo::AS_CXX11, "clang::stack_protector_ignore"},
-  {AttributeCommonInfo::AS_C23, "clang::stack_protector_ignore"},
-};
-struct ParsedAttrInfoStackProtectorIgnore final : public ParsedAttrInfo {
-  constexpr ParsedAttrInfoStackProtectorIgnore() : ParsedAttrInfo(
-    /*AttrKind=*/ParsedAttr::AT_StackProtectorIgnore,
-    /*NumArgs=*/0,
-    /*OptArgs=*/0,
-    /*NumArgMembers=*/0,
-    /*HasCustomParsing=*/0,
-    /*AcceptsExprPack=*/0,
-    /*IsTargetSpecific=*/0,
-    /*IsType=*/0,
-    /*IsStmt=*/0,
-    /*IsKnownToGCC=*/0,
-    /*IsSupportedByPragmaAttribute=*/1,
-    /*Spellings=*/StackProtectorIgnoreSpellings,
-    /*ArgNames=*/{}) {}
-bool diagAppertainsToDecl(Sema &S, const ParsedAttr &Attr, const Decl *D) const override {
-  if (!isLocalVar(D)) {
-    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type_str)
-      << Attr << Attr.isRegularKeywordAttribute() << "local variables";
-    return false;
-  }
-  return true;
-}
-
-bool diagAppertainsToStmt(Sema &S, const ParsedAttr &AL, const Stmt *St) const override {
-  S.Diag(AL.getLoc(), diag::err_decl_attribute_invalid_on_stmt)
-    << AL << AL.isRegularKeywordAttribute() << St->getBeginLoc();
-  return false;
-}
-
-void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
-  MatchRules.push_back(std::make_pair(attr::SubjectMatchRule_variable_is_local, /*IsSupported=*/true));
-}
-
-AttrHandling handleDeclAttribute(Sema &S, Decl *D,const ParsedAttr &Attr) const override {
-  D->addAttr(::new (S.Context) StackProtectorIgnoreAttr(S.Context, Attr));
-  return AttributeApplied;
-}
-
-bool isParamExpr(size_t N) const override {
-  return false;
-}
-
-static const ParsedAttrInfoStackProtectorIgnore Instance;
-};
-const ParsedAttrInfoStackProtectorIgnore ParsedAttrInfoStackProtectorIgnore::Instance;
 static constexpr ParsedAttrInfo::Spelling StandaloneDebugSpellings[] = {
   {AttributeCommonInfo::AS_GNU, "standalone_debug"},
   {AttributeCommonInfo::AS_CXX11, "clang::standalone_debug"},
@@ -19019,7 +18592,7 @@ return false;
 
 bool existsInTarget(const TargetInfo &Target) const override {
   const llvm::Triple &T = Target.getTriple(); (void)T;
-  return true && (T.getArch() == llvm::Triple::aarch64 || T.getArch() == llvm::Triple::aarch64_be || T.getArch() == llvm::Triple::aarch64_32 || T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64 || T.getArch() == llvm::Triple::riscv32be || T.getArch() == llvm::Triple::riscv64be);
+  return true && (T.getArch() == llvm::Triple::aarch64 || T.getArch() == llvm::Triple::aarch64_be || T.getArch() == llvm::Triple::aarch64_32 || T.getArch() == llvm::Triple::riscv32 || T.getArch() == llvm::Triple::riscv64);
 }
 
 void getPragmaAttributeMatchRules(llvm::SmallVectorImpl<std::pair<attr::SubjectMatchRule, bool>> &MatchRules, const LangOptions &LangOpts) const override {
@@ -20984,7 +20557,6 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoGuardedVar::Instance,
 &ParsedAttrInfoHIPManaged::Instance,
 &ParsedAttrInfoHLSLAppliedSemantic::Instance,
-&ParsedAttrInfoHLSLAssociatedResourceDecl::Instance,
 &ParsedAttrInfoHLSLContainedType::Instance,
 &ParsedAttrInfoHLSLControlFlowHint::Instance,
 &ParsedAttrInfoHLSLGroupSharedAddressSpace::Instance,
@@ -20998,13 +20570,11 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoHLSLRawBuffer::Instance,
 &ParsedAttrInfoHLSLResourceBinding::Instance,
 &ParsedAttrInfoHLSLResourceClass::Instance,
-&ParsedAttrInfoHLSLResourceDimension::Instance,
 &ParsedAttrInfoHLSLShader::Instance,
 &ParsedAttrInfoHLSLUnparsedSemantic::Instance,
 &ParsedAttrInfoHLSLVkBinding::Instance,
 &ParsedAttrInfoHLSLVkConstantId::Instance,
 &ParsedAttrInfoHLSLVkExtBuiltinInput::Instance,
-&ParsedAttrInfoHLSLVkExtBuiltinOutput::Instance,
 &ParsedAttrInfoHLSLVkLocation::Instance,
 &ParsedAttrInfoHLSLVkPushConstant::Instance,
 &ParsedAttrInfoHLSLWaveSize::Instance,
@@ -21067,13 +20637,11 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoNoDestroy::Instance,
 &ParsedAttrInfoNoDuplicate::Instance,
 &ParsedAttrInfoNoEscape::Instance,
-&ParsedAttrInfoNoFieldProtection::Instance,
 &ParsedAttrInfoNoInline::Instance,
 &ParsedAttrInfoNoInstrumentFunction::Instance,
 &ParsedAttrInfoNoMerge::Instance,
 &ParsedAttrInfoNoMicroMips::Instance,
 &ParsedAttrInfoNoMips16::Instance,
-&ParsedAttrInfoNoOutline::Instance,
 &ParsedAttrInfoNoProfileFunction::Instance,
 &ParsedAttrInfoNoRandomizeLayout::Instance,
 &ParsedAttrInfoNoReturn::Instance,
@@ -21143,7 +20711,6 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoOpenCLPrivateAddressSpace::Instance,
 &ParsedAttrInfoOpenCLUnrollHint::Instance,
 &ParsedAttrInfoOptimizeNone::Instance,
-&ParsedAttrInfoOverflowBehavior::Instance,
 &ParsedAttrInfoOverloadable::Instance,
 &ParsedAttrInfoOwner::Instance,
 &ParsedAttrInfoOwnership::Instance,
@@ -21153,10 +20720,8 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoPassObjectSize::Instance,
 &ParsedAttrInfoPatchableFunctionEntry::Instance,
 &ParsedAttrInfoPcs::Instance,
-&ParsedAttrInfoPersonality::Instance,
 &ParsedAttrInfoPointer::Instance,
 &ParsedAttrInfoPointerAuth::Instance,
-&ParsedAttrInfoPointerFieldProtection::Instance,
 &ParsedAttrInfoPragmaClangBSSSection::Instance,
 &ParsedAttrInfoPragmaClangDataSection::Instance,
 &ParsedAttrInfoPragmaClangRelroSection::Instance,
@@ -21204,7 +20769,6 @@ static const ParsedAttrInfo *AttrInfoMap[] = {
 &ParsedAttrInfoSizedBy::Instance,
 &ParsedAttrInfoSizedByOrNull::Instance,
 &ParsedAttrInfoSpeculativeLoadHardening::Instance,
-&ParsedAttrInfoStackProtectorIgnore::Instance,
 &ParsedAttrInfoStandaloneDebug::Instance,
 &ParsedAttrInfoStdCall::Instance,
 &ParsedAttrInfoStrictFP::Instance,

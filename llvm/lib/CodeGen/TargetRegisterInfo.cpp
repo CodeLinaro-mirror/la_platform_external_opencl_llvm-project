@@ -50,20 +50,15 @@ static cl::opt<unsigned>
                      cl::init(5000));
 
 TargetRegisterInfo::TargetRegisterInfo(
-    const TargetRegisterInfoDesc *ID,
-    ArrayRef<const TargetRegisterClass *> RegisterClasses,
-    const char *SubRegIndexStrings, ArrayRef<uint32_t> SubRegIndexNameOffsets,
-    const SubRegCoveredBits *SubRegIdxRanges,
-    const LaneBitmask *SubRegIndexLaneMasks, LaneBitmask CoveringLanes,
-    const RegClassInfo *const RCInfos,
+    const TargetRegisterInfoDesc *ID, regclass_iterator RCB,
+    regclass_iterator RCE, const char *const *SRINames,
+    const SubRegCoveredBits *SubIdxRanges, const LaneBitmask *SRILaneMasks,
+    LaneBitmask SRICoveringLanes, const RegClassInfo *const RCIs,
     const MVT::SimpleValueType *const RCVTLists, unsigned Mode)
-    : InfoDesc(ID), SubRegIndexStrings(SubRegIndexStrings),
-      SubRegIndexNameOffsets(SubRegIndexNameOffsets),
-      SubRegIdxRanges(SubRegIdxRanges),
-      SubRegIndexLaneMasks(SubRegIndexLaneMasks),
-      RegClassBegin(RegisterClasses.begin()),
-      RegClassEnd(RegisterClasses.end()), CoveringLanes(CoveringLanes),
-      RCInfos(RCInfos), RCVTLists(RCVTLists), HwMode(Mode) {}
+    : InfoDesc(ID), SubRegIndexNames(SRINames), SubRegIdxRanges(SubIdxRanges),
+      SubRegIndexLaneMasks(SRILaneMasks), RegClassBegin(RCB), RegClassEnd(RCE),
+      CoveringLanes(SRICoveringLanes), RCInfos(RCIs), RCVTLists(RCVTLists),
+      HwMode(Mode) {}
 
 TargetRegisterInfo::~TargetRegisterInfo() = default;
 
@@ -560,7 +555,7 @@ bool TargetRegisterInfo::getCoveringSubRegIndexes(
 
   for (unsigned Idx = 1, E = getNumSubRegIndices(); Idx < E; ++Idx) {
     // Is this index even compatible with the given class?
-    if (!isSubRegValidForRegClass(RC, Idx))
+    if (getSubClassWithSubReg(RC, Idx) != RC)
       continue;
     LaneBitmask SubRegMask = getSubRegIndexLaneMask(Idx);
     // Early exit if we found a perfect match.
@@ -651,7 +646,7 @@ TargetRegisterInfo::lookThruCopyLike(Register SrcReg,
       CopySrcReg = MI->getOperand(1).getReg();
     else {
       assert(MI->isSubregToReg() && "Bad opcode for lookThruCopyLike");
-      CopySrcReg = MI->getOperand(1).getReg();
+      CopySrcReg = MI->getOperand(2).getReg();
     }
 
     if (!CopySrcReg.isVirtual())
@@ -674,7 +669,7 @@ Register TargetRegisterInfo::lookThruSingleUseCopyChain(
       CopySrcReg = MI->getOperand(1).getReg();
     else {
       assert(MI->isSubregToReg() && "Bad opcode for lookThruCopyLike");
-      CopySrcReg = MI->getOperand(1).getReg();
+      CopySrcReg = MI->getOperand(2).getReg();
     }
 
     // Continue only if the next definition in the chain is for a virtual

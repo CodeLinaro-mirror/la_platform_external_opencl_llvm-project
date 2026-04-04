@@ -30,10 +30,7 @@ struct PropertyDefinition {
   const char *description;
 };
 
-struct PropertyCollectionDefinition {
-  llvm::ArrayRef<PropertyDefinition> definitions;
-  llvm::StringRef expected_path;
-};
+using PropertyDefinitions = llvm::ArrayRef<PropertyDefinition>;
 
 class Property {
 public:

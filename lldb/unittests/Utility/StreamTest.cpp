@@ -7,7 +7,6 @@
 //===----------------------------------------------------------------------===//
 
 #include "lldb/Utility/StreamString.h"
-#include "llvm/Support/FormatVariadic.h"
 #include "gtest/gtest.h"
 
 using namespace lldb_private;
@@ -415,14 +414,6 @@ TEST_F(StreamTest, ShiftOperatorStrings) {
   s << llvm::StringRef("llvm::StringRef\n");
   EXPECT_EQ(24U, s.GetWrittenBytes());
   EXPECT_EQ("cstring\nllvm::StringRef\n", TakeValue());
-}
-
-TEST_F(StreamTest, ShiftOperatorFormatv) {
-  s << llvm::formatv("x{0}y", 42);
-  EXPECT_EQ("x42y", TakeValue());
-
-  s << llvm::formatv("{0} {1}", "hello", "world") << '!';
-  EXPECT_EQ("hello world!", TakeValue());
 }
 
 TEST_F(StreamTest, ShiftOperatorPtr) {

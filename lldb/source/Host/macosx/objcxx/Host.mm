@@ -1530,11 +1530,10 @@ Status Host::ShellExpandArguments(ProcessLaunchInfo &launch_info) {
       }
     }
     bool run_in_shell = true;
-    std::string error_output; // Pass stderr string arg so it is not mixed with
-                              // stdout.
+    bool hide_stderr = true;
     Status e =
         RunShellCommand(expand_command, cwd, &status, nullptr, &output,
-                        &error_output, std::chrono::seconds(10), run_in_shell);
+                        std::chrono::seconds(10), run_in_shell, hide_stderr);
 
     if (e.Fail())
       return e;

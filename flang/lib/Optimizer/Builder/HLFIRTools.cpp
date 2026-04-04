@@ -1395,31 +1395,24 @@ bool hlfir::elementalOpMustProduceTemp(hlfir::ElementalOp elemental) {
 static void combineAndStoreElement(
     mlir::Location loc, fir::FirOpBuilder &builder, hlfir::Entity lhs,
     hlfir::Entity rhs, bool temporaryLHS,
-    std::function<void(mlir::Location, fir::FirOpBuilder &, hlfir::Entity,
-                       hlfir::Entity, mlir::ArrayAttr)> *scalarCombineAndAssign,
-    mlir::ArrayAttr accessGroups) {
-  if (scalarCombineAndAssign) {
-    (*scalarCombineAndAssign)(loc, builder, lhs, rhs, accessGroups);
-    return;
-  }
+    std::function<hlfir::Entity(mlir::Location, fir::FirOpBuilder &,
+                                hlfir::Entity, hlfir::Entity)> *combiner) {
   hlfir::Entity valueToAssign = hlfir::loadTrivialScalar(loc, builder, rhs);
-  if (accessGroups)
-    if (auto load = valueToAssign.getDefiningOp<fir::LoadOp>())
-      load.setAccessGroupsAttr(accessGroups);
-  auto assign = hlfir::AssignOp::create(builder, loc, valueToAssign, lhs,
-                                        /*realloc=*/false,
-                                        /*keep_lhs_length_if_realloc=*/false,
-                                        /*temporary_lhs=*/temporaryLHS);
-  if (accessGroups)
-    assign->setAttr(fir::getAccessGroupsAttrName(), accessGroups);
+  if (combiner) {
+    hlfir::Entity lhsValue = hlfir::loadTrivialScalar(loc, builder, lhs);
+    valueToAssign = (*combiner)(loc, builder, lhsValue, valueToAssign);
+  }
+  hlfir::AssignOp::create(builder, loc, valueToAssign, lhs,
+                          /*realloc=*/false,
+                          /*keep_lhs_length_if_realloc=*/false,
+                          /*temporary_lhs=*/temporaryLHS);
 }
 
 void hlfir::genNoAliasArrayAssignment(
     mlir::Location loc, fir::FirOpBuilder &builder, hlfir::Entity rhs,
     hlfir::Entity lhs, bool emitWorkshareLoop, bool temporaryLHS,
-    std::function<void(mlir::Location, fir::FirOpBuilder &, hlfir::Entity,
-                       hlfir::Entity, mlir::ArrayAttr)> *scalarCombineAndAssign,
-    mlir::ArrayAttr accessGroups) {
+    std::function<hlfir::Entity(mlir::Location, fir::FirOpBuilder &,
+                                hlfir::Entity, hlfir::Entity)> *combiner) {
   mlir::OpBuilder::InsertionGuard guard(builder);
   rhs = hlfir::derefPointersAndAllocatables(loc, builder, rhs);
   lhs = hlfir::derefPointersAndAllocatables(loc, builder, lhs);
@@ -1438,30 +1431,26 @@ void hlfir::genNoAliasArrayAssignment(
   builder.setInsertionPointToStart(loopNest.body);
   auto rhsArrayElement =
       hlfir::getElementAt(loc, builder, rhs, loopNest.oneBasedIndices);
-  if (!scalarCombineAndAssign)
-    rhsArrayElement = hlfir::loadTrivialScalar(loc, builder, rhsArrayElement);
+  rhsArrayElement = hlfir::loadTrivialScalar(loc, builder, rhsArrayElement);
   auto lhsArrayElement =
       hlfir::getElementAt(loc, builder, lhs, loopNest.oneBasedIndices);
   combineAndStoreElement(loc, builder, lhsArrayElement, rhsArrayElement,
-                         temporaryLHS, scalarCombineAndAssign, accessGroups);
+                         temporaryLHS, combiner);
 }
 
 void hlfir::genNoAliasAssignment(
     mlir::Location loc, fir::FirOpBuilder &builder, hlfir::Entity rhs,
     hlfir::Entity lhs, bool emitWorkshareLoop, bool temporaryLHS,
-    std::function<void(mlir::Location, fir::FirOpBuilder &, hlfir::Entity,
-                       hlfir::Entity, mlir::ArrayAttr)> *scalarCombineAndAssign,
-    mlir::ArrayAttr accessGroups) {
+    std::function<hlfir::Entity(mlir::Location, fir::FirOpBuilder &,
+                                hlfir::Entity, hlfir::Entity)> *combiner) {
   if (lhs.isArray()) {
     genNoAliasArrayAssignment(loc, builder, rhs, lhs, emitWorkshareLoop,
-                              temporaryLHS, scalarCombineAndAssign,
-                              accessGroups);
+                              temporaryLHS, combiner);
     return;
   }
   rhs = hlfir::derefPointersAndAllocatables(loc, builder, rhs);
   lhs = hlfir::derefPointersAndAllocatables(loc, builder, lhs);
-  combineAndStoreElement(loc, builder, lhs, rhs, temporaryLHS,
-                         scalarCombineAndAssign, accessGroups);
+  combineAndStoreElement(loc, builder, lhs, rhs, temporaryLHS, combiner);
 }
 
 std::pair<hlfir::Entity, bool>
@@ -1696,38 +1685,25 @@ hlfir::genExtentsVector(mlir::Location loc, fir::FirOpBuilder &builder,
 hlfir::Entity hlfir::gen1DSection(mlir::Location loc,
                                   fir::FirOpBuilder &builder,
                                   hlfir::Entity array, int64_t dim,
+                                  mlir::ArrayRef<mlir::Value> lbounds,
                                   mlir::ArrayRef<mlir::Value> extents,
                                   mlir::ValueRange oneBasedIndices,
                                   mlir::ArrayRef<mlir::Value> typeParams) {
   assert(array.isVariable() && "array must be a variable");
   assert(dim > 0 && dim <= array.getRank() && "invalid dim number");
-  llvm::SmallVector<mlir::Value> lbounds =
-      getNonDefaultLowerBounds(loc, builder, array);
   mlir::Value one =
       builder.createIntegerConstant(loc, builder.getIndexType(), 1);
   hlfir::DesignateOp::Subscripts subscripts;
   unsigned indexId = 0;
   for (int i = 0; i < array.getRank(); ++i) {
     if (i == dim - 1) {
-      // (...,:, ..)
-      if (lbounds.empty()) {
-        subscripts.emplace_back(
-            hlfir::DesignateOp::Triplet{one, extents[i], one});
-      } else {
-        mlir::Value ubound =
-            genUBound(loc, builder, lbounds[i], extents[i], one);
-        subscripts.emplace_back(
-            hlfir::DesignateOp::Triplet{lbounds[i], ubound, one});
-      }
+      mlir::Value ubound = genUBound(loc, builder, lbounds[i], extents[i], one);
+      subscripts.emplace_back(
+          hlfir::DesignateOp::Triplet{lbounds[i], ubound, one});
     } else {
-      // (...,lb + one_based_index - 1, ..)
-      if (lbounds.empty()) {
-        subscripts.emplace_back(oneBasedIndices[indexId++]);
-      } else {
-        mlir::Value index = genUBound(loc, builder, lbounds[i],
-                                      oneBasedIndices[indexId++], one);
-        subscripts.emplace_back(index);
-      }
+      mlir::Value index =
+          genUBound(loc, builder, lbounds[i], oneBasedIndices[indexId++], one);
+      subscripts.emplace_back(index);
     }
   }
   mlir::Value sectionShape =
@@ -1795,10 +1771,9 @@ bool hlfir::isSimplyContiguous(mlir::Value base, bool checkWhole) {
     return false;
 
   return mlir::TypeSwitch<mlir::Operation *, bool>(def)
-      .Case([&](fir::EmboxOp op) {
-        return fir::isContiguousEmbox(op, checkWhole);
-      })
-      .Case([&](fir::ReboxOp op) {
+      .Case<fir::EmboxOp>(
+          [&](auto op) { return fir::isContiguousEmbox(op, checkWhole); })
+      .Case<fir::ReboxOp>([&](auto op) {
         hlfir::Entity box{op.getBox()};
         return fir::reboxPreservesContinuity(
                    op, box.mayHaveNonDefaultLowerBounds(), checkWhole) &&
@@ -1807,7 +1782,7 @@ bool hlfir::isSimplyContiguous(mlir::Value base, bool checkWhole) {
       .Case<fir::DeclareOp, hlfir::DeclareOp>([&](auto op) {
         return isSimplyContiguous(op.getMemref(), checkWhole);
       })
-      .Case(
-          [&](fir::ConvertOp op) { return isSimplyContiguous(op.getValue()); })
+      .Case<fir::ConvertOp>(
+          [&](auto op) { return isSimplyContiguous(op.getValue()); })
       .Default([](auto &&) { return false; });
 }

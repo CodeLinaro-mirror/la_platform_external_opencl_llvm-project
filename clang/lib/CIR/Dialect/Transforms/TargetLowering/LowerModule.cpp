@@ -14,6 +14,7 @@
 #include "LowerModule.h"
 #include "CIRCXXABI.h"
 #include "mlir/IR/BuiltinAttributes.h"
+#include "mlir/IR/PatternMatch.h"
 #include "clang/Basic/LangOptions.h"
 #include "clang/Basic/TargetInfo.h"
 #include "clang/Basic/TargetOptions.h"
@@ -52,8 +53,10 @@ createTargetLoweringInfo(LowerModule &lm) {
 LowerModule::LowerModule(clang::LangOptions langOpts,
                          clang::CodeGenOptions codeGenOpts,
                          mlir::ModuleOp &module,
-                         std::unique_ptr<clang::TargetInfo> target)
-    : module(module), target(std::move(target)), abi(createCXXABI(*this)) {}
+                         std::unique_ptr<clang::TargetInfo> target,
+                         mlir::PatternRewriter &rewriter)
+    : module(module), target(std::move(target)), abi(createCXXABI(*this)),
+      rewriter(rewriter) {}
 
 const TargetLoweringInfo &LowerModule::getTargetLoweringInfo() {
   if (!targetLoweringInfo)
@@ -62,13 +65,8 @@ const TargetLoweringInfo &LowerModule::getTargetLoweringInfo() {
 }
 
 // TODO: not to create it every time
-std::unique_ptr<LowerModule> createLowerModule(mlir::ModuleOp module) {
-  // If the triple is not present, e.g. CIR modules parsed from text, we
-  // cannot init LowerModule properly.
-  assert(!cir::MissingFeatures::makeTripleAlwaysPresent());
-  if (!module->hasAttr(cir::CIRDialect::getTripleAttrName()))
-    return nullptr;
-
+std::unique_ptr<LowerModule>
+createLowerModule(mlir::ModuleOp module, mlir::PatternRewriter &rewriter) {
   // Fetch target information.
   llvm::Triple triple(mlir::cast<mlir::StringAttr>(
                           module->getAttr(cir::CIRDialect::getTripleAttrName()))
@@ -96,7 +94,7 @@ std::unique_ptr<LowerModule> createLowerModule(mlir::ModuleOp module) {
 
   return std::make_unique<LowerModule>(std::move(langOpts),
                                        std::move(codeGenOpts), module,
-                                       std::move(targetInfo));
+                                       std::move(targetInfo), rewriter);
 }
 
 } // namespace cir

@@ -256,13 +256,7 @@ struct TestLastModifiedPass
       os << "test_tag: " << tag.getValue() << ":\n";
       const LastModification *lastMods =
           solver.lookupState<LastModification>(solver.getProgramPointAfter(op));
-      if (!lastMods) {
-        // The lattice may not be computed for operations in unreachable code
-        // (e.g., private functions not called from anywhere in interprocedural
-        // analysis mode).
-        os << " - <not computed>\n";
-        return;
-      }
+      assert(lastMods && "expected a dense lattice");
       for (auto [index, operand] : llvm::enumerate(op->getOperands())) {
         os << " operand #" << index << "\n";
         std::optional<Value> underlyingValue =

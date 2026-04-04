@@ -8,12 +8,10 @@
 
 #ifndef LLVM_IR_INTRINSIC_R600_ENUMS_H
 #define LLVM_IR_INTRINSIC_R600_ENUMS_H
-
 namespace llvm::Intrinsic {
-
 enum R600Intrinsics : unsigned {
 // Enum values for intrinsics.
-    r600_cube = 11963,                                 // llvm.r600.cube (IntrinsicsAMDGPU.td:97)
+    r600_cube = 11892,                                 // llvm.r600.cube (IntrinsicsAMDGPU.td:97)
     r600_ddx,                                  // llvm.r600.ddx (IntrinsicsAMDGPU.td:145)
     r600_ddy,                                  // llvm.r600.ddy (IntrinsicsAMDGPU.td:146)
     r600_dot4,                                 // llvm.r600.dot4 (IntrinsicsAMDGPU.td:148)
@@ -49,8 +47,6 @@ enum R600Intrinsics : unsigned {
     r600_txlc,                                 // llvm.r600.txlc (IntrinsicsAMDGPU.td:140)
     r600_txq,                                  // llvm.r600.txq (IntrinsicsAMDGPU.td:144)
 }; // enum
-
 } // namespace llvm::Intrinsic
-
-#endif // LLVM_IR_INTRINSIC_R600_ENUMS_H
+#endif
 

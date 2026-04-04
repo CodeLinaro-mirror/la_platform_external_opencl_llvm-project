@@ -96,11 +96,6 @@ void populateFoldTensorEmptyPatterns(RewritePatternSet &patterns,
 /// that it can be bufferized into a sequence of copies.
 void populateDecomposeTensorConcatPatterns(RewritePatternSet &patterns);
 
-/// Populates `patterns` with patterns that forward concat-generated
-/// `tensor.insert_slice` destinations into single-use destination-style source
-/// producers.
-void populateForwardConcatInsertSliceDestPatterns(RewritePatternSet &patterns);
-
 using ControlFoldFn = std::function<bool(OpOperand *)>;
 
 /// Populates `patterns` with patterns that replace tensor ops (such as
@@ -161,14 +156,14 @@ getCollapsedExtractSliceInfo(OpBuilder &b, tensor::ExtractSliceOp sliceOp,
 
 /// Computes the offsets, sizes, and strides needed to build an expanded
 /// `sliceOp`. The dimensions to expand are specified by `reassociation` and
-/// the shape of `expandedValue`.
+/// `expandedShape`.
 ///
 /// This fails when the specified expansion cannot be represented by a valid
 /// ExtractSliceOp.
 LogicalResult
 getExpandedExtractSliceInfo(OpBuilder &b, tensor::ExtractSliceOp sliceOp,
                             ArrayRef<ReassociationIndices> reassociation,
-                            Value expandedValue,
+                            ArrayRef<int64_t> expandedShape,
                             SmallVectorImpl<OpFoldResult> &expandedOffsets,
                             SmallVectorImpl<OpFoldResult> &expandedSizes,
                             SmallVectorImpl<OpFoldResult> &expandedStrides);

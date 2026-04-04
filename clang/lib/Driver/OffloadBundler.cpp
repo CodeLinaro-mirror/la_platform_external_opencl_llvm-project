@@ -95,7 +95,7 @@ OffloadTargetInfo::OffloadTargetInfo(const StringRef Target,
       Components.size() == 6 ? Components.back() : "";
   StringRef TargetId = TargetIdWithFeature.split(':').first;
   if (!TargetId.empty() &&
-      clang::StringToOffloadArch(TargetId) != clang::OffloadArch::Unknown)
+      clang::StringToOffloadArch(TargetId) != clang::OffloadArch::UNKNOWN)
     this->TargetID = TargetIdWithFeature;
   else
     this->TargetID = "";
@@ -1523,7 +1523,7 @@ Error OffloadBundler::BundleFiles() {
     CompressedBuffer.assign(CompressedMemBuffer->getBufferStart(),
                             CompressedMemBuffer->getBufferEnd());
   } else
-    CompressedBuffer = std::move(Buffer);
+    CompressedBuffer = Buffer;
 
   OutputFile.write(CompressedBuffer.data(), CompressedBuffer.size());
 

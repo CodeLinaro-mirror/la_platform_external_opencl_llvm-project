@@ -253,11 +253,6 @@ static void reportError(void *Addr, int Size, tysan_type_descriptor *TD,
   } else {
     Printf("\n");
   }
-
-  if (flags().halt_on_error) {
-    Report("ABORTING\n");
-    Die();
-  }
 }
 
 ALWAYS_INLINE

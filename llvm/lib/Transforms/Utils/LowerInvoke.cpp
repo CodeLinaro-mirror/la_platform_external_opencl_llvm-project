@@ -60,7 +60,7 @@ static bool runImpl(Function &F) {
       II->replaceAllUsesWith(NewCall);
 
       // Insert an unconditional branch to the normal destination.
-      UncondBrInst::Create(II->getNormalDest(), II->getIterator());
+      BranchInst::Create(II->getNormalDest(), II->getIterator());
 
       // Remove any PHI node entries from the exception destination.
       II->getUnwindDest()->removePredecessor(&BB);

@@ -147,8 +147,6 @@ public:
     return &TLInfo;
   }
 
-  void mirFileLoaded(MachineFunction &MF) const override;
-
   bool enableMachineScheduler() const override { return true; }
 
   bool enablePostRAScheduler() const override { return UsePostRAScheduler; }
@@ -172,10 +170,12 @@ public:
   bool GETTER() const { return ATTRIBUTE; }
 #include "RISCVGenSubtargetInfo.inc"
 
-  LLVM_DEPRECATED("Now Equivalent to hasStdExtZcd", "hasStdExtZcd")
-  bool hasStdExtCOrZcd() const { return HasStdExtZcd; }
-  LLVM_DEPRECATED("Now Equivalent to hasStdExtZcf", "hasStdExtZcf")
-  bool hasStdExtCOrZcfOrZce() const { return HasStdExtZcf; }
+  LLVM_DEPRECATED("Now Equivalent to hasStdExtZca", "hasStdExtZca")
+  bool hasStdExtCOrZca() const { return HasStdExtZca; }
+  bool hasStdExtCOrZcd() const { return HasStdExtC || HasStdExtZcd; }
+  bool hasStdExtCOrZcfOrZce() const {
+    return HasStdExtC || HasStdExtZcf || HasStdExtZce;
+  }
   bool hasStdExtZvl() const { return ZvlLen != 0; }
   bool hasStdExtFOrZfinx() const { return HasStdExtF || HasStdExtZfinx; }
   bool hasStdExtDOrZdinx() const { return HasStdExtD || HasStdExtZdinx; }
@@ -199,9 +199,6 @@ public:
   }
   bool hasREV8Like() const {
     return HasStdExtZbb || HasStdExtZbkb || HasVendorXTHeadBb;
-  }
-  bool hasREVLike() const {
-    return HasStdExtP || ((HasVendorXCVbitmanip || HasVendorXqcibm) && !IsRV64);
   }
 
   bool hasBEXTILike() const { return HasStdExtZbs || HasVendorXTHeadBs; }
@@ -334,6 +331,7 @@ public:
     }
   }
 
+  bool enablePExtSIMDCodeGen() const;
   bool isPExtPackedType(MVT VT) const;
 
   // Returns VLEN divided by DLEN. Where DLEN is the datapath width of the

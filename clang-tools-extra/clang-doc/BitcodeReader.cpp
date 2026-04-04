@@ -507,8 +507,8 @@ template <> llvm::Expected<CommentInfo *> getCommentInfo(EnumValueInfo *I) {
 }
 
 template <> llvm::Expected<CommentInfo *> getCommentInfo(CommentInfo *I) {
-  I->Children.emplace_back(allocatePtr<CommentInfo>());
-  return getPtr(I->Children.back());
+  I->Children.emplace_back(std::make_unique<CommentInfo>());
+  return I->Children.back().get();
 }
 
 template <> llvm::Expected<CommentInfo *> getCommentInfo(ConceptInfo *I) {
@@ -1076,15 +1076,16 @@ llvm::Error ClangDocBitcodeReader::readBlockInfoBlock() {
 }
 
 template <typename T>
-llvm::Expected<OwnedPtr<Info>> ClangDocBitcodeReader::createInfo(unsigned ID) {
+llvm::Expected<std::unique_ptr<Info>>
+ClangDocBitcodeReader::createInfo(unsigned ID) {
   llvm::TimeTraceScope("Reducing infos", "createInfo");
-  OwnedPtr<Info> I = doc::allocatePtr<T>();
-  if (auto Err = readBlock(ID, static_cast<T *>(getPtr(I))))
+  std::unique_ptr<Info> I = std::make_unique<T>();
+  if (auto Err = readBlock(ID, static_cast<T *>(I.get())))
     return std::move(Err);
-  return OwnedPtr<Info>{std::move(I)};
+  return std::unique_ptr<Info>{std::move(I)};
 }
 
-llvm::Expected<OwnedPtr<Info>>
+llvm::Expected<std::unique_ptr<Info>>
 ClangDocBitcodeReader::readBlockToInfo(unsigned ID) {
   llvm::TimeTraceScope("Reducing infos", "readBlockToInfo");
   switch (ID) {
@@ -1111,8 +1112,9 @@ ClangDocBitcodeReader::readBlockToInfo(unsigned ID) {
 }
 
 // Entry point
-llvm::Expected<OwningPtrArray<Info>> ClangDocBitcodeReader::readBitcode() {
-  OwningPtrArray<Info> Infos;
+llvm::Expected<std::vector<std::unique_ptr<Info>>>
+ClangDocBitcodeReader::readBitcode() {
+  std::vector<std::unique_ptr<Info>> Infos;
   if (auto Err = validateStream())
     return std::move(Err);
 

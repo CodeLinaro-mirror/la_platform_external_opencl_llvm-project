@@ -21,7 +21,6 @@ add_clang_library(clangCIRLoweringDirectToLLVM
   MLIRCIRTargetLowering
   MLIRBuiltinToLLVMIRTranslation
   MLIRLLVMToLLVMIRTranslation
-  MLIROpenMPToLLVMIRTranslation
   MLIRIR
   )
 

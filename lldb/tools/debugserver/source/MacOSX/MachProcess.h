@@ -285,8 +285,7 @@ public:
                              bool fetch_report_load_commands);
   bool GetDebugserverSharedCacheInfo(uuid_t &uuid,
                                      std::string &shared_cache_path);
-  bool GetInferiorSharedCacheFilepathAndSize(std::string &inferior_sc_path,
-                                             uint64_t &size);
+  bool GetInferiorSharedCacheFilepath(std::string &inferior_sc_path);
   JSONGenerator::ObjectSP GetInferiorSharedCacheInfo(nub_process_t pid);
 
   nub_size_t GetNumThreads() const;
@@ -484,7 +483,6 @@ private:
   void *(*m_dyld_process_snapshot_get_shared_cache)(void *snapshot);
   void (*m_dyld_shared_cache_for_each_file)(
       void *cache, void (^block)(const char *file_path));
-  uint64_t (*m_dyld_shared_cache_get_mapped_size)(void *cache);
   void (*m_dyld_process_snapshot_dispose)(void *snapshot);
   void (*m_dyld_process_dispose)(void *process);
   void (*m_dyld_process_info_for_each_image)(

@@ -311,8 +311,7 @@ void Writer::writeBuildId() {
 }
 
 static void setGlobalPtr(DefinedGlobal *g, uint64_t memoryPtr) {
-  LLVM_DEBUG(dbgs() << "setGlobalPtr " << g->getName() << " -> " << memoryPtr
-                    << "\n");
+  LLVM_DEBUG(dbgs() << "setGlobalPtr " << g->getName() << " -> " << memoryPtr << "\n");
   g->global->setPointerValue(memoryPtr);
 }
 
@@ -359,8 +358,7 @@ void Writer::layoutMemory() {
     placeStack();
     if (ctx.arg.globalBase) {
       if (ctx.arg.globalBase < memoryPtr) {
-        error("--global-base cannot be less than stack size when --stack-first "
-              "is used");
+        error("--global-base cannot be less than stack size when --stack-first is used");
         return;
       }
       memoryPtr = ctx.arg.globalBase;
@@ -403,15 +401,7 @@ void Writer::layoutMemory() {
       }
     }
 
-    if (ctx.sym.rodataStart && seg->name.starts_with(".rodata") &&
-        !ctx.sym.rodataStart->getVA())
-      ctx.sym.rodataStart->setVA(memoryPtr);
-
     memoryPtr += seg->size;
-
-    // Might get set more than once if segment merging is not enabled.
-    if (ctx.sym.rodataEnd && seg->name.starts_with(".rodata"))
-      ctx.sym.rodataEnd->setVA(memoryPtr);
   }
 
   // Make space for the memory initialization flag
@@ -1119,7 +1109,7 @@ void Writer::combineOutputSegments() {
     }
   }
 
-  segments = std::move(newSegments);
+  segments = newSegments;
 }
 
 static void createFunction(DefinedFunction *func, StringRef bodyContent) {
@@ -1185,7 +1175,7 @@ void Writer::createSyntheticInitFunctions() {
 
     auto hasTLSRelocs = [](const OutputSegment *segment) {
       if (segment->isTLS())
-        for (const auto *is : segment->inputSegments)
+        for (const auto* is: segment->inputSegments)
           if (is->getRelocations().size())
             return true;
       return false;
@@ -1637,8 +1627,7 @@ void Writer::createInitTLSFunction() {
       writeU8(os, WASM_OPCODE_GLOBAL_SET, "global.set");
       writeUleb128(os, ctx.sym.tlsBase->getGlobalIndex(), "global index");
 
-      // FIXME(wvo): this local needs to be I64 in wasm64, or we need an extend
-      // op.
+      // FIXME(wvo): this local needs to be I64 in wasm64, or we need an extend op.
       writeU8(os, WASM_OPCODE_LOCAL_GET, "local.get");
       writeUleb128(os, 0, "local index");
 
@@ -1724,8 +1713,8 @@ void Writer::createSyntheticSectionsPostLayout() {
 void Writer::run() {
   // For PIC code the table base is assigned dynamically by the loader.
   // For non-PIC, we start at 1 so that accessing table index 0 always traps.
-  if (!ctx.isPic && ctx.sym.tableBase)
-    setGlobalPtr(cast<DefinedGlobal>(ctx.sym.tableBase), ctx.arg.tableBase);
+  if (!ctx.isPic && ctx.sym.definedTableBase)
+    ctx.sym.definedTableBase->setVA(ctx.arg.tableBase);
 
   log("-- createOutputSegments");
   createOutputSegments();
@@ -1904,4 +1893,4 @@ void Writer::createHeader() {
 
 void writeResult() { Writer().run(); }
 
-} // namespace lld::wasm
+} // namespace wasm::lld

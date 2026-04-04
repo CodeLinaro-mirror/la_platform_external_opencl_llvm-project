@@ -20,11 +20,7 @@
 #include <system_error>
 
 #if HAVE_ICU
-#if HAVE_WINDOWS_ICU
-#include <icu.h>
-#else
 #include <unicode/ucnv.h>
-#endif
 #elif HAVE_ICONV
 #include <iconv.h>
 #endif

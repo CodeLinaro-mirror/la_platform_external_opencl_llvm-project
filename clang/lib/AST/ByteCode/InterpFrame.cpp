@@ -31,19 +31,17 @@ InterpFrame::InterpFrame(InterpState &S, const Function *Func,
     : Caller(Caller), S(S), Depth(Caller ? Caller->Depth + 1 : 0), Func(Func),
       RetPC(RetPC), ArgSize(ArgSize), Args(static_cast<char *>(S.Stk.top())),
       FrameOffset(S.Stk.size()) {
-
   if (!Func)
     return;
-  // Initialize argument blocks.
-  for (unsigned I = 0, N = Func->getNumWrittenParams(); I != N; ++I)
-    new (argBlock(I)) Block(S.EvalID, Func->getParamDescriptor(I).Desc);
 
-  if (Func->getFrameSize() == 0)
+  unsigned FrameSize = Func->getFrameSize();
+  if (FrameSize == 0)
     return;
 
+  Locals = std::make_unique<char[]>(FrameSize);
   for (auto &Scope : Func->scopes()) {
     for (auto &Local : Scope.locals()) {
-      new (localBlock(Local.Offset)) Block(S.EvalID, Local.Desc);
+      new (localBlock(Local.Offset)) Block(S.Ctx.getEvalID(), Local.Desc);
       // Note that we are NOT calling invokeCtor() here, since that is done
       // via the InitScope op.
       new (localInlineDesc(Local.Offset)) InlineDescriptor(Local.Desc);
@@ -69,12 +67,8 @@ InterpFrame::InterpFrame(InterpState &S, const Function *Func, CodePtr RetPC,
 }
 
 InterpFrame::~InterpFrame() {
-  if (!Func)
-    return;
-
-  // De-initialize all argument blocks.
-  for (unsigned I = 0, N = Func->getNumWrittenParams(); I != N; ++I)
-    S.deallocate(argBlock(I));
+  for (auto &Param : Params)
+    S.deallocate(reinterpret_cast<Block *>(Param.second.get()));
 
   // When destroying the InterpFrame, call the Dtor for all block
   // that haven't been destroyed via a destroy() op yet.
@@ -83,7 +77,7 @@ InterpFrame::~InterpFrame() {
 }
 
 void InterpFrame::destroyScopes() {
-  if (!Func || Func->getFrameSize() == 0)
+  if (!Func)
     return;
   for (auto &Scope : Func->scopes()) {
     for (auto &Local : Scope.locals()) {
@@ -164,14 +158,8 @@ void InterpFrame::describe(llvm::raw_ostream &OS) const {
 
   const Expr *CallExpr = Caller->getExpr(getRetPC());
   const FunctionDecl *F = getCallee();
-
-  bool IsMemberCall = false;
-  bool ExplicitInstanceParam = false;
-  if (const auto *MD = dyn_cast<CXXMethodDecl>(F)) {
-    IsMemberCall = !isa<CXXConstructorDecl>(MD) && !MD->isStatic();
-    ExplicitInstanceParam = MD->isExplicitObjectMemberFunction();
-  }
-
+  bool IsMemberCall = isa<CXXMethodDecl>(F) && !isa<CXXConstructorDecl>(F) &&
+                      cast<CXXMethodDecl>(F)->isImplicitObjectMemberFunction();
   if (Func->hasThisPointer() && IsMemberCall) {
     if (const auto *MCE = dyn_cast_if_present<CXXMemberCallExpr>(CallExpr)) {
       const Expr *Object = MCE->getImplicitObjectArgument();
@@ -202,12 +190,14 @@ void InterpFrame::describe(llvm::raw_ostream &OS) const {
   unsigned Off = 0;
 
   Off += Func->hasRVO() ? primSize(PT_Ptr) : 0;
-  Off += Func->hasThisPointer() ? primSize(PT_Ptr) : 0;
+  Off += (Func->hasThisPointer() && !Func->isThisPointerExplicit())
+             ? primSize(PT_Ptr)
+             : 0;
+
   llvm::ListSeparator Comma;
-  for (const ParmVarDecl *Param :
-       F->parameters().slice(ExplicitInstanceParam)) {
+  for (unsigned I = 0, N = F->getNumParams(); I < N; ++I) {
     OS << Comma;
-    QualType Ty = Param->getType();
+    QualType Ty = F->getParamDecl(I)->getType();
     PrimType PrimTy = S.Ctx.classify(Ty).value_or(PT_Ptr);
 
     TYPE_SWITCH(PrimTy, print(OS, stackRef<T>(Off), S.getASTContext(), Ty));
@@ -250,21 +240,25 @@ Block *InterpFrame::getLocalBlock(unsigned Offset) const {
   return localBlock(Offset);
 }
 
-Pointer InterpFrame::getParamPointer(unsigned Index) {
+Pointer InterpFrame::getParamPointer(unsigned Off) {
+  // Return the block if it was created previously.
+  if (auto Pt = Params.find(Off); Pt != Params.end())
+    return Pointer(reinterpret_cast<Block *>(Pt->second.get()));
+
   assert(!isBottomFrame());
 
-  Block *B = argBlock(Index);
+  // Allocate memory to store the parameter and the block metadata.
+  const auto &Desc = Func->getParamDescriptor(Off);
+  size_t BlockSize = sizeof(Block) + Desc.second->getAllocSize();
+  auto Memory = std::make_unique<char[]>(BlockSize);
+  auto *B = new (Memory.get()) Block(S.Ctx.getEvalID(), Desc.second);
+  B->invokeCtor();
 
   // Copy the initial value.
-  if (!B->isInitialized()) {
-    unsigned ByteOffset = Func->getParamDescriptor(Index).Offset;
-    assert(B->getDescriptor()->isPrimitive());
-    B->invokeCtor();
-    TYPE_SWITCH(B->getDescriptor()->getPrimType(),
-                new (B->data()) T(stackRef<T>(ByteOffset)));
-    assert(B->isInitialized());
-  }
+  TYPE_SWITCH(Desc.first, new (B->data()) T(stackRef<T>(Off)));
 
+  // Record the param.
+  Params.insert({Off, std::move(Memory)});
   return Pointer(B);
 }
 

@@ -50,8 +50,7 @@ def p : Flag<["-"], "p">,
 def strip_all : Flag<["--"], "strip-all">,
     HelpText<"For ELF, remove all symbols and non-alloc sections not within "
              "segments, except for .gnu.warning*, .ARM.attribute, and the section name table. "
-             "For COFF and Mach-O, remove all symbols, debug sections, and relocations. "
-             "For WebAssembly, remove all custom sections except for metadata.code.*">;
+             "For COFF and Mach-O, remove all symbols, debug sections, and relocations">;
 
 def strip_all_gnu
     : Flag<["--"], "strip-all-gnu">,

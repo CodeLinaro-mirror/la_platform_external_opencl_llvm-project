@@ -3,8 +3,7 @@ namespace clang {
 namespace diag {
 enum {
 #define DIAG(ENUM, FLAGS, DEFAULT_MAPPING, DESC, GROUP, SFINAE, NOWERROR,      \
-             SHOWINSYSHEADER, SHOWINSYSMACRO, DEFERRABLE, CATEGORY, STABLE_ID, \
-             LEGACY_STABLE_IDS) \
+             SHOWINSYSHEADER, SHOWINSYSMACRO, DEFERRABLE, CATEGORY)            \
   ENUM,
 #define REFACTORINGSTART
 #include "clang/Basic/DiagnosticRefactoringKinds.inc"

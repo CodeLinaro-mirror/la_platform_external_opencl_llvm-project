@@ -447,8 +447,7 @@ bool TargetInstrInfo::getStackSlotRange(const TargetRegisterClass *RC,
 void TargetInstrInfo::reMaterialize(MachineBasicBlock &MBB,
                                     MachineBasicBlock::iterator I,
                                     Register DestReg, unsigned SubIdx,
-                                    const MachineInstr &Orig,
-                                    LaneBitmask UsedLanes) const {
+                                    const MachineInstr &Orig) const {
   MachineInstr *MI = MBB.getParent()->CloneMachineInstr(&Orig);
   MI->substituteRegister(MI->getOperand(0).getReg(), DestReg, SubIdx, TRI);
   MBB.insert(I, MI);
@@ -1119,7 +1118,7 @@ void TargetInstrInfo::reduceAccumulatorTree(
   if (RegistersToReduce.size() % 2 != 0)
     NewRegs.push_back(RegistersToReduce[RegistersToReduce.size() - 1]);
 
-  RegistersToReduce = std::move(NewRegs);
+  RegistersToReduce = NewRegs;
 }
 
 // The concept of the reassociation pass is that these operations can benefit

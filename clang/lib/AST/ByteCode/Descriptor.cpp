@@ -83,9 +83,10 @@ static void ctorArrayDesc(Block *B, std::byte *Ptr, bool IsConst,
       D->ElemDesc->getAllocSize() + sizeof(InlineDescriptor);
 
   unsigned ElemOffset = 0;
-  for (unsigned I = 0; I != NumElems; ++I, ElemOffset += ElemSize) {
+  for (unsigned I = 0; I < NumElems; ++I, ElemOffset += ElemSize) {
     auto *ElemPtr = Ptr + ElemOffset;
     auto *Desc = reinterpret_cast<InlineDescriptor *>(ElemPtr);
+    auto *ElemLoc = reinterpret_cast<std::byte *>(Desc + 1);
     auto *SD = D->ElemDesc;
 
     Desc->Offset = ElemOffset + sizeof(InlineDescriptor);
@@ -99,11 +100,9 @@ static void ctorArrayDesc(Block *B, std::byte *Ptr, bool IsConst,
     Desc->IsArrayElement = true;
     Desc->IsVolatile = IsVolatile;
 
-    if (auto Fn = D->ElemDesc->CtorFn) {
-      auto *ElemLoc = reinterpret_cast<std::byte *>(Desc + 1);
+    if (auto Fn = D->ElemDesc->CtorFn)
       Fn(B, ElemLoc, Desc->IsConst, Desc->IsFieldMutable, IsVolatile, IsActive,
          Desc->InUnion || SD->isUnion(), D->ElemDesc);
-    }
   }
 }
 
@@ -389,8 +388,6 @@ QualType Descriptor::getType() const {
 QualType Descriptor::getElemQualType() const {
   assert(isArray());
   QualType T = getType();
-  if (const auto *AT = T->getAs<AtomicType>())
-    T = AT->getValueType();
   if (T->isPointerOrReferenceType())
     T = T->getPointeeType();
 

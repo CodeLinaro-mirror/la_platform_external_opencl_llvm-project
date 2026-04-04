@@ -438,10 +438,10 @@ public:
     return *this;
   }
 
-  void constrainAllUses(const TargetInstrInfo &TII,
+  bool constrainAllUses(const TargetInstrInfo &TII,
                         const TargetRegisterInfo &TRI,
                         const RegisterBankInfo &RBI) const {
-    constrainSelectedInstRegOperands(*MI, TII, TRI, RBI);
+    return constrainSelectedInstRegOperands(*MI, TII, TRI, RBI);
   }
 };
 

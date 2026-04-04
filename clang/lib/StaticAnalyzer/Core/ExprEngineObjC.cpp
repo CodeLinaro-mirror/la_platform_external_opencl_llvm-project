@@ -27,7 +27,7 @@ void ExprEngine::VisitLvalObjCIvarRefExpr(const ObjCIvarRefExpr *Ex,
   SVal location = state->getLValue(Ex->getDecl(), baseVal);
 
   ExplodedNodeSet dstIvar;
-  NodeBuilder Bldr(Pred, dstIvar, *currBldrCtx);
+  StmtNodeBuilder Bldr(Pred, dstIvar, *currBldrCtx);
   Bldr.generateNode(Ex, Pred, state->BindExpr(Ex, LCtx, location));
 
   // Perform the post-condition check of the ObjCIvarRefExpr and store
@@ -43,13 +43,11 @@ void ExprEngine::VisitObjCAtSynchronizedStmt(const ObjCAtSynchronizedStmt *S,
 
 /// Generate a node in \p Bldr for an iteration statement using ObjC
 /// for-loop iterator.
-static void populateObjCForDestinationSet(ExplodedNodeSet &dstLocation,
-                                          SValBuilder &svalBuilder,
-                                          const ObjCForCollectionStmt *S,
-                                          ConstCFGElementRef elem,
-                                          SVal elementV, SymbolManager &SymMgr,
-                                          unsigned NumVisitedCurrent,
-                                          NodeBuilder &Bldr, bool hasElements) {
+static void populateObjCForDestinationSet(
+    ExplodedNodeSet &dstLocation, SValBuilder &svalBuilder,
+    const ObjCForCollectionStmt *S, ConstCFGElementRef elem, SVal elementV,
+    SymbolManager &SymMgr, const NodeBuilderContext *currBldrCtx,
+    StmtNodeBuilder &Bldr, bool hasElements) {
 
   for (ExplodedNode *Pred : dstLocation) {
     ProgramStateRef state = Pred->getState();
@@ -69,7 +67,7 @@ static void populateObjCForDestinationSet(ExplodedNodeSet &dstLocation,
         SVal V;
         if (hasElements) {
           SymbolRef Sym =
-              SymMgr.conjureSymbol(elem, LCtx, T, NumVisitedCurrent);
+              SymMgr.conjureSymbol(elem, LCtx, T, currBldrCtx->blockCount());
           V = svalBuilder.makeLoc(Sym);
         } else {
           V = svalBuilder.makeIntVal(0, T);
@@ -132,17 +130,16 @@ void ExprEngine::VisitObjCForCollectionStmt(const ObjCForCollectionStmt *S,
 
   for (ExplodedNode *dstLocation : DstLocation) {
     ExplodedNodeSet DstLocationSingleton{dstLocation}, Tmp;
-    NodeBuilder Bldr(dstLocation, Tmp, *currBldrCtx);
+    StmtNodeBuilder Bldr(dstLocation, Tmp, *currBldrCtx);
 
     if (!isContainerNull)
       populateObjCForDestinationSet(DstLocationSingleton, svalBuilder, S,
-                                    elemRef, elementV, SymMgr,
-                                    getNumVisitedCurrent(), Bldr,
+                                    elemRef, elementV, SymMgr, currBldrCtx,
+                                    Bldr,
                                     /*hasElements=*/true);
 
     populateObjCForDestinationSet(DstLocationSingleton, svalBuilder, S, elemRef,
-                                  elementV, SymMgr, getNumVisitedCurrent(),
-                                  Bldr,
+                                  elementV, SymMgr, currBldrCtx, Bldr,
                                   /*hasElements=*/false);
 
     // Finally, run any custom checkers.
@@ -214,7 +211,7 @@ void ExprEngine::VisitObjCMessage(const ObjCMessageExpr *ME,
       // Receiver is definitely nil, so run ObjCMessageNil callbacks and return.
       if (nilState && !notNilState) {
         ExplodedNodeSet dstNil;
-        NodeBuilder Bldr(Pred, dstNil, *currBldrCtx);
+        StmtNodeBuilder Bldr(Pred, dstNil, *currBldrCtx);
         bool HasTag = Pred->getLocation().getTag();
         Pred = Bldr.generateNode(ME, Pred, nilState, nullptr,
                                  ProgramPoint::PreStmtKind);
@@ -232,7 +229,7 @@ void ExprEngine::VisitObjCMessage(const ObjCMessageExpr *ME,
       }
 
       ExplodedNodeSet dstNonNil;
-      NodeBuilder Bldr(Pred, dstNonNil, *currBldrCtx);
+      StmtNodeBuilder Bldr(Pred, dstNonNil, *currBldrCtx);
       // Generate a transition to the non-nil state, dropping any potential
       // nil flow.
       if (notNilState != State) {
@@ -256,7 +253,7 @@ void ExprEngine::VisitObjCMessage(const ObjCMessageExpr *ME,
 
   // Proceed with evaluate the message expression.
   ExplodedNodeSet dstEval;
-  NodeBuilder Bldr(dstGenericPrevisit, dstEval, *currBldrCtx);
+  StmtNodeBuilder Bldr(dstGenericPrevisit, dstEval, *currBldrCtx);
 
   for (ExplodedNodeSet::iterator DI = dstGenericPrevisit.begin(),
        DE = dstGenericPrevisit.end(); DI != DE; ++DI) {

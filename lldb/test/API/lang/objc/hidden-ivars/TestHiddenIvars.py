@@ -1,5 +1,6 @@
 """Test that hidden ivars in a shared library are visible from the main executable."""
 
+
 import subprocess
 
 import unittest
@@ -10,8 +11,6 @@ from lldbsuite.test import lldbutil
 
 
 class HiddenIvarsTestCase(TestBase):
-    SHARED_BUILD_TESTCASE = False
-
     def setUp(self):
         # Call super's setUp().
         TestBase.setUp(self)

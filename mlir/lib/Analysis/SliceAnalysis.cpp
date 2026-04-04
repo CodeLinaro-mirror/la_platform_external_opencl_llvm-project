@@ -329,8 +329,7 @@ Value mlir::matchReduction(ArrayRef<BlockArgument> iterCarriedArgs,
   // Check that the yielded value is in the same position as in
   // `iterCarriedArgs`.
   Operation *terminatorOp = combinerOp;
-  if (redPos >= terminatorOp->getNumOperands() ||
-      terminatorOp->getOperand(redPos) != combinerOps.back()->getResults()[0])
+  if (terminatorOp->getOperand(redPos) != combinerOps.back()->getResults()[0])
     return nullptr;
 
   return reducedVal;

@@ -862,6 +862,9 @@ struct OffloadArray {
   /// fails.
   /// This MUST be used immediately after the construction of the object.
   bool initialize(AllocaInst &Array, Instruction &Before) {
+    if (!Array.getAllocatedType()->isArrayTy())
+      return false;
+
     if (!getValues(Array, Before))
       return false;
 
@@ -879,13 +882,8 @@ private:
   /// \p Array, leaving StoredValues with the values stored before the
   /// instruction \p Before is reached.
   bool getValues(AllocaInst &Array, Instruction &Before) {
-    // Initialize containers.
-    const DataLayout &DL = Array.getDataLayout();
-    std::optional<TypeSize> ArraySize = Array.getAllocationSize(DL);
-    if (!ArraySize || !ArraySize->isFixed())
-      return false;
-    const unsigned int PointerSize = DL.getPointerSize();
-    const uint64_t NumValues = ArraySize->getFixedValue() / PointerSize;
+    // Initialize container.
+    const uint64_t NumValues = Array.getAllocatedType()->getArrayNumElements();
     StoredValues.assign(NumValues, nullptr);
     LastAccesses.assign(NumValues, nullptr);
 
@@ -894,6 +892,9 @@ private:
     BasicBlock *BB = Array.getParent();
     if (BB != Before.getParent())
       return false;
+
+    const DataLayout &DL = Array.getDataLayout();
+    const unsigned int PointerSize = DL.getPointerSize();
 
     for (Instruction &I : *BB) {
       if (&I == &Before)
@@ -908,11 +909,8 @@ private:
           GetPointerBaseWithConstantOffset(S->getPointerOperand(), Offset, DL);
       if (Dst == &Array) {
         int64_t Idx = Offset / PointerSize;
-        // Ignore updates that must be UB (probably in dead code at runtime)
-        if ((uint64_t)Idx < NumValues) {
-          StoredValues[Idx] = getUnderlyingObject(S->getValueOperand());
-          LastAccesses[Idx] = S;
-        }
+        StoredValues[Idx] = getUnderlyingObject(S->getValueOperand());
+        LastAccesses[Idx] = S;
       }
     }
 
@@ -1186,7 +1184,7 @@ private:
       cantFail(
           OMPInfoCache.OMPBuilder.createBarrier(SeqAfterIP, OMPD_parallel));
 
-      UncondBrInst::Create(SeqAfterBB, SeqAfterIP.getBlock());
+      BranchInst::Create(SeqAfterBB, SeqAfterIP.getBlock());
 
       LLVM_DEBUG(dbgs() << TAG << "After sequential inlining " << *OuterFn
                         << "\n");
@@ -1260,7 +1258,7 @@ private:
           cantFail(OMPInfoCache.OMPBuilder.createParallel(
               Loc, AllocaIP, BodyGenCB, PrivCB, FiniCB, nullptr, nullptr,
               OMP_PROC_BIND_default, /* IsCancellable */ false));
-      UncondBrInst::Create(AfterBB, AfterIP.getBlock());
+      BranchInst::Create(AfterBB, AfterIP.getBlock());
 
       // Perform the actual outlining.
       OMPInfoCache.OMPBuilder.finalize(OriginalFn);
@@ -2919,9 +2917,9 @@ struct AAExecutionDomainFunction : public AAExecutionDomain {
 
   // Check if the edge into the successor block contains a condition that only
   // lets the main thread execute it.
-  static bool isInitialThreadOnlyEdge(Attributor &A, CondBrInst *Edge,
+  static bool isInitialThreadOnlyEdge(Attributor &A, BranchInst *Edge,
                                       BasicBlock &SuccessorBB) {
-    if (!Edge)
+    if (!Edge || !Edge->isConditional())
       return false;
     if (Edge->getSuccessor(0) != &SuccessorBB)
       return false;
@@ -3128,7 +3126,7 @@ ChangeStatus AAExecutionDomainFunction::updateImpl(Attributor &A) {
         if (LivenessAA && LivenessAA->isEdgeDead(PredBB, &BB))
           continue;
         bool InitialEdgeOnly = isInitialThreadOnlyEdge(
-            A, dyn_cast<CondBrInst>(PredBB->getTerminator()), BB);
+            A, dyn_cast<BranchInst>(PredBB->getTerminator()), BB);
         mergeInPredecessor(A, ED, BEDMap[PredBB], InitialEdgeOnly);
       }
     }
@@ -4060,7 +4058,7 @@ struct AAKernelInfoFunction : AAKernelInfo {
           OMPInfoCache.OMPBuilder.getOrCreateSrcLocStr(Loc, SrcLocStrSize);
       Value *Ident =
           OMPInfoCache.OMPBuilder.getOrCreateIdent(SrcLocStr, SrcLocStrSize);
-      UncondBrInst::Create(RegionCheckTidBB, ParentBB)->setDebugLoc(DL);
+      BranchInst::Create(RegionCheckTidBB, ParentBB)->setDebugLoc(DL);
 
       // Add check for Tid in RegionCheckTidBB
       RegionCheckTidBB->getTerminator()->eraseFromParent();
@@ -4220,7 +4218,7 @@ struct AAKernelInfoFunction : AAKernelInfo {
                          ConstantInt::get(ThreadIdInBlock->getType(), 0),
                          "thread.is_main", InitBB);
     IsMainThread->setDebugLoc(DLoc);
-    CondBrInst::Create(IsMainThread, ReturnBB, UserCodeBB, InitBB);
+    BranchInst::Create(ReturnBB, UserCodeBB, IsMainThread, InitBB);
   }
 
   bool changeToSPMDMode(Attributor &A, ChangeStatus &Changed) {
@@ -4462,7 +4460,7 @@ struct AAKernelInfoFunction : AAKernelInfo {
                          ConstantInt::getAllOnesValue(KernelInitCB->getType()),
                          "thread.is_worker", InitBB);
     IsWorker->setDebugLoc(DLoc);
-    CondBrInst::Create(IsWorker, IsWorkerCheckBB, UserCodeEntryBB, InitBB);
+    BranchInst::Create(IsWorkerCheckBB, UserCodeEntryBB, IsWorker, InitBB);
 
     Module &M = *Kernel->getParent();
     FunctionCallee BlockHwSizeFn =
@@ -4486,8 +4484,8 @@ struct AAKernelInfoFunction : AAKernelInfo {
         ICmpInst::ICmp, llvm::CmpInst::ICMP_SLT, KernelInitCB, BlockSize,
         "thread.is_main_or_worker", IsWorkerCheckBB);
     IsMainOrWorker->setDebugLoc(DLoc);
-    CondBrInst::Create(IsMainOrWorker, StateMachineBeginBB,
-                       StateMachineFinishedBB, IsWorkerCheckBB);
+    BranchInst::Create(StateMachineBeginBB, StateMachineFinishedBB,
+                       IsMainOrWorker, IsWorkerCheckBB);
 
     // Create local storage for the work function pointer.
     const DataLayout &DL = M.getDataLayout();
@@ -4542,12 +4540,13 @@ struct AAKernelInfoFunction : AAKernelInfo {
                          Constant::getNullValue(VoidPtrTy), "worker.is_done",
                          StateMachineBeginBB);
     IsDone->setDebugLoc(DLoc);
-    CondBrInst::Create(IsDone, StateMachineFinishedBB,
-                       StateMachineIsActiveCheckBB, StateMachineBeginBB)
+    BranchInst::Create(StateMachineFinishedBB, StateMachineIsActiveCheckBB,
+                       IsDone, StateMachineBeginBB)
         ->setDebugLoc(DLoc);
 
-    CondBrInst::Create(IsActiveWorker, StateMachineIfCascadeCurrentBB,
-                       StateMachineDoneBarrierBB, StateMachineIsActiveCheckBB)
+    BranchInst::Create(StateMachineIfCascadeCurrentBB,
+                       StateMachineDoneBarrierBB, IsActiveWorker,
+                       StateMachineIsActiveCheckBB)
         ->setDebugLoc(DLoc);
 
     Value *ZeroArg =
@@ -4567,7 +4566,7 @@ struct AAKernelInfoFunction : AAKernelInfo {
           StateMachineEndParallelBB);
       CallInst::Create(ParallelRegion, {ZeroArg, GTid}, "", PRExecuteBB)
           ->setDebugLoc(DLoc);
-      UncondBrInst::Create(StateMachineEndParallelBB, PRExecuteBB)
+      BranchInst::Create(StateMachineEndParallelBB, PRExecuteBB)
           ->setDebugLoc(DLoc);
 
       BasicBlock *PRNextBB =
@@ -4589,7 +4588,7 @@ struct AAKernelInfoFunction : AAKernelInfo {
         IsPR = ConstantInt::getTrue(Ctx);
       }
 
-      CondBrInst::Create(IsPR, PRExecuteBB, PRNextBB,
+      BranchInst::Create(PRExecuteBB, PRNextBB, IsPR,
                          StateMachineIfCascadeCurrentBB)
           ->setDebugLoc(DLoc);
       StateMachineIfCascadeCurrentBB = PRNextBB;
@@ -4605,8 +4604,8 @@ struct AAKernelInfoFunction : AAKernelInfo {
                        StateMachineIfCascadeCurrentBB)
           ->setDebugLoc(DLoc);
     }
-    UncondBrInst::Create(StateMachineEndParallelBB,
-                         StateMachineIfCascadeCurrentBB)
+    BranchInst::Create(StateMachineEndParallelBB,
+                       StateMachineIfCascadeCurrentBB)
         ->setDebugLoc(DLoc);
 
     FunctionCallee EndParallelFn =
@@ -4616,12 +4615,12 @@ struct AAKernelInfoFunction : AAKernelInfo {
         CallInst::Create(EndParallelFn, {}, "", StateMachineEndParallelBB);
     OMPInfoCache.setCallingConvention(EndParallelFn, EndParallel);
     EndParallel->setDebugLoc(DLoc);
-    UncondBrInst::Create(StateMachineDoneBarrierBB, StateMachineEndParallelBB)
+    BranchInst::Create(StateMachineDoneBarrierBB, StateMachineEndParallelBB)
         ->setDebugLoc(DLoc);
 
     CallInst::Create(BarrierFn, {Ident, GTid}, "", StateMachineDoneBarrierBB)
         ->setDebugLoc(DLoc);
-    UncondBrInst::Create(StateMachineBeginBB, StateMachineDoneBarrierBB)
+    BranchInst::Create(StateMachineBeginBB, StateMachineDoneBarrierBB)
         ->setDebugLoc(DLoc);
 
     return true;

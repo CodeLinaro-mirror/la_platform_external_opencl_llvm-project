@@ -1,4 +1,4 @@
-// RUN: %check_clang_tidy -std=c++20-or-later %s modernize-use-string-view %t
+// RUN: %check_clang_tidy -std=c++20-or-later %s modernize-use-string-view %t -- -- -isystem %clang_tidy_headers
 
 #include <string>
 

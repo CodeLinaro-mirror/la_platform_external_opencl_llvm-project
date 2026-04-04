@@ -571,9 +571,6 @@ public:
                                                Register TargetReg,
                                                bool FrameSetup) const;
 
-  static int
-  findCondCodeUseOperandIdxForBranchOrSelect(const MachineInstr &Instr);
-
 #define GET_INSTRINFO_HELPER_DECLS
 #include "AArch64GenInstrInfo.inc"
 
@@ -893,11 +890,11 @@ enum SMEMatrixType {
 #undef TSFLAG_INSTR_FLAGS
 #undef TSFLAG_SME_MATRIX_TYPE
 
-int32_t getSVEPseudoMap(uint32_t Opcode);
-int32_t getSVERevInstr(uint32_t Opcode);
-int32_t getSVENonRevInstr(uint32_t Opcode);
+int getSVEPseudoMap(uint16_t Opcode);
+int getSVERevInstr(uint16_t Opcode);
+int getSVENonRevInstr(uint16_t Opcode);
 
-int32_t getSMEPseudoMap(uint32_t Opcode);
+int getSMEPseudoMap(uint16_t Opcode);
 }
 
 } // end namespace llvm

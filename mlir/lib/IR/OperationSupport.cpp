@@ -654,9 +654,6 @@ ValueRange::OwnerT ValueRange::offset_base(const OwnerT &owner,
     return {value + index};
   if (auto *operand = llvm::dyn_cast_if_present<OpOperand *>(owner))
     return {operand + index};
-  // All elements are identical; the owner pointer never advances.
-  if (llvm::isa<const Repeated<Value> *>(owner))
-    return owner;
   return cast<detail::OpResultImpl *>(owner)->getNextResultAtOffset(index);
 }
 /// See `llvm::detail::indexed_accessor_range_base` for details.
@@ -665,9 +662,6 @@ Value ValueRange::dereference_iterator(const OwnerT &owner, ptrdiff_t index) {
     return value[index];
   if (auto *operand = llvm::dyn_cast_if_present<OpOperand *>(owner))
     return operand[index].get();
-  if (auto *repeated =
-          llvm::dyn_cast_if_present<const Repeated<Value> *>(owner))
-    return repeated->value();
   return cast<detail::OpResultImpl *>(owner)->getNextResultAtOffset(index);
 }
 
@@ -695,8 +689,7 @@ llvm::hash_code OperationEquivalence::computeHash(
     hash = llvm::hash_combine(hash, op->getLoc());
 
   //   - Operands
-  if (!(flags & Flags::IgnoreCommutativity) &&
-      op->hasTrait<mlir::OpTrait::IsCommutative>() &&
+  if (op->hasTrait<mlir::OpTrait::IsCommutative>() &&
       op->getNumOperands() > 0) {
     size_t operandHash = hashOperands(op->getOperand(0));
     for (auto operand : op->getOperands().drop_front())
@@ -861,7 +854,7 @@ OperationEquivalence::isRegionEquivalentTo(Region *lhs, Region *rhs,
     return false;
 
   // 2. Compare operands.
-  if (!(flags & IgnoreCommutativity) && checkCommutativeEquivalent &&
+  if (checkCommutativeEquivalent &&
       lhs->hasTrait<mlir::OpTrait::IsCommutative>()) {
     auto lhsRange = lhs->getOperands();
     auto rhsRange = rhs->getOperands();

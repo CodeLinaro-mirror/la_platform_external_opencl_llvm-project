@@ -177,8 +177,6 @@ enum TypeCodes {
   TYPE_CODE_OPAQUE_POINTER = 25, // OPAQUE_POINTER: [addrspace]
 
   TYPE_CODE_TARGET_TYPE = 26, // TARGET_TYPE
-
-  TYPE_CODE_BYTE = 27, // BYTE: [width]
 };
 
 enum OperandBundleTagCode {
@@ -442,8 +440,6 @@ enum ConstantsCodes {
   CST_CODE_PTRAUTH = 33,              // [ptr, key, disc, addrdisc]
   CST_CODE_PTRAUTH2 = 34,             // [ptr, key, disc, addrdisc,
                                       //  deactivation_symbol]
-  CST_CODE_BYTE = 35,                 // BYTE:          [intval]
-  CST_CODE_WIDE_BYTE = 36,            // WIDE_BYTE:     [n x intval]
 };
 
 /// CastOpcodes - These are values used in the bitcode files to encode which
@@ -520,8 +516,6 @@ enum RMWOperations {
   RMW_USUB_SAT = 18,
   RMW_FMAXIMUM = 19,
   RMW_FMINIMUM = 20,
-  RMW_FMAXIMUMNUM = 21,
-  RMW_FMINIMUMNUM = 22,
 };
 
 /// OverflowingBinaryOperatorOptionalFlags - Flags for serializing
@@ -813,9 +807,6 @@ enum AttributeKindCodes {
   ATTR_KIND_DEAD_ON_RETURN = 103,
   ATTR_KIND_SANITIZE_ALLOC_TOKEN = 104,
   ATTR_KIND_NO_CREATE_UNDEF_OR_POISON = 105,
-  ATTR_KIND_DENORMAL_FPENV = 106,
-  ATTR_KIND_NOOUTLINE = 107,
-  ATTR_KIND_FLATTEN = 108,
 };
 
 enum ComdatSelectionKindCodes {

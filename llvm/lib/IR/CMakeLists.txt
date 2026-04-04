@@ -55,7 +55,6 @@ add_llvm_component_library(LLVMCore
   ModuleSummaryIndex.cpp
   Operator.cpp
   OptBisect.cpp
-  PatternMatch.cpp
   Pass.cpp
   PassInstrumentation.cpp
   PassManager.cpp
@@ -83,9 +82,6 @@ add_llvm_component_library(LLVMCore
 
   ADDITIONAL_HEADER_DIRS
   ${LLVM_MAIN_INCLUDE_DIR}/llvm/IR
-
-  PRECOMPILE_HEADERS
-  [["llvm/IR/pch.h"]]
 
   LINK_LIBS
   ${LLVM_PTHREAD_LIB}

@@ -23,6 +23,7 @@ namespace llvm {
 
 template class DominanceFrontierBase<BasicBlock, false>;
 template class DominanceFrontierBase<BasicBlock, true>;
+template class ForwardDominanceFrontierBase<BasicBlock>;
 
 } // end namespace llvm
 

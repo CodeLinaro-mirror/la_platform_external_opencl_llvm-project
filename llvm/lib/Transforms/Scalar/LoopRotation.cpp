@@ -38,10 +38,9 @@ static cl::opt<bool> PrepareForLTOOption(
     cl::desc("Run loop-rotation in the prepare-for-lto stage. This option "
              "should be used for testing only."));
 
-LoopRotatePass::LoopRotatePass(bool EnableHeaderDuplication, bool PrepareForLTO,
-                               bool CheckExitCount)
+LoopRotatePass::LoopRotatePass(bool EnableHeaderDuplication, bool PrepareForLTO)
     : EnableHeaderDuplication(EnableHeaderDuplication),
-      PrepareForLTO(PrepareForLTO), CheckExitCount(CheckExitCount) {}
+      PrepareForLTO(PrepareForLTO) {}
 
 void LoopRotatePass::printPipeline(
     raw_ostream &OS, function_ref<StringRef(StringRef)> MapClassName2PassName) {
@@ -54,11 +53,7 @@ void LoopRotatePass::printPipeline(
 
   if (!PrepareForLTO)
     OS << "no-";
-  OS << "prepare-for-lto;";
-
-  if (!CheckExitCount)
-    OS << "no-";
-  OS << "check-exit-count";
+  OS << "prepare-for-lto";
   OS << ">";
 }
 
@@ -79,10 +74,9 @@ PreservedAnalyses LoopRotatePass::run(Loop &L, LoopAnalysisManager &AM,
   std::optional<MemorySSAUpdater> MSSAU;
   if (AR.MSSA)
     MSSAU = MemorySSAUpdater(AR.MSSA);
-  bool Changed =
-      LoopRotation(&L, &AR.LI, &AR.TTI, &AR.AC, &AR.DT, &AR.SE,
-                   MSSAU ? &*MSSAU : nullptr, SQ, false, Threshold, false,
-                   PrepareForLTO || PrepareForLTOOption, CheckExitCount);
+  bool Changed = LoopRotation(&L, &AR.LI, &AR.TTI, &AR.AC, &AR.DT, &AR.SE,
+                              MSSAU ? &*MSSAU : nullptr, SQ, false, Threshold,
+                              false, PrepareForLTO || PrepareForLTOOption);
 
   if (!Changed)
     return PreservedAnalyses::all();

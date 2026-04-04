@@ -350,7 +350,7 @@ getWorkspaceSymbols(llvm::StringRef Query, int Limit,
 
     SymbolInformation Info;
     Info.name = (Sym.Name + Sym.TemplateSpecializationArgs).str();
-    Info.kind = indexSymbolKindToSymbolKind(Sym.SymInfo);
+    Info.kind = indexSymbolKindToSymbolKind(Sym.SymInfo.Kind);
     Info.location = *Loc;
     Scope.consume_back("::");
     Info.containerName = Scope.str();
@@ -390,8 +390,7 @@ std::string getSymbolDetail(ASTContext &Ctx, const NamedDecl &ND) {
   PrintingPolicy P(Ctx.getPrintingPolicy());
   P.SuppressScope = true;
   P.SuppressUnwrittenScope = true;
-  P.AnonymousTagNameStyle =
-      llvm::to_underlying(PrintingPolicy::AnonymousTagMode::Plain);
+  P.AnonymousTagLocations = false;
   P.PolishForDeclaration = true;
   std::string Detail;
   llvm::raw_string_ostream OS(Detail);
@@ -432,7 +431,7 @@ std::optional<DocumentSymbol> declToSym(ASTContext &Ctx, const NamedDecl &ND) {
   index::SymbolInfo SymInfo = index::getSymbolInfo(&ND);
   // FIXME: This is not classifying constructors, destructors and operators
   // correctly.
-  SymbolKind SK = indexSymbolKindToSymbolKind(SymInfo);
+  SymbolKind SK = indexSymbolKindToSymbolKind(SymInfo.Kind);
 
   DocumentSymbol SI;
   SI.name = getSymbolName(Ctx, ND);

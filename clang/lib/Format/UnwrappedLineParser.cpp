@@ -527,8 +527,6 @@ void UnwrappedLineParser::calculateBraceTypes(bool ExpectClassBody) {
           // `) { }` can only occur in function or method declarations in JS.
           Tok->setBlockKind(BK_Block);
         }
-      } else if (Style.isJava() && PrevTok && PrevTok->is(tok::arrow)) {
-        Tok->setBlockKind(BK_Block);
       } else {
         Tok->setBlockKind(BK_Unknown);
       }
@@ -764,13 +762,12 @@ FormatToken *UnwrappedLineParser::parseBlock(bool MustBeDeclaration,
   const bool MacroBlock = FormatTok->is(TT_MacroBlockBegin);
   FormatTok->setBlockKind(BK_Block);
 
-  const bool IsWhitesmiths =
-      Style.BreakBeforeBraces == FormatStyle::BS_Whitesmiths;
-
   // For Whitesmiths mode, jump to the next level prior to skipping over the
   // braces.
-  if (!VerilogHierarchy && AddLevels > 0 && IsWhitesmiths)
+  if (!VerilogHierarchy && AddLevels > 0 &&
+      Style.BreakBeforeBraces == FormatStyle::BS_Whitesmiths) {
     ++Line->Level;
+  }
 
   size_t PPStartHash = computePPHash();
 
@@ -805,11 +802,8 @@ FormatToken *UnwrappedLineParser::parseBlock(bool MustBeDeclaration,
 
   ScopedDeclarationState DeclarationState(*Line, DeclarationScopeStack,
                                           MustBeDeclaration);
-
-  // Whitesmiths logic has already added a level by this point, so avoid
-  // adding it twice.
-  if (AddLevels > 0u)
-    Line->Level += AddLevels - (IsWhitesmiths ? 1 : 0);
+  if (AddLevels > 0u && Style.BreakBeforeBraces != FormatStyle::BS_Whitesmiths)
+    Line->Level += AddLevels;
 
   FormatToken *IfLBrace = nullptr;
   const bool SimpleBlock = parseLevel(Tok, IfKind, &IfLBrace);
@@ -955,8 +949,7 @@ static bool isIIFE(const UnwrappedLine &Line,
 
 static bool ShouldBreakBeforeBrace(const FormatStyle &Style,
                                    const FormatToken &InitialToken,
-                                   bool IsEmptyBlock,
-                                   bool IsJavaRecord = false) {
+                                   const bool IsJavaRecord) {
   if (IsJavaRecord)
     return Style.BraceWrapping.AfterClass;
 
@@ -964,20 +957,15 @@ static bool ShouldBreakBeforeBrace(const FormatStyle &Style,
   if (InitialToken.is(TT_NamespaceMacro))
     Kind = tok::kw_namespace;
 
-  const bool WrapRecordAllowed =
-      !IsEmptyBlock ||
-      Style.AllowShortRecordOnASingleLine < FormatStyle::SRS_Empty ||
-      Style.BraceWrapping.SplitEmptyRecord;
-
   switch (Kind) {
   case tok::kw_namespace:
     return Style.BraceWrapping.AfterNamespace;
   case tok::kw_class:
-    return Style.BraceWrapping.AfterClass && WrapRecordAllowed;
+    return Style.BraceWrapping.AfterClass;
   case tok::kw_union:
-    return Style.BraceWrapping.AfterUnion && WrapRecordAllowed;
+    return Style.BraceWrapping.AfterUnion;
   case tok::kw_struct:
-    return Style.BraceWrapping.AfterStruct && WrapRecordAllowed;
+    return Style.BraceWrapping.AfterStruct;
   case tok::kw_enum:
     return Style.BraceWrapping.AfterEnum;
   default:
@@ -1149,6 +1137,12 @@ void UnwrappedLineParser::parsePPElse() {
 void UnwrappedLineParser::parsePPEndIf() {
   conditionalCompilationEnd();
   parsePPUnknown();
+  // If the #endif of a potential include guard is the last thing in the file,
+  // then we found an include guard.
+  if (IncludeGuard == IG_Defined && PPBranchLevel == -1 && Tokens->isEOF() &&
+      getIncludeGuardState(Style.IndentPPDirectives) == IG_Inited) {
+    IncludeGuard = IG_Found;
+  }
 }
 
 void UnwrappedLineParser::parsePPDefine() {
@@ -1716,7 +1710,7 @@ void UnwrappedLineParser::parseStructuralElement(
       if (!Line->InMacroBody || CurrentLines->size() > 1)
         Line->Tokens.begin()->Tok->MustBreakBefore = true;
       FormatTok->setFinalizedType(TT_GotoLabelColon);
-      parseLabel(Style.IndentGotoLabels);
+      parseLabel(!Style.IndentGotoLabels);
       if (HasLabel)
         *HasLabel = true;
       return;
@@ -3210,10 +3204,8 @@ void UnwrappedLineParser::parseNamespace() {
   if (FormatTok->is(tok::l_brace)) {
     FormatTok->setFinalizedType(TT_NamespaceLBrace);
 
-    if (ShouldBreakBeforeBrace(Style, InitialToken,
-                               Tokens->peekNextToken()->is(tok::r_brace))) {
+    if (ShouldBreakBeforeBrace(Style, InitialToken, /*IsJavaRecord=*/false))
       addUnwrappedLine();
-    }
 
     unsigned AddLevels =
         Style.NamespaceIndentation == FormatStyle::NI_All ||
@@ -3362,23 +3354,14 @@ void UnwrappedLineParser::parseDoWhile() {
   parseStructuralElement();
 }
 
-void UnwrappedLineParser::parseLabel(
-    FormatStyle::IndentGotoLabelStyle IndentGotoLabels) {
+void UnwrappedLineParser::parseLabel(bool LeftAlignLabel) {
   nextToken();
   unsigned OldLineLevel = Line->Level;
 
-  switch (IndentGotoLabels) {
-  case FormatStyle::IGLS_NoIndent:
+  if (LeftAlignLabel)
     Line->Level = 0;
-    break;
-  case FormatStyle::IGLS_OuterIndent:
-    if (Line->Level > 1 || (!Line->InPPDirective && Line->Level > 0))
-      --Line->Level;
-    break;
-  case FormatStyle::IGLS_HalfIndent:
-  case FormatStyle::IGLS_InnerIndent:
-    break;
-  }
+  else if (Line->Level > 1 || (!Line->InPPDirective && Line->Level > 0))
+    --Line->Level;
 
   if (!Style.IndentCaseBlocks && CommentsBeforeNextToken.empty() &&
       FormatTok->is(tok::l_brace)) {
@@ -3876,8 +3859,7 @@ bool UnwrappedLineParser::parseEnum() {
   }
 
   if (!Style.AllowShortEnumsOnASingleLine &&
-      ShouldBreakBeforeBrace(Style, InitialToken,
-                             Tokens->peekNextToken()->is(tok::r_brace))) {
+      ShouldBreakBeforeBrace(Style, InitialToken, /*IsJavaRecord=*/false)) {
     addUnwrappedLine();
   }
   // Parse enum body.
@@ -4172,11 +4154,8 @@ void UnwrappedLineParser::parseRecord(bool ParseAsExpr, bool IsJavaRecord) {
     if (ParseAsExpr) {
       parseChildBlock();
     } else {
-      if (ShouldBreakBeforeBrace(Style, InitialToken,
-                                 Tokens->peekNextToken()->is(tok::r_brace),
-                                 IsJavaRecord)) {
+      if (ShouldBreakBeforeBrace(Style, InitialToken, IsJavaRecord))
         addUnwrappedLine();
-      }
 
       unsigned AddLevels = Style.IndentAccessModifiers ? 2u : 1u;
       parseBlock(/*MustBeDeclaration=*/true, AddLevels, /*MunchSemi=*/false);
@@ -4948,20 +4927,10 @@ void UnwrappedLineParser::readToken(int LevelDifference) {
       assert(Line->Level >= Line->UnbracedBodyLevel);
       Line->Level -= Line->UnbracedBodyLevel;
       flushComments(isOnNewLine(*FormatTok));
-      const bool IsEndIf = Tokens->peekNextToken()->is(tok::pp_endif);
       parsePPDirective();
       PreviousWasComment = FormatTok->is(tok::comment);
       FirstNonCommentOnLine = IsFirstNonCommentOnLine(
           FirstNonCommentOnLine, *FormatTok, PreviousWasComment);
-      // If the #endif of a potential include guard is the last thing in the
-      // file, then we found an include guard.
-      if (IsEndIf && IncludeGuard == IG_Defined && PPBranchLevel == -1 &&
-          getIncludeGuardState(Style.IndentPPDirectives) == IG_Inited &&
-          (eof() ||
-           (PreviousWasComment &&
-            Tokens->peekNextToken(/*SkipComment=*/true)->is(tok::eof)))) {
-        IncludeGuard = IG_Found;
-      }
     }
 
     if (!PPStack.empty() && (PPStack.back().Kind == PP_Unreachable) &&

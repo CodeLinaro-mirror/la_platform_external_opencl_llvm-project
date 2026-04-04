@@ -11,6 +11,8 @@
 #include "lldb/Utility/Log.h"
 #include "lldb/lldb-enumerations.h"
 
+#if LLDB_ENABLE_PYTHON
+
 // LLDB Python header must be included first
 #include "../lldb-python.h"
 
@@ -158,3 +160,5 @@ lldb::ScriptedFrameInterfaceSP
 ScriptedThreadPythonInterface::CreateScriptedFrameInterface() {
   return m_interpreter.CreateScriptedFrameInterface();
 }
+
+#endif

@@ -27,7 +27,6 @@
 #include "lldb/Interpreter/OptionValueFileSpec.h"
 #include "lldb/Interpreter/OptionValueProperties.h"
 #include "lldb/Interpreter/Property.h"
-#include "lldb/Interpreter/ScriptInterpreter.h"
 #include "lldb/Symbol/ObjectFile.h"
 #include "lldb/Target/ModuleCache.h"
 #include "lldb/Target/Platform.h"
@@ -42,7 +41,6 @@
 #include "lldb/Utility/StructuredData.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/FileSystem.h"
-#include "llvm/Support/FormatVariadic.h"
 #include "llvm/Support/Path.h"
 
 // Define these constants from POSIX mman.h rather than include the file so
@@ -81,7 +79,7 @@ llvm::StringRef PlatformProperties::GetSettingName() {
 
 PlatformProperties::PlatformProperties() {
   m_collection_sp = std::make_shared<OptionValueProperties>(GetSettingName());
-  m_collection_sp->Initialize(g_platform_properties_def);
+  m_collection_sp->Initialize(g_platform_properties);
 
   auto module_cache_dir = GetModuleCacheDirectory();
   if (module_cache_dir)
@@ -157,79 +155,10 @@ Status Platform::GetFileWithUUID(const FileSpec &platform_file,
   return Status();
 }
 
-FileSpecList Platform::LocateExecutableScriptingResourcesFromSafePaths(
-    Stream &feedback_stream, FileSpec module_spec, const Target &target) {
-  assert(module_spec);
-  assert(target.GetDebugger().GetScriptInterpreter());
-
-  // For now only Python scripts supported for auto-loading.
-  if (target.GetDebugger().GetScriptLanguage() != eScriptLanguagePython)
-    return {};
-
-  ScriptInterpreter::SanitizedScriptingModuleName sanitized_name =
-      target.GetDebugger()
-          .GetScriptInterpreter()
-          ->GetSanitizedScriptingModuleName(
-              module_spec.GetFileNameStrippingExtension().GetStringRef());
-
-  FileSpecList file_list;
-  FileSpecList paths = Debugger::GetSafeAutoLoadPaths();
-
-  // Iterate in reverse so we consider the latest appended path first.
-  for (FileSpec path : llvm::reverse(paths)) {
-    path.AppendPathComponent(sanitized_name.GetOriginalName());
-
-    // Resolve relative paths and '~'.
-    FileSystem::Instance().Resolve(path);
-
-    if (!FileSystem::Instance().Exists(path))
-      continue;
-
-    FileSpec script_fspec = path;
-    script_fspec.AppendPathComponent(
-        llvm::formatv("{0}.py", sanitized_name.GetSanitizedName()).str());
-
-    FileSpec orig_script_fspec = path;
-    orig_script_fspec.AppendPathComponent(
-        llvm::formatv("{0}.py", sanitized_name.GetOriginalName()).str());
-
-    WarnIfInvalidUnsanitizedScriptExists(feedback_stream, sanitized_name,
-                                         orig_script_fspec, script_fspec);
-
-    if (FileSystem::Instance().Exists(script_fspec))
-      file_list.Append(script_fspec);
-
-    // If we successfully found a directory in a safe auto-load path
-    // stop looking at any other paths.
-    break;
-  }
-
-  return file_list;
-}
-
-FileSpecList Platform::LocateExecutableScriptingResourcesForPlatform(
-    Target *target, Module &module, Stream &feedback_stream) {
-  return {};
-}
-
 FileSpecList
 Platform::LocateExecutableScriptingResources(Target *target, Module &module,
                                              Stream &feedback_stream) {
-  if (!target)
-    return {};
-
-  // Give derived platforms a chance to locate scripting resources.
-  if (FileSpecList fspecs = LocateExecutableScriptingResourcesForPlatform(
-          target, module, feedback_stream);
-      !fspecs.IsEmpty())
-    return fspecs;
-
-  const FileSpec &module_spec = module.GetFileSpec();
-  if (!module_spec)
-    return {};
-
-  return LocateExecutableScriptingResourcesFromSafePaths(feedback_stream,
-                                                         module_spec, *target);
+  return FileSpecList();
 }
 
 Status Platform::GetSharedModule(
@@ -253,16 +182,14 @@ Status Platform::GetSharedModule(
       resolved_spec.GetFileSpec().PrependPathComponent(m_sdk_sysroot);
       // Try to get shared module with resolved spec.
       error = ModuleList::GetSharedModule(resolved_spec, module_sp, old_modules,
-                                          did_create_ptr,
-                                          /*invoke_locate_callback=*/false);
+                                          did_create_ptr);
     }
     // If we don't have sysroot or it didn't work then
     // try original module spec.
     if (!error.Success()) {
       resolved_spec = spec;
       error = ModuleList::GetSharedModule(resolved_spec, module_sp, old_modules,
-                                          did_create_ptr,
-                                          /*invoke_locate_callback=*/false);
+                                          did_create_ptr);
     }
     if (error.Success() && module_sp)
       module_sp->SetPlatformFileSpec(resolved_spec.GetFileSpec());
@@ -1083,10 +1010,17 @@ lldb::ProcessSP Platform::DebugProcess(ProcessLaunchInfo &launch_info,
 
   // Allow any StructuredData process-bound plugins to adjust the launch info
   // if needed
-  for (auto &cbs : PluginManager::GetStructuredDataPluginCallbacks()) {
-    if (cbs.filter_callback) {
+  size_t i = 0;
+  bool iteration_complete = false;
+  // Note iteration can't simply go until a nullptr callback is returned, as it
+  // is valid for a plugin to not supply a filter.
+  auto get_filter_func = PluginManager::GetStructuredDataFilterCallbackAtIndex;
+  for (auto filter_callback = get_filter_func(i, iteration_complete);
+       !iteration_complete;
+       filter_callback = get_filter_func(++i, iteration_complete)) {
+    if (filter_callback) {
       // Give this ProcessLaunchInfo filter a chance to adjust the launch info.
-      error = (*cbs.filter_callback)(launch_info, &target);
+      error = (*filter_callback)(launch_info, &target);
       if (!error.Success()) {
         LLDB_LOGF(log,
                   "Platform::%s() StructuredDataPlugin launch "
@@ -1314,12 +1248,9 @@ lldb_private::Status Platform::RunShellCommand(
                     // process to exit
     std::string
         *command_output, // Pass nullptr if you don't want the command output
-    std::string *separated_error_output, // Pass nullptr if you don't want the
-                                         // command error output
     const Timeout<std::micro> &timeout) {
   return RunShellCommand(llvm::StringRef(), command, working_dir, status_ptr,
-                         signo_ptr, command_output, separated_error_output,
-                         timeout);
+                         signo_ptr, command_output, timeout);
 }
 
 lldb_private::Status Platform::RunShellCommand(
@@ -1333,13 +1264,10 @@ lldb_private::Status Platform::RunShellCommand(
                     // process to exit
     std::string
         *command_output, // Pass nullptr if you don't want the command output
-    std::string *separated_error_output, // Pass nullptr if you don't want the
-                                         // command error output
     const Timeout<std::micro> &timeout) {
   if (IsHost())
     return Host::RunShellCommand(shell, command, working_dir, status_ptr,
-                                 signo_ptr, command_output,
-                                 separated_error_output, timeout);
+                                 signo_ptr, command_output, timeout);
   return Status::FromErrorString(
       "unable to run a remote command without a platform");
 }
@@ -1597,10 +1525,6 @@ Status Platform::GetRemoteSharedModule(const ModuleSpec &module_spec,
   if (module_spec.GetUUID().IsValid()) {
     resolved_module_spec.GetUUID() = module_spec.GetUUID();
   }
-
-  // Retain the target context from the original module_spec since
-  // process->GetModuleSpec might have cleared it.
-  resolved_module_spec.SetTarget(module_spec.GetTargetSP());
 
   // Call locate module callback if set. This allows users to implement their
   // own module cache system. For example, to leverage build system artifacts,
@@ -2182,37 +2106,6 @@ Platform::LocateModuleCallback Platform::GetLocateModuleCallback() const {
   return m_locate_module_callback;
 }
 
-void Platform::WarnIfInvalidUnsanitizedScriptExists(
-    Stream &os,
-    const ScriptInterpreter::SanitizedScriptingModuleName &sanitized_name,
-    const FileSpec &original_fspec, const FileSpec &fspec) {
-  if (!sanitized_name.RequiredSanitization())
-    return;
-
-  // Path to unsanitized script name doesn't exist. Nothing to warn about.
-  if (!FileSystem::Instance().Exists(original_fspec))
-    return;
-
-  std::string reason_for_complaint =
-      sanitized_name.IsKeyword()
-          ? llvm::formatv("conflicts with the keyword '{0}'",
-                          sanitized_name.GetConflictingKeyword())
-                .str()
-          : "contains reserved characters";
-
-  if (FileSystem::Instance().Exists(fspec))
-    os.Format("debug script '{0}' cannot be loaded because '{1}' {2}. "
-              "Ignoring '{1}' and loading '{3}' instead.\n",
-              original_fspec.GetPath(), original_fspec.GetFilename(),
-              std::move(reason_for_complaint), fspec.GetFilename());
-  else
-    os.Format("debug script '{0}' cannot be loaded because '{1}' {2}. "
-              "If you intend to have this script loaded, please rename it to "
-              "'{3}' and retry.\n",
-              original_fspec.GetPath(), original_fspec.GetFilename(),
-              std::move(reason_for_complaint), fspec.GetFilename());
-}
-
 PlatformSP PlatformList::GetOrCreate(llvm::StringRef name) {
   std::lock_guard<std::recursive_mutex> guard(m_mutex);
   for (const PlatformSP &platform_sp : m_platforms) {
@@ -2242,8 +2135,12 @@ PlatformSP PlatformList::GetOrCreate(const ArchSpec &arch,
       return platform_sp;
   }
 
+  PlatformCreateInstance create_callback;
   // First try exact arch matches across all platform plug-ins
-  for (auto create_callback : PluginManager::GetPlatformCreateCallbacks()) {
+  uint32_t idx;
+  for (idx = 0;
+       (create_callback = PluginManager::GetPlatformCreateCallbackAtIndex(idx));
+       ++idx) {
     PlatformSP platform_sp = create_callback(false, &arch);
     if (platform_sp &&
         platform_sp->IsCompatibleArchitecture(
@@ -2253,7 +2150,9 @@ PlatformSP PlatformList::GetOrCreate(const ArchSpec &arch,
     }
   }
   // Next try compatible arch matches across all platform plug-ins
-  for (auto create_callback : PluginManager::GetPlatformCreateCallbacks()) {
+  for (idx = 0;
+       (create_callback = PluginManager::GetPlatformCreateCallbackAtIndex(idx));
+       ++idx) {
     PlatformSP platform_sp = create_callback(false, &arch);
     if (platform_sp && platform_sp->IsCompatibleArchitecture(
                            arch, process_host_arch, ArchSpec::CompatibleMatch,
@@ -2340,7 +2239,10 @@ bool PlatformList::LoadPlatformBinaryAndSetup(Process *process,
                                               lldb::addr_t addr, bool notify) {
   std::lock_guard<std::recursive_mutex> guard(m_mutex);
 
-  for (auto create_callback : PluginManager::GetPlatformCreateCallbacks()) {
+  PlatformCreateInstance create_callback;
+  for (int idx = 0;
+       (create_callback = PluginManager::GetPlatformCreateCallbackAtIndex(idx));
+       ++idx) {
     ArchSpec arch;
     PlatformSP platform_sp = create_callback(true, &arch);
     if (platform_sp) {

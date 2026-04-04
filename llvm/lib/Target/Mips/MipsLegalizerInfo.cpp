@@ -470,12 +470,13 @@ static bool SelectMSA3OpIntrinsic(MachineInstr &MI, unsigned Opcode,
                                   MachineIRBuilder &MIRBuilder,
                                   const MipsSubtarget &ST) {
   assert(ST.hasMSA() && "MSA intrinsic not supported on target without MSA.");
-  MIRBuilder.buildInstr(Opcode)
-      .add(MI.getOperand(0))
-      .add(MI.getOperand(2))
-      .add(MI.getOperand(3))
-      .constrainAllUses(MIRBuilder.getTII(), *ST.getRegisterInfo(),
-                        *ST.getRegBankInfo());
+  if (!MIRBuilder.buildInstr(Opcode)
+           .add(MI.getOperand(0))
+           .add(MI.getOperand(2))
+           .add(MI.getOperand(3))
+           .constrainAllUses(MIRBuilder.getTII(), *ST.getRegisterInfo(),
+                             *ST.getRegBankInfo()))
+    return false;
   MI.eraseFromParent();
   return true;
 }

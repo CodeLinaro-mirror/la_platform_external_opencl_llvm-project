@@ -1198,7 +1198,7 @@ public:
   }
 
 private:
-  SmallVector<PreparedConversion, 2> FlaggedConversions;
+  llvm::SmallVector<PreparedConversion, 2> FlaggedConversions;
   const TheCheck &Check;
 };
 
@@ -1740,7 +1740,7 @@ public:
 /// Implements the heuristic that marks two parameters related if different
 /// ReturnStmts return them from the function.
 class Returned {
-  SmallVector<const ParmVarDecl *, SmallDataStructureSize> ReturnedParams;
+  llvm::SmallVector<const ParmVarDecl *, SmallDataStructureSize> ReturnedParams;
 
 public:
   void setup(const FunctionDecl *FD) {

@@ -41,10 +41,14 @@ TypeSystem::~TypeSystem() = default;
 
 static TypeSystemSP CreateInstanceHelper(lldb::LanguageType language,
                                          Module *module, Target *target) {
-  for (auto create_callback : PluginManager::GetTypeSystemCreateCallbacks()) {
+  uint32_t i = 0;
+  TypeSystemCreateInstance create_callback;
+  while ((create_callback = PluginManager::GetTypeSystemCreateCallbackAtIndex(
+              i++)) != nullptr) {
     if (auto type_system_sp = create_callback(language, module, target))
       return type_system_sp;
   }
+
   return {};
 }
 

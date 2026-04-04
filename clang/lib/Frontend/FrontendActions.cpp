@@ -251,9 +251,9 @@ GenerateModuleFromModuleMapAction::CreateOutputFile(CompilerInstance &CI,
       ModuleMapFile = InFile;
 
     HeaderSearch &HS = CI.getPreprocessor().getHeaderSearchInfo();
-    ModuleFileName FileName = HS.getCachedModuleFileName(
-        CI.getLangOpts().CurrentModule, ModuleMapFile);
-    CI.getFrontendOpts().OutputFile = FileName.str();
+    CI.getFrontendOpts().OutputFile =
+        HS.getCachedModuleFileName(CI.getLangOpts().CurrentModule,
+                                   ModuleMapFile);
   }
 
   // Because this is exposed via libclang we must disable RemoveFileOnSignal.
@@ -367,9 +367,11 @@ void VerifyPCHAction::ExecuteAction() {
       /*AllowConfigurationMismatch*/ true,
       /*ValidateSystemInputs*/ true, /*ForceValidateUserInputs*/ true));
 
-  Reader->ReadAST(ModuleFileName::makeExplicit(getCurrentFile()),
-                  Preamble ? serialization::MK_Preamble : serialization::MK_PCH,
-                  SourceLocation(), ASTReader::ARR_ConfigurationMismatch);
+  Reader->ReadAST(getCurrentFile(),
+                  Preamble ? serialization::MK_Preamble
+                           : serialization::MK_PCH,
+                  SourceLocation(),
+                  ASTReader::ARR_ConfigurationMismatch);
 }
 
 namespace {
@@ -474,10 +476,6 @@ private:
       return "TypeAliasTemplateInstantiation";
     case CodeSynthesisContext::PartialOrderingTTP:
       return "PartialOrderingTTP";
-    case CodeSynthesisContext::SYCLKernelLaunchLookup:
-      return "SYCLKernelLaunchLookup";
-    case CodeSynthesisContext::SYCLKernelLaunchOverloadResolution:
-      return "SYCLKernelLaunchOverloadResolution";
     }
     return "";
   }
@@ -621,11 +619,9 @@ namespace {
   /// file.
   class DumpModuleInfoListener : public ASTReaderListener {
     llvm::raw_ostream &Out;
-    FileManager &FileMgr;
 
   public:
-    DumpModuleInfoListener(llvm::raw_ostream &Out, FileManager &FileMgr)
-        : Out(Out), FileMgr(FileMgr) {}
+    DumpModuleInfoListener(llvm::raw_ostream &Out) : Out(Out) { }
 
 #define DUMP_BOOLEAN(Value, Text)                       \
     Out.indent(4) << Text << ": " << (Value? "Yes" : "No") << "\n"
@@ -716,12 +712,8 @@ namespace {
 
     bool ReadHeaderSearchOptions(const HeaderSearchOptions &HSOpts,
                                  StringRef ModuleFilename,
-                                 StringRef ContextHash,
+                                 StringRef SpecificModuleCachePath,
                                  bool Complain) override {
-      std::string SpecificModuleCachePath = createSpecificModuleCachePath(
-          FileMgr, HSOpts.ModuleCachePath, HSOpts.DisableModuleHash,
-          std::string(ContextHash));
-
       Out.indent(2) << "Header search options:\n";
       Out.indent(4) << "System root [-isysroot=]: '" << HSOpts.Sysroot << "'\n";
       Out.indent(4) << "Resource dir [ -resource-dir=]: '" << HSOpts.ResourceDir << "'\n";
@@ -909,7 +901,7 @@ void DumpModuleInfoAction::ExecuteAction() {
   Out << "  Module format: " << (IsRaw ? "raw" : "obj") << "\n";
 
   Preprocessor &PP = CI.getPreprocessor();
-  DumpModuleInfoListener Listener(Out, CI.getFileManager());
+  DumpModuleInfoListener Listener(Out);
   const HeaderSearchOptions &HSOpts =
       PP.getHeaderSearchInfo().getHeaderSearchOpts();
 

@@ -86,8 +86,6 @@ public:
       return readObjCInterfaceType();
     case Type::ObjCTypeParam:
       return readObjCTypeParamType();
-    case Type::OverflowBehavior:
-      return readOverflowBehaviorType();
     case Type::PackExpansion:
       return readPackExpansionType();
     case Type::PackIndexing:
@@ -332,14 +330,16 @@ public:
 
   QualType readAutoType() {
     auto &ctx = R.getASTContext();
-    DeducedKind deducedKind = R.find("deducedKind").readDeducedKind();
     std::optional<QualType> deducedType = R.find("deducedType").template readOptional<QualType>();
     AutoTypeKeyword keyword = R.find("keyword").readAutoTypeKeyword();
     std::optional<TemplateDecl*> typeConstraintConcept = R.find("typeConstraintConcept").template readOptional<TemplateDecl*>();
     llvm::SmallVector<TemplateArgument, 8> typeConstraintArguments_buffer_0;
     llvm::ArrayRef<TemplateArgument> typeConstraintArguments = R.find("typeConstraintArguments").template readArray<TemplateArgument>(typeConstraintArguments_buffer_0);
+    uint32_t dependence = R.find("dependence").readUInt32();
     
-    return ctx.getAutoType(deducedKind, makeNullableFromOptional(deducedType), keyword,
+    return ctx.getAutoType(makeNullableFromOptional(deducedType), keyword,
+                           /*isDependentWithoutDeducedType*/ dependence > 0,
+                           /*isPackWithoutDeducedType*/ dependence > 1,
                            makePointerFromOptional(typeConstraintConcept),
                            typeConstraintArguments);
   
@@ -349,11 +349,12 @@ public:
     auto &ctx = R.getASTContext();
     ElaboratedTypeKeyword keyword = R.find("keyword").readElaboratedTypeKeyword();
     std::optional<TemplateName> templateName = R.find("templateName").template readOptional<TemplateName>();
-    DeducedKind deducedKind = R.find("deducedKind").readDeducedKind();
     QualType deducedType = R.find("deducedType").readQualType();
+    bool dependent = R.find("dependent").readBool();
     
-    return ctx.getDeducedTemplateSpecializationType(deducedKind, deducedType, keyword,
-                                     makeNullableFromOptional(templateName));
+    return ctx.getDeducedTemplateSpecializationType(keyword,
+                                     makeNullableFromOptional(templateName),
+                                     deducedType, dependent);
   
   }
 
@@ -480,17 +481,13 @@ public:
   QualType readHLSLAttributedResourceType() {
     auto &ctx = R.getASTContext();
     uint32_t resClass = R.find("resClass").readUInt32();
-    uint32_t resDimension = R.find("resDimension").readUInt32();
     bool isROV = R.find("isROV").readBool();
     bool rawBuffer = R.find("rawBuffer").readBool();
     bool isCounter = R.find("isCounter").readBool();
     QualType wrappedTy = R.find("wrappedTy").readQualType();
     QualType containedTy = R.find("containedTy").readQualType();
     
-    HLSLAttributedResourceType::Attributes attrs(
-        static_cast<llvm::dxil::ResourceClass>(resClass),
-        static_cast<llvm::dxil::ResourceDimension>(resDimension), isROV,
-        rawBuffer, isCounter);
+    HLSLAttributedResourceType::Attributes attrs(static_cast<llvm::dxil::ResourceClass>(resClass), isROV, rawBuffer, isCounter);
     return ctx.getHLSLAttributedResourceType(wrappedTy, containedTy, attrs);
   
   }
@@ -585,15 +582,6 @@ public:
     llvm::ArrayRef<ObjCProtocolDecl*> qualifiers = R.find("qualifiers").template readArray<ObjCProtocolDecl*>(qualifiers_buffer_0);
     
     return ctx.getObjCTypeParamType(declaration, qualifiers);
-  
-  }
-
-  QualType readOverflowBehaviorType() {
-    auto &ctx = R.getASTContext();
-    OverflowBehaviorType::OverflowBehaviorKind behaviorKind = R.find("behaviorKind").readOverflowBehaviorKind();
-    QualType underlyingType = R.find("underlyingType").readQualType();
-    
-    return ctx.getOverflowBehaviorType(behaviorKind, underlyingType);
   
   }
 

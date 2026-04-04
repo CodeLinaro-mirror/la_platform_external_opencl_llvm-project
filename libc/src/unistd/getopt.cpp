@@ -13,7 +13,6 @@
 #include "src/__support/common.h"
 #include "src/__support/macros/config.h"
 #include "src/stdio/fprintf.h"
-#include "src/stdio/stderr.h"
 
 #include "hdr/types/FILE.h"
 

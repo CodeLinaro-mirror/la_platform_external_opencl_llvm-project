@@ -157,8 +157,6 @@ private:
                                         acc::UseDeviceOp useDeviceOp,
                                         acc::HostDataOp hostDataOp,
                                         fir::BoxAddrOp boxAddr) const {
-    OpBuilder::InsertionGuard guard(rewriter);
-    rewriter.setInsertionPoint(hostDataOp);
     // Create use_device on the raw pointer
     acc::UseDeviceOp newUseDeviceOp = acc::UseDeviceOp::create(
         rewriter, useDeviceOp.getLoc(), boxAddr.getType(), boxAddr.getResult(),
@@ -284,14 +282,9 @@ private:
     for (mlir::Operation *user : usersToUpdate)
       user->replaceUsesOfWith(useDeviceOp.getResult(), newMemLoc);
 
-    // Remove the use_device operation if it is no longer needed.
-    if (useDeviceOp.getResult().use_empty()) {
-      LLVM_DEBUG(
-          llvm::dbgs()
-          << "ACCUseDeviceCanonicalizer: Removing dead use_device operation: "
-          << *useDeviceOp << "\n");
-      rewriter.eraseOp(useDeviceOp);
-    }
+    assert(useDeviceOp.getResult().use_empty() &&
+           "expected all uses of use_device to be replaced");
+    rewriter.eraseOp(useDeviceOp);
     return true;
   }
 
@@ -371,14 +364,9 @@ private:
     for (mlir::Operation *user : usersToUpdate)
       user->replaceUsesOfWith(useDeviceOp.getResult(), newBoxWithDevicePtr);
 
-    // Remove the use_device operation if it is no longer needed.
-    if (useDeviceOp.getResult().use_empty()) {
-      LLVM_DEBUG(
-          llvm::dbgs()
-          << "ACCUseDeviceCanonicalizer: Removing dead use_device operation: "
-          << *useDeviceOp << "\n");
-      rewriter.eraseOp(useDeviceOp);
-    }
+    assert(useDeviceOp.getResult().use_empty() &&
+           "expected all uses of use_device to be replaced");
+    rewriter.eraseOp(useDeviceOp);
     return true;
   }
 };

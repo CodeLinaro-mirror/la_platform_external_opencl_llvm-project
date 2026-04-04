@@ -13,7 +13,7 @@
 
 namespace llvm::sandboxir {
 
-RegionsFromMetadata::RegionsFromMetadata(StringRef Pipeline, StringRef AuxArg)
+RegionsFromMetadata::RegionsFromMetadata(StringRef Pipeline)
     : FunctionPass("regions-from-metadata"),
       RPM("rpm", Pipeline, SandboxVectorizerPassBuilder::createRegionPass) {}
 

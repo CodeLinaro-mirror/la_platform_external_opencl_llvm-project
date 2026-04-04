@@ -1256,10 +1256,6 @@
     return 0;
     break;
   }
-  case AT_HLSLAssociatedResourceDecl: {
-    return 0;
-    break;
-  }
   case AT_HLSLContainedType: {
     return 0;
     break;
@@ -1323,10 +1319,6 @@
     return 0;
     break;
   }
-  case AT_HLSLResourceDimension: {
-    return 0;
-    break;
-  }
   case AT_HLSLShader: {
     return 0;
     break;
@@ -1344,10 +1336,6 @@
     break;
   }
   case AT_HLSLVkExtBuiltinInput: {
-    return 0;
-    break;
-  }
-  case AT_HLSLVkExtBuiltinOutput: {
     return 0;
     break;
   }
@@ -1861,15 +1849,6 @@
       return 2;
     break;
   }
-  case AT_NoFieldProtection: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
-    break;
-  }
   case AT_NoInline: {
     if (Name.size() == 12 && getSyntax() == AttributeCommonInfo::AS_Keyword && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -1924,15 +1903,6 @@
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::GNU)
       return 1;
     if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::GNU)
-      return 2;
-    break;
-  }
-  case AT_NoOutline: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
       return 2;
     break;
   }
@@ -2559,15 +2529,6 @@
       return 2;
     break;
   }
-  case AT_OverflowBehavior: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
-    break;
-  }
   case AT_Overloadable: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
@@ -2664,30 +2625,12 @@
       return 2;
     break;
   }
-  case AT_Personality: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
-    break;
-  }
   case AT_Pointer: {
     return 0;
     break;
   }
   case AT_PointerAuth: {
     return 0;
-    break;
-  }
-  case AT_PointerFieldProtection: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
     break;
   }
   case AT_PragmaClangBSSSection: {
@@ -3059,15 +3002,6 @@
     break;
   }
   case AT_SpeculativeLoadHardening: {
-    if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
-      return 0;
-    if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 1;
-    if (getSyntax() == AttributeCommonInfo::AS_C23 && ComputedScope == AttributeCommonInfo::Scope::CLANG)
-      return 2;
-    break;
-  }
-  case AT_StackProtectorIgnore: {
     if (getSyntax() == AttributeCommonInfo::AS_GNU && ComputedScope == AttributeCommonInfo::Scope::NONE)
       return 0;
     if (getSyntax() == AttributeCommonInfo::AS_CXX11 && ComputedScope == AttributeCommonInfo::Scope::CLANG)

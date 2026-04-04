@@ -9,6 +9,9 @@
 #include <cerrno>
 #include <cstdlib>
 
+#include "llvm/Support/MathExtras.h"
+#include "llvm/Support/Threading.h"
+
 #include "lldb/Core/Debugger.h"
 #include "lldb/Core/Module.h"
 #include "lldb/Core/ModuleSpec.h"
@@ -26,7 +29,6 @@
 #include "lldb/Utility/Log.h"
 #include "lldb/Utility/State.h"
 #include "lldb/Utility/UUID.h"
-#include "llvm/Support/MathExtras.h"
 
 #include "ProcessMachCore.h"
 #include "Plugins/Process/Utility/StopInfoMachException.h"
@@ -42,6 +44,7 @@
 #include "Plugins/Platform/MacOSX/PlatformDarwinKernel.h"
 
 #include <memory>
+#include <mutex>
 
 using namespace lldb;
 using namespace lldb_private;
@@ -66,13 +69,11 @@ lldb::ProcessSP ProcessMachCore::CreateInstance(lldb::TargetSP target_sp,
     auto data_sp = FileSystem::Instance().CreateDataBuffer(
         crash_file->GetPath(), header_size, 0);
     if (data_sp && data_sp->GetByteSize() == header_size) {
-      DataExtractorSP extractor_sp =
-          std::make_shared<DataExtractor>(data_sp, lldb::eByteOrderLittle, 4);
+      DataExtractor data(data_sp, lldb::eByteOrderLittle, 4);
 
       lldb::offset_t data_offset = 0;
       llvm::MachO::mach_header mach_header;
-      if (ObjectFileMachO::ParseHeader(extractor_sp, &data_offset,
-                                       mach_header)) {
+      if (ObjectFileMachO::ParseHeader(data, &data_offset, mach_header)) {
         if (mach_header.filetype == llvm::MachO::MH_CORE)
           process_sp = std::make_shared<ProcessMachCore>(target_sp, listener_sp,
                                                          *crash_file);
@@ -830,8 +831,12 @@ Status ProcessMachCore::DoGetMemoryRegionInfo(addr_t load_addr,
 void ProcessMachCore::Clear() { m_thread_list.Clear(); }
 
 void ProcessMachCore::Initialize() {
-  PluginManager::RegisterPlugin(GetPluginNameStatic(),
-                                GetPluginDescriptionStatic(), CreateInstance);
+  static llvm::once_flag g_once_flag;
+
+  llvm::call_once(g_once_flag, []() {
+    PluginManager::RegisterPlugin(GetPluginNameStatic(),
+                                  GetPluginDescriptionStatic(), CreateInstance);
+  });
 }
 
 addr_t ProcessMachCore::GetImageInfoAddress() {

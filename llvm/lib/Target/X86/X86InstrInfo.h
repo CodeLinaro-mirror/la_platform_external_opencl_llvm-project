@@ -34,7 +34,7 @@ enum X86MachineCombinerPattern : unsigned {
 
 namespace X86 {
 
-enum AsmComments : MachineInstr::AsmPrinterFlagTy {
+enum AsmComments {
   // For instr that was compressed from EVEX to LEGACY.
   AC_EVEX_2_LEGACY = MachineInstr::TAsmComments,
   // For instr that was compressed from EVEX to VEX.
@@ -340,10 +340,9 @@ public:
                                     int &FrameIndex) const override;
 
   bool isReMaterializableImpl(const MachineInstr &MI) const override;
-  void
-  reMaterialize(MachineBasicBlock &MBB, MachineBasicBlock::iterator MI,
-                Register DestReg, unsigned SubIdx, const MachineInstr &Orig,
-                LaneBitmask UsedLanes = LaneBitmask::getAll()) const override;
+  void reMaterialize(MachineBasicBlock &MBB, MachineBasicBlock::iterator MI,
+                     Register DestReg, unsigned SubIdx,
+                     const MachineInstr &Orig) const override;
 
   /// Given an operand within a MachineInstr, insert preceding code to put it
   /// into the right format for a particular kind of LEA instruction. This may

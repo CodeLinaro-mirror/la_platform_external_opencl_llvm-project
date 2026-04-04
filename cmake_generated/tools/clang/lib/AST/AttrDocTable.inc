@@ -280,46 +280,7 @@ static const char AttrDoc_AcquiredAfter[] = R"reST(No documentation.)reST";
 
 static const char AttrDoc_AcquiredBefore[] = R"reST(No documentation.)reST";
 
-static const char AttrDoc_AddressSpace[] = R"reST(.. Note:: This attribute is mainly intended to be used by target headers
-  provided by the toolchain. End users should prefer the documented, named
-  address space annotations for their platform, such as the
-  `OpenCL address spaces`_, ``__global__``, ``__local__``, or something else.
-
-The ``address_space`` attribute functions as a type qualifier that allows the
-programmer to specify the address space for a pointer or reference type.
-Qualified pointer types are considered distinct types for the purposes of
-overload resolution. The attribute takes a single, non-negative integer
-constant expression identifying the address space. For example:
-
-.. code-block:: c
-
-  int * __attribute__((address_space(1))) ptr;
-
-  void foo(__attribute__((address_space(2))) float *buf);
-
-
-Only one address space qualifier may be applied to a given pointer or reference
-type. Where address spaces are allowed (e.g., variables, parameters, return
-types) and what values are valid depends on the target and language mode.
-
-The meaning of each value is defined by the target; multiple address spaces are
-used in environments such as OpenCL, CUDA, HIP, and other GPU programming
-models to distinguish global, local, constant, and private memory. See for
-example the address spaces defined in the `NVPTX Usage Guide`_ and the
-`AMDGPU Usage Guide`_.
-
-.. _`NVPTX Usage Guide`: https://llvm.org/docs/NVPTXUsage.html#address-spaces
-.. _`AMDGPU Usage Guide`: https://llvm.org/docs/AMDGPUUsage.html#address-spaces
-
-Address spaces may partially overlap or be entirely distinct. The compiler may
-reject attempts to convert between distinct, incompatible address spaces.
-Pointer width may vary between different address spaces, so some explicit casts
-may truncate.
-
-For more information, refer to `ISO TR18037`_, which covers embedded C language
-extensions. Section 5 covers named address spaces.
-
-.. _`ISO TR18037`: https://standards.iso.org/ittf/PubliclyAvailableStandards/c051126_ISO_IEC_TR_18037_2008.zip)reST";
+static const char AttrDoc_AddressSpace[] = R"reST(No documentation.)reST";
 
 static const char AttrDoc_Alias[] = R"reST(No documentation.)reST";
 
@@ -3093,26 +3054,7 @@ TUs where it is used.
 
 This attribute can be used on static and non-static member functions of class
 templates, static data members of class templates and member classes of class
-templates.
-
-**Interaction with __declspec(dllexport/dllimport)**
-
-For a DLL platform (i.e., Windows), this attribute also means "this member will
-never be exported or imported". Despite its name, this semantics applies to
-implicit instantiations and non-template entities as well.
-
-  .. code-block:: c++
-
-    // in <exception>
-    class __declspec(dllimport) nested_exception {
-      ...
-    public:
-      __attribute__((exclude_from_explicit_instantiation))
-      exception_ptr nested_ptr() const noexcept { ... }
-    };
-
-In this case, ``nested_exception::nested_ptr`` will never be attempted to be
-imported.)reST";
+templates.)reST";
 
 static const char AttrDoc_ExplicitInit[] = R"reST(The ``clang::require_explicit_initialization`` attribute indicates that a
 field of an aggregate must be initialized explicitly by the user when an object
@@ -3607,8 +3549,6 @@ A managed variable can be accessed in both device and host code.)reST";
 
 static const char AttrDoc_HLSLAppliedSemantic[] = R"reST()reST";
 
-static const char AttrDoc_HLSLAssociatedResourceDecl[] = R"reST()reST";
-
 static const char AttrDoc_HLSLContainedType[] = R"reST()reST";
 
 static const char AttrDoc_HLSLControlFlowHint[] = R"reST()reST";
@@ -3721,8 +3661,6 @@ The full documentation is available here: https://docs.microsoft.com/en-us/windo
 
 static const char AttrDoc_HLSLResourceClass[] = R"reST()reST";
 
-static const char AttrDoc_HLSLResourceDimension[] = R"reST()reST";
-
 static const char AttrDoc_HLSLShader[] = R"reST(The ``shader`` type attribute applies to HLSL shader entry functions to
 identify the shader type for the entry function.
 The syntax is:
@@ -3786,24 +3724,6 @@ like follows:
 
 This variable will be lowered into a module-level variable, with the `Input`
 storage class, and the `BuiltIn 26` decoration.
-
-The full documentation for this inline SPIR-V attribute can be found here:
-https://github.com/microsoft/hlsl-specs/blob/main/proposals/0011-inline-spirv.md)reST";
-
-static const char AttrDoc_HLSLVkExtBuiltinOutput[] = R"reST(Vulkan shaders have `Output` builtins. Those variables are externally
-visible to the driver/pipeline, but each copy is private to the current
-lane.
-
-Those builtins can be declared using the `[[vk::ext_builtin_output]]`
-attribute like follows:
-
-.. code-block:: c++
-
-  [[vk::ext_builtin_output(/* Position */ 0)]]
-  static float4 position;
-
-This variable will be lowered into a module-level variable, with the `Output`
-storage class, and the `BuiltIn 0` decoration.
 
 The full documentation for this inline SPIR-V attribute can be found here:
 https://github.com/microsoft/hlsl-specs/blob/main/proposals/0011-inline-spirv.md)reST";
@@ -3898,13 +3818,6 @@ Not all targets support this attribute:
   with an indirect call. The function pointer is initialized by a constructor
   that calls the resolver.
 - Baremetal target supports it on AVR.
-- AIX/XCOFF supports it via a compiler-only solution. An ifunc appears as a
-  regular function (has an entry point ``.foo[PR]`` and a function descriptor
-  ``foo[DS]``). The entry point is a stub that branches to the function address
-  in the descriptor, and the descriptor is initialized via a constructor
-  function (``__init_ifuncs``) that is linked into every shared object and
-  executable. ``__init_ifuncs`` calls the resolver of each ifunc and stores the
-  result in the corresponding descriptor.
 - Other targets currently do not support this attribute.)reST";
 
 static const char AttrDoc_InferredNoReturn[] = R"reST()reST";
@@ -4176,10 +4089,8 @@ path of execution, but that can be confusing:
 .. code-block:: c++
 
   if (b) {
-    [[unlikely]] --b; // Per the standard this is in the path of
-                      // execution, so this branch should be considered
-                      // unlikely. However, Clang ignores the attribute
-                      // here since it is not on the substatement.
+    [[unlikely]] --b; // In the path of execution,
+                      // this branch is considered unlikely.
   }
 
   if (b) {
@@ -4587,9 +4498,9 @@ not all aspects of the implementation are needed for a given call, the compiler
 may redirect the call to the identifier given as the first argument to the
 attribute (the modular implementation function).
 
-The second argument is an implementation name, and the remaining arguments are
+The second argument is a implementation name, and the remaining arguments are
 aspects of the format string for the compiler to report. The implementation
-name is an unevaluated identifier in the C namespace.
+name is an unevaluated identifier be in the C namespace.
 
 The compiler reports that a call requires an aspect by issuing a relocation for
 the symbol ``<impl_name>_<aspect>`` at the point of the call. This arranges for
@@ -5202,8 +5113,6 @@ applies to copies of the block. For example:
     g1 = Block_copy(block); // Not OK either.
   })reST";
 
-static const char AttrDoc_NoFieldProtection[] = R"reST(No documentation.)reST";
-
 static const char AttrDoc_NoInline[] = R"reST(This function attribute suppresses the inlining of a function at the call sites
 of the function.
 
@@ -5273,13 +5182,6 @@ These attributes override the ``-mmicromips`` and ``-mno-micromips`` options
 on the command line.)reST";
 
 static const char AttrDoc_NoMips16[] = R"reST(No documentation.)reST";
-
-static const char AttrDoc_NoOutline[] = R"reST(This function attribute suppresses outlining from the annotated function.
-
-Outlining is the process where common parts of separate functions are extracted
-into a separate function (or assembly snippet), and calls to that function or
-snippet are inserted in the original functions. In this way, it can be seen as
-the opposite of inlining. It can help to reduce code size.)reST";
 
 static const char AttrDoc_NoProfileFunction[] = R"reST(Use the ``no_profile_instrument_function`` attribute on a function declaration
 to denote that the compiler should not instrument the function with
@@ -5688,8 +5590,6 @@ override declarations with only a function declaration.)reST";
 static const char AttrDoc_OMPGroupPrivateDecl[] = R"reST()reST";
 
 static const char AttrDoc_OMPReferencedVar[] = R"reST()reST";
-
-static const char AttrDoc_OMPTargetIndirectCall[] = R"reST()reST";
 
 static const char AttrDoc_OMPThreadPrivateDecl[] = R"reST()reST";
 
@@ -6466,8 +6366,6 @@ square brackets (``[[]]``) or ``__attribute__``. The ``#pragma`` syntax can be
 used to apply the attribute to all functions, including nested functions, in a
 range of source code.)reST";
 
-static const char AttrDoc_OverflowBehavior[] = R"reST(No documentation.)reST";
-
 static const char AttrDoc_Overloadable[] = R"reST(Clang provides support for C++ function overloading in C. Function overloading
 in C is introduced using the ``overloadable`` attribute. For example, one
 might provide several overloaded versions of a ``tgsin`` function that invokes
@@ -6788,25 +6686,12 @@ if omitted.``Section`` defaults  to the ``-fpatchable-function-entry`` section n
 set, or to ``__patchable_function_entries`` otherwise.
 
 This attribute is only supported on
-aarch64/aarch64-be/loongarch32/loongarch64/riscv32/riscv64/i386/x86-64/ppc/ppc64/ppc64le/s390x targets.
+aarch64/aarch64-be/loongarch32/loongarch64/riscv32/riscv64/i386/x86-64/ppc/ppc64/ppc64le targets.
 For ppc/ppc64 targets, AIX is still not supported.)reST";
 
 static const char AttrDoc_Pcs[] = R"reST(On ARM targets, this attribute can be used to select calling conventions
 similar to ``stdcall`` on x86. Valid parameter values are "aapcs" and
 "aapcs-vfp".)reST";
-
-static const char AttrDoc_Personality[] = R"reST(``__attribute__((personality(<routine>)))`` is used to specify a personality
-routine that is different from the language that is being used to implement the
-function. This is a targeted, low-level feature aimed at language runtime
-implementors who write runtime support code in C/C++ but need that code to
-participate in a foreign language's exception-handling or unwinding model.
-
-A personality routine is a language-specific callback attached to each stack
-frame that the unwinder invokes to determine whether that frame handles a given
-exception and what cleanup actions to perform. It effectively colors the
-language-agnostic unwinding mechanism with language-specific semantics, enabling
-different languages to coexist on the same call stack while each interpreting
-exceptions according to their own rules.)reST";
 
 static const char AttrDoc_Pointer[] = R"reST(.. Note:: This attribute is experimental and its effect on analysis is subject to change in
   a future version of clang.
@@ -6840,46 +6725,6 @@ When the Owner's lifetime ends, it will consider the Pointer to be dangling.
     IntPointer P(IntOwner{}); // P "points into" a temporary IntOwner object
     P.getInt(); // P is dangling
   }
-
-**Transparent Member Functions**
-
-The analysis automatically tracks certain member functions of ``[[gsl::Pointer]]`` types
-that provide transparent access to the pointed-to object. These include:
-
-* Dereference operators: ``operator*``, ``operator->``
-* Data access methods: ``data()``, ``c_str()``, ``get()``
-* Iterator methods: ``begin()``, ``end()``, ``rbegin()``, ``rend()``, ``cbegin()``, ``cend()``, ``crbegin()``, ``crend()``
-
-When these methods return pointers, view types, or references, the analysis treats them as
-transparently borrowing from the same object that the pointer itself borrows from,
-enabling detection of use-after-free through these access patterns:
-
-.. code-block:: c++
-
-  // For example, .data() here returns a borrow to 's' instead of 'v'.
-  const char* f() {
-    std::string s = "hello";
-    std::string_view v = s; // warning: address of stack memory returned
-    return v.data();        // note: returned here
-  }
-
-  const MyObj& g(MyObj obj) {
-    View v = obj; // warning: address of stack memory returned
-    return *v;    // note: returned here
-  }
-
-This tracking also applies to range-based for loops, where the ``begin()`` and ``end()``
-iterators are used to access elements:
-
-.. code-block:: c++
-
-  std::string_view f(std::vector<std::string> vec) {
-    for (const std::string& s : vec) {  // warning: address of stack memory returned
-      return s; // note: returned here
-    }
-  }
-
-**Container Template Specialization**
 
 If a template class is annotated with ``[[gsl::Owner]]``, and the first
 instantiated template argument is a pointer type (raw pointer, or ``[[gsl::Pointer]]``),
@@ -6916,8 +6761,6 @@ the object should use address discrimination.
 
 The third argument to ``__ptrauth`` is a 16-bit non-negative integer which
 allows additional discrimination between objects.)reST";
-
-static const char AttrDoc_PointerFieldProtection[] = R"reST(No documentation.)reST";
 
 static const char AttrDoc_PragmaClangBSSSection[] = R"reST()reST";
 
@@ -7439,26 +7282,25 @@ function marked with the ``sycl_kernel`` attribute:
 
 The SYCL kernel in the previous code sample meets these expectations.)reST";
 
-static const char AttrDoc_SYCLKernelEntryPoint[] = R"reST(The ``sycl_kernel_entry_point`` attribute facilitates the launch of a SYCL
-kernel and the generation of an offload kernel entry point, sometimes called
-a SYCL kernel caller function, suitable for invoking a SYCL kernel on an
-offload device. The attribute is intended for use in the implementation of
-SYCL kernel invocation functions like the ``single_task`` and ``parallel_for``
-member functions of the ``sycl::handler`` class specified in section 4.9.4,
-"Command group ``handler`` class", of the SYCL 2020 specification.
+static const char AttrDoc_SYCLKernelEntryPoint[] = R"reST(The ``sycl_kernel_entry_point`` attribute facilitates the generation of an
+offload kernel entry point, sometimes called a SYCL kernel caller function,
+suitable for invoking a SYCL kernel on an offload device. The attribute is
+intended for use in the implementation of SYCL kernel invocation functions
+like the ``single_task`` and ``parallel_for`` member functions of the
+``sycl::handler`` class specified in section 4.9.4, "Command group ``handler``
+class", of the SYCL 2020 specification.
 
-The attribute requires a single type argument that meets the requirements for
-a SYCL kernel name as described in section 5.2, "Naming of kernels", of the
-SYCL 2020 specification. A unique kernel name type is required for each
-function declared with the attribute. The attribute may not first appear on a
-declaration that follows a definition of the function.
+The attribute requires a single type argument that specifies a class type that
+meets the requirements for a SYCL kernel name as described in section 5.2,
+"Naming of kernels", of the SYCL 2020 specification. A unique kernel name type
+is required for each function declared with the attribute. The attribute may
+not first appear on a declaration that follows a definition of the function.
 
 The attribute only appertains to functions and only those that meet the
 following requirements.
 
 * Has a non-deduced ``void`` return type.
-* Is not a constructor or destructor.
-* Is not a non-static member function with an explicit object parameter.
+* Is not a non-static member function, constructor, or destructor.
 * Is not a C variadic function.
 * Is not a coroutine.
 * Is not defined as deleted or as defaulted.
@@ -7473,84 +7315,73 @@ follows.
 
   namespace sycl {
   class handler {
-    template<typename KernelName, typename... Ts>
-    void sycl_kernel_launch(const char* kernelSymbol, Ts&&... kernelArgs) {
-      // This code will run on the host and is responsible for calling functions
-      // appropriate for the desired offload backend (OpenCL, CUDA, HIP,
-      // Level Zero, etc...) to copy the kernel arguments denoted by kernelArgs
-      // to a device and to schedule an invocation of the offload kernel entry
-      // point denoted by kernelSymbol with the copied arguments.
-    }
-
-    template<typename KernelName, typename KernelType>
-    [[ clang::sycl_kernel_entry_point(KernelName) ]]
-    void kernel_entry_point(KernelType kernelFunc) {
-      // This code will run on the device. The call to kernelFunc() invokes
-      // the SYCL kernel.
-      kernelFunc();
+    template<typename KernelNameType, typename KernelType>
+    [[ clang::sycl_kernel_entry_point(KernelNameType) ]]
+    static void kernel_entry_point(KernelType kernel) {
+      kernel();
     }
 
   public:
-    template<typename KernelName, typename KernelType>
-    void single_task(const KernelType& kernelFunc) {
-      // This code will run on the host. kernel_entry_point() is called to
-      // trigger generation of an offload kernel entry point and to schedule
-      // an invocation of it on a device with kernelFunc (a SYCL kernel object)
-      // passed as a kernel argument. This call will result in an implicit call
-      // to sycl_kernel_launch() with the symbol name for the generated offload
-      // kernel entry point passed as the first function argument followed by
-      // kernelFunc.
-      kernel_entry_point<KernelName>(kernelFunc);
+    template<typename KernelNameType, typename KernelType>
+    void single_task(KernelType kernel) {
+      // Call kernel_entry_point() to trigger generation of an offload
+      // kernel entry point.
+      kernel_entry_point<KernelNameType>(kernel);
+      // Call functions appropriate for the desired offload backend
+      // (OpenCL, CUDA, HIP, Level Zero, etc...).
     }
   };
   } // namespace sycl
 
-A SYCL kernel object is a callable object of class type that is constructed on
-a host, often via a lambda expression, and then passed to a SYCL kernel
-invocation function to be executed on an offload device. The ``kernelFunc``
-parameters in the example code above correspond to SYCL kernel objects.
+A SYCL kernel is a callable object of class type that is constructed on a host,
+often via a lambda expression, and then passed to a SYCL kernel invocation
+function to be executed on an offload device. A SYCL kernel invocation function
+is responsible for copying the provided SYCL kernel object to an offload
+device and initiating a call to it. The SYCL kernel object and its data members
+constitute the parameters of an offload kernel.
 
-A SYCL kernel object type is required to satisfy the device copyability
-requirements specified in section 3.13.1, "Device copyable", of the SYCL 2020
-specification. Additionally, any data members of the kernel object type are
-required to satisfy section 4.12.4, "Rules for parameter passing to kernels".
-For most types, these rules require that the type is trivially copyable.
-However, the SYCL specification mandates that certain special SYCL types, such
-as ``sycl::accessor`` and ``sycl::stream``, be device copyable even if they are
-not trivially copyable. These types require special handling because they cannot
-necessarily be copied to device memory as if by ``memcpy()``.
+A SYCL kernel type is required to satisfy the device copyability requirements
+specified in section 3.13.1, "Device copyable", of the SYCL 2020 specification.
+Additionally, any data members of the kernel object type are required to satisfy
+section 4.12.4, "Rules for parameter passing to kernels". For most types, these
+rules require that the type is trivially copyable.  However, the SYCL
+specification mandates that certain special SYCL types, such as
+``sycl::accessor`` and ``sycl::stream`` be device copyable even if they are not
+trivially copyable. These types require special handling because they cannot
+be copied to device memory as if by ``memcpy()``. Additionally, some offload
+backends, OpenCL for example, require objects of some of these types to be
+passed as individual arguments to the offload kernel.
 
-The SYCL kernel object and its data members constitute the parameters of an
-offload kernel. An offload kernel consists of an offload entry point function
-and the set of all functions and variables that are directly or indirectly used
-by the entry point function.
+An offload kernel consists of an entry point function that declares the
+parameters of the offload kernel and the set of all functions and variables that
+are directly or indirectly used by the entry point function.
 
-A SYCL kernel invocation function is responsible for performing the following
-tasks (likely with the help of an offload backend like OpenCL):
+A SYCL kernel invocation function invokes a SYCL kernel on a device by
+performing the following tasks (likely with the help of an offload backend
+like OpenCL):
 
 #. Identifying the offload kernel entry point to be used for the SYCL kernel.
 
-#. Validating that the SYCL kernel object type and its data members meet the
-   SYCL device copyability and kernel parameter requirements noted above.
+#. Deconstructing the SYCL kernel object, if necessary, to produce the set of
+   offload kernel arguments required by the offload kernel entry point.
 
-#. Copying the SYCL kernel object and any other kernel arguments to device
-   memory including any special handling required for SYCL special types.
+#. Copying the offload kernel arguments to device memory.
 
 #. Initiating execution of the offload kernel entry point.
 
 The offload kernel entry point for a SYCL kernel performs the following tasks:
 
-#. Calling the ``operator()`` member function of the SYCL kernel object.
+#. Reconstituting the SYCL kernel object, if necessary, using the offload
+   kernel parameters.
 
-The ``sycl_kernel_entry_point`` attribute facilitates or automates these tasks
-by providing generation of an offload kernel entry point with a unique symbol
-name, type checking of kernel argument requirements, and initiation of kernel
-execution via synthesized calls to a ``sycl_kernel_launch`` template.
+#. Calling the ``operator()`` member function of the (reconstituted) SYCL kernel
+   object.
 
-A function declared with the ``sycl_kernel_entry_point`` attribute specifies
-the parameters and body of an offload entry point function. Consider the
-following call to the ``single_task()`` SYCL kernel invocation function assuming
-an implementation similar to the one shown above.
+The ``sycl_kernel_entry_point`` attribute automates generation of an offload
+kernel entry point that performs those latter tasks. The parameters and body of
+a function declared with the ``sycl_kernel_entry_point`` attribute specify a
+pattern from which the parameters and body of the entry point function are
+derived. Consider the following call to a SYCL kernel invocation function.
 
 .. code-block:: c++
 
@@ -7561,87 +7392,65 @@ an implementation similar to the one shown above.
     });
   }
 
-The SYCL kernel object is the result of the lambda expression. The call to
-``kernel_entry_point()`` via the call to ``single_task()`` triggers the
-generation of an offload kernel entry point function that looks approximately
+The SYCL kernel object is the result of the lambda expression. It has two
+data members corresponding to the captures of ``sout`` and ``s``. Since one
+of these data members corresponds to a special SYCL type that must be passed
+individually as an offload kernel parameter, it is necessary to decompose the
+SYCL kernel object into its constituent parts; the offload kernel will have
+two kernel parameters. Given a SYCL implementation that uses a
+``sycl_kernel_entry_point`` attributed function like the one shown above, an
+offload kernel entry point function will be generated that looks approximately
 as follows.
 
 .. code-block:: c++
 
-  void sycl-kernel-caller-for-KN(kernel-type kernelFunc) {
-    kernelFunc();
+  void sycl-kernel-caller-for-KN(sycl::stream sout, S s) {
+    kernel-type kernel = { sout, s );
+    kernel();
   }
 
 There are a few items worthy of note:
 
-#.  ``sycl-kernel-caller-for-KN`` is an exposition only name; the actual name
-    generated for an entry point is an implementation detail and subject to
-    change. However, the name will incorporate the SYCL kernel name, ``KN``,
-    that was passed as the ``KernelName`` template parameter to
-    ``single_task()`` and eventually provided as the argument to the
-    ``sycl_kernel_entry_point`` attribute in order to ensure that a unique
-    name is generated for each entry point. There is a one-to-one correspondence
-    between SYCL kernel names and offload kernel entry points.
+#. The name of the generated function incorporates the SYCL kernel name,
+   ``KN``, that was passed as the ``KernelNameType`` template parameter to
+   ``kernel_entry_point()`` and provided as the argument to the
+   ``sycl_kernel_entry_point`` attribute. There is a one-to-one correspondence
+   between SYCL kernel names and offload kernel entry points.
 
 #. The SYCL kernel is a lambda closure type and therefore has no name;
    ``kernel-type`` is substituted above and corresponds to the ``KernelType``
-   template parameter deduced in the call to ``single_task()``.
+   template parameter deduced in the call to ``kernel_entry_point()``.
+   Lambda types cannot be declared and initialized using the aggregate
+   initialization syntax used above, but the intended behavior should be clear.
 
-#. The parameter and the call to ``kernelFunc()`` in the function body
-   correspond to the definition of ``kernel_entry_point()`` as called by
-   ``single_task()``.
+#. ``S`` is a device copyable type that does not directly or indirectly contain
+   a data member of a SYCL special type. It therefore does not need to be
+   decomposed into its constituent members to be passed as a kernel argument.
 
-#. The parameter is type checked for conformance with the SYCL device
-   copyability and kernel parameter requirements.
+#. The depiction of the ``sycl::stream`` parameter as a single self contained
+   kernel parameter is an oversimplification. SYCL special types may require
+   additional decomposition such that the generated function might have three
+   or more parameters depending on how the SYCL library implementation defines
+   these types.
 
-Within ``single_task()``, the call to ``kernel_entry_point()`` is effectively
-replaced with a synthesized call to a ''sycl_kernel_launch`` template that
-looks approximately as follows.
-
-.. code-block:: c++
-
-  sycl_kernel_launch<KN>("sycl-kernel-caller-for-KN", kernelFunc);
-
-There are a few items worthy of note:
-
-#. Lookup for the ``sycl_kernel_launch`` template is performed as if from the
-   body of the (possibly instantiated) definition of ``kernel_entry_point()``.
-   If name lookup or overload resolution fails, the program is ill-formed.
-   If the selected overload is a non-static member function, then ``this`` is
-   passed as the implicit object parameter.
-
-#. Function arguments passed to ``sycl_kernel_launch()`` are passed
-   as if by ``std::move(x)``.
-
-#. The ``sycl_kernel_launch`` template is expected to be provided by the SYCL
-   library implementation. It is responsible for copying the kernel arguments
-   to device memory and for scheduling execution of the generated offload
-   kernel entry point identified by the symbol name passed as the first
-   function argument. ``sycl-kernel-caller-for-KN`` is substituted above for
-   the actual symbol name that would be generated for the offload kernel entry
-   point.
+#. The call to ``kernel_entry_point()`` has no effect other than to trigger
+   emission of the entry point function. The statments that make up the body
+   of the function are not executed when the function is called; they are
+   only used in the generation of the entry point function.
 
 It is not necessary for a function declared with the ``sycl_kernel_entry_point``
 attribute to be called for the offload kernel entry point to be emitted. For
 inline functions and function templates, any ODR-use will suffice. For other
 functions, an ODR-use is not required; the offload kernel entry point will be
-emitted if the function is defined. In any case, a call to the function is
-required for the synthesized call to ``sycl_kernel_launch()`` to occur.
-
-A function declared with the ``sycl_kernel_entry_point`` attribute may include
-an exception specification. If a non-throwing exception specification is
-present, an exception propagating from the implicit call to the
-``sycl_kernel_launch`` template will result in a call to ``std::terminate()``.
-Otherwise, such an exception will propagate normally.
+emitted if the function is defined.
 
 Functions declared with the ``sycl_kernel_entry_point`` attribute are not
 limited to the simple example shown above. They may have additional template
 parameters, declare additional function parameters, and have complex control
-flow in the function body. The function must abide by the language feature
-restrictions described in section 5.4, "Language restrictions for device
-functions" in the SYCL 2020 specification. If the function is a non-static
-member function, ``this`` shall not be used in a potentially evaluated
-expression.)reST";
+flow in the function body. Function parameter decomposition and reconstitution
+is performed for all function parameters. The function must abide by the
+language feature restrictions described in section 5.4, "Language restrictions
+for device functions" in the SYCL 2020 specification.)reST";
 
 static const char AttrDoc_SYCLSpecialClass[] = R"reST(SYCL defines some special classes (accessor, sampler, and stream) which require
 specific handling during the generation of the SPIR entry point.
@@ -7888,15 +7697,6 @@ static const char AttrDoc_SpeculativeLoadHardening[] = R"reST(This attribute can
   attribute. This is intended to provide a maximally conservative model
   where the code in a function annotated with this attribute will always
   (even after inlining) end up hardened.)reST";
-
-static const char AttrDoc_StackProtectorIgnore[] = R"reST(The ``stack_protector_ignore`` attribute skips analysis of the given local
-variable when determining if a function should use a stack protector.
-
-The ``-fstack-protector`` option uses a heuristic to only add stack protectors
-to functions which contain variables or buffers over some size threshold.  This
-attribute overrides that heuristic for the attached variable, opting
-them out.  If this results in no variables or buffers remaining over the stack
-protector threshold, then the function will no longer use a stack protector.)reST";
 
 static const char AttrDoc_StandaloneDebug[] = R"reST(The ``standalone_debug`` attribute causes debug info to be emitted for a record
 type regardless of the debug info optimizations that are enabled with
@@ -8521,13 +8321,7 @@ target clone at load time. The indirect function is given the name the
 multiversioned function would have if it had been declared without the attribute.
 For backward compatibility with earlier Clang releases, a function alias with an
 ``.ifunc`` suffix is also emitted. The  ``.ifunc`` suffixed symbol is a deprecated
-feature and support for it may be removed in the future.
-
-For PowerPC targets, ``target_clones`` is supported on AIX only. Only CPU
-(specified as ``cpu=CPU``) and ``default`` options are allowed. IFUNC is supported
-on AIX in Clang, so dispatch is implemented similar to other targets using IFUNC.
-An FMV function that is only declared in a translation unit is treated as a
-non-FMV. The resolver and the function clones are given internal linkage.)reST";
+feature and support for it may be removed in the future.)reST";
 
 static const char AttrDoc_TargetVersion[] = R"reST(For AArch64 target clang supports function multiversioning by
 ``__attribute__((target_version("OPTIONS")))`` attribute. When applied to a
@@ -8861,10 +8655,8 @@ path of execution, but that can be confusing:
 .. code-block:: c++
 
   if (b) {
-    [[unlikely]] --b; // Per the standard this is in the path of
-                      // execution, so this branch should be considered
-                      // unlikely. However, Clang ignores the attribute
-                      // here since it is not on the substatement.
+    [[unlikely]] --b; // In the path of execution,
+                      // this branch is considered unlikely.
   }
 
   if (b) {

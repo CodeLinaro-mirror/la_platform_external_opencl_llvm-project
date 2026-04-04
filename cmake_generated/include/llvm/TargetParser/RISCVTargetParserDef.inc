@@ -102,7 +102,6 @@ static const RISCVSupportedExtension SupportedExtensions[] = {
     {"xsfcease", {1, 0}},
     {"xsfmm128t", {0, 6}},
     {"xsfmm16t", {0, 6}},
-    {"xsfmm32a", {0, 6}},
     {"xsfmm32a16f", {0, 6}},
     {"xsfmm32a32f", {0, 6}},
     {"xsfmm32a8f", {0, 6}},
@@ -240,9 +239,10 @@ static const RISCVSupportedExtension SupportedExtensions[] = {
 };
 
 static const RISCVSupportedExtension SupportedExperimentalExtensions[] = {
-    {"p", {0, 21}},
+    {"p", {0, 18}},
     {"smpmpmt", {0, 6}},
     {"svukte", {0, 3}},
+    {"xrivosvisni", {0, 1}},
     {"xrivosvizip", {0, 1}},
     {"xsfmclic", {0, 1}},
     {"xsfsclic", {0, 1}},
@@ -250,13 +250,11 @@ static const RISCVSupportedExtension SupportedExperimentalExtensions[] = {
     {"zibi", {0, 1}},
     {"zicfilp", {1, 0}},
     {"zicfiss", {1, 0}},
-    {"zvabd", {0, 7}},
     {"zvbc32e", {0, 7}},
-    {"zvdot4a8i", {0, 1}},
     {"zvfbfa", {0, 1}},
     {"zvfofp8min", {0, 2}},
     {"zvkgs", {0, 7}},
-    {"zvzip", {0, 1}},
+    {"zvqdotq", {0, 0}},
 };
 
 #endif // GET_SUPPORTED_EXTENSIONS
@@ -275,10 +273,6 @@ static constexpr ImpliedExtsEntry ImpliedExts[] = {
     { {"d"}, "f"},
     { {"f"}, "zicsr"},
     { {"m"}, "zmmul"},
-    { {"p"}, "zmmul"},
-    { {"p"}, "zba"},
-    { {"p"}, "zbb"},
-    { {"p"}, "zicsr"},
     { {"q"}, "d"},
     { {"sha"}, "h"},
     { {"sha"}, "ssstateen"},
@@ -335,9 +329,6 @@ static constexpr ImpliedExtsEntry ImpliedExts[] = {
     { {"xsfmm128t"}, "zvl512b"},
     { {"xsfmm16t"}, "xsfmmbase"},
     { {"xsfmm16t"}, "zvl64b"},
-    { {"xsfmm32a"}, "xsfmm32a8i"},
-    { {"xsfmm32a"}, "xsfmm32a16f"},
-    { {"xsfmm32a"}, "xsfmm32a32f"},
     { {"xsfmm32a16f"}, "xsfmmbase"},
     { {"xsfmm32a16f"}, "zve32f"},
     { {"xsfmm32a32f"}, "xsfmmbase"},
@@ -370,7 +361,6 @@ static constexpr ImpliedExtsEntry ImpliedExts[] = {
     { {"xwchc"}, "zca"},
     { {"zabha"}, "zaamo"},
     { {"zacas"}, "zaamo"},
-    { {"zbc"}, "zbkc"},
     { {"zcb"}, "zca"},
     { {"zcd"}, "d"},
     { {"zcd"}, "zca"},
@@ -416,7 +406,6 @@ static constexpr ImpliedExtsEntry ImpliedExts[] = {
     { {"zvbb"}, "zvkb"},
     { {"zvbc"}, "zve64x"},
     { {"zvbc32e"}, "zve32x"},
-    { {"zvdot4a8i"}, "zve32x"},
     { {"zve32f"}, "zve32x"},
     { {"zve32f"}, "f"},
     { {"zve32x"}, "zicsr"},
@@ -450,7 +439,6 @@ static constexpr ImpliedExtsEntry ImpliedExts[] = {
     { {"zvkng"}, "zvkg"},
     { {"zvknha"}, "zve32x"},
     { {"zvknhb"}, "zve64x"},
-    { {"zvknhb"}, "zvknha"},
     { {"zvks"}, "zvksed"},
     { {"zvks"}, "zvksh"},
     { {"zvks"}, "zvkb"},
@@ -472,7 +460,7 @@ static constexpr ImpliedExtsEntry ImpliedExts[] = {
     { {"zvl64b"}, "zvl32b"},
     { {"zvl65536b"}, "zvl32768b"},
     { {"zvl8192b"}, "zvl4096b"},
-    { {"zvzip"}, "zve32x"},
+    { {"zvqdotq"}, "zve32x"},
 };
 
 #endif // GET_IMPLIED_EXTENSIONS
@@ -535,13 +523,10 @@ PROC(SIFIVE_S54, {"sifive-s54"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zifencei2p0
 PROC(SIFIVE_S76, {"sifive-s76"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zifencei2p0_zihintpause2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SIFIVE_U54, {"sifive-u54"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SIFIVE_U74, {"sifive-u74"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
-PROC(SIFIVE_X160, {"sifive-x160"}, {"rv32i2p1_m2p0_a2p1_f2p2_c2p0_b1p0_zicbom1p0_zicbop1p0_zicboz1p0_zicfilp1p0_zicond1p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zcb1p0_zce1p0_zcf1p0_zcmop1p0_zcmp1p0_zcmt1p0_zkt1p0_zvbb1p0_zvdot4a8i0p1_zve32f1p0_zve32x1p0_zvfbfa0p1_zvfbfmin1p0_zvfbfwma1p0_zvfh1p0_zvkt1p0_zvl128b1p0_xsfcease1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
-PROC(SIFIVE_X180, {"sifive-x180"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_ziccrse1p0_zicfilp1p0_zicond1p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zcb1p0_zcd1p0_zcmop1p0_zkt1p0_zvbb1p0_zvdot4a8i0p1_zvfbfa0p1_zvfbfmin1p0_zvfbfwma1p0_zvfh1p0_zvkb1p0_zvkt1p0_zvl128b1p0_xsfcease1p0_xsfvfbfexp16e0p5_xsfvfexp16e0p5_xsfvfexp32e0p5_xsfvfexpa0p2_xsifivecflushdlone1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SIFIVE_X280, {"sifive-x280"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zifencei2p0_zfh1p0_zba1p0_zbb1p0_zvfh1p0_zvl512b1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SIFIVE_X390, {"sifive-x390"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_ziccrse1p0_zicfilp1p0_zicfiss1p0_zicntr2p0_zicond1p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfh1p0_zcb1p0_zcmop1p0_zkr1p0_zkt1p0_zvbb1p0_zvfbfmin1p0_zvfbfwma1p0_zvfh1p0_zvkt1p0_zvl1024b1p0_xsifivecdiscarddlone1p0_xsifivecflushdlone1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
-PROC(SPACEMIT_A100, {"spacemit-a100"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zfhmin1p0_zcb1p0_zcmop1p0_zbc1p0_zbkc1p0_zkt1p0_zvbb1p0_zvbc1p0_zvfbfwma1p0_zvfh1p0_zvfhmin1p0_zvkng1p0_zvknha1p0_zvksc1p0_zvksg1p0_zvkt1p0_zvl1024b1p0_smepmp1p0_smnpm1p0_smstateen1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_ssnpm1p0_sspm1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_supm1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0"}, 1, 0, 0x00000710, 0x8000000041000002, 0x10000000d5686200)
 PROC(SPACEMIT_X60, {"spacemit-x60"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintpause2p0_zihpm2p0_za64rs1p0_zfh1p0_zfhmin1p0_zbc1p0_zbkc1p0_zkt1p0_zvfh1p0_zvkt1p0_zvl256b1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_sstc1p0_sstvala1p0_sstvecd1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0_xsmtvdot1p0"}, 1, 0, 0x00000710, 0x8000000058000001, 0x1000000049772200)
-PROC(SPACEMIT_X100, {"spacemit-x100"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zfhmin1p0_zcb1p0_zcmop1p0_zbc1p0_zbkc1p0_zkt1p0_zvbb1p0_zvbc1p0_zvfbfwma1p0_zvfh1p0_zvfhmin1p0_zvkng1p0_zvknha1p0_zvksc1p0_zvksg1p0_zvkt1p0_zvl256b1p0_sha1p0_smepmp1p0_smnpm1p0_smstateen1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_ssnpm1p0_sspm1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_supm1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0_xsmtvdot1p0"}, 1, 0, 0x00000710, 0x8000000058000002, 0x0000000033d8a600)
+PROC(SPACEMIT_X100, {"spacemit-x100"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zfhmin1p0_zcb1p0_zcd1p0_zcmop1p0_zbc1p0_zbkc1p0_zkt1p0_zvbb1p0_zvbc1p0_zvfbfwma1p0_zvfh1p0_zvfhmin1p0_zvkng1p0_zvknha1p0_zvksc1p0_zvksg1p0_zvkt1p0_zvl256b1p0_supm1p0_xsmtvdot1p0"}, 1, 0, 0x00000710, 0x8000000058000002, 0x0000000033d8a600)
 PROC(SYNTACORE_SCR1_BASE, {"syntacore-scr1-base"}, {"rv32i2p1_c2p0_zicsr2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SYNTACORE_SCR1_MAX, {"syntacore-scr1-max"}, {"rv32i2p1_m2p0_c2p0_zicsr2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SYNTACORE_SCR3_RV32, {"syntacore-scr3-rv32"}, {"rv32i2p1_m2p0_c2p0_zicsr2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
@@ -551,12 +536,10 @@ PROC(SYNTACORE_SCR4_RV64, {"syntacore-scr4-rv64"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p
 PROC(SYNTACORE_SCR5_RV32, {"syntacore-scr5-rv32"}, {"rv32i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SYNTACORE_SCR5_RV64, {"syntacore-scr5-rv64"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(SYNTACORE_SCR7, {"syntacore-scr7"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zkn1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
-PROC(TENSTORRENT_ASCALON_X, {"tt-ascalon-x"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zfhmin1p0_zcb1p0_zcmop1p0_zkr1p0_zkt1p0_zvbb1p0_zvbc1p0_zvfbfmin1p0_zvfbfwma1p0_zvfh1p0_zvfhmin1p0_zvkng1p0_zvkt1p0_zvl256b1p0_sha1p0_smaia1p0_smmpm1p0_smnpm1p0_smrnmi1p0_smstateen1p0_ssaia1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_ssnpm1p0_ssstrict1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_supm1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0"}, 1, 1, 0x00000000, 0x0000000000000000, 0x0000000000000000)
+PROC(TENSTORRENT_ASCALON_D8, {"tt-ascalon-d8"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zfhmin1p0_zcb1p0_zcmop1p0_zkr1p0_zkt1p0_zvbb1p0_zvbc1p0_zvfbfmin1p0_zvfbfwma1p0_zvfh1p0_zvfhmin1p0_zvkng1p0_zvkt1p0_zvl256b1p0_sha1p0_smaia1p0_smmpm1p0_smnpm1p0_smrnmi1p0_smstateen1p0_ssaia1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_ssnpm1p0_ssstrict1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_supm1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0"}, 1, 1, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(VENTANA_VEYRON_V1, {"veyron-v1"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicbom1p0_zicbop1p0_zicboz1p0_zicntr2p0_zicsr2p0_zifencei2p0_zihintpause2p0_zihpm2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_xventanacondops1p0"}, 0, 0, 0x0000061f, 0x8000000000010000, 0x0000000000000111)
 PROC(XIANGSHAN_KUNMINGHU, {"xiangshan-kunminghu"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zacas1p0_zawrs1p0_zfa1p0_zfh1p0_zfhmin1p0_zcb1p0_zcmop1p0_zbc1p0_zkn1p0_zks1p0_zkt1p0_zvbb1p0_zvfh1p0_zvfhmin1p0_zvkt1p0_zvl128b1p0_sha1p0_smaia1p0_smcsrind1p0_smdbltrp1p0_smmpm1p0_smnpm1p0_smrnmi1p0_smstateen1p0_ssaia1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_sscsrind1p0_ssdbltrp1p0_ssnpm1p0_sspm1p0_ssstrict1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_supm1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 PROC(XIANGSHAN_NANHU, {"xiangshan-nanhu"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicbom1p0_zicboz1p0_zicsr2p0_zifencei2p0_zba1p0_zbb1p0_zbc1p0_zbs1p0_zkn1p0_zksed1p0_zksh1p0_svinval1p0"}, 0, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
-PROC(XUANTIE_C910V2, {"xt-c910v2"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_zicclsm1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zca1p0_zcb1p0_zcd1p0_zcmop1p0_zbc1p0_zkt1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0_xtheadba1p0_xtheadbb1p0_xtheadbs1p0_xtheadcmo1p0_xtheadcondmov1p0_xtheadfmemidx1p0_xtheadmac1p0_xtheadmemidx1p0_xtheadmempair1p0_xtheadsync1p0"}, 1, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
-PROC(XUANTIE_C920V2, {"xt-c920v2"}, {"rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_b1p0_v1p0_zic64b1p0_zicbom1p0_zicbop1p0_zicboz1p0_ziccamoa1p0_ziccif1p0_ziccrse1p0_zicntr2p0_zicond1p0_zicsr2p0_zifencei2p0_zihintntl1p0_zihintpause2p0_zihpm2p0_zimop1p0_za64rs1p0_zawrs1p0_zfa1p0_zfbfmin1p0_zfh1p0_zca1p0_zcb1p0_zcd1p0_zcmop1p0_zbc1p0_zkt1p0_zvfbfmin1p0_zvfbfwma1p0_zvfh1p0_ssccptr1p0_sscofpmf1p0_sscounterenw1p0_sstc1p0_sstvala1p0_sstvecd1p0_ssu64xl1p0_svade1p0_svbare1p0_svinval1p0_svnapot1p0_svpbmt1p0_xtheadba1p0_xtheadbb1p0_xtheadbs1p0_xtheadcmo1p0_xtheadcondmov1p0_xtheadfmemidx1p0_xtheadmac1p0_xtheadmemidx1p0_xtheadmempair1p0_xtheadsync1p0_xtheadvdot1p0"}, 1, 0, 0x00000000, 0x0000000000000000, 0x0000000000000000)
 
 #undef PROC
 
@@ -635,106 +618,3 @@ static const RISCVExtensionBitmask ExtensionBitmask[]={
     {"zcmp", 1, 10ULL},
 };
 #endif
-
-#ifdef GET_TUNE_FEATURES
-#undef GET_TUNE_FEATURES
-
-
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Woverlength-strings"
-#endif
-static constexpr char TuneFeatureStringsStorage[] =
-  "\0"
-  "conditional-cmv-fusion\0"
-  "no-conditional-cmv-fusion\0"
-  "disable-latency-sched-heuristic\0"
-  "enable-latency-sched-heuristic\0"
-  "disable-misched-load-clustering\0"
-  "enable-misched-load-clustering\0"
-  "disable-misched-store-clustering\0"
-  "enable-misched-store-clustering\0"
-  "disable-postmisched-load-clustering\0"
-  "enable-postmisched-load-clustering\0"
-  "disable-postmisched-store-clustering\0"
-  "enable-postmisched-store-clustering\0"
-  "single-element-vec-fp64\0"
-  "full-vec-fp64\0"
-  "no-default-unroll\0"
-  "enable-default-unroll\0"
-  "no-sink-splat-operands\0"
-  "sink-splat-operands\0"
-  "use-postra-scheduler\0"
-  "no-use-postra-scheduler\0"
-  "predictable-select-expensive\0"
-  "no-predictable-select-expensive\0"
-  "prefer-ascending-load-store\0"
-  "no-prefer-ascending-load-store\0"
-  "prefer-vsetvli-over-read-vlenb\0"
-  "no-prefer-vsetvli-over-read-vlenb\0"
-  "prefer-w-inst\0"
-  "no-prefer-w-inst\0"
-  "short-forward-branch-ialu\0"
-  "no-short-forward-branch-ialu\0"
-  "short-forward-branch-iload\0"
-  "no-short-forward-branch-iload\0"
-  "short-forward-branch-iminmax\0"
-  "no-short-forward-branch-iminmax\0"
-  "short-forward-branch-imul\0"
-  "no-short-forward-branch-imul\0"
-  "vl-dependent-latency\0"
-  "no-vl-dependent-latency\0"
-  "vxrm-pipeline-flush\0"
-  "no-vxrm-pipeline-flush\0"
-  ;
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-
-static constexpr llvm::StringTable
-TuneFeatureStrings = TuneFeatureStringsStorage;
-
-static constexpr RISCVTuneFeature TuneFeatures[] = {
-    { 1, 24, 1 },	// 'conditional-cmv-fusion'
-    { 50, 82, 50 },	// 'disable-latency-sched-heuristic'
-    { 113, 145, 113 },	// 'disable-misched-load-clustering'
-    { 176, 209, 176 },	// 'disable-misched-store-clustering'
-    { 241, 277, 241 },	// 'disable-postmisched-load-clustering'
-    { 312, 349, 312 },	// 'disable-postmisched-store-clustering'
-    { 385, 409, 385 },	// 'single-element-vec-fp64'
-    { 423, 441, 423 },	// 'no-default-unroll'
-    { 463, 486, 463 },	// 'no-sink-splat-operands'
-    { 506, 527, 506 },	// 'use-postra-scheduler'
-    { 551, 580, 551 },	// 'predictable-select-expensive'
-    { 612, 640, 612 },	// 'prefer-ascending-load-store'
-    { 671, 702, 671 },	// 'prefer-vsetvli-over-read-vlenb'
-    { 736, 750, 736 },	// 'prefer-w-inst'
-    { 767, 793, 767 },	// 'short-forward-branch-ialu'
-    { 822, 849, 822 },	// 'short-forward-branch-iload'
-    { 879, 908, 879 },	// 'short-forward-branch-iminmax'
-    { 940, 966, 940 },	// 'short-forward-branch-imul'
-    { 995, 1016, 995 },	// 'vl-dependent-latency'
-    { 1040, 1060, 1040 },	// 'vxrm-pipeline-flush'
-};
-
-static constexpr RISCVImpliedTuneFeature ImpliedTuneFeatures[] = {
-    { 822, 767 }, // 'short-forward-branch-iload' -> 'short-forward-branch-ialu'
-    { 879, 767 }, // 'short-forward-branch-iminmax' -> 'short-forward-branch-ialu'
-    { 940, 767 }, // 'short-forward-branch-imul' -> 'short-forward-branch-ialu'
-};
-
-#endif // GET_TUNE_FEATURES
-
-#ifdef GET_CONFIGURABLE_TUNE_FEATURES
-#undef GET_CONFIGURABLE_TUNE_FEATURES
-
-static constexpr RISCVConfigurableTuneFeatures ConfigurableTuneFeatures[] = {
-    { { "sifive-x180" }, 385 },
-    { { "sifive-x180" }, 409 },
-    { { "sifive-x280" }, 385 },
-    { { "sifive-x280" }, 409 },
-    { { "sifive-x390" }, 385 },
-    { { "sifive-x390" }, 409 },
-};
-
-#endif // GET_CONFIGURABLE_TUNE_FEATURES

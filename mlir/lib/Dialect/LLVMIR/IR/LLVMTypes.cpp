@@ -208,9 +208,6 @@ LLVMArrayType::getPreferredAlignment(const DataLayout &dataLayout,
 //===----------------------------------------------------------------------===//
 
 bool LLVMFunctionType::isValidArgumentType(Type type) {
-  if (auto structType = dyn_cast<LLVMStructType>(type))
-    return !structType.isOpaque();
-
   return !llvm::isa<LLVMVoidType, LLVMFunctionType>(type);
 }
 
@@ -235,18 +232,11 @@ LLVMFunctionType::getChecked(function_ref<InFlightDiagnostic()> emitError,
 
 LLVMFunctionType LLVMFunctionType::clone(TypeRange inputs,
                                          TypeRange results) const {
-  // LLVM functions have exactly one return type. An empty results range
-  // corresponds to a void return type (as FunctionOpInterface represents void
-  // functions with 0 results). More than one result is not valid.
-  if (results.size() > 1)
-    return {};
-  Type resultType =
-      results.empty() ? LLVMVoidType::get(getContext()) : results[0];
-  if (!isValidResultType(resultType))
+  if (results.size() != 1 || !isValidResultType(results[0]))
     return {};
   if (!llvm::all_of(inputs, isValidArgumentType))
     return {};
-  return get(resultType, llvm::to_vector(inputs), isVarArg());
+  return get(results[0], llvm::to_vector(inputs), isVarArg());
 }
 
 ArrayRef<Type> LLVMFunctionType::getReturnTypes() const {
@@ -773,24 +763,26 @@ static bool isCompatibleImpl(Type type, DenseSet<Type> &compatibleTypes) {
 
   bool result =
       llvm::TypeSwitch<Type, bool>(type)
-          .Case([&](LLVMStructType structType) {
+          .Case<LLVMStructType>([&](auto structType) {
             return llvm::all_of(structType.getBody(), isCompatible);
           })
-          .Case([&](LLVMFunctionType funcType) {
+          .Case<LLVMFunctionType>([&](auto funcType) {
             return isCompatible(funcType.getReturnType()) &&
                    llvm::all_of(funcType.getParams(), isCompatible);
           })
-          .Case([](IntegerType intType) { return intType.isSignless(); })
-          .Case([&](VectorType vecType) {
+          .Case<IntegerType>([](auto intType) { return intType.isSignless(); })
+          .Case<VectorType>([&](auto vecType) {
             return vecType.getRank() == 1 &&
                    isCompatible(vecType.getElementType());
           })
-          .Case([&](LLVMPointerType pointerType) { return true; })
-          .Case([&](LLVMTargetExtType extType) {
+          .Case<LLVMPointerType>([&](auto pointerType) { return true; })
+          .Case<LLVMTargetExtType>([&](auto extType) {
             return llvm::all_of(extType.getTypeParams(), isCompatible);
           })
           // clang-format off
-          .Case([&](LLVMArrayType containerType) {
+          .Case<
+              LLVMArrayType
+          >([&](auto containerType) {
             return isCompatible(containerType.getElementType());
           })
           .Case<
@@ -903,12 +895,12 @@ llvm::TypeSize mlir::LLVM::getPrimitiveTypeSizeInBits(Type type) {
       .Case<Float64Type>([](Type) { return llvm::TypeSize::getFixed(64); })
       .Case<Float80Type>([](Type) { return llvm::TypeSize::getFixed(80); })
       .Case<Float128Type>([](Type) { return llvm::TypeSize::getFixed(128); })
-      .Case([](IntegerType intTy) {
+      .Case<IntegerType>([](IntegerType intTy) {
         return llvm::TypeSize::getFixed(intTy.getWidth());
       })
       .Case<LLVMPPCFP128Type>(
           [](Type) { return llvm::TypeSize::getFixed(128); })
-      .Case([](VectorType t) {
+      .Case<VectorType>([](VectorType t) {
         assert(isCompatibleVectorType(t) &&
                "unexpected incompatible with LLVM vector type");
         llvm::TypeSize elementSize =

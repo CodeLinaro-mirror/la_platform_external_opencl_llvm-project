@@ -857,6 +857,7 @@ public:
       return llvm::ArrayRef(g_thread_until_options);
     }
 
+    uint32_t m_step_thread_idx = LLDB_INVALID_THREAD_ID;
     bool m_stop_others = false;
     std::vector<lldb::addr_t> m_until_addrs;
 
@@ -2030,10 +2031,15 @@ public:
             "process to different formats.",
             "thread trace export <export-plugin> [<subcommand objects>]") {
 
-    for (auto &cbs : PluginManager::GetTraceExporterCallbacks()) {
-      if (cbs.create_thread_trace_export_command)
-        LoadSubCommand(cbs.name,
-                       cbs.create_thread_trace_export_command(interpreter));
+    unsigned i = 0;
+    for (llvm::StringRef plugin_name =
+             PluginManager::GetTraceExporterPluginNameAtIndex(i);
+         !plugin_name.empty();
+         plugin_name = PluginManager::GetTraceExporterPluginNameAtIndex(i++)) {
+      if (ThreadTraceExportCommandCreator command_creator =
+              PluginManager::GetThreadTraceExportCommandCreatorAtIndex(i)) {
+        LoadSubCommand(plugin_name, command_creator(interpreter));
+      }
     }
   }
 };

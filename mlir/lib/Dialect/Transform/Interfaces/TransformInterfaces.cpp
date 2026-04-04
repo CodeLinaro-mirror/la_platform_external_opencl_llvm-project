@@ -6,8 +6,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include <utility>
-
 #include "mlir/Dialect/Transform/Interfaces/TransformInterfaces.h"
 
 #include "mlir/IR/Diagnostics.h"
@@ -1173,8 +1171,7 @@ bool transform::TransformResults::isSet(unsigned resultNumber) const {
 transform::TrackingListener::TrackingListener(TransformState &state,
                                               TransformOpInterface op,
                                               TrackingListenerConfig config)
-    : TransformState::Extension(state), transformOp(op),
-      config(std::move(config)) {
+    : TransformState::Extension(state), transformOp(op), config(config) {
   if (op) {
     for (OpOperand *opOperand : transformOp.getConsumedHandleOpOperands()) {
       consumedHandles.insert(opOperand->get());

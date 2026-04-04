@@ -222,5 +222,6 @@ int main(int, char**) {
     assert(r == std::next(m.begin(), 8));
   }
 #endif
+
   return 0;
 }

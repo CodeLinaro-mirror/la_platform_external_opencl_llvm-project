@@ -344,17 +344,20 @@ visitCmpBlock(Value *const Val, BasicBlock *const Block,
               const BasicBlock *const PhiBlock, BaseIdentifier &BaseId) {
   if (Block->empty())
     return std::nullopt;
-  auto *Term = Block->getTerminator();
+  auto *const BranchI = dyn_cast<BranchInst>(Block->getTerminator());
+  if (!BranchI)
+    return std::nullopt;
+  LLVM_DEBUG(dbgs() << "branch\n");
   Value *Cond;
   ICmpInst::Predicate ExpectedPredicate;
-  if (isa<UncondBrInst>(Term)) {
+  if (BranchI->isUnconditional()) {
     // In this case, we expect an incoming value which is the result of the
     // comparison. This is the last link in the chain of comparisons (note
     // that this does not mean that this is the last incoming value, blocks
     // can be reordered).
     Cond = Val;
     ExpectedPredicate = ICmpInst::ICMP_EQ;
-  } else if (auto *BranchI = dyn_cast<CondBrInst>(Term)) {
+  } else {
     // In this case, we expect a constant incoming value (the comparison is
     // chained).
     const auto *const Const = cast<ConstantInt>(Val);
@@ -367,8 +370,7 @@ visitCmpBlock(Value *const Val, BasicBlock *const Block,
     Cond = BranchI->getCondition();
     ExpectedPredicate =
         FalseBlock == PhiBlock ? ICmpInst::ICMP_EQ : ICmpInst::ICMP_NE;
-  } else
-    return std::nullopt;
+  }
 
   auto *CmpI = dyn_cast<ICmpInst>(Cond);
   if (!CmpI)
@@ -380,7 +382,7 @@ visitCmpBlock(Value *const Val, BasicBlock *const Block,
     return std::nullopt;
 
   BCECmpBlock::InstructionSet BlockInsts(
-      {Result->Lhs.LoadI, Result->Rhs.LoadI, Result->CmpI, Term});
+      {Result->Lhs.LoadI, Result->Rhs.LoadI, Result->CmpI, BranchI});
   if (Result->Lhs.GEP)
     BlockInsts.insert(Result->Lhs.GEP);
   if (Result->Rhs.GEP)

@@ -395,14 +395,13 @@ public:
   }
 
 private:
-  llvm::MapVector<TypeID, std::unique_ptr<DynamicOpTrait>> traits;
+  DenseMap<TypeID, std::unique_ptr<DynamicOpTrait>> traits;
 };
 
 template <template <typename T> class Trait>
 class DynamicOpTraitImpl : public DynamicOpTrait {
 public:
-  static TypeID getStaticTypeID() { return TypeID::get<Trait>(); }
-  TypeID getTypeID() const override { return getStaticTypeID(); }
+  TypeID getTypeID() const override { return TypeID::get<Trait>(); }
 };
 
 namespace DynamicOpTraits {
@@ -567,7 +566,7 @@ public:
   Attribute getPropertiesAsAttr(Operation *op) final { return {}; }
   void copyProperties(OpaqueProperties lhs, OpaqueProperties rhs) final {}
   bool compareProperties(OpaqueProperties, OpaqueProperties) final {
-    return true;
+    return false;
   }
   llvm::hash_code hashProperties(OpaqueProperties prop) final { return {}; }
 

@@ -1,13 +1,12 @@
 add_mlir_dialect_library(MLIRXeGPUTransforms
   XeGPUBlocking.cpp
-  XeGPUSgToWiDistributeExperimental.cpp
+  XeGPUFoldAliasOps.cpp
   XeGPUSubgroupDistribute.cpp
   XeGPUUnroll.cpp
   XeGPUWgToSgDistribute.cpp
   XeGPUPropagateLayout.cpp
   XeGPUVectorLinearize.cpp
   XeGPUPeepHoleOptimizer.cpp
-  XeGPULayoutImpl.cpp
 
   ADDITIONAL_HEADER_DIRS
   ${MLIR_MAIN_INCLUDE_DIR}/mlir/Dialect/XeGPU

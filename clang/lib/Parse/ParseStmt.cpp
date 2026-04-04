@@ -506,7 +506,8 @@ Retry:
   case tok::annot_pragma_export:
     ProhibitAttributes(CXX11Attrs);
     ProhibitAttributes(GNUAttrs);
-    HandlePragmaExport();
+    Diag(Tok, diag::err_pragma_file_scope) << "export";
+    ConsumeAnnotationToken();
     return StmtEmpty();
   }
 
@@ -1038,7 +1039,8 @@ void Parser::ParseCompoundStatementLeadingPragmas() {
       HandlePragmaDump();
       break;
     case tok::annot_pragma_export:
-      HandlePragmaExport();
+      Diag(Tok, diag::err_pragma_file_scope) << "export";
+      ConsumeAnnotationToken();
       break;
     default:
       checkForPragmas = false;

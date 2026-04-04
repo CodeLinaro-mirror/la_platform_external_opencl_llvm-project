@@ -58,6 +58,7 @@
 #include "clang/AST/DeclarationName.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 
+#include "Plugins/LanguageRuntime/CPlusPlus/CPPLanguageRuntime.h"
 #include "Plugins/LanguageRuntime/ObjC/ObjCLanguageRuntime.h"
 
 using namespace lldb;
@@ -87,12 +88,10 @@ ClangExpressionDeclMap::ClangExpressionDeclMap(
     bool keep_result_in_memory,
     Materializer::PersistentVariableDelegate *result_delegate,
     const lldb::TargetSP &target,
-    const std::shared_ptr<ClangASTImporter> &importer, ValueObject *ctx_obj,
-    bool ignore_context_qualifiers)
+    const std::shared_ptr<ClangASTImporter> &importer, ValueObject *ctx_obj)
     : ClangASTSource(target, importer), m_found_entities(), m_struct_members(),
       m_keep_result_in_memory(keep_result_in_memory),
-      m_result_delegate(result_delegate), m_ctx_obj(ctx_obj),
-      m_ignore_context_qualifiers(ignore_context_qualifiers), m_parser_vars(),
+      m_result_delegate(result_delegate), m_ctx_obj(ctx_obj), m_parser_vars(),
       m_struct_vars() {
   EnableStructVars();
 }
@@ -705,9 +704,8 @@ void ClangExpressionDeclMap::FindExternalVisibleDecls(
     if (!namespace_map)
       return;
 
-    LLDB_LOG_VERBOSE(
-        log, "  CEDM::FEVD Inspecting (NamespaceMap*){0:x} ({1} entries)",
-        namespace_map.get(), namespace_map->size());
+    LLDB_LOGV(log, "  CEDM::FEVD Inspecting (NamespaceMap*){0:x} ({1} entries)",
+              namespace_map.get(), namespace_map->size());
 
     for (ClangASTImporter::NamespaceMapItem &n : *namespace_map) {
       LLDB_LOG(log, "  CEDM::FEVD Searching namespace {0} in module {1}",
@@ -845,12 +843,6 @@ void ClangExpressionDeclMap::LookUpLldbClass(NameSearchContext &context) {
     clang::CXXRecordDecl *class_decl = method_decl->getParent();
 
     QualType class_qual_type = m_ast_context->getCanonicalTagType(class_decl);
-
-    // The synthesized __lldb_expr will adopt the qualifiers from this class
-    // type. Make sure we use the qualifiers of the method that we're currently
-    // stopped in.
-    class_qual_type.addFastQualifiers(
-        method_decl->getMethodQualifiers().getFastQualifiers());
 
     TypeFromUser class_user_type(
         class_qual_type.getAsOpaquePtr(),
@@ -1299,8 +1291,8 @@ bool ClangExpressionDeclMap::LookupFunction(
   bool found_function_with_type_info = false;
 
   if (sc_list.GetSize()) {
-    const Symbol *extern_symbol = nullptr;
-    const Symbol *non_extern_symbol = nullptr;
+    Symbol *extern_symbol = nullptr;
+    Symbol *non_extern_symbol = nullptr;
 
     for (const SymbolContext &sym_ctx : sc_list) {
       if (sym_ctx.function) {
@@ -1316,7 +1308,7 @@ bool ClangExpressionDeclMap::LookupFunction(
         AddOneFunction(context, sym_ctx.function, nullptr);
         found_function_with_type_info = true;
       } else if (sym_ctx.symbol) {
-        const Symbol *symbol = sym_ctx.symbol;
+        Symbol *symbol = sym_ctx.symbol;
         if (target && symbol->GetType() == eSymbolTypeReExported) {
           symbol = symbol->ResolveReExportedSymbol(*target);
           if (symbol == nullptr)
@@ -1810,7 +1802,7 @@ void ClangExpressionDeclMap::AddOneRegister(NameSearchContext &context,
 
 void ClangExpressionDeclMap::AddOneFunction(NameSearchContext &context,
                                             Function *function,
-                                            const Symbol *symbol) {
+                                            Symbol *symbol) {
   assert(m_parser_vars.get());
 
   Log *log = GetLog(LLDBLog::Expressions);
@@ -1999,8 +1991,7 @@ void ClangExpressionDeclMap::AddContextClassType(NameSearchContext &context,
     std::array<CompilerType, 1> args{void_clang_type.GetPointerType()};
 
     CompilerType method_type = m_clang_ast_context->CreateFunctionType(
-        void_clang_type, args, false,
-        m_ignore_context_qualifiers ? 0 : ut.GetTypeQualifiers());
+        void_clang_type, args, false, 0);
 
     const bool is_virtual = false;
     const bool is_static = false;
@@ -2011,8 +2002,8 @@ void ClangExpressionDeclMap::AddContextClassType(NameSearchContext &context,
 
     CXXMethodDecl *method_decl = m_clang_ast_context->AddMethodToCXXRecordType(
         copied_clang_type.GetOpaqueQualType(), "$__lldb_expr", /*asm_label=*/{},
-        method_type, is_virtual, is_static, is_inline, is_explicit,
-        is_attr_used, is_artificial);
+        method_type, lldb::eAccessPublic, is_virtual, is_static, is_inline,
+        is_explicit, is_attr_used, is_artificial);
 
     LLDB_LOG(log,
              "  CEDM::AddThisType Added function $__lldb_expr "

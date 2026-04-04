@@ -359,7 +359,7 @@ public:
                 collectGlobalsFromDeviceRegion(
                     accOp.getRegion(), globalsToAccDeclare, accSupport, symTab);
               })
-          .Case([&](FunctionOpInterface func) {
+          .Case<FunctionOpInterface>([&](auto func) {
             if ((acc::isAccRoutine(func) ||
                  acc::isSpecializedAccRoutine(func)) &&
                 !func.isExternal())
@@ -367,13 +367,13 @@ public:
                                              globalsToAccDeclare, accSupport,
                                              symTab);
           })
-          .Case([&](acc::GlobalVariableOpInterface globalVarOp) {
+          .Case<acc::GlobalVariableOpInterface>([&](auto globalVarOp) {
             if (globalVarOp->getAttr(acc::getDeclareAttrName()))
               if (Region *initRegion = globalVarOp.getInitRegion())
                 collectGlobalsFromDeviceRegion(*initRegion, globalsToAccDeclare,
                                                accSupport, symTab);
           })
-          .Case([&](acc::PrivateRecipeOp privateRecipe) {
+          .Case<acc::PrivateRecipeOp>([&](auto privateRecipe) {
             if (hasRelevantRecipeUse(privateRecipe, mod)) {
               collectGlobalsFromDeviceRegion(privateRecipe.getInitRegion(),
                                              globalsToAccDeclare, accSupport,
@@ -383,7 +383,7 @@ public:
                                              symTab);
             }
           })
-          .Case([&](acc::FirstprivateRecipeOp firstprivateRecipe) {
+          .Case<acc::FirstprivateRecipeOp>([&](auto firstprivateRecipe) {
             if (hasRelevantRecipeUse(firstprivateRecipe, mod)) {
               collectGlobalsFromDeviceRegion(firstprivateRecipe.getInitRegion(),
                                              globalsToAccDeclare, accSupport,
@@ -396,7 +396,7 @@ public:
                                              symTab);
             }
           })
-          .Case([&](acc::ReductionRecipeOp reductionRecipe) {
+          .Case<acc::ReductionRecipeOp>([&](auto reductionRecipe) {
             if (hasRelevantRecipeUse(reductionRecipe, mod)) {
               collectGlobalsFromDeviceRegion(reductionRecipe.getInitRegion(),
                                              globalsToAccDeclare, accSupport,

@@ -233,6 +233,11 @@ bool UnreachableMachineBlockElim::run(MachineFunction &F) {
   }
 
   F.RenumberBlocks();
+  if (MDT)
+    MDT->updateBlockNumbers();
+
+  if (MPDT)
+    MPDT->updateBlockNumbers();
 
   return (!DeadBlocks.empty() || ModifiedPHI);
 }

@@ -24,7 +24,6 @@ Options
 
    Semicolon-separated list of names of string-like classes. By default only
    ``::std::basic_string`` and ``::std::basic_string_view`` are considered.
-   Within these classes, the check will only consider member functions named
-   ``find``, ``rfind``, ``find_first_of``, ``find_first_not_of``,
-   ``find_last_of``, ``find_last_not_of``, ``starts_with``, ``ends_with``,
-   ``contains``, or ``operator+=``.
+   The check will only consider member functions named ``find``, ``rfind``,
+   ``find_first_of``, ``find_first_not_of``, ``find_last_of``, or
+   ``find_last_not_of`` within these classes.

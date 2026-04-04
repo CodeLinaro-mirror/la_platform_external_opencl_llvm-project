@@ -868,7 +868,7 @@ void LinkerDriver::addWinSysRootLibSearchPaths() {
   llvm::StringSet<> noDefaultLibs;
   for (auto &iter : ctx.config.noDefaultLibs)
     noDefaultLibs.insert(findLib(iter.first()).lower());
-  ctx.config.noDefaultLibs = std::move(noDefaultLibs);
+  ctx.config.noDefaultLibs = noDefaultLibs;
 }
 
 // Parses LIB environment which contains a list of search paths.
@@ -1339,7 +1339,7 @@ void LinkerDriver::parsePDBAltPath() {
     cursor = secondMark + 1;
   }
 
-  ctx.config.pdbAltPath = std::move(buf);
+  ctx.config.pdbAltPath = buf;
 }
 
 /// Convert resource files and potentially merge input resource object

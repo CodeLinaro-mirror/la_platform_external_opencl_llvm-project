@@ -228,7 +228,6 @@ void CoroIdElider::elideHeapAllocations(uint64_t FrameSize, Align FrameAlign) {
       new BitCastInst(Frame, PointerType::getUnqual(C), "vFrame", InsertPt);
 
   for (auto *CB : CoroBegins) {
-    coro::elideCoroFree(CB);
     CB->replaceAllUsesWith(FrameVoidPtr);
     CB->eraseFromParent();
   }
@@ -411,6 +410,7 @@ bool CoroIdElider::attemptElide() {
 
   if (EligibleForElide && FrameSizeAndAlign) {
     elideHeapAllocations(FrameSizeAndAlign->first, FrameSizeAndAlign->second);
+    coro::replaceCoroFree(CoroId, /*Elide=*/true);
     NumOfCoroElided++;
 
 #ifndef NDEBUG

@@ -55,7 +55,7 @@ void DWARFCFIState::update(const MCCFIInstruction &Directive) {
     return;
   }
 
-  Row = std::move(NewRow);
+  Row = NewRow;
   IsInitiated = true;
 }
 

@@ -226,13 +226,18 @@ static inline bool recomputeLiveIns(MachineBasicBlock &MBB) {
 /// Convenience function for recomputing live-in's for a set of MBBs until the
 /// computation converges.
 inline void fullyRecomputeLiveIns(ArrayRef<MachineBasicBlock *> MBBs) {
-  bool Change = false;
-  do {
-    Change = false;
-    for (MachineBasicBlock *MBB : MBBs)
-      Change |= recomputeLiveIns(*MBB);
-  } while (Change);
+  MachineBasicBlock *const *Data = MBBs.data();
+  const size_t Len = MBBs.size();
+  while (true) {
+    bool AnyChange = false;
+    for (size_t I = 0; I < Len; ++I)
+      if (recomputeLiveIns(*Data[I]))
+        AnyChange = true;
+    if (!AnyChange)
+      return;
+  }
 }
+
 
 } // end namespace llvm
 

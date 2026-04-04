@@ -50,9 +50,6 @@ class APINotesWriter::Implementation {
   /// Indexed by context ID, provides the parent context ID.
   llvm::DenseMap<uint32_t, uint32_t> ParentContexts;
 
-  /// Mapping from context IDs to the kind of context.
-  llvm::DenseMap<unsigned, uint8_t> ContextKinds;
-
   /// Mapping from context IDs to the identifier ID holding the name.
   llvm::DenseMap<unsigned, unsigned> ContextNames;
 
@@ -1464,7 +1461,6 @@ ContextID APINotesWriter::addContext(std::optional<ContextID> ParentCtxID,
 
     Implementation->ContextNames[NextID] = NameID;
     Implementation->ParentContexts[NextID] = RawParentCtxID;
-    Implementation->ContextKinds[NextID] = static_cast<uint8_t>(Kind);
   }
 
   // Add this version information.
@@ -1509,7 +1505,7 @@ void APINotesWriter::addObjCMethod(ContextID CtxID, ObjCSelectorRef Selector,
     assert(Implementation->ParentContexts.contains(CtxID.Value));
     uint32_t ParentCtxID = Implementation->ParentContexts[CtxID.Value];
     ContextTableKey CtxKey(ParentCtxID,
-                           Implementation->ContextKinds[CtxID.Value],
+                           static_cast<uint8_t>(ContextKind::ObjCClass),
                            Implementation->ContextNames[CtxID.Value]);
     assert(Implementation->Contexts.contains(CtxKey));
     auto &VersionedVec = Implementation->Contexts[CtxKey].second;

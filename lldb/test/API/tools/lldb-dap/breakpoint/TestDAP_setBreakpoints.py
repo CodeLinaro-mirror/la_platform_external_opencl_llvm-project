@@ -12,8 +12,6 @@ import os
 
 
 class TestDAP_setBreakpoints(lldbdap_testcase.DAPTestCaseBase):
-    SHARED_BUILD_TESTCASE = False
-
     def setUp(self):
         lldbdap_testcase.DAPTestCaseBase.setUp(self)
 

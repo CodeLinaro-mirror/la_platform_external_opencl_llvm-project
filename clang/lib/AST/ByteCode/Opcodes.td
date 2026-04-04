@@ -178,9 +178,6 @@ def Jt : JumpOpcode;
 // [Bool] -> [], jumps if false.
 def Jf : JumpOpcode;
 
-def PushIgnoreDiags : Opcode;
-def PopIgnoreDiags : Opcode;
-
 def StartSpeculation : Opcode;
 def EndSpeculation : Opcode;
 def BCP : Opcode {
@@ -335,13 +332,9 @@ def GetPtrThisField : OffsetOpcode;
 def GetPtrBase : OffsetOpcode;
 // [Pointer] -> [Pointer]
 def GetPtrBasePop : OffsetOpcode { let Args = [ArgUint32, ArgBool]; }
-def CastMemberPtrBasePop : Opcode {
+def GetMemberPtrBasePop : Opcode {
   // Offset of field, which is a base.
-  let Args = [ArgSint32, ArgRecordDecl];
-}
-def CastMemberPtrDerivedPop : Opcode {
-  // Offset of field, which is a base.
-  let Args = [ArgSint32, ArgRecordDecl];
+  let Args = [ArgSint32];
 }
 
 def FinishInitPop : Opcode;
@@ -884,13 +877,13 @@ def Alloc : Opcode {
 }
 
 def AllocN : Opcode {
-  let Types = [IntegralTypeClass];
+  let Types = [IntegerTypeClass];
   let Args = [ArgPrimType, ArgExpr, ArgBool];
   let HasGroup = 1;
 }
 
 def AllocCN : Opcode {
-  let Types = [IntegralTypeClass];
+  let Types = [IntegerTypeClass];
   let Args = [ArgDesc, ArgBool];
   let HasGroup = 1;
 }

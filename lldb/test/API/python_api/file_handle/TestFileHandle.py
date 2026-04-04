@@ -684,13 +684,7 @@ class FileHandleTestCase(lldbtest.TestBase):
         """Ensure when we read stdin from a file, outputs from python goes to the right I/O stream."""
         with open(self.in_filename, "w") as f:
             f.write(
-                """script --language python --
-import sys
-variable = 250 + 5
-print(variable)
-print("wrote to", "stderr", file=sys.stderr)
-quit
-"""
+                "script --language python --\nvalue = 250 + 5\nprint(value)\nprint(vel)"
             )
 
         with open(self.out_filename, "w") as outf, open(
@@ -718,7 +712,7 @@ quit
             )
             self.dbg.GetOutputFile().Flush()
         expected_out_text = "255"
-        expected_err_text = "wrote to stderr"
+        expected_err_text = "NameError"
         # check stdout
         with open(self.out_filename, "r") as f:
             out_text = f.read()

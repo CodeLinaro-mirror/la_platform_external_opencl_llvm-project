@@ -477,12 +477,10 @@ struct CodeCompletionBuilder {
     BundledEntry &S = Bundled.back();
     bool IsConcept = false;
     if (C.SemaResult) {
-      getSignature(
-          *SemaCCS, &S.Signature, &S.SnippetSuffix, C.SemaResult->Kind,
-          C.SemaResult->CursorKind,
-          /*IncludeFunctionArguments=*/C.SemaResult->FunctionCanBeCall ||
-              C.SemaResult->DeclaringEntity,
-          /*RequiredQualifiers=*/&Completion.RequiredQualifier);
+      getSignature(*SemaCCS, &S.Signature, &S.SnippetSuffix, C.SemaResult->Kind,
+                   C.SemaResult->CursorKind,
+                   /*IncludeFunctionArguments=*/C.SemaResult->FunctionCanBeCall,
+                   /*RequiredQualifiers=*/&Completion.RequiredQualifier);
       S.ReturnType = getReturnType(*SemaCCS);
       if (C.SemaResult->Kind == CodeCompletionResult::RK_Declaration)
         if (const auto *D = C.SemaResult->getDeclaration())
@@ -592,12 +590,10 @@ private:
     if (Snippet->empty())
       return "";
 
-    bool MayHaveArgList =
-        Completion.Kind == CompletionItemKind::Function ||
-        Completion.Kind == CompletionItemKind::Method ||
-        Completion.Kind == CompletionItemKind::Constructor ||
-        Completion.Kind == CompletionItemKind::Text /*Macro*/ ||
-        Completion.Kind == CompletionItemKind::Variable /*Lambda*/;
+    bool MayHaveArgList = Completion.Kind == CompletionItemKind::Function ||
+                          Completion.Kind == CompletionItemKind::Method ||
+                          Completion.Kind == CompletionItemKind::Constructor ||
+                          Completion.Kind == CompletionItemKind::Text /*Macro*/;
     // If likely arg list already exists, don't add new parens & placeholders.
     //   Snippet: function(int x, int y)
     //   func^(1,2) -> function(1, 2)
@@ -632,7 +628,7 @@ private:
       return *Snippet;
 
     // Replace argument snippets with a simplified pattern.
-    if (MayHaveArgList && llvm::StringRef(*Snippet).contains("(")) {
+    if (MayHaveArgList) {
       // Functions snippets can be of 2 types:
       // - containing only function arguments, e.g.
       //   foo(${1:int p1}, ${2:int p2});

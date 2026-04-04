@@ -519,17 +519,8 @@ uptr SizeClassAllocator32<Config>::releaseToOS(ReleaseToOS ReleaseType) {
     if (I == SizeClassMap::BatchClassId)
       continue;
     SizeClassInfo *Sci = getSizeClassInfo(I);
-    if (ReleaseType == ReleaseToOS::ForceFast) {
-      // Never wait for the lock, always move on if there is already
-      // a release operation in progress.
-      if (Sci->Mutex.tryLock()) {
-        TotalReleasedBytes += releaseToOSMaybe(Sci, I, ReleaseType);
-        Sci->Mutex.unlock();
-      }
-    } else {
-      ScopedLock L(Sci->Mutex);
-      TotalReleasedBytes += releaseToOSMaybe(Sci, I, ReleaseType);
-    }
+    ScopedLock L(Sci->Mutex);
+    TotalReleasedBytes += releaseToOSMaybe(Sci, I, ReleaseType);
   }
   return TotalReleasedBytes;
 }

@@ -50,7 +50,6 @@ enum class Operation : int {
   Log,
   Log2,
   Log10,
-  Log10p1,
   Log1p,
   Mod2PI,
   ModPIOver2,

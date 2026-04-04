@@ -417,7 +417,7 @@ SymbolKind adjustKindToCapability(SymbolKind Kind,
 // Note, some are not perfect matches and should be improved when this LSP
 // issue is addressed:
 // https://github.com/Microsoft/language-server-protocol/issues/344
-SymbolKind indexSymbolKindToSymbolKind(const index::SymbolInfo &Info);
+SymbolKind indexSymbolKindToSymbolKind(index::SymbolKind Kind);
 
 // Determines the encoding used to measure offsets and lengths of source in LSP.
 enum class OffsetEncoding {

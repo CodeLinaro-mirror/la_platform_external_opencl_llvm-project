@@ -156,22 +156,12 @@ add_header_library(
     ctype_utils.h
 )
 
-list(APPEND wctype_utils_deps
-  libc.hdr.types.wchar_t
-)
-
-if ("${LIBC_CONF_WCTYPE_MODE}" STREQUAL "LIBC_WCTYPE_MODE_UTF8")
-  list(APPEND wctype_utils_deps
-      libc.src.__support.wctype.wctype_classification_utils
-  )
-endif()
-
 add_header_library(
   wctype_utils
   HDRS
     wctype_utils.h
   DEPENDS
-    ${wctype_utils_deps}
+    libc.hdr.types.wchar_t
 )
 
 add_header_library(
@@ -351,15 +341,6 @@ add_header_library(
 )
 
 add_header_library(
-  frac128
-  HDRS
-    frac128.h
-  DEPENDS
-    .big_int
-    libc.src.__support.macros.config
-)
-
-add_header_library(
   uint128
   HDRS
     uint128.h
@@ -451,6 +432,3 @@ if(NOT (LIBC_TARGET_OS_IS_DARWIN))
 endif()
 
 add_subdirectory(math)
-if(LIBC_COMPILER_HAS_EXT_VECTOR_TYPE)
-  add_subdirectory(mathvec)
-endif()

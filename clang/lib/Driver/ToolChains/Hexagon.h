@@ -13,9 +13,6 @@
 #include "clang/Driver/Tool.h"
 #include "clang/Driver/ToolChain.h"
 
-#include <optional>
-#include <string>
-
 namespace clang {
 namespace driver {
 namespace tools {
@@ -113,8 +110,6 @@ public:
 
   static std::optional<unsigned>
   getSmallDataThreshold(const llvm::opt::ArgList &Args);
-  static std::optional<std::string>
-  GetHVXVersion(const llvm::opt::ArgList &Args);
 };
 
 } // end namespace toolchains

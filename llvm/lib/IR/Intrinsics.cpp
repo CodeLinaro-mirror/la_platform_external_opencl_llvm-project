@@ -40,6 +40,7 @@ using namespace llvm;
 /// Table of string intrinsic names indexed by enum value.
 #define GET_INTRINSIC_NAME_TABLE
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_NAME_TABLE
 
 StringRef Intrinsic::getBaseName(ID id) {
   assert(id < num_intrinsics && "Invalid intrinsic ID!");
@@ -146,9 +147,6 @@ static std::string getMangledTypeStr(Type *Ty, bool &HasUnnamedType) {
     case Type::IntegerTyID:
       Result += "i" + utostr(cast<IntegerType>(Ty)->getBitWidth());
       break;
-    case Type::ByteTyID:
-      Result += "b" + utostr(cast<ByteType>(Ty)->getBitWidth());
-      break;
     }
   }
   return Result;
@@ -198,6 +196,7 @@ std::string Intrinsic::getNameNoUnnamedTypes(ID Id, ArrayRef<Type *> Tys) {
 enum IIT_Info {
 #define GET_INTRINSIC_IITINFO
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_IITINFO
 };
 
 static void
@@ -435,43 +434,34 @@ DecodeIITType(unsigned &NextElt, ArrayRef<unsigned char> Infos,
 
 #define GET_INTRINSIC_GENERATOR_GLOBAL
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_GENERATOR_GLOBAL
 
 void Intrinsic::getIntrinsicInfoTableEntries(
     ID id, SmallVectorImpl<IITDescriptor> &T) {
-  // Note that `FixedEncodingTy` is defined in IntrinsicImpl.inc and can be
-  // uint16_t or uint32_t based on the the value of `Use16BitFixedEncoding` in
-  // IntrinsicEmitter.cpp.
-  constexpr unsigned FixedEncodingBits = sizeof(FixedEncodingTy) * CHAR_BIT;
-  constexpr unsigned MSBPosition = FixedEncodingBits - 1;
-  // Mask with all bits 1 except the most significant bit.
-  constexpr unsigned Mask = (1U << MSBPosition) - 1;
+  static_assert(sizeof(IIT_Table[0]) == 2,
+                "Expect 16-bit entries in IIT_Table");
+  // Check to see if the intrinsic's type was expressible by the table.
+  uint16_t TableVal = IIT_Table[id - 1];
 
-  FixedEncodingTy TableVal = IIT_Table[id - 1];
-
-  // Array to hold the inlined fixed encoding values expanded from nibbles to
-  // bytes. Its size can be be atmost FixedEncodingBits / 4 i.e., number
-  // of nibbles that can fit in `FixedEncodingTy`.
-  unsigned char IITValues[FixedEncodingBits / 4];
-
+  // Decode the TableVal into an array of IITValues.
+  SmallVector<unsigned char> IITValues;
   ArrayRef<unsigned char> IITEntries;
   unsigned NextElt = 0;
-  // Check to see if the intrinsic's type was inlined in the fixed encoding
-  // table.
-  if (TableVal >> MSBPosition) {
+  if (TableVal >> 15) {
     // This is an offset into the IIT_LongEncodingTable.
     IITEntries = IIT_LongEncodingTable;
 
     // Strip sentinel bit.
-    NextElt = TableVal & Mask;
+    NextElt = TableVal & 0x7fff;
   } else {
     // If the entry was encoded into a single word in the table itself, decode
     // it from an array of nibbles to an array of bytes.
     do {
-      IITValues[NextElt++] = TableVal & 0xF;
+      IITValues.push_back(TableVal & 0xF);
       TableVal >>= 4;
     } while (TableVal);
 
-    IITEntries = ArrayRef(IITValues).take_front(NextElt);
+    IITEntries = IITValues;
     NextElt = 0;
   }
 
@@ -609,16 +599,19 @@ FunctionType *Intrinsic::getType(LLVMContext &Context, ID id,
 bool Intrinsic::isOverloaded(ID id) {
 #define GET_INTRINSIC_OVERLOAD_TABLE
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_OVERLOAD_TABLE
 }
 
 bool Intrinsic::hasPrettyPrintedArgs(ID id){
 #define GET_INTRINSIC_PRETTY_PRINT_TABLE
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_PRETTY_PRINT_TABLE
 }
 
 /// Table of per-target intrinsic name tables.
 #define GET_INTRINSIC_TARGET_DATA
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_TARGET_DATA
 
 bool Intrinsic::isTargetIntrinsic(Intrinsic::ID IID) {
   return IID > TargetInfos[0].Count;
@@ -732,6 +725,7 @@ Intrinsic::ID Intrinsic::lookupIntrinsicID(StringRef Name) {
 /// This defines the "Intrinsic::getAttributes(ID id)" method.
 #define GET_INTRINSIC_ATTRIBUTES
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_ATTRIBUTES
 
 static Function *getOrInsertIntrinsicDeclarationImpl(Module *M,
                                                      Intrinsic::ID id,
@@ -808,10 +802,12 @@ Function *Intrinsic::getDeclarationIfExists(Module *M, ID id,
 // This defines the "Intrinsic::getIntrinsicForClangBuiltin()" method.
 #define GET_LLVM_INTRINSIC_FOR_CLANG_BUILTIN
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_LLVM_INTRINSIC_FOR_CLANG_BUILTIN
 
 // This defines the "Intrinsic::getIntrinsicForMSBuiltin()" method.
 #define GET_LLVM_INTRINSIC_FOR_MS_BUILTIN
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_LLVM_INTRINSIC_FOR_MS_BUILTIN
 
 bool Intrinsic::isConstrainedFPIntrinsic(ID QID) {
   switch (QID) {
@@ -978,18 +974,14 @@ matchIntrinsicType(Type *Ty, ArrayRef<Intrinsic::IITDescriptor> &Infos,
 
     return Ty != NewTy;
   }
-  case IITDescriptor::OneNthEltsVecArgument: {
+  case IITDescriptor::OneNthEltsVecArgument:
     // If this is a forward reference, defer the check for later.
     if (D.getRefArgNumber() >= ArgTys.size())
       return IsDeferredCheck || DeferCheck(Ty);
-    auto *VTy = dyn_cast<VectorType>(ArgTys[D.getRefArgNumber()]);
-    if (!VTy)
-      return true;
-    if (!VTy->getElementCount().isKnownMultipleOf(D.getVectorDivisor()))
-      return true;
-    return VectorType::getOneNthElementsVectorType(VTy, D.getVectorDivisor()) !=
-           Ty;
-  }
+    return !isa<VectorType>(ArgTys[D.getRefArgNumber()]) ||
+           VectorType::getOneNthElementsVectorType(
+               cast<VectorType>(ArgTys[D.getRefArgNumber()]),
+               D.getVectorDivisor()) != Ty;
   case IITDescriptor::SameVecWidthArgument: {
     if (D.getArgumentNumber() >= ArgTys.size()) {
       // Defer check and subsequent check for the vector element type.
@@ -1198,3 +1190,4 @@ Intrinsic::ID Intrinsic::getDeinterleaveIntrinsicID(unsigned Factor) {
 
 #define GET_INTRINSIC_PRETTY_PRINT_ARGUMENTS
 #include "llvm/IR/IntrinsicImpl.inc"
+#undef GET_INTRINSIC_PRETTY_PRINT_ARGUMENTS

@@ -9,7 +9,6 @@
 #include "mlir/Dialect/Quant/IR/QuantTypes.h"
 #include "TypeDetail.h"
 #include "mlir/Dialect/Quant/IR/Quant.h"
-#include "mlir/IR/QuantStorageTypeInterface.h"
 
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/MLIRContext.h"
@@ -47,28 +46,32 @@ QuantizedType::verifyInvariants(function_ref<InFlightDiagnostic()> emitError,
                                 unsigned flags, Type storageType,
                                 Type expressedType, int64_t storageTypeMin,
                                 int64_t storageTypeMax) {
-  if (auto quantStorageTypeInterface =
-          llvm::dyn_cast<QuantStorageTypeInterface>(storageType)) {
-    unsigned integralWidth = quantStorageTypeInterface.getStorageWidth();
+  // Verify that the storage type is integral.
+  // This restriction may be lifted at some point in favor of using bf16
+  // or f16 as exact representations on hardware where that is advantageous.
+  auto intStorageType = llvm::dyn_cast<IntegerType>(storageType);
+  if (!intStorageType)
+    return emitError() << "storage type must be integral";
+  unsigned integralWidth = intStorageType.getWidth();
 
-    // Verify storage width.
-    if (integralWidth == 0 || integralWidth > MaxStorageBits)
-      return emitError() << "illegal storage type size: " << integralWidth;
+  // Verify storage width.
+  if (integralWidth == 0 || integralWidth > MaxStorageBits)
+    return emitError() << "illegal storage type size: " << integralWidth;
 
-    bool isSigned = flags & QuantizationFlags::Signed;
-    int64_t defaultMin = quantStorageTypeInterface.getDefaultMinimum(isSigned);
-    int64_t defaultMax = quantStorageTypeInterface.getDefaultMaximum(isSigned);
-
-    if (storageTypeMax - storageTypeMin <= 0 || storageTypeMin < defaultMin ||
-        storageTypeMax > defaultMax) {
-      return emitError() << "illegal storage min and storage max: ("
-                         << storageTypeMin << ":" << storageTypeMax << ")";
-    }
-
-    return success();
+  // Verify storageTypeMin and storageTypeMax.
+  bool isSigned =
+      (flags & QuantizationFlags::Signed) == QuantizationFlags::Signed;
+  int64_t defaultIntegerMin =
+      getDefaultMinimumForInteger(isSigned, integralWidth);
+  int64_t defaultIntegerMax =
+      getDefaultMaximumForInteger(isSigned, integralWidth);
+  if (storageTypeMax - storageTypeMin <= 0 ||
+      storageTypeMin < defaultIntegerMin ||
+      storageTypeMax > defaultIntegerMax) {
+    return emitError() << "illegal storage min and storage max: ("
+                       << storageTypeMin << ":" << storageTypeMax << ")";
   }
-
-  return emitError() << "storage type must implement QuantStorageTypeInterface";
+  return success();
 }
 
 Type QuantizedType::getStorageType() const {
@@ -84,22 +87,20 @@ int64_t QuantizedType::getStorageTypeMax() const {
 }
 
 bool QuantizedType::hasStorageTypeBounds() const {
-  Type storageType = static_cast<ImplType *>(impl)->storageType;
-  auto quantStorageTypeInterface =
-      llvm::dyn_cast<QuantStorageTypeInterface>(storageType);
-
-  int64_t defaultMin = quantStorageTypeInterface.getDefaultMinimum(isSigned());
-  int64_t defaultMax = quantStorageTypeInterface.getDefaultMaximum(isSigned());
-
-  return defaultMin != getStorageTypeMin() || defaultMax != getStorageTypeMax();
+  unsigned int integralWidth = getStorageTypeIntegralWidth();
+  bool isSignedInteger = isSigned();
+  int64_t defaultIntegerMin =
+      getDefaultMinimumForInteger(isSignedInteger, integralWidth);
+  int64_t defaultIntegerMax =
+      getDefaultMaximumForInteger(isSignedInteger, integralWidth);
+  return defaultIntegerMin != getStorageTypeMin() ||
+         defaultIntegerMax != getStorageTypeMax();
 }
 
 unsigned QuantizedType::getStorageTypeIntegralWidth() const {
-  Type storageType = static_cast<ImplType *>(impl)->storageType;
-  auto quantStorageTypeInterface =
-      llvm::dyn_cast<QuantStorageTypeInterface>(storageType);
-
-  return quantStorageTypeInterface.getStorageWidth();
+  // NOTE: If ever supporting non-integral storage types, some other scheme
+  // for determining the width will be needed.
+  return static_cast<ImplType *>(impl)->storageType.getIntOrFloatBitWidth();
 }
 
 Type QuantizedType::getExpressedType() const {

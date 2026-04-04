@@ -132,10 +132,12 @@ LLVM_ABI Register constrainOperandRegClass(
 /// generic) virtual register operands to the instruction's register class.
 /// This could involve inserting COPYs before (for uses) or after (for defs).
 /// This requires the number of operands to match the instruction description.
+/// \returns whether operand regclass constraining succeeded.
+///
 // FIXME: Not all instructions have the same number of operands. We should
 // probably expose a constrain helper per operand and let the target selector
 // constrain individual registers, like fast-isel.
-LLVM_ABI void constrainSelectedInstRegOperands(MachineInstr &I,
+LLVM_ABI bool constrainSelectedInstRegOperands(MachineInstr &I,
                                                const TargetInstrInfo &TII,
                                                const TargetRegisterInfo &TRI,
                                                const RegisterBankInfo &RBI);

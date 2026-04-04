@@ -27,10 +27,12 @@
 
 #include "Plugins/ObjectFile/Placeholder/ObjectFilePlaceholder.h"
 
-using namespace lldb;
-using namespace lldb_private;
+#include <mutex>
 
 LLDB_PLUGIN_DEFINE(ScriptedProcess)
+
+using namespace lldb;
+using namespace lldb_private;
 
 llvm::StringRef ScriptedProcess::GetPluginDescriptionStatic() {
   return "Scripted Process plug-in.";
@@ -144,8 +146,12 @@ ScriptedProcess::~ScriptedProcess() {
 }
 
 void ScriptedProcess::Initialize() {
-  PluginManager::RegisterPlugin(GetPluginNameStatic(),
-                                GetPluginDescriptionStatic(), CreateInstance);
+  static llvm::once_flag g_once_flag;
+
+  llvm::call_once(g_once_flag, []() {
+    PluginManager::RegisterPlugin(GetPluginNameStatic(),
+                                  GetPluginDescriptionStatic(), CreateInstance);
+  });
 }
 
 void ScriptedProcess::Terminate() {

@@ -13,7 +13,6 @@
 #include "AMDGPUTargetStreamer.h"
 #include "AMDGPUMCExpr.h"
 #include "AMDGPUMCKernelDescriptor.h"
-#include "AMDGPUMCTargetDesc.h"
 #include "AMDGPUPTNote.h"
 #include "Utils/AMDGPUBaseInfo.h"
 #include "Utils/AMDKernelCodeTUtils.h"
@@ -115,7 +114,6 @@ StringRef AMDGPUTargetStreamer::getArchNameFromElfMach(unsigned ElfMach) {
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1151: AK = GK_GFX1151; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1152: AK = GK_GFX1152; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1153: AK = GK_GFX1153; break;
-  case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1170: AK = GK_GFX1170; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1200: AK = GK_GFX1200; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1201: AK = GK_GFX1201; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX1250: AK = GK_GFX1250; break;
@@ -127,7 +125,6 @@ StringRef AMDGPUTargetStreamer::getArchNameFromElfMach(unsigned ElfMach) {
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX10_3_GENERIC:  AK = GK_GFX10_3_GENERIC; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX11_GENERIC:    AK = GK_GFX11_GENERIC; break;
   case ELF::EF_AMDGPU_MACH_AMDGCN_GFX12_GENERIC:    AK = GK_GFX12_GENERIC; break;
-  case ELF::EF_AMDGPU_MACH_AMDGCN_GFX12_5_GENERIC:  AK = GK_GFX12_5_GENERIC; break;
   case ELF::EF_AMDGPU_MACH_NONE:           AK = GK_NONE;    break;
   default:                                 AK = GK_NONE;    break;
   }
@@ -205,7 +202,6 @@ unsigned AMDGPUTargetStreamer::getElfMach(StringRef GPU) {
   case GK_GFX1151: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1151;
   case GK_GFX1152: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1152;
   case GK_GFX1153: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1153;
-  case GK_GFX1170: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1170;
   case GK_GFX1200: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1200;
   case GK_GFX1201: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1201;
   case GK_GFX1250: return ELF::EF_AMDGPU_MACH_AMDGCN_GFX1250;
@@ -217,7 +213,6 @@ unsigned AMDGPUTargetStreamer::getElfMach(StringRef GPU) {
   case GK_GFX10_3_GENERIC:  return ELF::EF_AMDGPU_MACH_AMDGCN_GFX10_3_GENERIC;
   case GK_GFX11_GENERIC:    return ELF::EF_AMDGPU_MACH_AMDGCN_GFX11_GENERIC;
   case GK_GFX12_GENERIC:    return ELF::EF_AMDGPU_MACH_AMDGCN_GFX12_GENERIC;
-  case GK_GFX12_5_GENERIC:  return ELF::EF_AMDGPU_MACH_AMDGCN_GFX12_5_GENERIC;
   case GK_NONE:    return ELF::EF_AMDGPU_MACH_NONE;
   }
   // clang-format on
@@ -247,7 +242,7 @@ void AMDGPUTargetAsmStreamer::finish() {
 }
 
 void AMDGPUTargetAsmStreamer::EmitDirectiveAMDGCNTarget() {
-  OS << "\t.amdgcn_target \"" << *getTargetID() << "\"\n";
+  OS << "\t.amdgcn_target \"" << getTargetID()->toString() << "\"\n";
 }
 
 void AMDGPUTargetAsmStreamer::EmitDirectiveAMDHSACodeObjectVersion(
@@ -327,7 +322,7 @@ void AMDGPUTargetAsmStreamer::EmitMCResourceMaximums(
 }
 
 bool AMDGPUTargetAsmStreamer::EmitISAVersion() {
-  OS << "\t.amd_amdgpu_isa \"" << getTargetID() << "\"\n";
+  OS << "\t.amd_amdgpu_isa \"" << getTargetID()->toString() << "\"\n";
   return true;
 }
 
@@ -562,7 +557,7 @@ void AMDGPUTargetAsmStreamer::EmitAmdhsaKernelDescriptor(
              amdhsa::COMPUTE_PGM_RSRC1_FLOAT_DENORM_MODE_16_64_SHIFT,
              amdhsa::COMPUTE_PGM_RSRC1_FLOAT_DENORM_MODE_16_64,
              ".amdhsa_float_denorm_mode_16_64");
-  if (STI.hasFeature(AMDGPU::FeatureDX10ClampAndIEEEMode)) {
+  if (IVersion.Major < 12) {
     PrintField(KD.compute_pgm_rsrc1,
                amdhsa::COMPUTE_PGM_RSRC1_GFX6_GFX11_ENABLE_DX10_CLAMP_SHIFT,
                amdhsa::COMPUTE_PGM_RSRC1_GFX6_GFX11_ENABLE_DX10_CLAMP,
@@ -864,9 +859,6 @@ unsigned AMDGPUTargetELFStreamer::getEFlagsV6() {
     case AMDGPU::GK_GFX12_GENERIC:
       Version = GenericVersion::GFX12;
       break;
-    case AMDGPU::GK_GFX12_5_GENERIC:
-      Version = GenericVersion::GFX12_5;
-      break;
     default:
       break;
     }
@@ -930,12 +922,7 @@ bool AMDGPUTargetELFStreamer::EmitISAVersion() {
   EmitNote(ElfNote::NoteNameV2, DescSZ, ELF::NT_AMD_HSA_ISA_NAME,
            [&](MCELFStreamer &OS) {
              OS.emitLabel(DescBegin);
-
-             SmallString<32> Str;
-             raw_svector_ostream StrOS(Str);
-             StrOS << *getTargetID();
-
-             OS.emitBytes(StrOS.str());
+             OS.emitBytes(getTargetID()->toString());
              OS.emitLabel(DescEnd);
            });
   return true;

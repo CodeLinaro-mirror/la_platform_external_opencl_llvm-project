@@ -258,24 +258,15 @@ int IRTranslator::getOrCreateFrameIndex(const AllocaInst &AI) {
   if (!Inserted)
     return MapEntry->second;
 
-  TypeSize TySize = AI.getAllocationSize(*DL).value_or(TypeSize::getZero());
-  uint64_t Size = TySize.getKnownMinValue();
+  uint64_t ElementSize = DL->getTypeAllocSize(AI.getAllocatedType());
+  uint64_t Size =
+      ElementSize * cast<ConstantInt>(AI.getArraySize())->getZExtValue();
 
   // Always allocate at least one byte.
   Size = std::max<uint64_t>(Size, 1u);
 
   int &FI = MapEntry->second;
   FI = MF->getFrameInfo().CreateStackObject(Size, AI.getAlign(), false, &AI);
-
-  // Scalable vectors and structures that contain scalable vectors may
-  // need a special StackID to distinguish them from other (fixed size)
-  // stack objects.
-  if (TySize.isScalable()) {
-    auto StackID =
-        MF->getSubtarget().getFrameLowering()->getStackIDForScalableVectors();
-    MF->getFrameInfo().setStackID(FI, StackID);
-  }
-
   return FI;
 }
 
@@ -603,27 +594,22 @@ bool IRTranslator::shouldEmitAsBranches(
   return true;
 }
 
-bool IRTranslator::translateUncondBr(const User &U,
-                                     MachineIRBuilder &MIRBuilder) {
-  const UncondBrInst &BrInst = cast<UncondBrInst>(U);
+bool IRTranslator::translateBr(const User &U, MachineIRBuilder &MIRBuilder) {
+  const BranchInst &BrInst = cast<BranchInst>(U);
   auto &CurMBB = MIRBuilder.getMBB();
   auto *Succ0MBB = &getMBB(*BrInst.getSuccessor(0));
 
-  // If the unconditional target is the layout successor, fallthrough.
-  if (OptLevel == CodeGenOptLevel::None || !CurMBB.isLayoutSuccessor(Succ0MBB))
-    MIRBuilder.buildBr(*Succ0MBB);
+  if (BrInst.isUnconditional()) {
+    // If the unconditional target is the layout successor, fallthrough.
+    if (OptLevel == CodeGenOptLevel::None ||
+        !CurMBB.isLayoutSuccessor(Succ0MBB))
+      MIRBuilder.buildBr(*Succ0MBB);
 
-  // Link successors.
-  for (const BasicBlock *Succ : successors(&BrInst))
-    CurMBB.addSuccessor(&getMBB(*Succ));
-  return true;
-}
-
-bool IRTranslator::translateCondBr(const User &U,
-                                   MachineIRBuilder &MIRBuilder) {
-  const CondBrInst &BrInst = cast<CondBrInst>(U);
-  auto &CurMBB = MIRBuilder.getMBB();
-  auto *Succ0MBB = &getMBB(*BrInst.getSuccessor(0));
+    // Link successors.
+    for (const BasicBlock *Succ : successors(&BrInst))
+      CurMBB.addSuccessor(&getMBB(*Succ));
+    return true;
+  }
 
   // If this condition is one of the special cases we handle, do special stuff
   // now.
@@ -2834,16 +2820,20 @@ bool IRTranslator::translateCall(const User &U, MachineIRBuilder &MIRBuilder) {
   if (translateKnownIntrinsic(CI, ID, MIRBuilder))
     return true;
 
-  SmallVector<TargetLowering::IntrinsicInfo> Infos;
-  TLI->getTgtMemIntrinsic(Infos, CI, *MF, ID);
+  TargetLowering::IntrinsicInfo Info;
+  bool IsTgtMemIntrinsic = TLI->getTgtMemIntrinsic(Info, CI, *MF, ID);
 
-  return translateIntrinsic(CI, ID, MIRBuilder, Infos);
+  return translateIntrinsic(CI, ID, MIRBuilder,
+                            IsTgtMemIntrinsic ? &Info : nullptr);
 }
 
 /// Translate a call or callbr to an intrinsic.
+/// Depending on whether TLI->getTgtMemIntrinsic() is true, TgtMemIntrinsicInfo
+/// is a pointer to the correspondingly populated IntrinsicInfo object.
+/// Otherwise, this pointer is null.
 bool IRTranslator::translateIntrinsic(
     const CallBase &CB, Intrinsic::ID ID, MachineIRBuilder &MIRBuilder,
-    ArrayRef<TargetLowering::IntrinsicInfo> TgtMemIntrinsicInfos) {
+    const TargetLowering::IntrinsicInfo *TgtMemIntrinsicInfo) {
   ArrayRef<Register> ResultRegs;
   if (!CB.getType()->isVoidTy())
     ResultRegs = getOrCreateVRegs(CB);
@@ -2885,25 +2875,30 @@ bool IRTranslator::translateIntrinsic(
     }
   }
 
-  // Add MachineMemOperands for each memory access described by the target.
-  for (const auto &Info : TgtMemIntrinsicInfos) {
-    Align Alignment = Info.align.value_or(
-        DL->getABITypeAlign(Info.memVT.getTypeForEVT(CB.getContext())));
-    LLT MemTy = Info.memVT.isSimple()
-                    ? getLLTForMVT(Info.memVT.getSimpleVT())
-                    : LLT::scalar(Info.memVT.getStoreSizeInBits());
+  // Add a MachineMemOperand if it is a target mem intrinsic.
+  if (TgtMemIntrinsicInfo) {
+    const Function *F = CB.getCalledFunction();
 
-    // TODO: We currently just fallback to address space 0 if
-    // getTgtMemIntrinsic didn't yield anything useful.
+    Align Alignment = TgtMemIntrinsicInfo->align.value_or(DL->getABITypeAlign(
+        TgtMemIntrinsicInfo->memVT.getTypeForEVT(F->getContext())));
+    LLT MemTy =
+        TgtMemIntrinsicInfo->memVT.isSimple()
+            ? getLLTForMVT(TgtMemIntrinsicInfo->memVT.getSimpleVT())
+            : LLT::scalar(TgtMemIntrinsicInfo->memVT.getStoreSizeInBits());
+
+    // TODO: We currently just fallback to address space 0 if getTgtMemIntrinsic
+    //       didn't yield anything useful.
     MachinePointerInfo MPI;
-    if (Info.ptrVal) {
-      MPI = MachinePointerInfo(Info.ptrVal, Info.offset);
-    } else if (Info.fallbackAddressSpace) {
-      MPI = MachinePointerInfo(*Info.fallbackAddressSpace);
+    if (TgtMemIntrinsicInfo->ptrVal) {
+      MPI = MachinePointerInfo(TgtMemIntrinsicInfo->ptrVal,
+                               TgtMemIntrinsicInfo->offset);
+    } else if (TgtMemIntrinsicInfo->fallbackAddressSpace) {
+      MPI = MachinePointerInfo(*TgtMemIntrinsicInfo->fallbackAddressSpace);
     }
     MIB.addMemOperand(MF->getMachineMemOperand(
-        MPI, Info.flags, MemTy, Alignment, CB.getAAMetadata(),
-        /*Ranges=*/nullptr, Info.ssid, Info.order, Info.failureOrder));
+        MPI, TgtMemIntrinsicInfo->flags, MemTy, Alignment, CB.getAAMetadata(),
+        /*Ranges=*/nullptr, TgtMemIntrinsicInfo->ssid,
+        TgtMemIntrinsicInfo->order, TgtMemIntrinsicInfo->failureOrder));
   }
 
   if (CB.isConvergent()) {
@@ -3203,20 +3198,11 @@ bool IRTranslator::translateAlloca(const User &U,
   }
 
   Type *Ty = AI.getAllocatedType();
-  TypeSize TySize = DL->getTypeAllocSize(Ty);
 
   Register AllocSize = MRI->createGenericVirtualRegister(IntPtrTy);
-  Register TySizeReg;
-  if (TySize.isScalable()) {
-    // For scalable types, use vscale * min_value
-    TySizeReg = MRI->createGenericVirtualRegister(IntPtrTy);
-    MIRBuilder.buildVScale(TySizeReg, TySize.getKnownMinValue());
-  } else {
-    // For fixed types, use a constant
-    TySizeReg =
-        getOrCreateVReg(*ConstantInt::get(IntPtrIRTy, TySize.getFixedValue()));
-  }
-  MIRBuilder.buildMul(AllocSize, NumElts, TySizeReg);
+  Register TySize =
+      getOrCreateVReg(*ConstantInt::get(IntPtrIRTy, DL->getTypeAllocSize(Ty)));
+  MIRBuilder.buildMul(AllocSize, NumElts, TySize);
 
   // Round the size of the allocation up to the stack alignment size
   // by add SA-1 to the size. This doesn't overflow because we're computing
@@ -3229,7 +3215,7 @@ bool IRTranslator::translateAlloca(const User &U,
       MIRBuilder.buildConstant(IntPtrTy, ~(uint64_t)(StackAlign.value() - 1));
   auto AlignedAlloc = MIRBuilder.buildAnd(IntPtrTy, AllocAdd, AlignCst);
 
-  Align Alignment = AI.getAlign();
+  Align Alignment = std::max(AI.getAlign(), DL->getPrefTypeAlign(Ty));
   if (Alignment <= StackAlign)
     Alignment = Align(1);
   MIRBuilder.buildDynStackAlloc(getOrCreateVReg(AI), AlignedAlloc, Alignment);
@@ -3597,12 +3583,6 @@ bool IRTranslator::translateAtomicRMW(const User &U,
     break;
   case AtomicRMWInst::FMinimum:
     Opcode = TargetOpcode::G_ATOMICRMW_FMINIMUM;
-    break;
-  case AtomicRMWInst::FMaximumNum:
-    Opcode = TargetOpcode::G_ATOMICRMW_FMAXIMUMNUM;
-    break;
-  case AtomicRMWInst::FMinimumNum:
-    Opcode = TargetOpcode::G_ATOMICRMW_FMINIMUMNUM;
     break;
   case AtomicRMWInst::UIncWrap:
     Opcode = TargetOpcode::G_ATOMICRMW_UINC_WRAP;
@@ -4151,25 +4131,11 @@ static bool checkForMustTailInVarArgFn(bool IsVarArg, const BasicBlock &BB) {
 bool IRTranslator::runOnMachineFunction(MachineFunction &CurMF) {
   MF = &CurMF;
   const Function &F = MF->getFunction();
-  ORE = std::make_unique<OptimizationRemarkEmitter>(&F);
-  CLI = MF->getSubtarget().getCallLowering();
-
-  if (CLI->fallBackToDAGISel(*MF)) {
-    OptimizationRemarkMissed R("gisel-irtranslator", "GISelFailure",
-                               F.getSubprogram(), &F.getEntryBlock());
-    R << "unable to lower function: "
-      << ore::NV("Prototype", F.getFunctionType());
-
-    reportTranslationError(*MF, *ORE, R);
-    return false;
-  }
-
   GISelCSEAnalysisWrapper &Wrapper =
       getAnalysis<GISelCSEAnalysisWrapperPass>().getCSEWrapper();
   // Set the CSEConfig and run the analysis.
   GISelCSEInfo *CSEInfo = nullptr;
   TPC = &getAnalysis<TargetPassConfig>();
-
   bool EnableCSE = EnableCSEInIRTranslator.getNumOccurrences()
                        ? EnableCSEInIRTranslator
                        : TPC->isGISelCSEEnabled();
@@ -4192,6 +4158,7 @@ bool IRTranslator::runOnMachineFunction(MachineFunction &CurMF) {
   EntryBuilder->setMF(*MF);
   MRI = &MF->getRegInfo();
   DL = &F.getDataLayout();
+  ORE = std::make_unique<OptimizationRemarkEmitter>(&F);
   const TargetMachine &TM = MF->getTarget();
   TM.resetTargetOptions(F);
   EnableOpts = OptLevel != CodeGenOptLevel::None && !skipFunction(F);
@@ -4268,6 +4235,15 @@ bool IRTranslator::runOnMachineFunction(MachineFunction &CurMF) {
 
   // Make our arguments/constants entry block fallthrough to the IR entry block.
   EntryBB->addSuccessor(&getMBB(F.front()));
+
+  if (CLI->fallBackToDAGISel(*MF)) {
+    OptimizationRemarkMissed R("gisel-irtranslator", "GISelFailure",
+                               F.getSubprogram(), &F.getEntryBlock());
+    R << "unable to lower function: "
+      << ore::NV("Prototype", F.getFunctionType());
+    reportTranslationError(*MF, *ORE, R);
+    return false;
+  }
 
   // Lower the actual args into this basic block.
   SmallVector<ArrayRef<Register>, 8> VRegArgs;

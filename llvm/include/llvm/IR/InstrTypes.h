@@ -951,15 +951,11 @@ public:
 
   /// @returns true if the predicate is unsigned, false otherwise.
   /// Determine if the predicate is an unsigned operation.
-  static bool isUnsigned(Predicate Pred) {
-    return Pred >= ICMP_UGT && Pred <= ICMP_ULE;
-  }
+  LLVM_ABI static bool isUnsigned(Predicate predicate);
 
   /// @returns true if the predicate is signed, false otherwise.
   /// Determine if the predicate is an signed operation.
-  static bool isSigned(Predicate Pred) {
-    return Pred >= ICMP_SGT && Pred <= ICMP_SLE;
-  }
+  LLVM_ABI static bool isSigned(Predicate predicate);
 
   /// Determine if the predicate is an ordered operation.
   LLVM_ABI static bool isOrdered(Predicate predicate);

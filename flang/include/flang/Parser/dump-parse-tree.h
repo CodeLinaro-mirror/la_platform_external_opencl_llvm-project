@@ -843,7 +843,6 @@ public:
   NODE(parser, ProgramUnit)
   NODE(parser, Protected)
   NODE(parser, ProtectedStmt)
-  NODE(parser, RankClause)
   NODE(parser, ReadStmt)
   NODE(parser, RealLiteralConstant)
   NODE(RealLiteralConstant, Real)

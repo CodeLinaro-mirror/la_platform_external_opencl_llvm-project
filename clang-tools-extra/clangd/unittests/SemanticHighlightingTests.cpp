@@ -1100,13 +1100,7 @@ $Bracket[[>]]$Bracket[[>]] $LocalVariable_def[[s6]];
         struct $Class_def[[Inner]] {};
       };
       using $Typedef_decl[[Alias]] = void ($Class[[Outer]]::$Class[[Inner]]:: *)();
-    )cpp",
-      // Forwarded typedef
-      R"cpp(
-      using $Primitive_decl[[MyInt]] = int;
-      namespace $Namespace_decl[[N]] { using ::MyInt; }
-      using $Primitive_decl[[X]] = $Namespace[[N]]::$Primitive[[MyInt]];
-      )cpp"};
+    )cpp"};
   for (const auto &TestCase : TestCases)
     // Mask off scope modifiers to keep the tests manageable.
     // They're tested separately.
